@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -8,4 +9,7 @@ Route::get('/', function () {
 });
 
 Route::get('/users', [UserController::class, 'list']);
-Route::get('/test', [UserController::class, 'testAX']);
+
+Route::controller(ProjectController::class)->group(function () {
+    Route::get('/projects', "index");
+});
