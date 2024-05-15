@@ -8,3 +8,4 @@ Route::get('/', function () {
 });
 
 Route::get('/users', [UserController::class, 'list']);
+Route::get('/test', [UserController::class, 'testAX']);
