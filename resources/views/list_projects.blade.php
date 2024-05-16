@@ -1,4 +1,5 @@
 @extends('layout')
+
 @section('content')
     <div class="relative overflow-x-auto">
         <table class="w-full text-sm text-left rtl:text-right text-gray-500">
@@ -43,5 +44,9 @@
             @endforeach
             </tbody>
         </table>
+
+        <div class="mt-4">
+            {{ $projects->links('components.pagination') }}
+        </div>
     </div>
 @endsection
