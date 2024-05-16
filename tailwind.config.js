@@ -1,23 +1,21 @@
-/** @type {import('tailwindcss').Config} */
-const plugin = require('tailwindcss/plugin')
+import defaultTheme from 'tailwindcss/defaultTheme';
+import forms from '@tailwindcss/forms';
 
+/** @type {import('tailwindcss').Config} */
 export default {
     content: [
-        "./resources/**/*.blade.php",
-        "./resources/**/*.js",
-        "./resources/**/*.vue",
+        './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
+        './storage/framework/views/*.php',
+        './resources/views/**/*.blade.php',
     ],
-    theme: {
-        extend: {},
-    },
-    plugins: [
-        plugin(function ({addBase, theme}) {
-            addBase({
-                'h1': {fontSize: theme('fontSize.4xl'), fontWeight: 800},
-                'h2': {fontSize: theme('fontSize.2xl')},
-                'h3': {fontSize: theme('fontSize.xl')},
-            })
-        })
-    ],
-}
 
+    theme: {
+        extend: {
+            fontFamily: {
+                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+            },
+        },
+    },
+
+    plugins: [forms],
+};
