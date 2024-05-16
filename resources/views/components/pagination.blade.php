@@ -8,7 +8,7 @@
                 </li>
             @else
                 <li>
-                    <a href="{{ $paginator->previousPageUrl() }}" class="flex items-center justify-center px-3 h-8 text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700">Previous</a>
+                    <a href="{{ $paginator->appends(request()->query())->previousPageUrl() }}" class="flex items-center justify-center px-3 h-8 text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700">Previous</a>
                 </li>
             @endif
 
@@ -28,7 +28,7 @@
                         @elseif ($page == 1 || $page == $paginator->lastPage() || 
                                  ($page >= $paginator->currentPage() - 1 && $page <= $paginator->currentPage() + 1))
                             <li>
-                                <a href="{{ $url }}" class="flex items-center justify-center px-3 h-8 text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">{{ $page }}</a>
+                                <a href="{{ $paginator->appends(request()->query())->url($page) }}" class="flex items-center justify-center px-3 h-8 text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">{{ $page }}</a>
                             </li>
                         @elseif ($page == 2 && $paginator->currentPage() > 4)
                             <li>
@@ -45,7 +45,7 @@
 
             @if ($paginator->hasMorePages())
                 <li>
-                    <a href="{{ $paginator->nextPageUrl() }}" class="flex items-center justify-center px-3 h-8 text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700">Next</a>
+                    <a href="{{ $paginator->appends(request()->query())->nextPageUrl() }}" class="flex items-center justify-center px-3 h-8 text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700">Next</a>
                 </li>
             @else
                 <li>
