@@ -1,5 +1,5 @@
 @php use Illuminate\Support\Facades\Date; @endphp
-@props(['active', 'program', 'deadline', 'deadline2', 'orga', 'desc', 'date'])
+@props(['active', 'program', 'deadline', 'deadline2', 'orga', 'desc', 'date', 'continuous', 'continuous2'])
 
 <tr class="bg-white border-b">
     <td class="px-6 py-4">
@@ -9,10 +9,10 @@
         {{$program}}
     </th>
     <td class="px-6 py-4">
-        {{date('d/m/Y', strtotime($deadline))}}
+        {{$continuous === 1 ? 'Continue' : date('d/m/Y', strtotime($deadline))}}
     </td>
     <td class="px-6 py-4">
-        {{$deadline2 === '0000-00-00' ? 'N/A' : date('d/m/Y', strtotime($deadline2))}}
+        {{$continuous2 === 1 ? 'Continue' : ($deadline2 === '0000-00-00' ? 'N/A' :  date('d/m/Y', strtotime($deadline2)))}}
     </td>
     <td class="px-6 py-4">
         {{$orga}}

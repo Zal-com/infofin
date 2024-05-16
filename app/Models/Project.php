@@ -13,6 +13,6 @@ class Project extends Model
         'Continuous2', 'Justificatif2', 'ShortDescription', 'LongDescription', 'ContactULBName', 'ContactULBAddress',
         'ContactULBEmail', 'ContactULBPhone', 'ContactULBWebPage', 'ContactExtName', 'ContactExtAddress', 'ContactExtEmail',
         'ContactExtPhone', 'ContactExtWebPage', 'Periodicity', 'AdmissionRequirements', 'Financement', 'PourPostuler',
-        'Active', 'LangID', 'CreateTimeStamp', 'UserID', 'LastUpdateUserID'
+        'Active', 'LangID', 'CreateTimeStamp', 'UserID', 'LastUpdateUserID', 'TimeStamp'
     ];
 }
