@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Project;
 
 class ProjectController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         $projects = Project::all();
 
-        return view('list_project', [
+        return view('list_projects', [
             'projects' => $projects
         ]);
     }
