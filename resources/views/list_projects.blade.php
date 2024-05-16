@@ -31,7 +31,6 @@
             <tbody>
             @foreach ($projects as $project)
                 <x-project
-                    :active="$project->Active"
                     :program="$project->Name"
                     :deadline="$project->Deadline"
                     :deadline2="$project->Deadline2"
