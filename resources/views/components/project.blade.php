@@ -1,5 +1,5 @@
 @php use Illuminate\Support\Facades\Date; @endphp
-@props(['program', 'deadline', 'deadline2', 'orga', 'desc', 'date', 'continuous', 'continuous2'])
+@props(['id', 'program', 'deadline', 'deadline2', 'orga', 'desc', 'date', 'continuous', 'continuous2'])
 @php
     $currentDate = Date::now();
     $isActive = $continuous === 1 || $continuous2 === 1 || ($deadline >= $currentDate && $deadline != '0000-00-00') || ($deadline2 >= $currentDate && $deadline2 != '0000-00-00');
@@ -11,7 +11,7 @@
         {{$isActive == 1 ? '✔️' : '❌' }}
     </td>
     <th scope="row" class="max-w-12 px-6 py-4 font-medium text-gray-900">
-        {{$program}}
+        <a href="projects/{{$id}}" class="hover:text-zinc-700">{{$program}}</a>
     </th>
     <td class="px-6 py-4">
         {{$continuous === 1 ? 'Continue' : date('d/m/Y', strtotime($deadline))}}
