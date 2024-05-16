@@ -15,5 +15,6 @@
 <div class="container w-75 m-auto">
     @yield('content')
 </div>
+@include('components.footer')
 </body>
 </html>
