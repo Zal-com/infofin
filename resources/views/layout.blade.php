@@ -9,12 +9,12 @@
     @vite('resources/css/app.css')
     <title>Infofin</title>
 </head>
-<body>
+<body class="flex flex-col">
 @include('components.header')
 
-<div class="container w-75 m-auto">
+<main class="container w-75 m-auto">
     @yield('content')
-</div>
+</main>
 @include('components.footer')
 </body>
 </html>
