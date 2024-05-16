@@ -1,6 +1,8 @@
 import defaultTheme from 'tailwindcss/defaultTheme';
 import forms from '@tailwindcss/forms';
 
+const plugin = require('tailwindcss/plugin')
+
 /** @type {import('tailwindcss').Config} */
 export default {
     content: [
@@ -17,5 +19,12 @@ export default {
         },
     },
 
-    plugins: [forms],
+    plugins: [forms, plugin(function ({addBase, theme}) {
+        addBase({
+            'h1': {fontSize: theme('fontSize.4xl'), fontWeight: 800},
+            'h2': {fontSize: theme('fontSize.2xl')},
+            'h3': {fontSize: theme('fontSize.xl')},
+        })
+    })
+    ],
 };
