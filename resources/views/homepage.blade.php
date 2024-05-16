@@ -22,13 +22,13 @@
                     :button1="'Connexion externe'"
                     :url1="'https://cvchercheurstest.ulb.be/?AC=1&externe=1'"
                     :button2="'Se connecter'"
-                    :url2="'https://infofin.ulb.ac.be/login.php'"
+                    :url2="route('login')"
             />
 
             <x-card :title="'Liste des projets'"
                     :desc="'Retrouvez ici la liste des projets encodés dans la base de données'"
                     :button1="'Voir les projets'"
-                    :url1="'https://cvchercheurstest.ulb.be/?AC=999'"
+                    :url1="route('projects.index')"
 
             />
         </div>
