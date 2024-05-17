@@ -25,16 +25,12 @@
                             <li>
                                 <span class="flex items-center justify-center px-3 h-8 text-blue-600 bg-blue-50 border border-gray-300 cursor-default">{{ $page }}</span>
                             </li>
-                        @elseif ($page == 1 || $page == $paginator->lastPage() || 
+                        @elseif ($page == 1 || $page == $paginator->lastPage() ||
                                  ($page >= $paginator->currentPage() - 1 && $page <= $paginator->currentPage() + 1))
                             <li>
                                 <a href="{{ $paginator->appends(request()->query())->url($page) }}" class="flex items-center justify-center px-3 h-8 text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">{{ $page }}</a>
                             </li>
                         @elseif ($page == 2 && $paginator->currentPage() > 4)
-                            <li>
-                                <span class="flex items-center justify-center px-3 h-8 text-gray-500 bg-white border border-gray-300 cursor-default">...</span>
-                            </li>
-                        @elseif ($page == $paginator->lastPage() - 1 && $paginator->currentPage() < $paginator->lastPage() - 3)
                             <li>
                                 <span class="flex items-center justify-center px-3 h-8 text-gray-500 bg-white border border-gray-300 cursor-default">...</span>
                             </li>
