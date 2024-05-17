@@ -14,6 +14,7 @@ Route::get('/dashboard', function () {
 
 Route::controller(ProjectController::class)->group(function () {
     Route::get('/projects', "index")->name('projects.index');
+    Route::get('/projects/{id}', "show")->name('projects.show');
 });
 
 Route::middleware('auth')->group(function () {

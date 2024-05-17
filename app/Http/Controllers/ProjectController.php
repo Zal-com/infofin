@@ -34,9 +34,13 @@ class ProjectController extends Controller
 
         $projects = Project::orderBy($orderByColumn, $orderDirection)->paginate($itemsPerPage);
 
-        return view('list_projects', [
+        return view('projects.index', compact('projects', 'orderByColumn', 'orderDirection'), [
             'projects' => $projects,
         ]);
+    }
+
+    public function show(Int $id){
+      return 0;
     }
 
 }
