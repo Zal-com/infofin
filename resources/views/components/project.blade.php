@@ -11,7 +11,7 @@
         {{$isActive == 1 ? '✔️' : '❌' }}
     </td>
     <th scope="row" class="max-w-12 px-6 py-4 font-medium text-gray-900">
-        <a href="projects/{{$id}}" class="hover:text-zinc-700">{{$program}}</a>
+        <a href="{{route('projects.show', ['id' => $id])}}" class="hover:text-zinc-700">{{$program}}</a>
     </th>
     <td class="px-6 py-4">
         {{$continuous === 1 ? 'Continue' : date('d/m/Y', strtotime($deadline))}}
