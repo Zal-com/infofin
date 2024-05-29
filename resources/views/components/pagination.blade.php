@@ -8,7 +8,7 @@
                 </li>
             @else
                 <li>
-                    <a href="{{ $paginator->appends(request()->query())->previousPageUrl() }}" class="flex items-center justify-center px-3 h-8 text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700">Previous</a>
+                    <button wire:click="previousPage" class="flex items-center justify-center px-3 h-8 text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700">Previous</button>
                 </li>
             @endif
 
@@ -25,14 +25,9 @@
                             <li>
                                 <span class="flex items-center justify-center px-3 h-8 text-blue-600 bg-blue-50 border border-gray-300 cursor-default">{{ $page }}</span>
                             </li>
-                        @elseif ($page == 1 || $page == $paginator->lastPage() ||
-                                 ($page >= $paginator->currentPage() - 1 && $page <= $paginator->currentPage() + 1))
+                        @else
                             <li>
-                                <a href="{{ $paginator->appends(request()->query())->url($page) }}" class="flex items-center justify-center px-3 h-8 text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">{{ $page }}</a>
-                            </li>
-                        @elseif ($page == 2 && $paginator->currentPage() > 4)
-                            <li>
-                                <span class="flex items-center justify-center px-3 h-8 text-gray-500 bg-white border border-gray-300 cursor-default">...</span>
+                                <button wire:click="gotoPage({{ $page }})" class="flex items-center justify-center px-3 h-8 text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">{{ $page }}</button>
                             </li>
                         @endif
                     @endforeach
@@ -41,7 +36,7 @@
 
             @if ($paginator->hasMorePages())
                 <li>
-                    <a href="{{ $paginator->appends(request()->query())->nextPageUrl() }}" class="flex items-center justify-center px-3 h-8 text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700">Next</a>
+                    <button wire:click="nextPage" class="flex items-center justify-center px-3 h-8 text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700">Next</button>
                 </li>
             @else
                 <li>

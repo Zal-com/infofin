@@ -15,4 +15,17 @@ class Project extends Model
         'ContactExtPhone', 'ContactExtWebPage', 'Periodicity', 'AdmissionRequirements', 'Financement', 'PourPostuler',
         'Active', 'LangID', 'CreateTimeStamp', 'UserID', 'LastUpdateUserID', 'TimeStamp'
     ];
+
+    public static function getSortedAndPaginatedProjects($orderByColumn = 'TimeStamp', $orderDirection = 'desc', $itemsPerPage = 20, $validColumns = ["Name", "Deadline", "Deadline2", "Organisation", "ShortDescription", "TimeStamp"])
+    {
+        if (!in_array($orderByColumn, $validColumns)) {
+            $orderByColumn = 'TimeStamp';
+        }
+
+        if (!in_array($orderDirection, ['asc', 'desc'])) {
+            $orderDirection = 'desc';
+        }
+
+        return self::orderBy($orderByColumn, $orderDirection)->paginate($itemsPerPage);
+    }
 }
