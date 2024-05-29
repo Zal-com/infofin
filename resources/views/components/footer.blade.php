@@ -12,7 +12,7 @@
         <span class="w-[9.09091%] inline-block h-[7px]" style="background: #0e4c9c"></span>
         <span class="w-[9.09091%] inline-block h-[7px]" style="background: #008438"></span>
     </div>
-    <footer class="w-screen bg-blue-950 text-white flex sm:flex-row flex-col p-5 justify-between gap-5">
+    <footer class="bg-blue-950 text-white flex sm:flex-row flex-col p-5 justify-between gap-5">
         <div class="contain-content">
             <img src={{Storage::url('img/ULB_logo_mono_blanc.png')}}>
         </div>
