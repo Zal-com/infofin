@@ -19,12 +19,20 @@ class IndexProjects extends Component
 
     public function mount()
     {
-        if (request()->has('order') && in_array(request('order'), ['asc', 'desc'])) {
-            $this->orderDirection = request('order');
+        if (request()->has('order')) {
+            if (in_array(request('order'), ['asc', 'desc'])) {
+                $this->orderDirection = request('order');
+            } else {
+                return redirect("/projects");
+            }
         }
 
-        if (request()->has('field') && in_array(request('field'), $this->arrayCheck)) {
-            $this->orderByColumn = request('field');
+        if (request()->has('field')) {
+            if (in_array(request('field'), $this->arrayCheck)) {
+                $this->orderByColumn = request('field');
+            } else {
+                return redirect("/projects");
+            }
         }
     }
 
