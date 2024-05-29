@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\Project;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Illuminate\Support\Facades\Request;
 
 class IndexProjects extends Component
 {
@@ -15,7 +16,7 @@ class IndexProjects extends Component
     public $itemsPerPage = 20;
     public $arrayCheck = ["Name", "Deadline", "Deadline2", "Organisation", "ShortDescription", "TimeStamp"];
 
-    protected $updatesQueryString = ['order', 'field'];
+    protected $updatesQueryString = ['order', 'field', 'page'];
 
     public function mount()
     {
@@ -34,6 +35,19 @@ class IndexProjects extends Component
                 return redirect("/projects");
             }
         }
+
+        $this->checkPageValidity();
+    }
+
+    public function checkPageValidity()
+    {
+        $totalRecords = Project::count();
+        $maxPage = ceil($totalRecords / $this->itemsPerPage);
+        $currentPage = Request::get('page', 1);
+
+        if ($currentPage > $maxPage && $maxPage > 0) {
+            return redirect()->route('projects.index', array_merge(request()->query(), ['page' => $maxPage]));
+        }
     }
 
     public function render()
@@ -42,4 +56,3 @@ class IndexProjects extends Component
         return view('livewire.index-projects', ['projects' => $projects]);
     }
 }
-
