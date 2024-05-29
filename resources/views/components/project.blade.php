@@ -3,15 +3,15 @@
 @php
     $currentDate = Date::now();
     $isActive = $continuous === 1 || $continuous2 === 1 || ($deadline >= $currentDate && $deadline != '0000-00-00') || ($deadline2 >= $currentDate && $deadline2 != '0000-00-00');
+    $route = route('projects.show', ['id' => $id]);
 @endphp
 
-
-<tr class="bg-white border-b">
+<tr class="bg-white border-b hover:bg-gray-100 hover:cursor-pointer" onclick="window.location.href='{{$route}}'">
     <td class="px-6 py-4">
         {{$isActive == 1 ? '✔️' : '❌' }}
     </td>
     <th scope="row" class="max-w-12 px-6 py-4 font-medium text-gray-900">
-        <a href="{{route('projects.show', ['id' => $id])}}" class="hover:text-zinc-700">{{$program}}</a>
+        {{$program}}
     </th>
     <td class="px-6 py-4">
         {{$continuous === 1 ? 'Continue' : date('d/m/Y', strtotime($deadline))}}

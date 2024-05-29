@@ -15,7 +15,7 @@
                     Deadline
                 </th>
                 <th scope="col" class="px-6 py-3 w-1/12">
-                    Deadline2
+                    Seconde Deadline
                 </th>
                 <th scope="col" class="px-6 py-3 w-2/12">
                     Organisation
