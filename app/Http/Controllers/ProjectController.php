@@ -7,14 +7,10 @@ use Illuminate\Http\Request;
 class ProjectController extends Controller
 {
     public function index(Request $request){
-        $itemsPerPage = 20;
 
         $queryParams = $request->query();
 
         $arrayCheck = ["Name", "Deadline", "Deadline2", "Organisation", "ShortDescription", "TimeStamp"];
-
-        $orderByColumn = "TimeStamp";
-        $orderDirection = "desc";
 
         if ($request->has("order")) {
             if (in_array($queryParams["order"], ["asc", "desc"])) {
@@ -32,11 +28,8 @@ class ProjectController extends Controller
             }
         }
 
-        $projects = Project::orderBy($orderByColumn, $orderDirection)->paginate($itemsPerPage);
 
-        return view('projects.index', compact('projects', 'orderByColumn', 'orderDirection'), [
-            'projects' => $projects,
-        ]);
+        return view('projects.index');
     }
 
     public function show(Int $id){
