@@ -8,12 +8,14 @@
     <script src="https://kit.fontawesome.com/d8f60edc6b.js" crossorigin="anonymous"></script>
     @vite('resources/css/app.css')
     <title>Infofin</title>
+    @livewireStyles
 </head>
 <body class="flex flex-col">
 @include('components.header')
 
 <main class="container w-75 m-auto">
     @yield('content')
+    @livewireScripts
 </main>
 @include('components.footer')
 </body>
