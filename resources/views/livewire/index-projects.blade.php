@@ -43,6 +43,6 @@
     </table>
 
     <div class="mt-4">
-        {{ $projects->links('components.pagination') }}
+        {{ $projects->links('vendor.livewire.tailwind') }}
     </div>
 </div>
