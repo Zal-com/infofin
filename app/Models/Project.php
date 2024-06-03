@@ -3,6 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Validation\Rules\In;
 
 class Project extends Model
 {
@@ -27,5 +31,10 @@ class Project extends Model
         }
 
         return self::orderBy($orderByColumn, $orderDirection)->paginate($itemsPerPage);
+    }
+
+    public function infoType() : HasManyThrough
+    {
+        return $this->hasManyThrough(InfoTypes::class, ProjectInfoType::class, 'ProjectID', 'InfoTypeID', 'ProjectID', 'InfoTypeID');
     }
 }
