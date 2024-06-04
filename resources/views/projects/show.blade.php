@@ -1,5 +1,6 @@
 @extends('layout')
 @section('content')
+    {{\Diglactic\Breadcrumbs\Breadcrumbs::render('project', $project)}}
 <h1>Description de l'appel</h1>
     <p>{{$project->Name}}</p>
     <p>{{$project->Organisation}}</p>
