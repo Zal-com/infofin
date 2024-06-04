@@ -1,6 +1,5 @@
 @extends('layout')
 @section('content')
-    {{\Diglactic\Breadcrumbs\Breadcrumbs::render('home')}}
     <h1 class="">Bienvenue sur Infofin</h1>
     <h2>La base de données d'informations des sources de financement de la Recherche à l'ULB</h2>
     <div class="contain-content flex gap-8 flex-row justify-center">

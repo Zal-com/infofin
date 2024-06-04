@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Project;
 use Illuminate\Http\Request;
+use function Laravel\Prompts\form;
 
 class ProjectController extends Controller
 {
@@ -14,6 +15,15 @@ class ProjectController extends Controller
       $project = Project::find($id);
 
       return view('projects.show', compact('project'));
+    }
+
+    public function create(){
+        return view('projects.create');
+    }
+
+    public function store(Request $request){
+        $validate = request()->validate([]);
+        dd($validate);
     }
 
 }
