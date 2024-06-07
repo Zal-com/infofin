@@ -3,6 +3,7 @@
 <div>
     <!-- I begin to speak only when I am certain what I will say is not better left unsaid. - Cato the Younger -->
 Project create
+    @livewire('project-form')
     <form>
         <div>
             <input type="text" placeholder="Programme" name="Name" required/>
@@ -139,13 +140,51 @@ Project create
             <div>
                 <h3>Descriptions</h3>
                 <div>
-                    <label for="short_desc">Description courte</label>
+                    <label for="editor_short">Description courte (<span id="char_counter">0</span>/500 caractères)</label>
                     <div id="editor_short" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></div>
                 </div>
                 <div>
-                    <label for="long_desc">Description complète</label>
+                    <label for="editor_long">Description complète</label>
                     <div id="editor_long" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></div>
                 </div>
+            </div>
+            <div>
+                <label for="editor_criteres">Critères d'admission</label>
+                <div id="editor_criteres" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></div>
+            </div>
+            <div>
+                <label for="editor_financement">Financement</label>
+                <div id="editor_financement" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></div>
+            </div>
+            <div>
+                <label for="editor_requirements">Pour postuler</label>
+                <div id="editor_requirements" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></div>
+            </div>
+            <div>
+                <label for="periodicity">Périodicité</label>
+                <select name="periodicity">
+                    <option value="0" default>Sans</option>
+                    <option value="1">Annuel</option>
+                    <option value="2">Tous les deux ans</option>
+                </select>
+            </div>
+            <div>
+                <label for="geo_zone">Zone(s) géographique</label>
+                <select multiple name="geo_zone">
+                    <option>Monde entier</option>
+                    <option>Afrique</option>
+                    <option>Asie</option>
+                    <option>Amérique du Norc</option>
+                    <option>Amérique du Sud</option>
+                    <option>Europe</option>
+                    <option>Océanie</option>
+                    <option>Antarctique</option>
+                </select>
+            </div>
+            <div>
+                <h3>Contacts</h3>
+                Contacts Internes
+                Contacts Externes
             </div>
         </div>
     </form>
