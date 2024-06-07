@@ -2,7 +2,9 @@
 
 namespace App\Livewire;
 
+use App\Models\Continent;
 use App\Models\InfoTypes;
+use App\Models\Pays;
 use App\Models\ScientificDomain;
 use App\Models\ScientificDomainCategory;
 use Filament\Forms\Components\Checkbox;
@@ -11,6 +13,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\MarkdownEditor;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -62,6 +65,9 @@ final class ProjectForm extends Component implements HasForms
                             ->options(['Draft', 'Version finale', 'more...'])
                     ]),
                 ]),
+            Select::make('Periodicity')
+                ->label('Periodicité')
+                ->options(['Sans', 'Annuel', 'Tous les deux ans']),
                 DatePicker::make('DateBailleur')
                     ->label('Date Bailleur'),
                 Checkbox::make('GProj')
@@ -79,7 +85,7 @@ final class ProjectForm extends Component implements HasForms
                     ->options(InfoTypes::all()->pluck('Name')->toArray())
                     ->columns(3),
                 Select::make('Appel')
-                    ->label("Domaines scientifiques de l'appel")
+                    ->label("Disciplines scientifiques de l'appel")
                     ->multiple()
                     ->options(function () {
                         $categories = ScientificDomainCategory::with('domains')->get();
@@ -91,14 +97,51 @@ final class ProjectForm extends Component implements HasForms
                                 $options[$category->title][$domain->id] = $domain->title;
                             }
                         }
-
                         return $options;
                     }),
             Textarea::make('ShortDescription')
                 ->label('Description courte')
                 ->maxLength(500)
                 ->hint(fn ($state, $component) => strlen($state) . '/' . $component->getMaxLength())
-                ->live()
+                ->live(),
+            MarkdownEditor::make('LongDescription')
+            ->label('Description complète'),
+            MarkdownEditor::make('CriteresAdmission')
+                ->label("Critères d'admission"),
+            MarkdownEditor::make('Financement')
+                ->label("Financement"),
+            MarkdownEditor::make('PourPostuler')
+                ->label("Pour postuler"),
+            Select::make('Geo_zones')
+                ->label("Zones géographiques")
+                ->multiple()
+                ->maxItems(3)
+                ->options(function () {
+                    $options = [
+                        'Monde entier' => 'Monde entier',
+                    ];
+                    $options['Continents'] = Continent::all()->pluck('title', 'id')->toArray();
+                    $options['Pays'] = Pays::all()->pluck('nomPays', )->toArray();
+                    return $options;
+                }),
+            Fieldset::make('Contacts')->schema([
+                Fieldset::make('Internes')->schema([
+                    Repeater::make('Contact')->schema([
+                        TextInput::make('first_name')->label('Prénom'),
+                        TextInput::make('last_name')->label('Nom'),
+                        TextInput::make('email')->label('E-mail')->email(),
+                        TextInput::make('tel')->label('Numéro de téléphone')->tel(),
+                    ])
+                ]),
+                Fieldset::make('Externes')->schema([
+                    Repeater::make('Contact')->schema([
+                        TextInput::make('first_name')->label('Prénom'),
+                        TextInput::make('last_name')->label('Nom'),
+                        TextInput::make('email')->label('E-mail')->email(),
+                        TextInput::make('tel')->label('Numéro de téléphone')->tel(),
+                    ])
+                ]),
+            ]),
         ])->statePath(path: 'data');
     }
 

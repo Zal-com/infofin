@@ -9,5 +9,5 @@ class Continent extends Model
     protected $table = 'continent';
     public $timestamps = false;
     protected $primaryKey = 'id';
-    protected $fillable = ['continent'];
+    protected $fillable = ['title'];
 }
