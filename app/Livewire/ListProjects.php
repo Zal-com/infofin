@@ -13,6 +13,7 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Date;
+use Illuminate\Support\HtmlString;
 use Illuminate\View\View;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -85,10 +86,17 @@ class ListProjects extends Component implements HasForms, HasTable
             ->searchable(),
             TextColumn::make('ShortDescription')
                 ->label('Description courte')
+                ->formatStateUsing(fn (string $state) : HtmlString => new HtmlString($state))
                 ->wrap()
-                ->lineClamp(2),
+                ->lineClamp(2)
+            ->limit(100),
+            TextColumn::make('TimeStamp')
+            ->label('Date de dernière modif.')
+            ->dateTime('d/m/Y')
+            ->sortable()
         ])
             ->defaultPaginationPageOption(25)
+            ->defaultSort('TimeStamp', 'desc')
             ->paginationPageOptions([5, 10, 25, 50, 100])
             ->recordUrl(fn ($record) => route('projects.show', $record->ProjectID));
     }
