@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpIllegalArrayKeyTypeInspection */
 
 namespace App\Livewire;
 
@@ -28,8 +28,10 @@ class ListProjects extends Component implements HasForms, HasTable
         return view('livewire.list-projects');
     }
 
+    /** @noinspection PhpIllegalArrayKeyTypeInspection */
     public function table(Table $table): Table
     {
+        /** @noinspection PhpIllegalArrayKeyTypeInspection */
         return $table->query(Project::all()->toQuery())->columns([
             IconColumn::make('status')
                 ->label('Est actif')
@@ -45,7 +47,8 @@ class ListProjects extends Component implements HasForms, HasTable
                 ->trueColor('success')
                 ->falseIcon('heroicon-o-x-circle')
                 ->falseColor('danger')
-                ->sortable(false),
+                ->sortable(false)
+                ->alignCenter(),
             TextColumn::make('Name')
                 ->label('Programme')
                 ->wrap()
@@ -80,20 +83,21 @@ class ListProjects extends Component implements HasForms, HasTable
                     }
                 }),
             TextColumn::make('Organisation')
-            ->label('Organisation')
+                ->label('Organisation')
                 ->wrap()
-            ->sortable()
-            ->searchable(),
+                ->sortable()
+                ->searchable(),
             TextColumn::make('ShortDescription')
                 ->label('Description courte')
                 ->formatStateUsing(fn (string $state) : HtmlString => new HtmlString($state))
                 ->wrap()
                 ->lineClamp(2)
-            ->limit(100),
+                ->limit(100),
             TextColumn::make('TimeStamp')
-            ->label('Date de dernière modif.')
-            ->dateTime('d/m/Y')
-            ->sortable()
+                ->label('Date de dernière modif.')
+                ->dateTime('d/m/Y')
+                ->sortable()
+                ->alignCenter()
         ])
             ->defaultPaginationPageOption(25)
             ->defaultSort('TimeStamp', 'desc')
