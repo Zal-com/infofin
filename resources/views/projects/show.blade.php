@@ -6,7 +6,7 @@
     <p>{{$project->Organisation}}</p>
     <p>{{$project->Deadline === '0000-00-00' ? 'N/A' :  date('d/m/Y', strtotime($project->Deadline))}}</p>
     <p>{{$project->Deadline2 === '0000-00-00' ? 'N/A' :  date('d/m/Y', strtotime($project->Deadline2))}}</p>
-@foreach($project->infotype as $infotype)
+@foreach($project->infoType as $infotype)
     <p>{{$infotype->Name}}</p>
 @endforeach
     <p>Type de Programme</p>

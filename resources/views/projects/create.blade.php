@@ -1,8 +1,9 @@
 @extends('layout')
 @section('content')
-<div>
-    <!-- I begin to speak only when I am certain what I will say is not better left unsaid. - Cato the Younger -->
-Project create
+<div class="py-4">
+    <h2>Création d'un nouveau projet</h2>
+    <div class="mt-5">
     @livewire('project-form')
+    </div>
 </div>
 @endsection

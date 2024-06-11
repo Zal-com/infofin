@@ -43,7 +43,8 @@ final class ProjectForm extends Component implements HasForms
                     TextInput::make('Name')
                         ->label('Titre')
                         ->maxLength(255)
-                        ->required(),
+                        ->required()
+                        ->autofocus(),
                     TextInput::make('Organisation')
                         ->label('Organisation')
                         ->maxLength(255)
@@ -60,7 +61,7 @@ final class ProjectForm extends Component implements HasForms
                         ])
                         ->selectablePlaceholder(false),
                     CheckboxList::make('Types')
-                
+
                         ->label('Types de programmes')
                         ->options(InfoTypes::all()->sortBy('Name')->pluck('Name')->toArray())
                         ->columns(3),
@@ -103,7 +104,7 @@ final class ProjectForm extends Component implements HasForms
                             Checkbox::make('Continu')
                                 ->label('Continu')
                                 ->default(False)
-                                ->hint('test')
+                                ->hint('Continu = jsp frr')
                         ]),
                         Fieldset::make('2eme deadline')->schema([
                             DateTimePicker::make('deadline2'),
@@ -118,7 +119,7 @@ final class ProjectForm extends Component implements HasForms
                     ]),
                     Select::make('Periodicity')
                         ->label('Periodicité')
-                        ->options(['Sans', 'Annuel', 'Tous les deux ans'])
+                        ->options(['Sans', 'Annuel', 'Biennal', 'Triennal', 'Quadriennal', 'Quinquennal'])
                         ->selectablePlaceholder(false),
                     DatePicker::make('DateBailleur')
                         ->label('Date Bailleur'),
@@ -161,7 +162,6 @@ final class ProjectForm extends Component implements HasForms
                         ])->columns(2)->addActionLabel('+ Nouveau contact')
                     ]),
                 ])
-
             ]),
         ])->statePath(path: 'data');
     }
