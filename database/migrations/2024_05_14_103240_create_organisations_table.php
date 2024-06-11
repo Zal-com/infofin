@@ -7,8 +7,9 @@ class CreateOrganisationsTable extends Migration
 {
     public function up()
     {
-        Schema::create('Organisations', function (Blueprint $table) {
-            $table->text('Nom'); // Assuming 'Nom' is the primary key or unique identifier
+        Schema::create('organisations', function (Blueprint $table) {
+            $table->id();
+            $table->string('title', 255); // Assuming 'Nom' is the primary key or unique identifier
             // Pas de timestamps
         });
     }

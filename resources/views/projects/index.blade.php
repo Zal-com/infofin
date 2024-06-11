@@ -7,5 +7,7 @@
             Nouveau projet
         </a>
     </div>
-    <livewire:index-projects/>
+    <div>
+   @livewire('list-projects')
+    </div>
 @endsection

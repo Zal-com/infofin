@@ -59,8 +59,8 @@ final class ProjectForm extends Component implements HasForms
                             "Séance d'information organisée par un organisme externe"
                         ])
                         ->selectablePlaceholder(false),
-                    Select::make('Types')
-                        ->multiple()
+                    CheckboxList::make('Types')
+                
                         ->label('Types de programmes')
                         ->options(InfoTypes::all()->sortBy('Name')->pluck('Name')->toArray())
                         ->columns(3),
@@ -103,6 +103,7 @@ final class ProjectForm extends Component implements HasForms
                             Checkbox::make('Continu')
                                 ->label('Continu')
                                 ->default(False)
+                                ->hint('test')
                         ]),
                         Fieldset::make('2eme deadline')->schema([
                             DateTimePicker::make('deadline2'),
@@ -148,6 +149,7 @@ final class ProjectForm extends Component implements HasForms
                             TextInput::make('last_name')->label('Nom'),
                             TextInput::make('email')->label('E-mail')->email(),
                             TextInput::make('tel')->label('Numéro de téléphone')->tel(),
+                            TextInput::make('address')->label('Adresse')->columnSpan(2)
                         ])->columns(2)
                     ]),
                     Fieldset::make('Externes')->schema([
