@@ -23,6 +23,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
+use Filament\Tables\Actions\Action;
 use Livewire\Component;
 
 final class ProjectForm extends Component implements HasForms
@@ -161,7 +162,7 @@ final class ProjectForm extends Component implements HasForms
                             TextInput::make('tel')->label('Numéro de téléphone')->tel(),
                         ])->columns(2)->addActionLabel('+ Nouveau contact')
                     ]),
-                ])
+                ]),
             ]),
         ])->statePath(path: 'data');
     }
