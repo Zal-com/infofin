@@ -22,7 +22,6 @@ class DatabaseSeeder extends Seeder
 
         // Créer l'utilisateur
         $user = User::create([
-            'name' => 'Axel Hoffmann',
             'email' => 'axel.hoffmann@ulb.be',
             'password' => "Test123*",
         ]);
