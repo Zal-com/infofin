@@ -12,4 +12,20 @@
         </div>
     </div>
     </a>
+    <nav>
+        <div>
+            @auth()
+                <a href="#">Profil</a>
+                <form method="post" action="{{route('logout')}}">@csrf<button type="submit">Déconnexion</button></form>
+            @else
+                <a href="{{route('login')}}">
+                    Login
+                </a>
+            @endauth
+            <a href="{{route('projects.index')}}">
+                Liste des projets
+            </a>
+
+        </div>
+    </nav>
 </header>

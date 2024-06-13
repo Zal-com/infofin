@@ -16,12 +16,6 @@
     {{\Illuminate\Support\Facades\Auth::getUser()->getAuthIdentifier()}}
 @endauth
 @include('components.header')
-@auth()
-    <form method="POST" action="{{route('logout')}}">
-        @csrf
-        <button type="submit">Logout</button>
-    </form>
-@endauth
 
 <main class="container w-75 m-auto flex-1">
     @yield('content')

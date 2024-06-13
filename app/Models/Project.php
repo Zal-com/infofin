@@ -11,13 +11,10 @@ use Illuminate\Validation\Rules\In;
 class Project extends Model
 {
     protected $table = 'projects';
-    protected $primaryKey = 'ProjectID';
     protected $fillable = [
-        'Name', 'Organisation', 'OrganisationReference', 'Deadline', 'Continuous', 'Justificatif', 'Deadline2',
-        'Continuous2', 'Justificatif2', 'ShortDescription', 'LongDescription', 'ContactULBName', 'ContactULBAddress',
-        'ContactULBEmail', 'ContactULBPhone', 'ContactULBWebPage', 'ContactExtName', 'ContactExtAddress', 'ContactExtEmail',
-        'ContactExtPhone', 'ContactExtWebPage', 'Periodicity', 'AdmissionRequirements', 'Financement', 'PourPostuler',
-        'Active', 'LangID', 'CreateTimeStamp', 'UserID', 'LastUpdateUserID', 'TimeStamp'
+        'title', 'organisation_id', 'OrganisationReference', 'deadline', 'continuous', 'proof', 'deadline_',
+        'continuous_2', 'proof_f2', 'short_description', 'long_description', 'periodicity', 'admission_requirements', 'financing',
+        'apply_instructions', 'is_active', 'user_id', 'last_update_user_id', 'contact_ulb', 'contact_ext'
     ];
 
     public static function getSortedAndPaginatedProjects($orderByColumn = 'TimeStamp', $orderDirection = 'desc', $itemsPerPage = 20, $validColumns = ["Name", "Deadline", "Deadline2", "Organisation", "ShortDescription", "TimeStamp"])

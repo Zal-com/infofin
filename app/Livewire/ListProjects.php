@@ -33,75 +33,68 @@ class ListProjects extends Component implements HasForms, HasTable
     {
         /** @noinspection PhpIllegalArrayKeyTypeInspection */
         return $table->query(Project::all()->toQuery())->columns([
-            IconColumn::make('status')
+            IconColumn::make('is_active')
                 ->label('Est actif')
                 ->boolean()
-                ->getStateUsing(function ($record) {
-                    $currentDate = Date::now();
-                    return $record->Continuous === 1
-                        || $record->Continuous2 === 1
-                        || ($record->Deadline >= $currentDate && $record->Deadline != '0000-00-00')
-                        || ($record->Deadline2 >= $currentDate && $record->Deadline2 != '0000-00-00');
-                })
                 ->trueIcon('heroicon-o-check-circle')
                 ->trueColor('success')
                 ->falseIcon('heroicon-o-x-circle')
                 ->falseColor('danger')
                 ->sortable(false)
                 ->alignCenter(),
-            TextColumn::make('Name')
+            TextColumn::make('title')
                 ->label('Programme')
                 ->wrap()
                 ->lineClamp(2)
                 ->weight(FontWeight::SemiBold)
                 ->sortable()
                 ->searchable(),
-            TextColumn::make('Deadline')
+            TextColumn::make('deadline')
                 ->label('Deadline 1')
                 ->sortable()
                 ->searchable()
                 ->formatStateUsing(function ($record) {
-                    if ($record->Continuous) {
+                    if ($record->continuous) {
                         return 'Continue';
-                    } elseif ($record->Deadline == '0000-00-00') {
+                    } elseif ($record->deadline == '0000-00-00') {
                         return 'N/A';
                     } else {
-                        return \Carbon\Carbon::parse($record->Deadline)->format('d/m/Y');
+                        return \Carbon\Carbon::parse($record->deadline)->format('d/m/Y');
                     }
                 }),
-            TextColumn::make('Deadline2')
+            TextColumn::make('deadline_2')
                 ->label('Deadline 2')
                 ->sortable()
                 ->searchable()
                 ->formatStateUsing(function ($record) {
-                    if ($record->Continuous2) {
+                    if ($record->continuous_2) {
                         return 'Continue';
-                    } elseif ($record->Deadline2 == '0000-00-00') {
+                    } elseif ($record->deadline_2 == '0000-00-00') {
                         return 'N/A';
                     } else {
-                        return \Carbon\Carbon::parse($record->Deadline2)->format('d/m/Y');
+                        return \Carbon\Carbon::parse($record->deadline_2)->format('d/m/Y');
                     }
                 }),
-            TextColumn::make('Organisation')
+            TextColumn::make('organisation_id')
                 ->label('Organisation')
                 ->wrap()
                 ->sortable()
                 ->searchable(),
-            TextColumn::make('ShortDescription')
+            TextColumn::make('short_description')
                 ->label('Description courte')
                 ->formatStateUsing(fn (string $state) : HtmlString => new HtmlString($state))
                 ->wrap()
                 ->lineClamp(2)
                 ->limit(100),
-            TextColumn::make('TimeStamp')
+            TextColumn::make('updated_at')
                 ->label('Date de dernière modif.')
                 ->dateTime('d/m/Y')
                 ->sortable()
                 ->alignCenter()
         ])
             ->defaultPaginationPageOption(25)
-            ->defaultSort('TimeStamp', 'desc')
+            ->defaultSort('updated_at', 'desc')
             ->paginationPageOptions([5, 10, 25, 50, 100])
-            ->recordUrl(fn ($record) => route('projects.show', $record->ProjectID));
+            ->recordUrl(fn ($record) => route('projects.show', $record->id));
     }
 }

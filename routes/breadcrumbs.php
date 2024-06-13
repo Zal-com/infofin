@@ -22,5 +22,5 @@ Breadcrumbs::for('projects', function (BreadcrumbTrail $trail) {
 // Home > Projects > Project
 Breadcrumbs::for('project', function (BreadcrumbTrail $trail, $project) {
     $trail->parent('projects');
-    $trail->push($project->Name, route('projects.show', $project));
+    $trail->push($project->title, route('projects.show', $project));
 });
