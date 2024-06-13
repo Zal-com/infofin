@@ -39,7 +39,7 @@
            </x-filament::section.heading>
 
                 @foreach($project->infoType as $info_type)
-                    <x-filament::section.description class="mb-3 text-justify">
+                    <x-filament::section.description class="mb-4 text-justify">
                         {{$info_type['title']}}
                     </x-filament::section.description>
                 @endforeach
@@ -48,8 +48,8 @@
                 <x-filament::section.heading>
                     Financement
                 </x-filament::section.heading>
-                <x-filament::section.description class="mb-3 text-justify">
-                    {{$project->financing}}
+                <x-filament::section.description class="mb-4 text-justify">
+                    {!! $project->financing !!}
                 </x-filament::section.description>
 
             @endif
@@ -58,7 +58,7 @@
             <x-filament::section.heading>
                 Pour postuler
             </x-filament::section.heading>
-            <x-filament::section.description class="mb-3 text-justify">
+            <x-filament::section.description class="mb-4 text-justify">
                 {!! $project->apply_instructions !!}
             </x-filament::section.description>
         </div>

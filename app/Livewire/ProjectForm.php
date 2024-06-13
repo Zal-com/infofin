@@ -41,16 +41,16 @@ final class ProjectForm extends Component implements HasForms
         return $form->schema([
             Tabs::make('Tabs')->tabs([
                 Tabs\Tab::make('Informations')->schema([
-                    TextInput::make('Name')
+                    TextInput::make('title')
                         ->label('Titre')
                         ->maxLength(255)
                         ->required()
                         ->autofocus(),
-                    TextInput::make('Organisation')
+                    TextInput::make('organisation_id')
                         ->label('Organisation')
                         ->maxLength(255)
                         ->required(),
-                    Checkbox::make('GProj')
+                    Checkbox::make('is_big')
                         ->label('Projet majeur')
                         ->default(False),
                     Select::make('InfoType')
@@ -62,9 +62,8 @@ final class ProjectForm extends Component implements HasForms
                         ])
                         ->selectablePlaceholder(false),
                     CheckboxList::make('Types')
-
                         ->label('Types de programmes')
-                        ->options(InfoTypes::all()->sortBy('Name')->pluck('Name')->toArray())
+                        ->options(InfoTypes::all()->sortBy('title')->pluck('title')->toArray())
                         ->columns(3),
                     Select::make('Appel')
                         ->label("Disciplines scientifiques de l'appel")
@@ -99,54 +98,54 @@ final class ProjectForm extends Component implements HasForms
                     schema([
                         Fieldset::make('1ere deadline')->schema([
                             DateTimePicker::make('deadline'),
-                            Select::make('Justificatif')
+                            Select::make('proof')
                                 ->label('Justificatif')
                                 ->options(['Draft', 'Version finale', 'more...']),
-                            Checkbox::make('Continu')
+                            Checkbox::make('continuous')
                                 ->label('Continu')
                                 ->default(False)
                                 ->hint('Continu = jsp frr')
                         ]),
                         Fieldset::make('2eme deadline')->schema([
-                            DateTimePicker::make('deadline2'),
-                            Select::make('Justificatif2')
+                            DateTimePicker::make('deadline_2'),
+                            Select::make('proof_2')
                                 ->label('Justificatif')
                                 ->options(['Draft', 'Version finale', 'more...']),
-                            Checkbox::make('Continu2')
+                            Checkbox::make('continuous_2')
                                 ->label('Continu')
                                 ->default(False)
                                 ->inline(true)
                         ]),
                     ]),
-                    Select::make('Periodicity')
+                    Select::make('periodicity')
                         ->label('Periodicité')
                         ->options(['Sans', 'Annuel', 'Biennal', 'Triennal', 'Quadriennal', 'Quinquennal'])
                         ->selectablePlaceholder(false),
-                    DatePicker::make('DateBailleur')
+                    DatePicker::make('date_lessor')
                         ->label('Date Bailleur'),
                 ]),
                 Tabs\Tab::make('Description')->schema([
-                    Textarea::make('ShortDescription')
+                    Textarea::make('short_description')
                         ->label('Description courte')
                         ->maxLength(500)
                         ->hint(fn ($state, $component) => strlen($state) . '/' . $component->getMaxLength())
                         ->live(),
-                    MarkdownEditor::make('LongDescription')
+                    MarkdownEditor::make('long_description')
                         ->label('Description complète'),
-                    MarkdownEditor::make('Financement')
+                    MarkdownEditor::make('financing')
                         ->label("Financement"),
                 ]),
                 Tabs\Tab::make("Critères d'admission")->schema([
-                    MarkdownEditor::make('CriteresAdmission')
+                    MarkdownEditor::make('TODO')
                         ->label(""),
                 ]),
                 Tabs\Tab::make("Pour postuler")->schema([
-                    MarkdownEditor::make('PourPostuler')
+                    MarkdownEditor::make('apply_requirements')
                         ->label(""),
                 ]),
                 Tabs\Tab::make("Contacts")->schema([
                     Fieldset::make('Internes')->schema([
-                        Repeater::make('contacts_internes')->schema([
+                        Repeater::make('contact_ulb')->schema([
                             TextInput::make('first_name')->label('Prénom'),
                             TextInput::make('last_name')->label('Nom'),
                             TextInput::make('email')->label('E-mail')->email(),
@@ -155,7 +154,7 @@ final class ProjectForm extends Component implements HasForms
                         ])->columns(2)
                     ]),
                     Fieldset::make('Externes')->schema([
-                        Repeater::make('contacts_externes')->schema([
+                        Repeater::make('contact_ext')->schema([
                             TextInput::make('first_name')->label('Prénom'),
                             TextInput::make('last_name')->label('Nom'),
                             TextInput::make('email')->label('E-mail')->email(),
