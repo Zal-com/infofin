@@ -40,7 +40,7 @@ class ListProjects extends Component implements HasForms, HasTable
                 ->trueColor('success')
                 ->falseIcon('heroicon-o-x-circle')
                 ->falseColor('danger')
-                ->sortable(false)
+                ->sortable()
                 ->alignCenter(),
             TextColumn::make('title')
                 ->label('Programme')

@@ -32,6 +32,6 @@ class Project extends Model
 
     public function infoType() : HasManyThrough
     {
-        return $this->hasManyThrough(InfoTypes::class, ProjectInfoType::class, 'ProjectID', 'InfoTypeID', 'ProjectID', 'InfoTypeID');
+        return $this->hasManyThrough(InfoTypes::class, ProjectInfoType::class, 'project_id', 'id', 'id', 'info_type_id');
     }
 }
