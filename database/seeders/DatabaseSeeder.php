@@ -16,9 +16,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call([
-            RolesPermissions::class,
-        ]);
 
         // Créer l'utilisateur
         $user = User::create([
