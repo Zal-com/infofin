@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
-use Database\Seeders\RolesPermissions;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -16,17 +15,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Run the RolesPermissions seeder first
+        $this->call(RolesPermissions::class);
 
-        // Créer l'utilisateur
+        // Create the user
         $user = User::create([
             'email' => 'axel.hoffmann@ulb.be',
-            'password' => "Test123*",
+            'password' => 'Test123*',
         ]);
 
-        // Récupérer le rôle 'contributor'
-        $contributorRole = Role::where('name', 'admin')->first();
+        // Retrieve the role 'admin'
+        $adminRole = Role::where('name', 'admin')->first();
 
-        // Assigner le rôle 'contributor' à l'utilisateur
-        $user->assignRole($contributorRole);
+        // Assign the 'admin' role to the user
+        $user->assignRole($adminRole);
     }
 }
