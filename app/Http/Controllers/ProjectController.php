@@ -3,7 +3,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Project;
 use Illuminate\Http\Request;
-use function Laravel\Prompts\form;
 
 class ProjectController extends Controller
 {
