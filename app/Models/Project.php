@@ -12,8 +12,8 @@ class Project extends Model
 {
     protected $table = 'projects';
     protected $fillable = [
-        'title', 'organisation_id', 'OrganisationReference', 'deadline', 'continuous', 'proof', 'deadline_',
-        'continuous_2', 'proof_f2', 'short_description', 'long_description', 'periodicity', 'admission_requirements', 'financing',
+        'title', 'organisation_id', 'OrganisationReference', 'deadline', 'continuous', 'proof', 'deadline_2',
+        'continuous_2', 'proof_2', 'short_description', 'long_description', 'periodicity', 'admission_requirements', 'financing',
         'apply_instructions', 'is_active', 'user_id', 'last_update_user_id', 'contact_ulb', 'contact_ext'
     ];
 
