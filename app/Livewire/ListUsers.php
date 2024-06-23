@@ -1,22 +1,18 @@
 <?php /** @noinspection PhpIllegalArrayKeyTypeInspection */
-
 namespace App\Livewire;
 
 use App\Models\User;
+use Spatie\Permission\Models\Role;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Support\Enums\FontWeight;
-use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
-use Illuminate\Routing\Route;
-use Illuminate\Support\Facades\Date;
-use Illuminate\Support\HtmlString;
 use Illuminate\View\View;
 use Livewire\Component;
-use Livewire\WithPagination;
 
 class ListUsers extends Component implements HasForms, HasTable
 {
@@ -28,11 +24,9 @@ class ListUsers extends Component implements HasForms, HasTable
         return view('livewire.list-users');
     }
 
-    /** @noinspection PhpIllegalArrayKeyTypeInspection */
     public function table(Table $table): Table
     {
-        /** @noinspection PhpIllegalArrayKeyTypeInspection */
-        return $table->query(User::all()->toQuery())->columns([
+        return $table->query(User::query())->columns([
             TextColumn::make('email')
                 ->label('Email')
                 ->wrap()
@@ -47,14 +41,22 @@ class ListUsers extends Component implements HasForms, HasTable
                 ->dateTime('d/m/Y')
                 ->sortable()
                 ->alignCenter(),
-            TextColumn::make('roles.name')
-                ->label('Rôle')
-                ->sortable()
-                ->alignCenter()
+            SelectColumn::make('role_id')
+                ->label('Rôles')
+                ->options(Role::all()->pluck('name', 'id')->toArray())
+                ->updateStateUsing(function ($state, User $record) {
+                    $record->syncRoles(Role::find($state));
+                    return $state;
+                })
+                ->getStateUsing(function ($record) {
+                    return $record->roles->pluck('id')->first();
+                })
+                ->sortable(false)
+                ->searchable(false)
         ])
             ->defaultPaginationPageOption(25)
             ->defaultSort('updated_at', 'desc')
             ->paginationPageOptions([5, 10, 25, 50, 100]);
-           //->recordUrl(fn ($record) => route('us.show', $record->id));
+            //->recordUrl(fn ($record) => route('us.show', $record->id));
     }
 }

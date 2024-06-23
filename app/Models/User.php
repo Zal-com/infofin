@@ -45,4 +45,19 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function getRoleNamesAttribute()
+    {
+        return $this->roles->pluck('name')->implode(', ');
+    }
+
+    public function getRoleIdAttribute()
+    {
+        return $this->roles->first()->name ?? null;
+    }
+
+    public function setRoleIdAttribute($roleId)
+    {
+        $this->syncRoles([$roleId]);
+    }
 }
