@@ -1,4 +1,4 @@
-<div class="bottom-0">
+<div>
     <div class="flex gap-0">
         <span class="w-[9.09091%] inline-block h-[7px]" style="background: #000000"></span>
         <span class="w-[9.09091%] inline-block h-[7px]" style="background: #e6027c"></span>
@@ -14,7 +14,7 @@
     </div>
     <footer class="bg-blue-950 text-white flex sm:flex-row flex-col p-5 justify-between gap-5">
         <div class="contain-content">
-            <img src={{Storage::url('img/ULB_logo_mono_blanc.png')}}>
+            <img src={{asset('img/ULB_logo_mono_blanc.png')}}>
         </div>
         <div class="flex flex-row gap-5">
             <button class="flex justify-center align-middle text-center bg-blue-900 p-2 max-w-[8rem] gap-2">

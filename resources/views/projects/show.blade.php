@@ -1,4 +1,5 @@
 @extends('layout')
 @section('content')
-<h1>{{$project->ProjectID}}</h1>
+    {{\Diglactic\Breadcrumbs\Breadcrumbs::render('project', $project)}}
+    <x-project-show-info :project="$project"/>
 @endsection
