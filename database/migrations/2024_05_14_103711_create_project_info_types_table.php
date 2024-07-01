@@ -8,9 +8,9 @@ class CreateProjectsInfoTypesTable extends Migration
     public function up()
     {
         Schema::create('projects_info_types', function (Blueprint $table) {
-            $table->id('ID');
-            $table->integer('ProjectID');
-            $table->integer('InfoTypeID');
+            $table->id('id');
+            $table->integer('project_id')->references('id')->on("projects");
+            $table->integer('info_type_id')->references("id")->on("info_types");
             // Pas de timestamps
         });
     }

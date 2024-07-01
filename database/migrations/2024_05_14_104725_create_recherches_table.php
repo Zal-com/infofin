@@ -8,9 +8,9 @@ class CreateRechercheTable extends Migration
 {
     public function up()
     {
-        Schema::create('recherche', function (Blueprint $table) {
-            $table->id('Id');
-            $table->integer('UserID');
+        Schema::create('searches', function (Blueprint $table) {
+            $table->id('id');
+            $table->integer('user_id')->references('id')->on("users")->onDelete("CASCADE");
             $table->timestamp('Time')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->text('Recherche');
             // Pas de timestamps supplémentaires
@@ -19,7 +19,7 @@ class CreateRechercheTable extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('recherche');
+        Schema::dropIfExists('searches');
     }
 }
 

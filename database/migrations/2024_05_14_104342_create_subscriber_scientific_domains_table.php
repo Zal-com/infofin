@@ -8,16 +8,16 @@ class CreateSubscribersScientificDomainsTable extends Migration
 {
     public function up()
     {
-        Schema::create('subscribers_scientific_domains', function (Blueprint $table) {
-            $table->id('ID');
-            $table->integer('SubscriberID');
-            $table->integer('ScientificDomainID');
+        Schema::create('users_scientific_domains', function (Blueprint $table) {
+            $table->id('id');
+            $table->integer('user_id')->references("id")->on("users");
+            $table->integer('scientific_domain_id')->references('id')->on("scientific_domain");
             // Pas de timestamps
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('subscribers_scientific_domains');
+        Schema::dropIfExists('users_scientific_domains');
     }
 }
