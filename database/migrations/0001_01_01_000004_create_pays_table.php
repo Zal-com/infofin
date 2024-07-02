@@ -7,8 +7,9 @@ class CreatePaysTable extends Migration
 {
     public function up()
     {
-        Schema::create('pays', function (Blueprint $table) {
-            $table->integer('codePays')->autoIncrement()->comment('Code du pays')->primary();
+        Schema::create('countries', function (Blueprint $table) {
+            $table->id();
+            $table->integer('codePays')->comment('Code du pays');
             $table->string('nomPaysUK', 60)->nullable()->comment('Nom du pays en anglais');
             $table->string('nomPays', 60)->nullable()->comment('Nom du pays en français');
             $table->string('alpha2', 6)->nullable()->comment('Code alpha2 (ISO 3166-1)');
