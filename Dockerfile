@@ -24,7 +24,7 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV PATH="${PATH}:/root/.composer/vendor/bin"
 
 # Run Composer & NPM
-COPY --from=composer /usr/bin/composer /usr/bin/composer
+COPY --from=composer /composer /usr/bin/composer
 
 RUN set -eux; \
 	composer install --prefer-dist --no-dev --no-autoloader --no-scripts --no-progress; \
