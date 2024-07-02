@@ -3,13 +3,18 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
+
     use HasFactory, Notifiable, HasRoles;
+
+    protected $table = 'users';
 
     /**
      * The attributes that are mass assignable.
@@ -18,10 +23,20 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'id',
-        'type',
         'email',
         'password',
+        'matricule',
+        'first_name',
+        'last_name',
+        'is_email_subscriber'
     ];
+
+    /**
+     * Indicates if the model should be timestamped.
+     *
+     * @var bool
+     */
+    public $timestamps = true;
 
     /**
      * The attributes that should be hidden for serialization.
@@ -59,5 +74,26 @@ class User extends Authenticatable
     public function setRoleIdAttribute($roleId)
     {
         $this->syncRoles([$roleId]);
+    }
+
+    public function faculties(): BelongsToMany
+    {
+        return $this->belongsToMany(Faculties::class, 'users_faculties', 'user_id', 'faculty_id');
+    }
+
+    public function scientific_domains() : BelongsToMany
+    {
+        return $this->belongsToMany(ScientificDomain::class, 'users_scientific_domains', 'user_id', 'scientific_domain_id');
+    }
+
+    public function info_types() : BelongsToMany
+    {
+        return $this->belongsToMany(InfoTypes::class, 'users_info_types', 'user_id', 'info_type_id');
+    }
+
+
+    public function searches() : HasMany
+    {
+        return $this->hasMany(Searches::class, "user_id");
     }
 }
