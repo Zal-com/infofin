@@ -23,7 +23,7 @@ class ScientificDomain extends Model
 
     public function projects() : BelongsToMany
     {
-        return $this->belongsToMany(Project::class, 'users_scientific_domains', 'scientific_domain_id', 'project_id');
+        return $this->belongsToMany(Project::class, 'projects_scientific_domains', 'scientific_domain_id', 'project_id');
     }
 
 }
