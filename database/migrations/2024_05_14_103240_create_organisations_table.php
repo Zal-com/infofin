@@ -9,7 +9,7 @@ class CreateOrganisationsTable extends Migration
     {
         Schema::create('organisations', function (Blueprint $table) {
             $table->id();
-            $table->string('title', 255); // Assuming 'Nom' is the primary key or unique identifier
+            $table->string('title', 255);
             // Pas de timestamps
         });
     }

@@ -9,12 +9,12 @@ class CreateScientificDomainsTable extends Migration
     public function up()
     {
         Schema::create('scientific_domains', function (Blueprint $table) {
-            $table->id('ScientificDomainID');
-            $table->string('Name');
-            $table->integer('CategoryID');
-            $table->tinyInteger('LangID')->default(1);
-            $table->integer('Order');
-            // Pas de timestamps
+           $table->id();
+           $table->string('name', 255);
+           $table->foreignId('sci_dom_cat_id');
+
+           //Relations
+           $table->foreign('sci_dom_cat_id')->references('id')->on('scientific_domain_categories');
         });
     }
 

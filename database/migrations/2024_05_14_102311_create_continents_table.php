@@ -7,10 +7,9 @@ class CreateContinentTable extends Migration
 {
     public function up()
     {
-        Schema::create('continent', function (Blueprint $table) {
-            $table->id('id');
-            $table->string('continent');
-            // Pas de timestamps
+        Schema::create('continents', function (Blueprint $table) {
+            $table->id();
+            $table->string('name', 255);
         });
     }
 

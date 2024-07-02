@@ -8,11 +8,12 @@ class CreateFrequentationTable extends Migration
 {
     public function up()
     {
-        Schema::create('frequentation', function (Blueprint $table) {
-            $table->id('id');
-            $table->integer('ProjectID');
-            $table->timestamp('dateVisite')->default(DB::raw('CURRENT_TIMESTAMP'));
-            // Timestamps gérés par la colonne dateVisite
+        Schema::create('visits_rate', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('project_id');
+            $table->dateTime('date_visit')->default(\Carbon\Carbon::now());
+
+            $table->foreign('project_id')->references('id')->on('projects');
         });
     }
 

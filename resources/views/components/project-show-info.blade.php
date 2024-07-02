@@ -64,6 +64,7 @@
         </div>
     </x-filament::section>
     <div class="flex flex-col gap-4 sticky top-5">
+        @if(!empty(json_decode($project->contact_ulb, true)))
     <x-filament::section class="col-span-1 row-span-1">
         <x-filament::section.heading class="text-xl mb-4">
             Contacts ULB
@@ -92,6 +93,8 @@
             </div>
         @endforeach
     </x-filament::section>
+        @endif
+        @if(!empty(json_decode($project->contact_ext, true)))
     <x-filament::section class="col-span-1 row-span-1 sticky top-5">
         <x-filament::section.heading class="text-xl mb-4">
             Contacts externes
@@ -121,5 +124,6 @@
             </div>
         @endforeach
     </x-filament::section>
+            @endif
     </div>
 </div>

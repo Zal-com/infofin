@@ -8,11 +8,14 @@ class CreateSubscribersFacultiesTable extends Migration
 {
     public function up()
     {
-        Schema::create('subscribers_faculties', function (Blueprint $table) {
-            $table->id('ID');
-            $table->integer('SubscriberID');
-            $table->integer('FacultyID');
-            // Pas de timestamps
+        Schema::create('users_faculties', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id');
+            $table->foreignId('faculty_id');
+
+            //Relations
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('faculty_id')->references('id')->on('faculties');
         });
     }
 

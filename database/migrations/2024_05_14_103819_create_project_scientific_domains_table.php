@@ -9,10 +9,13 @@ class CreateProjectsScientificDomainsTable extends Migration
     public function up()
     {
         Schema::create('projects_scientific_domains', function (Blueprint $table) {
-            $table->increments('ID');
-            $table->integer('ProjectID');
-            $table->integer('ScientificDomainID');
-            // Pas de timestamps
+            $table->id();
+            $table->foreignId('project_id');
+            $table->foreignId('scientific_domain_id');
+
+            //Relations
+            $table->foreign('project_id')->references('id')->on('projects');
+            $table->foreign('scientific_domain_id')->references('id')->on('scientific_domains');
         });
     }
 

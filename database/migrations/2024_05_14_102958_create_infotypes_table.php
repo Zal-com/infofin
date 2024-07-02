@@ -9,12 +9,12 @@ class CreateInfoTypesTable extends Migration
     public function up()
     {
         Schema::create('info_types', function (Blueprint $table) {
-            $table->integer('InfoTypeID')->primary();
-            $table->string('Name')->index("Name");
-            $table->integer('CategoryID')->index("CategoryID");
-            $table->tinyInteger('LangID')->default(1)->index("LangID");
-            $table->integer('Order')->index("Order");
+            $table->id();
+            $table->string('title', 255);
+            $table->foreignId('category_id');
             // Pas de timestamps
+
+            $table->foreign('category_id')->references('id')->on('categories');
         });
     }
 

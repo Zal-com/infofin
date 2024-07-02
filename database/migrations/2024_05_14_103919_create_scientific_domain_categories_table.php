@@ -8,10 +8,9 @@ class CreateScientificDomainsCategoriesTable extends Migration
 {
     public function up()
     {
-        Schema::create('scientific_domains_categories', function (Blueprint $table) {
-            $table->id('CategoryID');
-            $table->string('Name');
-            $table->tinyInteger('LangID')->default(1);
+        Schema::create('scientific_domain_categories', function (Blueprint $table) {
+           $table->id();
+           $table->string('name', 255);
             // Pas de timestamps
         });
     }
