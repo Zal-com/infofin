@@ -96,4 +96,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Searches::class, "user_id");
     }
+
+    public function projects() : HasMany
+    {
+        return $this->hasMany(Project::class, "poster_id");
+    }
+
+    public function rate_mail() : BelongsToMany
+    {
+        return $this->belongsToMany(Project::class, "visits_rate_mail", "user_id", "project_id")->withPivot('date_consult');
+    }
 }

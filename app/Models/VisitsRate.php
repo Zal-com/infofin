@@ -12,6 +12,6 @@ class VisitsRate extends Model
     protected $fillable = ['project_id', 'date_visit'];
 
     public function project() : belongsTo {
-        return $this->belongsTo(Project::class);
+        return $this->belongsTo(Project::class, 'project_id');
     }
 }

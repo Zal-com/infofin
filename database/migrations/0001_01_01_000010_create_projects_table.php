@@ -33,7 +33,7 @@ class CreateProjectsTable extends Migration
             $table->foreignId('continent_id');
             $table->smallInteger('status')->default(1);
             $table->boolean('is_big')->default(false);
-            $table->text('full_description');
+            $table->text('long_description');
             $table->string('short_description', 500);
             $table->boolean('is_draft')->default(false);
             $table->timestamps();

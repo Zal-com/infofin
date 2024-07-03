@@ -12,6 +12,6 @@ class Document extends Model
     protected $fillable = ['project_id', 'title', 'description', 'filename', 'download_count'];
 
     public function project() : BelongsTo {
-        return $this->belongsTo(Project::class);
+        return $this->belongsTo(Project::class, 'project_id');
     }
 }

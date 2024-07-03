@@ -15,6 +15,6 @@ class Faculties extends Model
 
     public function users() : BelongsToMany
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class, 'users_faculties', 'faculty_id', 'user_id');
     }
 }
