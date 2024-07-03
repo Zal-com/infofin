@@ -70,18 +70,23 @@ final class ProjectForm extends Component implements HasForms
                     Select::make('Appel')
                         ->label("Disciplines scientifiques de l'appel")
                         ->multiple()
-                        ->options(function () {
-                            $categories = ScientificDomainCategory::with('domains')->get();
+                        // ->options(function () {
+                        //     $categories = ScientificDomainCategory::with('domains')->get();
 
-                            $options = [];
+                        //     $options = [];
 
-                            foreach ($categories as $category) {
-                                foreach ($category->domains as $domain) {
-                                    $options[$category->title][$domain->id] = $domain->title;
-                                }
-                            }
-                            return $options;
-                        }),
+                        //     foreach ($categories as $category) {
+                        //         foreach ($category->domains as $domain) {
+                        //             $options[$category->title][$domain->id] = $domain->title;
+                        //         }
+                        //     }
+                        //     return $options;
+                        // }),
+                        ->options([
+                            'Financement',
+                            "Séance d'information organisée par l'ULB",
+                            "Séance d'information organisée par un organisme externe"
+                        ]),
                     Select::make('Geo_zones')
                         ->label("Zones géographiques")
                         ->multiple()
@@ -176,5 +181,9 @@ final class ProjectForm extends Component implements HasForms
     public function render()
     {
         return view('livewire.project-form');
+    }
+
+    public function submit(){
+        dd($this);
     }
 }
