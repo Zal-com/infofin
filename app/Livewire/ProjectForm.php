@@ -3,9 +3,8 @@
 namespace App\Livewire;
 
 use App\Models\Continent;
-use App\Models\InfoTypes;
-use App\Models\Pays;
-use App\Models\ScientificDomain;
+use App\Models\InfoType;
+use App\Models\Countries;
 use App\Models\ScientificDomainCategory;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\CheckboxList;
@@ -14,7 +13,6 @@ use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Tabs;
@@ -23,7 +21,6 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
-use Filament\Tables\Actions\Action;
 use Livewire\Component;
 
 final class ProjectForm extends Component implements HasForms
@@ -63,7 +60,7 @@ final class ProjectForm extends Component implements HasForms
                         ->selectablePlaceholder(false),
                     CheckboxList::make('Types')
                         ->label('Types de programmes')
-                        ->options(InfoTypes::all()->sortBy('title')->pluck('title')->toArray())
+                        ->options(InfoType::all()->sortBy('title')->pluck('title')->toArray())
                         ->columns(3),
                     Select::make('Appel')
                         ->label("Disciplines scientifiques de l'appel")
@@ -89,7 +86,7 @@ final class ProjectForm extends Component implements HasForms
                                 'Monde entier' => 'Monde entier',
                             ];
                             $options['Continents'] = Continent::all()->pluck('title', 'id')->toArray();
-                            $options['Pays'] = Pays::all()->pluck('nomPays', )->toArray();
+                            $options['Pays'] = Countries::all()->pluck('nomPays', 'codePays')->toArray();
                             return $options;
                         }),
                 ]),
@@ -130,17 +127,17 @@ final class ProjectForm extends Component implements HasForms
                         ->maxLength(500)
                         ->hint(fn ($state, $component) => strlen($state) . '/' . $component->getMaxLength())
                         ->live(),
-                    MarkdownEditor::make('long_description')
+                    MarkdownEditor::make('full_description')
                         ->label('Description complète'),
-                    MarkdownEditor::make('financing')
+                    MarkdownEditor::make('funding')
                         ->label("Financement"),
                 ]),
                 Tabs\Tab::make("Critères d'admission")->schema([
-                    MarkdownEditor::make('TODO')
+                    MarkdownEditor::make('admission_requirements')
                         ->label(""),
                 ]),
                 Tabs\Tab::make("Pour postuler")->schema([
-                    MarkdownEditor::make('apply_requirements')
+                    MarkdownEditor::make('apply_instructions')
                         ->label(""),
                 ]),
                 Tabs\Tab::make("Contacts")->schema([
