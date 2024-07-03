@@ -184,6 +184,7 @@ final class ProjectForm extends Component implements HasForms
     }
 
     public function submit(){
-        dd($this);
+        $data = $this->data;
+        dd($data);
     }
 }
