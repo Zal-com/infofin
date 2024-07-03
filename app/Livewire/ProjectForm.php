@@ -60,7 +60,12 @@ final class ProjectForm extends Component implements HasForms
                         ->selectablePlaceholder(false),
                     CheckboxList::make('Types')
                         ->label('Types de programmes')
-                        ->options(InfoType::all()->sortBy('title')->pluck('title')->toArray())
+                        // ->options(InfoType::all()->sortBy('title')->pluck('title')->toArray())
+                        ->options([
+                            'Financement',
+                            "Séance d'information organisée par l'ULB",
+                            "Séance d'information organisée par un organisme externe"
+                        ])
                         ->columns(3),
                     Select::make('Appel')
                         ->label("Disciplines scientifiques de l'appel")
@@ -81,14 +86,19 @@ final class ProjectForm extends Component implements HasForms
                         ->label("Zones géographiques")
                         ->multiple()
                         ->maxItems(3)
-                        ->options(function () {
-                            $options = [
-                                'Monde entier' => 'Monde entier',
-                            ];
-                            $options['Continents'] = Continent::all()->pluck('title', 'id')->toArray();
-                            $options['Pays'] = Countries::all()->pluck('nomPays', 'codePays')->toArray();
-                            return $options;
-                        }),
+                        // ->options(function () {
+                        //     $options = [
+                        //         'Monde entier' => 'Monde entier',
+                        //     ];
+                        //     $options['Continents'] = Continent::all()->pluck('title', 'id')->toArray();
+                        //     $options['Pays'] = Countries::all()->pluck('nomPays', 'codePays')->toArray();
+                        //     return $options;
+                        // }),
+                        ->options([
+                            'Financement',
+                            "Séance d'information organisée par l'ULB",
+                            "Séance d'information organisée par un organisme externe"
+                        ])
                 ]),
                 Tabs\Tab::make('Dates importantes')->schema([
                     Section::make('Deadlines')->
