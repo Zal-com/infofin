@@ -146,7 +146,7 @@ final class ProjectForm extends Component implements HasForms
                         ->maxLength(500)
                         ->hint(fn ($state, $component) => strlen($state) . '/' . $component->getMaxLength())
                         ->live(),
-                    MarkdownEditor::make('full_description')
+                    MarkdownEditor::make('long_description')
                         ->label('Description complète'),
                     MarkdownEditor::make('funding')
                         ->label("Financement"),
