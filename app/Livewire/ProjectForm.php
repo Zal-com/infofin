@@ -232,6 +232,7 @@ final class ProjectForm extends Component implements HasForms
         $validator = Validator::make($this->data, $rules);
         if ($validator->fails()) {
             $this->addError('validation', 'Validation Error');
+            dd($validator);
             return;
         }
 
