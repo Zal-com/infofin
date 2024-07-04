@@ -7,6 +7,7 @@ use App\Models\InfoType;
 use App\Models\Countries;
 use App\Models\ScientificDomainCategory;
 use App\Models\Project;
+use Exception;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
@@ -188,151 +189,155 @@ final class ProjectForm extends Component implements HasForms
 
     public function submit()
     {
-        // Récupérer l'utilisateur connecté
-        $userId = Auth::id();
+        try{
+            // Récupérer l'utilisateur connecté
+            $userId = Auth::id();
 
-        // Règles de validation
-        // $rules = [
-        //     'title' => 'required|string|max:255',
-        //     'organisation_id' => 'required|exists:organisations,id',
-        //     'is_big' => 'boolean',
-        //     'InfoType' => 'required|string',
-        //     'Types' => 'array',
-        //     'Appel' => 'array',
-        //     'Geo_zones' => 'array',
-        //     'deadline' => 'nullable|date',
-        //     'proof' => 'nullable|string|max:50',
-        //     'continuous' => 'boolean',
-        //     'deadline_2' => 'nullable|date',
-        //     'proof_2' => 'nullable|string|max:50',
-        //     'continuous_2' => 'boolean',
-        //     'periodicity' => 'nullable|integer',
-        //     'date_lessor' => 'nullable|date',
-        //     'short_description' => 'nullable|string|max:500',
-        //     'full_description' => 'nullable|string',
-        //     'funding' => 'nullable|string',
-        //     'admission_requirements' => 'nullable|string',
-        //     'apply_instructions' => 'nullable|string',
-        //     'contact_ulb.*.first_name' => 'nullable|string',
-        //     'contact_ulb.*.last_name' => 'nullable|string',
-        //     'contact_ulb.*.email' => 'nullable|email',
-        //     'contact_ulb.*.tel' => 'nullable|string',
-        //     'contact_ulb.*.address' => 'nullable|string',
-        //     'contact_ext.*.first_name' => 'nullable|string',
-        //     'contact_ext.*.last_name' => 'nullable|string',
-        //     'contact_ext.*.email' => 'nullable|email',
-        //     'contact_ext.*.tel' => 'nullable|string',
-        //     'country_id' => 'required|exists:countries,id',
-        //     'continent_id' => 'required|exists:continents,id',
-        //     'status' => 'integer',
-        //     'is_draft' => 'boolean',
-        // ];
+            // Règles de validation
+            // $rules = [
+            //     'title' => 'required|string|max:255',
+            //     'organisation_id' => 'required|exists:organisations,id',
+            //     'is_big' => 'boolean',
+            //     'InfoType' => 'required|string',
+            //     'Types' => 'array',
+            //     'Appel' => 'array',
+            //     'Geo_zones' => 'array',
+            //     'deadline' => 'nullable|date',
+            //     'proof' => 'nullable|string|max:50',
+            //     'continuous' => 'boolean',
+            //     'deadline_2' => 'nullable|date',
+            //     'proof_2' => 'nullable|string|max:50',
+            //     'continuous_2' => 'boolean',
+            //     'periodicity' => 'nullable|integer',
+            //     'date_lessor' => 'nullable|date',
+            //     'short_description' => 'nullable|string|max:500',
+            //     'full_description' => 'nullable|string',
+            //     'funding' => 'nullable|string',
+            //     'admission_requirements' => 'nullable|string',
+            //     'apply_instructions' => 'nullable|string',
+            //     'contact_ulb.*.first_name' => 'nullable|string',
+            //     'contact_ulb.*.last_name' => 'nullable|string',
+            //     'contact_ulb.*.email' => 'nullable|email',
+            //     'contact_ulb.*.tel' => 'nullable|string',
+            //     'contact_ulb.*.address' => 'nullable|string',
+            //     'contact_ext.*.first_name' => 'nullable|string',
+            //     'contact_ext.*.last_name' => 'nullable|string',
+            //     'contact_ext.*.email' => 'nullable|email',
+            //     'contact_ext.*.tel' => 'nullable|string',
+            //     'country_id' => 'required|exists:countries,id',
+            //     'continent_id' => 'required|exists:continents,id',
+            //     'status' => 'integer',
+            //     'is_draft' => 'boolean',
+            // ];
 
-        $rules = [
-            'title' => 'required|string|max:255',
-            'is_big' => 'boolean',
-            'Types' => 'array',
-            'Appel' => 'array',
-            'Geo_zones' => 'array',
-            'deadline' => 'nullable|date',
-            'proof' => 'nullable|string|max:50',
-            'continuous' => 'boolean',
-            'deadline_2' => 'nullable|date',
-            'proof_2' => 'nullable|string|max:50',
-            'continuous_2' => 'boolean',
-            'periodicity' => 'nullable|integer',
-            'date_lessor' => 'nullable|date',
-            'short_description' => 'nullable|string|max:500',
-            'full_description' => 'nullable|string',
-            'funding' => 'nullable|string',
-            'admission_requirements' => 'nullable|string',
-            'apply_instructions' => 'nullable|string',
-            'contact_ulb.*.first_name' => 'nullable|string',
-            'contact_ulb.*.last_name' => 'nullable|string',
-            'contact_ulb.*.email' => 'nullable|email',
-            'contact_ulb.*.tel' => 'nullable|string',
-            'contact_ulb.*.address' => 'nullable|string',
-            'contact_ext.*.first_name' => 'nullable|string',
-            'contact_ext.*.last_name' => 'nullable|string',
-            'contact_ext.*.email' => 'nullable|email',
-            'contact_ext.*.tel' => 'nullable|string',
-            'status' => 'integer',
-            'is_draft' => 'boolean',
-        ];
+            $rules = [
+                'title' => 'required|string|max:255',
+                'is_big' => 'boolean',
+                'Types' => 'array',
+                'Appel' => 'array',
+                'Geo_zones' => 'array',
+                'deadline' => 'nullable|date',
+                'proof' => 'nullable|string|max:50',
+                'continuous' => 'boolean',
+                'deadline_2' => 'nullable|date',
+                'proof_2' => 'nullable|string|max:50',
+                'continuous_2' => 'boolean',
+                'periodicity' => 'nullable|integer',
+                'date_lessor' => 'nullable|date',
+                'short_description' => 'nullable|string|max:500',
+                'full_description' => 'nullable|string',
+                'funding' => 'nullable|string',
+                'admission_requirements' => 'nullable|string',
+                'apply_instructions' => 'nullable|string',
+                'contact_ulb.*.first_name' => 'nullable|string',
+                'contact_ulb.*.last_name' => 'nullable|string',
+                'contact_ulb.*.email' => 'nullable|email',
+                'contact_ulb.*.tel' => 'nullable|string',
+                'contact_ulb.*.address' => 'nullable|string',
+                'contact_ext.*.first_name' => 'nullable|string',
+                'contact_ext.*.last_name' => 'nullable|string',
+                'contact_ext.*.email' => 'nullable|email',
+                'contact_ext.*.tel' => 'nullable|string',
+                'status' => 'integer',
+                'is_draft' => 'boolean',
+            ];
 
-        // Validation des données
-        $validator = Validator::make($this->data, $rules);
-        if ($validator->fails()) {
-            $this->addError('validation', 'Validation Error');
-            dd($validator);
-            return;
-        }
-
-        $data = $validator->validated();
-
-        // Ajouter les IDs de l'utilisateur connecté
-        $data['poster_id'] = $userId;
-        $data['last_update_user_id'] = $userId;
-
-        // Traitement des contacts ULB
-        $contactsUlB = [];
-        foreach ($data['contact_ulb'] as $contact) {
-            $name = trim(($contact['first_name'] ?? '') . ' ' . ($contact['last_name'] ?? ''));
-            $email = $contact['email'] ?? '';
-            $phone = $contact['tel'] ?? '';
-            $address = $contact['address'] ?? '';
-
-            if ($name !== '' || $email !== '' || $phone !== '' || $address !== '') {
-                $contactsUlB[] = [
-                    'name' => $name,
-                    'email' => $email,
-                    'phone' => $phone,
-                    'address' => $address,
-                ];
+            // Validation des données
+            $validator = Validator::make($this->data, $rules);
+            if ($validator->fails()) {
+                $this->addError('validation', 'Validation Error');
+                dd($validator);
+                return;
             }
-        }
-        $data['contact_ulb'] = !empty($contactsUlB) ? json_encode($contactsUlB) : '{}';
 
-        // Traitement des contacts externes
-        $contactsExt = [];
-        foreach ($data['contact_ext'] as $contact) {
-            $name = trim(($contact['first_name'] ?? '') . ' ' . ($contact['last_name'] ?? ''));
-            $email = $contact['email'] ?? '';
-            $phone = $contact['tel'] ?? '';
+            $data = $validator->validated();
 
-            if ($name !== '' || $email !== '' || $phone !== '') {
-                $contactsExt[] = [
-                    'name' => $name,
-                    'email' => $email,
-                    'phone' => $phone,
-                ];
+            // Ajouter les IDs de l'utilisateur connecté
+            $data['poster_id'] = $userId;
+            $data['last_update_user_id'] = $userId;
+
+            // Traitement des contacts ULB
+            $contactsUlB = [];
+            foreach ($data['contact_ulb'] as $contact) {
+                $name = trim(($contact['first_name'] ?? '') . ' ' . ($contact['last_name'] ?? ''));
+                $email = $contact['email'] ?? '';
+                $phone = $contact['tel'] ?? '';
+                $address = $contact['address'] ?? '';
+
+                if ($name !== '' || $email !== '' || $phone !== '' || $address !== '') {
+                    $contactsUlB[] = [
+                        'name' => $name,
+                        'email' => $email,
+                        'phone' => $phone,
+                        'address' => $address,
+                    ];
+                }
             }
+            $data['contact_ulb'] = !empty($contactsUlB) ? json_encode($contactsUlB) : '{}';
+
+            // Traitement des contacts externes
+            $contactsExt = [];
+            foreach ($data['contact_ext'] as $contact) {
+                $name = trim(($contact['first_name'] ?? '') . ' ' . ($contact['last_name'] ?? ''));
+                $email = $contact['email'] ?? '';
+                $phone = $contact['tel'] ?? '';
+
+                if ($name !== '' || $email !== '' || $phone !== '') {
+                    $contactsExt[] = [
+                        'name' => $name,
+                        'email' => $email,
+                        'phone' => $phone,
+                    ];
+                }
+            }
+            $data['contact_ext'] = !empty($contactsExt) ? json_encode($contactsExt) : '{}';
+
+            // Création du projet
+            $project = Project::create($data);
+
+            // Création des relations (commentées)
+            /*
+            // Attacher les domaines scientifiques
+            if (!empty($data['Appel'])) {
+                $project->scientificDomains()->attach($data['Appel']);
+            }
+
+            // Attacher les types d'information
+            if (!empty($data['Types'])) {
+                $project->info_types()->attach($data['Types']);
+            }
+
+            // Attacher les zones géographiques
+            if (!empty($data['Geo_zones'])) {
+                // Assuming you have a method or pivot table to handle geo zones
+                $project->geoZones()->attach($data['Geo_zones']);
+            }
+            */
+
+            // Debug pour vérifier les données
+            dd($project);
+        }catch(Exception $e){
+            dd($e);
         }
-        $data['contact_ext'] = !empty($contactsExt) ? json_encode($contactsExt) : '{}';
-
-        // Création du projet
-        $project = Project::create($data);
-
-        // Création des relations (commentées)
-        /*
-        // Attacher les domaines scientifiques
-        if (!empty($data['Appel'])) {
-            $project->scientificDomains()->attach($data['Appel']);
-        }
-
-        // Attacher les types d'information
-        if (!empty($data['Types'])) {
-            $project->info_types()->attach($data['Types']);
-        }
-
-        // Attacher les zones géographiques
-        if (!empty($data['Geo_zones'])) {
-            // Assuming you have a method or pivot table to handle geo zones
-            $project->geoZones()->attach($data['Geo_zones']);
-        }
-        */
-
-        // Debug pour vérifier les données
-        dd($project);
     }
 }
