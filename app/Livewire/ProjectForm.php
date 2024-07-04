@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\Continent;
 use App\Models\InfoType;
 use App\Models\Countries;
+use App\Models\Organisation;
 use App\Models\ScientificDomainCategory;
 use App\Models\Project;
 use Exception;
@@ -47,10 +48,11 @@ final class ProjectForm extends Component implements HasForms
                         ->maxLength(255)
                         ->required()
                         ->autofocus(),
-                    TextInput::make('organisation_id')
+                    Select::make('organisation_id')
                         ->label('Organisation')
                         ->maxLength(255)
-                        ->required(),
+                        ->required()
+                        ->options(Organisation::all()->pluck('title', 'id')->toArray()),
                     Checkbox::make('is_big')
                         ->label('Projet majeur')
                         ->default(False),
@@ -232,6 +234,7 @@ final class ProjectForm extends Component implements HasForms
 
             $rules = [
                 'title' => 'required|string|max:255',
+                'organisation_id' => 'required|exists:organisations,id',
                 'is_big' => 'boolean',
                 'Types' => 'array',
                 'Appel' => 'array',
