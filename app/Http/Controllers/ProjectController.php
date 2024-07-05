@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
+use Exception;
 use Illuminate\Http\Request;
 
 class ProjectController extends Controller
@@ -17,7 +18,12 @@ class ProjectController extends Controller
     }
 
     public function create(){
-        return view('projects.create');
+        try{
+
+            return view('projects.create');
+        }catch(Exception $e){
+            dd($e);
+        }
     }
 
     public function store(Request $request){
