@@ -26,10 +26,12 @@ ENV PATH="${PATH}:/root/.composer/vendor/bin"
 # Run Composer & NPM
 COPY --from=composer /composer /usr/bin/composer
 
+ENV APP_ENV=development
+
 RUN set -eux; \
-	composer install --prefer-dist --no-dev --no-autoloader --no-scripts --no-progress; \
+	composer install --prefer-dist --no-autoloader --no-scripts --no-progress; \
 	composer clear-cache; \
-	composer dump-autoload --classmap-authoritative --no-dev;
+	composer dump-autoload --classmap-authoritative;
 
 RUN npm i vite && npm run build
 
