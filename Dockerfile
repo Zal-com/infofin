@@ -28,6 +28,7 @@ COPY --from=composer /composer /usr/bin/composer
 
 ENV APP_ENV=development
 ENV APP_DEBUG=true
+ENV LOG_CHANNEL=stack
 
 RUN set -eux; \
 	composer install --prefer-dist --no-autoloader --no-scripts --no-progress; \
@@ -37,5 +38,5 @@ RUN set -eux; \
 RUN npm i vite && npm run build
 
 # Expose port 9000 and start php-fpm server
-# EXPOSE 9000
+EXPOSE 9000
 CMD ["php-fpm"]
