@@ -96,14 +96,15 @@ final class ProjectForm extends Component implements HasForms
                         ->label("Zones géographiques")
                         ->multiple()
                         ->maxItems(3)
-                        ->options(function () {
-                            $options = [
-                                'Monde entier' => 'Monde entier',
-                            ];
-                            $options['Continents'] = Continent::all()->pluck('title', 'id')->toArray();
-                            $options['Pays'] = Countries::all()->pluck('nomPays', 'codePays')->toArray();
-                            return $options;
-                        }),
+                        // ->options(function () {
+                        //     $options = [
+                        //         'Monde entier' => 'Monde entier',
+                        //     ];
+                        //     $options['Continents'] = Continent::all()->pluck('title', 'id')->toArray();
+                        //     $options['Pays'] = Countries::all()->pluck('nomPays', 'codePays')->toArray();
+                        //     return $options;
+                        // }),
+                        ->options(Countries::all()->pluck('nomPays', 'id')->toArray())
                 ]),
                 Tabs\Tab::make('Dates importantes')->schema([
                     Section::make('Deadlines')->
