@@ -33,7 +33,7 @@ class ListProjects extends Component implements HasForms, HasTable
     {
         /** @noinspection PhpIllegalArrayKeyTypeInspection */
         return $table->query(Project::all()->toQuery())->columns([
-            IconColumn::make('is_active')
+            IconColumn::make('status')
                 ->label('Est actif')
                 ->boolean()
                 ->trueIcon('heroicon-o-check-circle')
@@ -56,7 +56,7 @@ class ListProjects extends Component implements HasForms, HasTable
                 ->formatStateUsing(function ($record) {
                     if ($record->continuous) {
                         return 'Continue';
-                    } elseif ($record->deadline == '0000-00-00') {
+                    } elseif ($record->deadline == '0000-00-00 00:00:00') {
                         return 'N/A';
                     } else {
                         return \Carbon\Carbon::parse($record->deadline)->format('d/m/Y');
@@ -69,7 +69,7 @@ class ListProjects extends Component implements HasForms, HasTable
                 ->formatStateUsing(function ($record) {
                     if ($record->continuous_2) {
                         return 'Continue';
-                    } elseif ($record->deadline_2 == '0000-00-00') {
+                    } elseif ($record->deadline_2 == '0000-00-00 00:00:00') {
                         return 'N/A';
                     } else {
                         return \Carbon\Carbon::parse($record->deadline_2)->format('d/m/Y');
