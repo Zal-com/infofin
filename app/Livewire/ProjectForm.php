@@ -49,6 +49,10 @@ final class ProjectForm extends Component implements HasForms
                         ->required()
                         ->autofocus(),
                     Select::make('organisation_id')
+                        ->createOptionForm([
+                            TextInput::make('title')
+                                ->required()
+                        ])
                         ->label('Organisation')
                         ->required()
                         ->options(Organisation::all()->pluck('title', 'id')->toArray()),

@@ -48,9 +48,9 @@ class Project extends Model
             return $this->belongsTo(Continent::class, 'continent_id');
     }
 
-    public function organisation() : BelongsTo
+    public function organisation() : BelongsToMany
     {
-        return $this->belongsTo(Organisation::class, 'organisation_id');
+        return $this->belongsToMany(Organisation::class, 'projects_organisations', 'project_id', 'organisation_id');
     }
 
     public function documents() : HasMany
