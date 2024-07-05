@@ -27,6 +27,7 @@ ENV PATH="${PATH}:/root/.composer/vendor/bin"
 COPY --from=composer /composer /usr/bin/composer
 
 ENV APP_ENV=development
+ENV APP_DEBUG=true
 
 RUN set -eux; \
 	composer install --prefer-dist --no-autoloader --no-scripts --no-progress; \
