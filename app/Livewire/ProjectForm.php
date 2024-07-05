@@ -48,7 +48,7 @@ final class ProjectForm extends Component implements HasForms
                         ->maxLength(255)
                         ->required()
                         ->autofocus(),
-                    Select::make('organisation_id')
+                    Select::make('organisation')
                         ->label('Organisation')
                         ->maxLength(255)
                         ->required()
