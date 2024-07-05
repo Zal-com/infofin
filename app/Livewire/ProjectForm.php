@@ -137,7 +137,8 @@ final class ProjectForm extends Component implements HasForms
                     Select::make('periodicity')
                         ->label('Periodicité')
                         ->options(['Sans', 'Annuel', 'Biennal', 'Triennal', 'Quadriennal', 'Quinquennal'])
-                        ->selectablePlaceholder(false),
+                        ->selectablePlaceholder(false)
+                        ->default(0),
                     DatePicker::make('date_lessor')
                         ->label('Date Bailleur'),
                 ]),
