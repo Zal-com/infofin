@@ -50,6 +50,7 @@ final class ProjectForm extends Component implements HasForms
                         ->autofocus(),
                     Select::make('organisation_id')
                         ->multiple()
+                        ->relationship('organisation', 'title')
                         ->createOptionForm([
                             TextInput::make('title')
                                 ->required()
