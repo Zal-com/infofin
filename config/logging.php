@@ -54,7 +54,8 @@ return [
 
         'stack' => [
             'driver' => 'stack',
-            'channels' => explode(',', env('LOG_STACK', 'single')),
+            // 'channels' => explode(',', env('LOG_STACK', 'single')),
+            'channels' => ['stdout', 'single'], // Include 'stdout' channel
             'ignore_exceptions' => false,
         ],
 
@@ -103,6 +104,11 @@ return [
                 'stream' => 'php://stderr',
             ],
             'processors' => [PsrLogMessageProcessor::class],
+        ],
+
+        'stdout' => [
+            'driver' => 'errorlog',
+            'level' => 'debug',
         ],
 
         'syslog' => [

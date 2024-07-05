@@ -26,13 +26,17 @@ ENV PATH="${PATH}:/root/.composer/vendor/bin"
 # Run Composer & NPM
 COPY --from=composer /composer /usr/bin/composer
 
+ENV APP_ENV=development
+ENV APP_DEBUG=true
+ENV LOG_CHANNEL=stack
+
 RUN set -eux; \
-	composer install --prefer-dist --no-dev --no-autoloader --no-scripts --no-progress; \
+	composer install --prefer-dist --no-autoloader --no-scripts --no-progress; \
 	composer clear-cache; \
-	composer dump-autoload --classmap-authoritative --no-dev;
+	composer dump-autoload --classmap-authoritative;
 
 RUN npm i vite && npm run build
 
 # Expose port 9000 and start php-fpm server
-# EXPOSE 9000
+EXPOSE 9000
 CMD ["php-fpm"]
