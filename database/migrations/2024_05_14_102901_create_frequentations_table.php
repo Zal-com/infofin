@@ -11,7 +11,7 @@ class CreateFrequentationsTable extends Migration
         Schema::create('visits_rate', function (Blueprint $table) {
             $table->id();
             $table->foreignId('project_id');
-            $table->dateTime('date_visit')->default(\Carbon\Carbon::now());
+            $table->dateTime('date_visit')->default(DB::raw("CURRENT_TIMESTAMP"));
 
             $table->foreign('project_id')->references('id')->on('projects');
         });
