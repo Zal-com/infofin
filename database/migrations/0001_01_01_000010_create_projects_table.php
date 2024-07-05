@@ -10,7 +10,6 @@ class CreateProjectsTable extends Migration
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
             $table->string('title', 255);
-            $table->foreignId('organisation_id');
             $table->dateTime('deadline');
             $table->dateTime('deadline_2')->nullable();
             $table->boolean('continuous');
@@ -39,7 +38,6 @@ class CreateProjectsTable extends Migration
             $table->timestamps();
 
             //Relations
-            $table->foreign('organisation_id')->references('id')->on('organisations')->onDelete('cascade');
             $table->foreign('country_id')->references('id')->on('countries')->onDelete('cascade');
             $table->foreign('poster_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('last_update_user_id')->references('id')->on('users')->onDelete('cascade');
