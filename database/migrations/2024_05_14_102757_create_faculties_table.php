@@ -9,9 +9,8 @@ class CreateFacultiesTable extends Migration
     public function up()
     {
         Schema::create('faculties', function (Blueprint $table) {
-            $table->integer('FacultyID')->primary();
-            $table->string('Name')->index('Name');
-            $table->tinyInteger('LangID')->default(1)->index('LangID');
+            $table->id();
+            $table->string('title', 255);
             // Pas de timestamps
         });
     }

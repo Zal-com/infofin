@@ -9,13 +9,15 @@ class CreateDocumentsTable extends Migration
     public function up()
     {
         Schema::create('documents', function (Blueprint $table) {
-            $table->integer('DocumentID')->primary();
-            $table->integer('ProjectID');
-            $table->string('Name');
-            $table->text('Description');
-            $table->string('Filename');
-            $table->timestamp('TimeStamp')->default(DB::raw('CURRENT_TIMESTAMP'));
-            // Timestamps gérés par la colonne TimeStamp
+            $table->id();
+            $table->foreignId('project_id');
+            $table->string('title', 255);
+            $table->text('description');
+            $table->string('filename', 255);
+            $table->timestamps();
+            $table->integer('download_count')->default(0);
+
+            $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
         });
     }
 

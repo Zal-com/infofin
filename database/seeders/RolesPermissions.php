@@ -14,18 +14,28 @@ class RolesPermissions extends Seeder
     public function run(): void
     {
         //Roles
-        Role::create(['name' => 'admin']);
-        $contributor = Role::create(['name' => 'contributor']);
+        
+        $adminRole = Role::where('name', 'admin')->first();
 
-        //Permissions
-        $createProjects = Permission::create(['name' => 'create projects']);
-        $editOwnProject = Permission::create(['name' => 'edit own project']);
-        $deleteOwnProject = Permission::create(['name' => 'delete own project']);
+        if(!$adminRole){
+            Role::create(['name' => 'admin']);
+        }
+        
+        $contributorRole = Role::where('name', 'contributor')->first();
 
-        //Assignation
-        $contributor->givePermissionTo($createProjects);
-        $contributor->givePermissionTo($editOwnProject);
-        $contributor->givePermissionTo($deleteOwnProject);
+        if(!$contributorRole){
+            $contributor = Role::create(['name' => 'contributor']);
+
+            //Permissions
+            $createProjects = Permission::create(['name' => 'create projects']);
+            $editOwnProject = Permission::create(['name' => 'edit own project']);
+            $deleteOwnProject = Permission::create(['name' => 'delete own project']);
+    
+            //Assignation
+            $contributor->givePermissionTo($createProjects);
+            $contributor->givePermissionTo($editOwnProject);
+            $contributor->givePermissionTo($deleteOwnProject);
+        }
 
     }
 }

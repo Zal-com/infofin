@@ -4,21 +4,24 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSubscribersFacultiesTable extends Migration
+class CreateSubscriberFacultiesTable extends Migration
 {
     public function up()
     {
         Schema::create('users_faculties', function (Blueprint $table) {
-            $table->id('id');
-            $table->integer('user_id')->references("id")->on("users");
-            $table->integer('faculty_id')->references('id')->on('faculties');
-            // Pas de timestamps
+            $table->id();
+            $table->foreignId('user_id');
+            $table->foreignId('faculty_id');
+
+            //Relations
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('faculty_id')->references('id')->on('faculties');
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('users_faculties');
+        Schema::dropIfExists('subscribers_faculties');
     }
 }
 

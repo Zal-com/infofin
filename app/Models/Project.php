@@ -4,34 +4,67 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Validation\Rules\In;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Project extends Model
 {
     protected $table = 'projects';
     protected $fillable = [
-        'title', 'organisation_id', 'OrganisationReference', 'deadline', 'continuous', 'proof', 'deadline_2',
-        'continuous_2', 'proof_2', 'short_description', 'long_description', 'periodicity', 'admission_requirements', 'financing',
-        'apply_instructions', 'is_active', 'user_id', 'last_update_user_id', 'contact_ulb', 'contact_ext'
+        'title', 'organisation_id', 'deadline', 'deadline_2', 'continuous',
+        'continuous_2', 'proof', 'proof_2', 'contact_ulb', 'contact_ext',
+        'periodicity', 'admission_requirements', 'funding', 'apply_instructions',
+        'poster_id', 'is_view_for_mail', 'date_lessor', 'info_lessor',
+        'visit_count', 'last_update_user_id', 'country_id', 'continent_id',
+        'status', 'is_big', 'long_description', 'short_description', 'is_draft',
+        'created_at', 'updated_at'
     ];
 
-    public static function getSortedAndPaginatedProjects($orderByColumn = 'TimeStamp', $orderDirection = 'desc', $itemsPerPage = 20, $validColumns = ["Name", "Deadline", "Deadline2", "Organisation", "ShortDescription", "TimeStamp"])
+    public $timestamps = true;
+
+
+    public function scientificDomains() : BelongsToMany
     {
-        if (!in_array($orderByColumn, $validColumns)) {
-            $orderByColumn = 'TimeStamp';
-        }
-
-        if (!in_array($orderDirection, ['asc', 'desc'])) {
-            $orderDirection = 'desc';
-        }
-
-        return self::orderBy($orderByColumn, $orderDirection)->paginate($itemsPerPage);
+        return $this->belongsToMany(ScientificDomain::class, 'projects_scientific_domains', 'project_id', 'scientific_domain_id');
     }
 
-    public function infoType() : HasManyThrough
+    public function info_types() : BelongsToMany
     {
-        return $this->hasManyThrough(InfoTypes::class, ProjectInfoType::class, 'project_id', 'id', 'id', 'info_type_id');
+        return $this->belongsToMany(InfoType::class, 'projects_info_types', 'project_id', 'info_type_id');
+    }
+
+    public function country() : BelongsTo
+    {
+        return $this->belongsTo(Countries::class, 'country_id', "codePays");
+    }
+
+    public function poster() : BelongsTo
+    {
+        return $this->belongsTo(User::class, 'poster_id');
+    }
+
+    public function continent() : BelongsTo
+    {
+            return $this->belongsTo(Continent::class, 'continent_id');
+    }
+
+    public function organisation() : BelongsTo
+    {
+        return $this->belongsTo(Organisation::class, 'organisation_id');
+    }
+
+    public function documents() : HasMany
+    {
+        return $this->hasMany(Document::class, 'project_id');
+    }
+
+    public function visit_rates() : HasMany
+    {
+        return $this->hasMany(VisitsRate::class, 'project_id');
+    }
+
+    public function rate_mail() : BelongsToMany
+    {
+        return $this->belongsToMany(User::class, "visits_rate_mail", "project_id", "user_id")->withPivot('date_consult');
     }
 }

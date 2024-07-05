@@ -5,13 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Document extends Model
+class VisitsRate extends Model
 {
-    protected $table = 'documents';
+    protected $table = 'visits_rate';
     public $timestamps = true;
-    protected $fillable = ['project_id', 'title', 'description', 'filename', 'download_count'];
+    protected $fillable = ['project_id', 'date_visit'];
 
-    public function project() : BelongsTo {
+    public function project() : belongsTo {
         return $this->belongsTo(Project::class, 'project_id');
     }
 }

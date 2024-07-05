@@ -4,19 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Znck\Eloquent\Relations\BelongsToThrough;
 
-class InfoTypes extends Model
+class InfoType extends Model
 {
     protected $table = 'info_types';
     public $timestamps = false;
-    protected $primaryKey = 'InfoTypeID';
-    protected $fillable = ['Name', 'CategoryID', 'LangID', 'Order'];
+    protected $fillable = ['title', 'sci_dom_cat_id'];
 
-    public function projects() : BelongsToThrough
+    public function projects() : BelongsToMany
     {
-        return $this->belongsToThrough(Project::class, ProjectInfoType::class);
+        return $this->belongsToMany(Project::class, 'projects_info_types', 'info_type_id', 'project_id');
     }
 }
 
