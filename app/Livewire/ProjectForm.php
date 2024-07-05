@@ -115,9 +115,8 @@ final class ProjectForm extends Component implements HasForms
                     schema([
                         Fieldset::make('1ere deadline')->schema([
                             DateTimePicker::make('deadline'),
-                            Select::make('proof')
-                                ->label('Justificatif')
-                                ->options(['Draft', 'Version finale', 'more...']),
+                            TextInput::make('proof')
+                                ->label('Justificatif'),
                             Checkbox::make('continuous')
                                 ->label('Continu')
                                 ->default(False)
@@ -125,9 +124,8 @@ final class ProjectForm extends Component implements HasForms
                         ]),
                         Fieldset::make('2eme deadline')->schema([
                             DateTimePicker::make('deadline_2'),
-                            Select::make('proof_2')
-                                ->label('Justificatif')
-                                ->options(['Draft', 'Version finale', 'more...']),
+                            TextInput::make('proof_2')
+                                ->label('Justificatif'),
                             Checkbox::make('continuous_2')
                                 ->label('Continu')
                                 ->default(False)
@@ -296,7 +294,7 @@ final class ProjectForm extends Component implements HasForms
                     ];
                 }
             }
-            $data['contact_ulb'] = !empty($contactsUlB) ? json_encode($contactsUlB) : '{}';
+            $data['contact_ulb'] = !empty($contactsUlB) ? json_encode($contactsUlB) : '[]';
 
             // Traitement des contacts externes
             $contactsExt = [];
@@ -313,7 +311,7 @@ final class ProjectForm extends Component implements HasForms
                     ];
                 }
             }
-            $data['contact_ext'] = !empty($contactsExt) ? json_encode($contactsExt) : '{}';
+            $data['contact_ext'] = !empty($contactsExt) ? json_encode($contactsExt) : '[]';
 
             // Création du projet
             $project = Project::create($data);
