@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Continent extends Model
 {
-    protected $table = 'continent';
+    protected $table = 'continents';
     public $timestamps = false;
     protected $primaryKey = 'id';
     protected $fillable = ['name'];

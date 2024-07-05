@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Countries extends Model
 {
-    protected $table = 'pays';
+    protected $table = 'countries';
     public $timestamps = false; // Spécifier car pas de colonnes timestamp
     protected $primaryKey = 'codePays';
     protected $fillable = ['nomPaysUK', 'nomPays', 'alpha2', 'alpha3', 'numIso', 'stvnatn_code', /* Add other fillable fields */];
