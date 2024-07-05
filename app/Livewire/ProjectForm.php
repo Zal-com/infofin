@@ -232,7 +232,6 @@ final class ProjectForm extends Component implements HasForms
 
             $rules = [
                 'title' => 'required|string|max:255',
-                'organisation_id' => 'required|exists:organisations,id',
                 'is_big' => 'boolean',
                 'Types' => 'array',
                 'Appel' => 'array',
