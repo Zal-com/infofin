@@ -48,15 +48,14 @@ final class ProjectForm extends Component implements HasForms
                         ->maxLength(255)
                         ->required()
                         ->autofocus(),
-                    Select::make('organisation')
+                    Select::make('organisation_id')
                         ->label('Organisation')
-                        ->maxLength(255)
                         ->required()
                         ->options(Organisation::all()->pluck('title', 'id')->toArray()),
                     Checkbox::make('is_big')
                         ->label('Projet majeur')
                         ->default(False),
-                    Select::make('InfoType')
+                    Select::make('info')
                         ->label("Type d'information")
                         ->options([
                             'Financement',
@@ -64,7 +63,7 @@ final class ProjectForm extends Component implements HasForms
                             "Séance d'information organisée par un organisme externe"
                         ])
                         ->selectablePlaceholder(false),
-                    CheckboxList::make('Types')
+                    CheckboxList::make('info_types')
                         ->label('Types de programmes')
                         // ->options(InfoType::all()->sortBy('title')->pluck('title')->toArray())
                         ->options([
