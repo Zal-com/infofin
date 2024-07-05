@@ -18,7 +18,7 @@ class ScientificDomain extends Model
 
     public function users() : BelongsToMany
     {
-        return $this->belongsToMany(Faculties::class, 'users_scientific_domains', 'scientific_domain_id', 'user_id');
+        return $this->belongsToMany(User::class, 'users_scientific_domains', 'scientific_domain_id', 'user_id');
     }
 
     public function projects() : BelongsToMany

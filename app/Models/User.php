@@ -88,7 +88,7 @@ class User extends Authenticatable
 
     public function info_types() : BelongsToMany
     {
-        return $this->belongsToMany(InfoTypes::class, 'users_info_types', 'user_id', 'info_type_id');
+        return $this->belongsToMany(InfoType::class, 'users_info_types', 'user_id', 'info_type_id');
     }
 
 
