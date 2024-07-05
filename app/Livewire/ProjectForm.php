@@ -247,7 +247,7 @@ final class ProjectForm extends Component implements HasForms
                 'periodicity' => 'nullable|integer',
                 'date_lessor' => 'nullable|date',
                 'short_description' => 'nullable|string|max:500',
-                'full_description' => 'nullable|string',
+                'long_description' => 'nullable|string',
                 'funding' => 'nullable|string',
                 'admission_requirements' => 'nullable|string',
                 'apply_instructions' => 'nullable|string',
