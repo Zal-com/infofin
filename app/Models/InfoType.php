@@ -12,12 +12,11 @@ class InfoType extends Model
 {
     protected $table = 'info_types';
     public $timestamps = false;
-    protected $primaryKey = 'InfoTypeID';
-    protected $fillable = ['Name', 'CategoryID', 'LangID', 'Order'];
+    protected $fillable = ['title', 'sci_dom_cat_id'];
 
     public function projects() : BelongsToMany
     {
-        return $this->belongsToMany(Project::class, 'project_info_type', 'project_id', 'info_type_id');
+        return $this->belongsToMany(Project::class, 'projects_info_types', 'info_type_id', 'project_id');
     }
 }
 

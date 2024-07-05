@@ -30,7 +30,7 @@ class Project extends Model
 
     public function info_types() : BelongsToMany
     {
-        return $this->belongsToMany(InfoType::class, 'projects_scientific_domains', 'project_id', 'scientific_domain_id');
+        return $this->belongsToMany(InfoType::class, 'projects_info_types', 'project_id', 'info_type_id');
     }
 
     public function country() : BelongsTo
