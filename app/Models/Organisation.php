@@ -10,7 +10,7 @@ class Organisation extends Model
 {
     protected $table = 'organisations';
     public $timestamps = false; // Spécifier car pas de colonnes timestamp
-    protected $fillable = ['id', 'title'];
+    protected $fillable = ['title'];
 
     public function projects() : BelongsToMany
     {

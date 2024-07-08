@@ -59,7 +59,8 @@ final class ProjectForm extends Component implements HasForms
                         ])
                         ->label('Organisation')
                         ->required()
-                        ->relationship(name: 'organisations', titleAttribute: 'title'),
+                        ->relationship(name: 'organisations', titleAttribute: 'title')
+                        ->options(Organisation::all()->pluck('title', 'id')->toArray()),
                     Checkbox::make('is_big')
                         ->label('Projet majeur')
                         ->default(false),
@@ -73,27 +74,37 @@ final class ProjectForm extends Component implements HasForms
                         ->selectablePlaceholder(false),
                     CheckboxList::make('info_types')
                         ->label('Types de programmes')
-                        ->options([
-                            'Financement',
-                            "Séance d'information organisée par l'ULB",
-                            "Séance d'information organisée par un organisme externe"
-                        ])
+                        ->options(InfoType::all()->sortBy('title')->pluck('title')->toArray())
                         ->columns(3),
                     Select::make('Appel')
                         ->label("Disciplines scientifiques de l'appel")
                         ->multiple()
-                        ->options([
-                            'Financement',
-                            "Séance d'information organisée par l'ULB",
-                            "Séance d'information organisée par un organisme externe"
-                        ]),
+                        ->options(function () {
+                            $categories = ScientificDomainCategory::with('domains')->get();
+
+                            $options = [];
+
+                            foreach ($categories as $category) {
+                                foreach ($category->domains as $domain) {
+                                    $options[$category->title][$domain->id] = $domain->title;
+                                }
+                            }
+                            return $options;
+                        }),
                     Select::make('Geo_zones')
                         ->label("Zones géographiques")
                         ->multiple()
                         ->maxItems(3)
-                        ->options(Countries::all()->pluck('nomPays', 'id')->toArray())
-                ]),
-                Tabs\Tab::make('Dates importantes')->schema([
+                        ->options(function () {
+                            $options = [
+                                'Monde entier' => 'Monde entier',
+                            ];
+                            $options['Continents'] = Continent::all()->pluck('name', 'id')->toArray();
+                            $options['Pays'] = Countries::all()->pluck('nomPays', )->toArray();
+                            return $options;
+                        }),
+            ]),
+            Tabs\Tab::make('Dates importantes')->schema([
                     Section::make('Deadlines')->schema([
                         Fieldset::make('1ere deadline')->schema([
                             DateTimePicker::make('deadline'),
@@ -149,7 +160,7 @@ final class ProjectForm extends Component implements HasForms
                             TextInput::make('email')->label('E-mail')->email(),
                             TextInput::make('tel')->label('Numéro de téléphone')->tel(),
                             TextInput::make('address')->label('Adresse')->columnSpan(2)
-                        ])->columns(2)
+                        ])->columns(2)->addActionLabel('+ Nouveau contact')->label('')
                     ]),
                     Fieldset::make('Externes')->schema([
                         Repeater::make('contact_ext')->schema([
@@ -157,7 +168,7 @@ final class ProjectForm extends Component implements HasForms
                             TextInput::make('last_name')->label('Nom'),
                             TextInput::make('email')->label('E-mail')->email(),
                             TextInput::make('tel')->label('Numéro de téléphone')->tel(),
-                        ])->columns(2)->addActionLabel('+ Nouveau contact')
+                        ])->columns(2)->addActionLabel('+ Nouveau contact')->label('mm')
                     ]),
                 ]),
             ]),
