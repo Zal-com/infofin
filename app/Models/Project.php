@@ -11,7 +11,7 @@ class Project extends Model
 {
     protected $table = 'projects';
     protected $fillable = [
-        'title', 'organisation_id', 'deadline', 'deadline_2', 'continuous',
+        'title', 'deadline', 'deadline_2', 'continuous',
         'continuous_2', 'proof', 'proof_2', 'contact_ulb', 'contact_ext',
         'periodicity', 'admission_requirements', 'funding', 'apply_instructions',
         'poster_id', 'is_view_for_mail', 'date_lessor', 'info_lessor',
@@ -48,7 +48,7 @@ class Project extends Model
             return $this->belongsTo(Continent::class, 'continent_id');
     }
 
-    public function organisation() : BelongsToMany
+    public function organisations() : BelongsToMany
     {
         return $this->belongsToMany(Organisation::class, 'projects_organisations', 'project_id', 'organisation_id');
     }

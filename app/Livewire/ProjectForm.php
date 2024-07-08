@@ -30,16 +30,19 @@ use Illuminate\Support\Facades\Validator;
 
 final class ProjectForm extends Component implements HasForms
 {
-
     use InteractsWithForms;
 
+    public Project $project;
     public array $data = [];
 
-    public function mount(){
-        $this->form->fill();
+    public function mount(Project $project = null)
+    {
+        $this->project = $project ?? new Project();
+        $this->form->fill($this->project->toArray());
     }
 
-    public function form(Form $form): Form {
+    public function form(Form $form): Form
+    {
         return $form->schema([
             Tabs::make('Tabs')->tabs([
                 Tabs\Tab::make('Informations')->schema([
@@ -48,19 +51,18 @@ final class ProjectForm extends Component implements HasForms
                         ->maxLength(255)
                         ->required()
                         ->autofocus(),
-                    Select::make('organisation_id')
+                    Select::make('organisation')
                         ->multiple()
-                        ->relationship(name : 'organisations', titleAttribute:'title')
                         ->createOptionForm([
                             TextInput::make('title')
                                 ->required()
                         ])
                         ->label('Organisation')
                         ->required()
-                        ->options(Organisation::all()->pluck('title', 'id')->toArray()),
+                        ->relationship(name: 'organisations', titleAttribute: 'title'),
                     Checkbox::make('is_big')
                         ->label('Projet majeur')
-                        ->default(False),
+                        ->default(false),
                     Select::make('info')
                         ->label("Type d'information")
                         ->options([
@@ -71,7 +73,6 @@ final class ProjectForm extends Component implements HasForms
                         ->selectablePlaceholder(false),
                     CheckboxList::make('info_types')
                         ->label('Types de programmes')
-                        // ->options(InfoType::all()->sortBy('title')->pluck('title')->toArray())
                         ->options([
                             'Financement',
                             "Séance d'information organisée par l'ULB",
@@ -81,18 +82,6 @@ final class ProjectForm extends Component implements HasForms
                     Select::make('Appel')
                         ->label("Disciplines scientifiques de l'appel")
                         ->multiple()
-                        // ->options(function () {
-                        //     $categories = ScientificDomainCategory::with('domains')->get();
-
-                        //     $options = [];
-
-                        //     foreach ($categories as $category) {
-                        //         foreach ($category->domains as $domain) {
-                        //             $options[$category->title][$domain->id] = $domain->title;
-                        //         }
-                        //     }
-                        //     return $options;
-                        // }),
                         ->options([
                             'Financement',
                             "Séance d'information organisée par l'ULB",
@@ -102,26 +91,17 @@ final class ProjectForm extends Component implements HasForms
                         ->label("Zones géographiques")
                         ->multiple()
                         ->maxItems(3)
-                        // ->options(function () {
-                        //     $options = [
-                        //         'Monde entier' => 'Monde entier',
-                        //     ];
-                        //     $options['Continents'] = Continent::all()->pluck('title', 'id')->toArray();
-                        //     $options['Pays'] = Countries::all()->pluck('nomPays', 'codePays')->toArray();
-                        //     return $options;
-                        // }),
                         ->options(Countries::all()->pluck('nomPays', 'id')->toArray())
                 ]),
                 Tabs\Tab::make('Dates importantes')->schema([
-                    Section::make('Deadlines')->
-                    schema([
+                    Section::make('Deadlines')->schema([
                         Fieldset::make('1ere deadline')->schema([
                             DateTimePicker::make('deadline'),
                             TextInput::make('proof')
                                 ->label('Justificatif'),
                             Checkbox::make('continuous')
                                 ->label('Continu')
-                                ->default(False)
+                                ->default(false)
                                 ->hint('Continu = jsp frr')
                         ]),
                         Fieldset::make('2eme deadline')->schema([
@@ -130,7 +110,7 @@ final class ProjectForm extends Component implements HasForms
                                 ->label('Justificatif'),
                             Checkbox::make('continuous_2')
                                 ->label('Continu')
-                                ->default(False)
+                                ->default(false)
                                 ->inline(true)
                         ]),
                     ]),
@@ -146,7 +126,7 @@ final class ProjectForm extends Component implements HasForms
                     Textarea::make('short_description')
                         ->label('Description courte')
                         ->maxLength(500)
-                        ->hint(fn ($state, $component) => strlen($state) . '/' . $component->getMaxLength())
+                        ->hint(fn($state, $component) => strlen($state) . '/' . $component->getMaxLength())
                         ->live(),
                     MarkdownEditor::make('long_description')
                         ->label('Description complète'),
@@ -181,7 +161,7 @@ final class ProjectForm extends Component implements HasForms
                     ]),
                 ]),
             ]),
-        ])->statePath(path: 'data');
+        ])->statePath('data')->model($this->project);
     }
 
     public function render()
@@ -191,46 +171,8 @@ final class ProjectForm extends Component implements HasForms
 
     public function submit()
     {
-        try{
-            // Récupérer l'utilisateur connecté
+        try {
             $userId = Auth::id();
-
-            // Règles de validation
-            // $rules = [
-            //     'title' => 'required|string|max:255',
-            //     'organisation_id' => 'required|exists:organisations,id',
-            //     'is_big' => 'boolean',
-            //     'InfoType' => 'required|string',
-            //     'Types' => 'array',
-            //     'Appel' => 'array',
-            //     'Geo_zones' => 'array',
-            //     'deadline' => 'nullable|date',
-            //     'proof' => 'nullable|string|max:50',
-            //     'continuous' => 'boolean',
-            //     'deadline_2' => 'nullable|date',
-            //     'proof_2' => 'nullable|string|max:50',
-            //     'continuous_2' => 'boolean',
-            //     'periodicity' => 'nullable|integer',
-            //     'date_lessor' => 'nullable|date',
-            //     'short_description' => 'nullable|string|max:500',
-            //     'full_description' => 'nullable|string',
-            //     'funding' => 'nullable|string',
-            //     'admission_requirements' => 'nullable|string',
-            //     'apply_instructions' => 'nullable|string',
-            //     'contact_ulb.*.first_name' => 'nullable|string',
-            //     'contact_ulb.*.last_name' => 'nullable|string',
-            //     'contact_ulb.*.email' => 'nullable|email',
-            //     'contact_ulb.*.tel' => 'nullable|string',
-            //     'contact_ulb.*.address' => 'nullable|string',
-            //     'contact_ext.*.first_name' => 'nullable|string',
-            //     'contact_ext.*.last_name' => 'nullable|string',
-            //     'contact_ext.*.email' => 'nullable|email',
-            //     'contact_ext.*.tel' => 'nullable|string',
-            //     'country_id' => 'required|exists:countries,id',
-            //     'continent_id' => 'required|exists:continents,id',
-            //     'status' => 'integer',
-            //     'is_draft' => 'boolean',
-            // ];
 
             $rules = [
                 'title' => 'required|string|max:255',
@@ -264,7 +206,6 @@ final class ProjectForm extends Component implements HasForms
                 'is_draft' => 'boolean',
             ];
 
-            // Validation des données
             $validator = Validator::make($this->data, $rules);
             if ($validator->fails()) {
                 $this->addError('validation', 'Validation Error');
@@ -273,12 +214,9 @@ final class ProjectForm extends Component implements HasForms
             }
 
             $data = $validator->validated();
-
-            // Ajouter les IDs de l'utilisateur connecté
             $data['poster_id'] = $userId;
             $data['last_update_user_id'] = $userId;
 
-            // Traitement des contacts ULB
             $contactsUlB = [];
             foreach ($data['contact_ulb'] as $contact) {
                 $name = trim(($contact['first_name'] ?? '') . ' ' . ($contact['last_name'] ?? ''));
@@ -297,7 +235,6 @@ final class ProjectForm extends Component implements HasForms
             }
             $data['contact_ulb'] = !empty($contactsUlB) ? json_encode($contactsUlB) : '[]';
 
-            // Traitement des contacts externes
             $contactsExt = [];
             foreach ($data['contact_ext'] as $contact) {
                 $name = trim(($contact['first_name'] ?? '') . ' ' . ($contact['last_name'] ?? ''));
@@ -314,31 +251,10 @@ final class ProjectForm extends Component implements HasForms
             }
             $data['contact_ext'] = !empty($contactsExt) ? json_encode($contactsExt) : '[]';
 
-            // Création du projet
             $project = Project::create($data);
 
-            // Création des relations (commentées)
-            /*
-            // Attacher les domaines scientifiques
-            if (!empty($data['Appel'])) {
-                $project->scientificDomains()->attach($data['Appel']);
-            }
-
-            // Attacher les types d'information
-            if (!empty($data['Types'])) {
-                $project->info_types()->attach($data['Types']);
-            }
-
-            // Attacher les zones géographiques
-            if (!empty($data['Geo_zones'])) {
-                // Assuming you have a method or pivot table to handle geo zones
-                $project->geoZones()->attach($data['Geo_zones']);
-            }
-            */
-
-            // Debug pour vérifier les données
             dd($project);
-        }catch(Exception $e){
+        } catch (Exception $e) {
             dd($e);
         }
     }
