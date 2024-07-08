@@ -10,7 +10,7 @@ class ScientificDomain extends Model
 {
     protected $table = 'scientific_domains';
     public $timestamps = false;
-    protected $fillable = [ 'title', 'sci_dom_cat_id'];
+    protected $fillable = [ 'name', 'sci_dom_cat_id'];
 
     public function category() : BelongsTo{
         return $this->belongsTo(ScientificDomainCategory::class, 'sci_dom_cat_id');

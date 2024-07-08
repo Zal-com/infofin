@@ -86,7 +86,7 @@ final class ProjectForm extends Component implements HasForms
 
                             foreach ($categories as $category) {
                                 foreach ($category->domains as $domain) {
-                                    $options[$category->title][$domain->id] = $domain->title;
+                                    $options[$category->name][$domain->id] = $domain->name;
                                 }
                             }
                             return $options;
