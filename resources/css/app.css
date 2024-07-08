@@ -2,3 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+.markdown li,
+.markdown ul,
+.markdown ol{
+    list-style: revert !important;
+    list-style-position: inside !important;
+}

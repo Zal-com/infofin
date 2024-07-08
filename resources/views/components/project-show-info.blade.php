@@ -20,9 +20,11 @@
         <div x-show="tab === 'description'" class="m-4">
             <h1>{{$project->title}}</h1>
             <p>{{$project->organisation_id}}</p>
+            <div class="markdown">
             <x-filament::section.description class="my-3 text-justify">
                 {!! \Illuminate\Support\Str::of($project->long_description)->markdown()!!}
             </x-filament::section.description>
+            </div>
         </div>
 
         <div x-show="tab === 'dates'" class="m-4">
@@ -44,29 +46,31 @@
                     </x-filament::section.description>
                 @endforeach
             @if(!empty($project->funding))
+                <div class="markdown">
                 <x-filament::section.heading>
                     Financement
                 </x-filament::section.heading>
                 <x-filament::section.description class="mb-4 text-justify">
                     {!! Str::of($project->funding)->markdown() !!}
                 </x-filament::section.description>
-
+                </div>
             @endif
-
-
+            <div class="markdown">
             <x-filament::section.heading>
                 Pour postuler
             </x-filament::section.heading>
-            <x-filament::section.description class="mb-4 text-justify">
+            <x-filament::section.description class="mb-4 text-justify list-inside">
                 {!! \Illuminate\Support\Str::of($project->apply_instructions)->markdown() !!}
             </x-filament::section.description>
-
+            </div>
+            <div class="markdown">
             <x-filament::section.heading>
                 Requis d'admission
             </x-filament::section.heading>
             <x-filament::section.description class="mb-4 text-justify">
                 {!! \Illuminate\Support\Str::of($project->admission_requirements)->markdown() !!}
             </x-filament::section.description>
+            </div>
         </div>
     </x-filament::section>
     <div class="flex flex-col gap-4 sticky top-5">
