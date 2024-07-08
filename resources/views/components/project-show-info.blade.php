@@ -21,7 +21,7 @@
             <h1>{{$project->title}}</h1>
             <p>{{$project->organisation_id}}</p>
             <x-filament::section.description class="my-3 text-justify">
-                {!! $project->long_description !!}
+                {!! \Illuminate\Support\Str::of($project->long_description)->markdown()!!}
             </x-filament::section.description>
         </div>
 
@@ -48,7 +48,7 @@
                     Financement
                 </x-filament::section.heading>
                 <x-filament::section.description class="mb-4 text-justify">
-                    {!! $project->financing !!}
+                    {!! Str::of($project->funding)->markdown() !!}
                 </x-filament::section.description>
 
             @endif
@@ -58,7 +58,14 @@
                 Pour postuler
             </x-filament::section.heading>
             <x-filament::section.description class="mb-4 text-justify">
-                {!! $project->apply_instructions !!}
+                {!! \Illuminate\Support\Str::of($project->apply_instructions)->markdown() !!}
+            </x-filament::section.description>
+
+            <x-filament::section.heading>
+                Requis d'admission
+            </x-filament::section.heading>
+            <x-filament::section.description class="mb-4 text-justify">
+                {!! \Illuminate\Support\Str::of($project->admission_requirements)->markdown() !!}
             </x-filament::section.description>
         </div>
     </x-filament::section>
