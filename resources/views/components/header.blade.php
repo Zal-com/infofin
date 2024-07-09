@@ -13,18 +13,30 @@
     </div>
     </a>
     <nav>
-        <div>
+        <div class="container flex justify-end gap-2">
             @auth()
-                <a href="#">Profil</a>
-                <form method="post" action="{{route('logout')}}">@csrf<button type="submit">Déconnexion</button></form>
+                <a href="#"
+                   class="inline-flex items-center px-4 py-2 bg-blue-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 focus:bg-gray-700 active:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
+                >
+                    <i class="fa-solid fa-user pr-2"></i>
+                    Profil
+                </a>
+                <form method="post" action="{{route('logout')}}">
+                    @csrf
+                    <button
+                        type="submit"
+                        class="inline-flex items-center px-4 py-2 bg-blue-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 focus:bg-gray-700 active:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
+                    >
+                        <i class="fa-solid fa-right-from-bracket pr-2"></i>
+                        Déconnexion
+                    </button>
+                </form>
             @else
-                <a href="{{route('login')}}">
-                    Login
+                <a href="{{route('login')}}" class="inline-flex items-center px-4 py-2 bg-blue-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 focus:bg-gray-700 active:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                    <i class="fa-solid fa-right-to-bracket pr-2"></i>
+                    Se connecter
                 </a>
             @endauth
-            <a href="{{route('projects.index')}}">
-                Liste des projets
-            </a>
 
         </div>
     </nav>
