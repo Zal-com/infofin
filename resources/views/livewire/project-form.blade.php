@@ -16,10 +16,13 @@
     <form wire:submit.prevent="submit" wire:model="project">
         {{ $this->form }}
 
-        <div class="mt-4 flex justify-end">
-            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        <div class="mt-4 flex justify-end gap-2">
+            <x-filament::button type="button" wire:click="saveAsDraft">
+                Garder en brouillon
+            </x-filament::button>
+            <x-filament::button type="submit">
                 Ajouter le projet
-            </button>
+            </x-filament::button>
         </div>
 
         <x-filament-actions::modals />

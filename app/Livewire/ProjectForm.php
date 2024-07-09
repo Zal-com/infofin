@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Continent;
+use App\Models\Draft;
 use App\Models\InfoType;
 use App\Models\Countries;
 use App\Models\Organisation;
@@ -190,6 +191,13 @@ final class ProjectForm extends Component implements HasForms
         return view('livewire.project-form');
     }
 
+    public function saveAsDraft(){
+        $draft = new Draft(['content' => json_encode($this->data), 'poster_id' => Auth::id()]);
+       if($draft->save()){
+           return redirect()->route('projects.index')->with('success', 'Brouillon enregistré');
+       }
+    }
+
     public function submit()
     {
         try {
@@ -346,6 +354,8 @@ final class ProjectForm extends Component implements HasForms
                         $project->country()->associate($zone['country_id']);
                     }
                 }
+
+                dd($data);
                 $project->save();
             }
 
