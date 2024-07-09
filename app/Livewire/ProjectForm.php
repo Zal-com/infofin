@@ -169,7 +169,7 @@ final class ProjectForm extends Component implements HasForms
                             TextInput::make('email')->label('E-mail')->email(),
                             TextInput::make('tel')->label('Numéro de téléphone')->tel(),
                             TextInput::make('address')->label('Adresse')->columnSpan(2)
-                        ])->columns(2)->addActionLabel('+ Nouveau contact')->label('mm')
+                        ])->columns(2)->addActionLabel('+ Nouveau contact')
                     ]),
                 ]),
             ]),
@@ -222,7 +222,6 @@ final class ProjectForm extends Component implements HasForms
             $validator = Validator::make($this->data, $rules);
             if ($validator->fails()) {
                 $this->addError('validation', 'Validation Error');
-                //dd($validator);
                 return;
             }
 
@@ -280,7 +279,6 @@ final class ProjectForm extends Component implements HasForms
                 $data['contact_ext'] = '[]';
             }
 
-            dd($data);
             $project = Project::create($data);
             
 
@@ -288,12 +286,10 @@ final class ProjectForm extends Component implements HasForms
                 $project->organisations()->sync($data['organisation']);
             }
     
-            // Attach info types
             if (!empty($data['info_types'])) {
                 $project->info_types()->sync($data['info_types']);
             }
     
-            // Attach scientific domains
             if (!empty($data['Appel'])) {
                 $project->scientificDomains()->sync($data['Appel']);
             }
