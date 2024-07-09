@@ -8,20 +8,10 @@
 
     @if (session('error'))
         <div class="mt-4 p-4 bg-red-500 text-white">
-            {{ session('error') }}
+            @foreach (session('error') as $error)
+                <li>{{ $error }}</li>
+            @endforeach
         </div>
-    @endif
-    @if ($errors->any())
-        @dd($errors)
-        <div class="mt-4 p-4 bg-red-500 text-white">
-            <ul>
-                @foreach (session('messages') as $error)
-                    @dd($error))
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    </div>
     @endif
     <form wire:submit.prevent="submit" wire:model="project">
         {{ $this->form }}

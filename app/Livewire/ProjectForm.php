@@ -232,8 +232,8 @@ final class ProjectForm extends Component implements HasForms
 
             if ($validator->fails()) {
                 // Set flash message for validation errors
-                //dd(session('errors'));
-                return redirect()->back()->withErrors($validator->errors()->all())->withInput();
+                session()->flash('error', $validator->errors()->all());
+                $this->redirect('/projects/create');
             } else {
                 $data = $validator->validated();
                 // Save data or perform further actions
