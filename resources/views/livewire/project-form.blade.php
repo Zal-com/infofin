@@ -1,4 +1,28 @@
 <div>
+    <div wire:ignore.self>
+    @if (session('success'))
+        <div class="mt-4 p-4 bg-green-500 text-white">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if (session('error'))
+        <div class="mt-4 p-4 bg-red-500 text-white">
+            {{ session('error') }}
+        </div>
+    @endif
+    @if ($errors->any())
+        @dd($errors)
+        <div class="mt-4 p-4 bg-red-500 text-white">
+            <ul>
+                @foreach (session('messages') as $error)
+                    @dd($error))
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    </div>
+    @endif
     <form wire:submit.prevent="submit" wire:model="project">
         {{ $this->form }}
 
@@ -10,4 +34,5 @@
 
         <x-filament-actions::modals />
     </form>
+
 </div>

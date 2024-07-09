@@ -24,6 +24,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Redirect;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
@@ -228,13 +229,21 @@ final class ProjectForm extends Component implements HasForms
             ];
 
             $validator = Validator::make($this->data, $rules);
+
             if ($validator->fails()) {
-                $this->addError('validation', 'Validation Error');
-                dd($validator->errors());
-                return;
+                // Set flash message for validation errors
+                //dd(session('errors'));
+                return redirect()->back()->withErrors($validator->errors()->all())->withInput();
+            } else {
+                $data = $validator->validated();
+                // Save data or perform further actions
+                // User::create($data);
+
+                // Set flash message for success
             }
 
-            $data = $validator->validated();
+            //dd($validator);
+
             $data['poster_id'] = $userId;
             $data['last_update_user_id'] = $userId;
 
@@ -316,9 +325,9 @@ final class ProjectForm extends Component implements HasForms
                 $project->save();
             }
 
-            dd($project);
+            //dd($project);
         } catch (Exception $e) {
-            dd($e);
+            //dd($e);
         }
     }
 }
