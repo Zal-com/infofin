@@ -72,14 +72,17 @@ final class ProjectForm extends Component implements HasForms
                             "Séance d'information organisée par l'ULB",
                             "Séance d'information organisée par un organisme externe"
                         ])
-                        ->selectablePlaceholder(false),
+                        ->selectablePlaceholder(false)
+                        ->required(),
                     CheckboxList::make('info_types')
                         ->label('Types de programmes')
                         ->options(InfoType::all()->sortBy('title')->pluck('title')->toArray())
-                        ->columns(3),
+                        ->columns(3)
+                        ->required(),
                     Select::make('Appel')
                         ->label("Disciplines scientifiques de l'appel")
                         ->multiple()
+                        ->required()
                         ->options(function () {
                             $categories = ScientificDomainCategory::with('domains')->get();
 
@@ -108,16 +111,15 @@ final class ProjectForm extends Component implements HasForms
             Tabs\Tab::make('Dates importantes')->schema([
                     Section::make('Deadlines')->schema([
                         Fieldset::make('1ere deadline')->schema([
-                            DateTimePicker::make('deadline'),
+                            DatePicker::make('deadline'),
                             TextInput::make('proof')
                                 ->label('Justificatif'),
                             Checkbox::make('continuous')
                                 ->label('Continu')
                                 ->default(false)
-                                ->hint('Continu = jsp frr')
                         ]),
                         Fieldset::make('2eme deadline')->schema([
-                            DateTimePicker::make('deadline_2'),
+                            DatePicker::make('deadline_2'),
                             TextInput::make('proof_2')
                                 ->label('Justificatif'),
                             Checkbox::make('continuous_2')
@@ -139,19 +141,24 @@ final class ProjectForm extends Component implements HasForms
                         ->label('Description courte')
                         ->maxLength(500)
                         ->hint(fn($state, $component) => strlen($state) . '/' . $component->getMaxLength())
-                        ->live(),
+                        ->live()
+                        ->required(),
                     MarkdownEditor::make('long_description')
-                        ->label('Description complète'),
+                        ->label('Description complète')
+                        ->required(),
                     MarkdownEditor::make('funding')
-                        ->label("Financement"),
+                        ->label("Financement")
+                    ->required(),
                 ]),
                 Tabs\Tab::make("Critères d'admission")->schema([
                     MarkdownEditor::make('admission_requirements')
-                        ->label(""),
+                        ->label("")
+                    ->required(),
                 ]),
                 Tabs\Tab::make("Pour postuler")->schema([
                     MarkdownEditor::make('apply_instructions')
-                        ->label(""),
+                        ->label("")
+                    ->required(),
                 ]),
                 Tabs\Tab::make("Contacts")->schema([
                     Fieldset::make('Internes')->schema([
@@ -194,10 +201,10 @@ final class ProjectForm extends Component implements HasForms
                 'info_types' => 'array',
                 'Appel' => 'array',
                 'Geo_zones' => 'array',
-                'deadline' => 'nullable|date',
+                'deadline' => 'nullable|date|required_if:continuous,false',
                 'proof' => 'nullable|string|max:50',
                 'continuous' => 'boolean',
-                'deadline_2' => 'nullable|date',
+                'deadline_2' => 'nullable|date|required_if:continuous_2,false',
                 'proof_2' => 'nullable|string|max:50',
                 'continuous_2' => 'boolean',
                 'periodicity' => 'nullable|integer',
@@ -223,6 +230,7 @@ final class ProjectForm extends Component implements HasForms
             $validator = Validator::make($this->data, $rules);
             if ($validator->fails()) {
                 $this->addError('validation', 'Validation Error');
+                dd($validator->errors());
                 return;
             }
 
