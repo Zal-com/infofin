@@ -11,12 +11,9 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
-use Illuminate\Routing\Route;
-use Illuminate\Support\Facades\Date;
 use Illuminate\Support\HtmlString;
 use Illuminate\View\View;
 use Livewire\Component;
-use Livewire\WithPagination;
 
 class ListProjects extends Component implements HasForms, HasTable
 {
@@ -75,7 +72,7 @@ class ListProjects extends Component implements HasForms, HasTable
                         return \Carbon\Carbon::parse($record->deadline_2)->format('d/m/Y');
                     }
                 }),
-            TextColumn::make('organisation_id')
+            TextColumn::make('organisations')
                 ->label('Organisation')
                 ->wrap()
                 ->sortable()

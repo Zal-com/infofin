@@ -28,7 +28,6 @@ use Illuminate\Support\Facades\Redirect;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use MongoDB\Driver\Session;
 
 final class ProjectForm extends Component implements HasForms
 {
@@ -102,7 +101,7 @@ final class ProjectForm extends Component implements HasForms
                                 'Monde entier' => 'Monde entier',
                             ];
                             $options['Continents'] = Continent::all()->pluck('name', 'id')->toArray();
-                            $options['Pays'] = Countries::all()->pluck('nomPays', )->toArray();
+                            $options['Pays'] = Countries::all()->pluck('nomPays', 'id')->toArray();
                             return $options;
                         }),
             ]),
@@ -170,7 +169,8 @@ final class ProjectForm extends Component implements HasForms
                             TextInput::make('last_name')->label('Nom'),
                             TextInput::make('email')->label('E-mail')->email(),
                             TextInput::make('tel')->label('Numéro de téléphone')->tel(),
-                        ])->columns(2)->addActionLabel('+ Nouveau contact')->label('mm')
+                            TextInput::make('address')->label('Adresse')->columnSpan(2)
+                        ])->columns(2)->addActionLabel('+ Nouveau contact')
                     ]),
                 ]),
             ]),
@@ -190,7 +190,8 @@ final class ProjectForm extends Component implements HasForms
             $rules = [
                 'title' => 'required|string|max:255',
                 'is_big' => 'boolean',
-                'Types' => 'array',
+                'organisation' => 'array',
+                'info_types' => 'array',
                 'Appel' => 'array',
                 'Geo_zones' => 'array',
                 'deadline' => 'nullable|date',
@@ -222,7 +223,6 @@ final class ProjectForm extends Component implements HasForms
             $validator = Validator::make($this->data, $rules);
             if ($validator->fails()) {
                 $this->addError('validation', 'Validation Error');
-                //dd($validator);
                 return;
             }
 
@@ -230,45 +230,85 @@ final class ProjectForm extends Component implements HasForms
             $data['poster_id'] = $userId;
             $data['last_update_user_id'] = $userId;
 
-            $contactsUlB = [];
-            foreach ($data['contact_ulb'] as $contact) {
-                $name = trim(($contact['first_name'] ?? '') . ' ' . ($contact['last_name'] ?? ''));
-                $email = $contact['email'] ?? '';
-                $phone = $contact['tel'] ?? '';
-                $address = $contact['address'] ?? '';
-
-                if ($name !== '' || $email !== '' || $phone !== '' || $address !== '') {
-                    $contactsUlB[] = [
-                        'name' => $name,
-                        'email' => $email,
-                        'phone' => $phone,
-                        'address' => $address,
-                    ];
-                }
+            if($data['periodicity'] === null){
+                $data['periodicity'] = 0;
             }
-            $data['contact_ulb'] = !empty($contactsUlB) ? json_encode($contactsUlB) : '[]';
+
+
+            $contactsUlB = [];
+            if(isset($data['contact_ulb'])){
+                foreach ($data['contact_ulb'] as $contact) {
+                    $name = trim(($contact['first_name'] ?? '') . ' ' . ($contact['last_name'] ?? ''));
+                    $email = $contact['email'] ?? '';
+                    $phone = $contact['tel'] ?? '';
+                    $address = $contact['address'] ?? '';
+
+                    if ($name !== '' || $email !== '' || $phone !== '' || $address !== '') {
+                        $contactsUlB[] = [
+                            'name' => $name,
+                            'email' => $email,
+                            'phone' => $phone,
+                            'address' => $address,
+                        ];
+                    }
+                }
+                $data['contact_ulb'] = !empty($contactsUlB) ? json_encode($contactsUlB) : '[]';
+            }else{
+                $data['contact_ulb'] = '[]';
+            }
+
 
             $contactsExt = [];
-            foreach ($data['contact_ext'] as $contact) {
-                $name = trim(($contact['first_name'] ?? '') . ' ' . ($contact['last_name'] ?? ''));
-                $email = $contact['email'] ?? '';
-                $phone = $contact['tel'] ?? '';
+            if(isset($data["contact_ext"])){
+                foreach ($data['contact_ext'] as $contact) {
+                    $name = trim(($contact['first_name'] ?? '') . ' ' . ($contact['last_name'] ?? ''));
+                    $email = $contact['email'] ?? '';
+                    $phone = $contact['tel'] ?? '';
+                    $address = $contact['address'] ?? '';
 
-                if ($name !== '' || $email !== '' || $phone !== '') {
-                    $contactsExt[] = [
-                        'name' => $name,
-                        'email' => $email,
-                        'phone' => $phone,
-                    ];
+                    if ($name !== '' || $email !== '' || $phone !== '' || $address !== '') {
+                        $contactsExt[] = [
+                            'name' => $name,
+                            'email' => $email,
+                            'phone' => $phone,
+                            'address' => $address,
+                        ];
+                    }
                 }
+                $data['contact_ext'] = !empty($contactsExt) ? json_encode($contactsExt) : '[]';
+            }else{
+                $data['contact_ext'] = '[]';
             }
-            $data['contact_ext'] = !empty($contactsExt) ? json_encode($contactsExt) : '[]';
 
             if($project = Project::create($data)){
                 return redirect()->route('projects.index')->with('success', 'Votre appel a bien été ajouté.');
             }
 
-            //dd($project);
+            if (!empty($data['organisation'])) {
+                $project->organisations()->sync($data['organisation']);
+            }
+
+            if (!empty($data['info_types'])) {
+                $project->info_types()->sync($data['info_types']);
+            }
+
+            if (!empty($data['Appel'])) {
+                $project->scientificDomains()->sync($data['Appel']);
+            }
+
+            if (!empty($data['Geo_zones'])) {
+                foreach ($data['Geo_zones'] as $zone) {
+                    if (isset($zone['continent_id'])) {
+                        $project->continent()->associate($zone['continent_id']);
+                    }
+                    if (isset($zone['country_id'])) {
+                        $project->country()->associate($zone['country_id']);
+                    }
+                }
+                $project->save();
+            }
+
+            dd($project);
         } catch (Exception $e) {
             dd($e);
         }
