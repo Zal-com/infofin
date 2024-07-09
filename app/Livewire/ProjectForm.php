@@ -104,11 +104,22 @@ final class ProjectForm extends Component implements HasForms
                             $options = [
                                 'Monde entier' => 'Monde entier',
                             ];
-                            $options['Continents'] = Continent::all()->pluck('name', 'id')->toArray();
-                            $options['Pays'] = Countries::all()->pluck('nomPays', 'id')->toArray();
+
+                            $continents = Continent::all()->pluck('name', 'id')->toArray();
+                            $pays = Countries::all()->pluck('nomPays', 'id')->toArray();
+
+                            foreach ($continents as $id => $name) {
+                                $options["continent_$id"] = $name;
+                            }
+
+                            foreach ($pays as $id => $name) {
+                                $options["pays_$id"] = $name;
+                            }
+
                             return $options;
                         }),
-            ]),
+
+                ]),
             Tabs\Tab::make('Dates importantes')->schema([
                     Section::make('Deadlines')->schema([
                         Fieldset::make('1ere deadline')->schema([
@@ -308,11 +319,12 @@ final class ProjectForm extends Component implements HasForms
 
             if (!empty($data['Geo_zones'])) {
                 foreach ($data['Geo_zones'] as $zone) {
-                    if (isset($zone['continent_id'])) {
-                        $project->continent()->associate($zone['continent_id']);
-                    }
-                    if (isset($zone['country_id'])) {
-                        $project->country()->associate($zone['country_id']);
+                    if (strpos($zone, 'continent_') === 0) {
+                        $continent_id = str_replace('continent_', '', $zone);
+                        $project->continent()->associate($continent_id);
+                    } elseif (strpos($zone, 'pays_') === 0) {
+                        $country_id = str_replace('pays_', '', $zone);
+                        $project->country()->associate($country_id);
                     }
                 }
                 $project->save();
