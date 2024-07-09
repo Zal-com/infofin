@@ -7,7 +7,7 @@
     @endif
 
     @if (session('error'))
-        <div class="mt-4 p-4 bg-red-500 text-white">
+        <div class="mt-4 p-4 bg-red-500 text-white rounded-2xl mb-4">
             @foreach (session('error') as $error)
                 <li>{{ $error }}</li>
             @endforeach
@@ -16,8 +16,8 @@
     <form wire:submit.prevent="submit" wire:model="project">
         {{ $this->form }}
 
-        <div class="mt-4">
-            <button type="submit" class="btn primary">
+        <div class="mt-4 flex justify-end">
+            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                 Ajouter le projet
             </button>
         </div>
