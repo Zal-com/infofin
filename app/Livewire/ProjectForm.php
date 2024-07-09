@@ -231,18 +231,11 @@ final class ProjectForm extends Component implements HasForms
             $validator = Validator::make($this->data, $rules);
 
             if ($validator->fails()) {
-                // Set flash message for validation errors
                 session()->flash('error', $validator->errors()->all());
                 $this->redirect('/projects/create');
             } else {
                 $data = $validator->validated();
-                // Save data or perform further actions
-                // User::create($data);
-
-                // Set flash message for success
             }
-
-            //dd($validator);
 
             $data['poster_id'] = $userId;
             $data['last_update_user_id'] = $userId;
