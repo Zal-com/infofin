@@ -14,6 +14,7 @@ use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
@@ -26,6 +27,7 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -171,6 +173,11 @@ final class ProjectForm extends Component implements HasForms
                     MarkdownEditor::make('apply_instructions')
                         ->label("")
                     ->required(),
+                    FileUpload::make('docs')
+                        ->multiple()
+                        ->disk('public')
+                        ->visibility('public')
+                        ->directory('uploads/docs')
                 ]),
                 Tabs\Tab::make("Contacts")->schema([
                     Fieldset::make('Internes')->schema([
@@ -211,6 +218,7 @@ final class ProjectForm extends Component implements HasForms
                 'is_big' => 'boolean',
                 'organisation' => 'array',
                 'info_types' => 'array',
+                'docs' => 'array',
                 'Appel' => 'array',
                 'Geo_zones' => 'array',
                 'deadline' => 'nullable|date|required_if:continuous,false',
@@ -317,6 +325,11 @@ final class ProjectForm extends Component implements HasForms
                 $project->scientificDomains()->sync($data['Appel']);
             }
 
+            if (isset($data['docs'])) {
+                $data['docs'] = $this->moveFiles($data['docs']);
+                dd($data['docs']);
+            }
+
             if (!empty($data['Geo_zones'])) {
                 foreach ($data['Geo_zones'] as $zone) {
                     if (strpos($zone, 'continent_') === 0) {
@@ -335,4 +348,31 @@ final class ProjectForm extends Component implements HasForms
             //dd($e);
         }
     }
+
+    private function moveFiles(array $files): array
+    {
+        $movedFiles = [];
+        foreach ($files as $file) {
+            // Define the final path for the file
+            $finalPath = 'uploads/docs/' . $file->getFilename();
+
+            // Move the file from the temporary location to the final location
+            Storage::disk('public')->putFileAs(
+                'uploads/docs',
+                $file,
+                $file->getFilename()
+            );
+
+            // Add the final path to the movedFiles array
+            $movedFiles[] = $finalPath;
+
+            // Delete the temporary file
+            if (file_exists($file->getPathname())) {
+                unlink($file->getPathname());
+            }
+        }
+
+        return $movedFiles;
+    }
+
 }
