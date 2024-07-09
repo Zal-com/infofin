@@ -29,7 +29,7 @@ class ListProjects extends Component implements HasForms, HasTable
     public function table(Table $table): Table
     {
         /** @noinspection PhpIllegalArrayKeyTypeInspection */
-        return $table->query(Project::all()->toQuery())->columns([
+        return $table->query(Project::where('is_draft', 0))->columns([
             IconColumn::make('status')
                 ->label('Est actif')
                 ->boolean()
@@ -72,7 +72,7 @@ class ListProjects extends Component implements HasForms, HasTable
                         return \Carbon\Carbon::parse($record->deadline_2)->format('d/m/Y');
                     }
                 }),
-            TextColumn::make('organisations')
+            TextColumn::make('organisations.title')
                 ->label('Organisation')
                 ->wrap()
                 ->sortable()
