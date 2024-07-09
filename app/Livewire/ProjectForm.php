@@ -24,9 +24,11 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
+use Illuminate\Support\Facades\Redirect;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use MongoDB\Driver\Session;
 
 final class ProjectForm extends Component implements HasForms
 {
@@ -207,12 +209,12 @@ final class ProjectForm extends Component implements HasForms
                 'contact_ulb.*.first_name' => 'nullable|string',
                 'contact_ulb.*.last_name' => 'nullable|string',
                 'contact_ulb.*.email' => 'nullable|email',
-                'contact_ulb.*.tel' => 'nullable|string',
+                'contact_ulb.*.tel' => 'nullable|phone:BE',
                 'contact_ulb.*.address' => 'nullable|string',
-                'contact_ext.*.first_name' => 'nullable|string',
-                'contact_ext.*.last_name' => 'nullable|string',
-                'contact_ext.*.email' => 'nullable|email',
-                'contact_ext.*.tel' => 'nullable|string',
+                'contact_ext.*.first_name' => 'nullable|string|max:50',
+                'contact_ext.*.last_name' => 'nullable|string|max:50',
+                'contact_ext.*.email' => 'nullable|email|max:255',
+                'contact_ext.*.tel' => 'nullable|phone:BE',
                 'status' => 'integer',
                 'is_draft' => 'boolean',
             ];
@@ -262,7 +264,9 @@ final class ProjectForm extends Component implements HasForms
             }
             $data['contact_ext'] = !empty($contactsExt) ? json_encode($contactsExt) : '[]';
 
-            $project = Project::create($data);
+            if($project = Project::create($data)){
+                return redirect()->route('projects.index')->with('success', 'Votre appel a bien été ajouté.');
+            }
 
             //dd($project);
         } catch (Exception $e) {
