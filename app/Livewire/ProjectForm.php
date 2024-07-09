@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Continent;
+use App\Models\Draft;
 use App\Models\InfoType;
 use App\Models\Countries;
 use App\Models\Organisation;
@@ -208,6 +209,13 @@ final class ProjectForm extends Component implements HasForms
         return view('livewire.project-form');
     }
 
+    public function saveAsDraft(){
+        $draft = new Draft(['content' => json_encode($this->data), 'poster_id' => Auth::id()]);
+       if($draft->save()){
+           return redirect()->route('projects.index')->with('success', 'Brouillon enregistré');
+       }
+    }
+
     public function submit()
     {
         try {
@@ -247,11 +255,42 @@ final class ProjectForm extends Component implements HasForms
                 'is_draft' => 'boolean',
             ];
 
-            $validator = Validator::make($this->data, $rules);
+            $validator = Validator::make($this->data, $rules, [], [
+                'title' => 'Titre',
+                'is_big' => 'Projet Majeur',
+                'organisation' => 'Organisation',
+                'info_types' => 'Types de programme',
+                'Appel' => 'Disciplines scientifiques',
+                'Geo_zones' => 'Zones géographiques',
+                'deadline' => 'Deadline 1',
+                'proof' => 'Justificatif de la 1ere deadline',
+                'continuous' => 'Continu',
+                'deadline_2' => 'Deadline 2',
+                'proof_2' => 'Justificatif de la 2nde deadline',
+                'continuous_2' => 'Continu',
+                'periodicity' => 'Périodicité',
+                'date_lessor' => 'Date Bailleur',
+                'short_description' => 'Description courte',
+                'long_description' => 'Description longue',
+                'funding' => 'Financement',
+                'admission_requirements' => 'Requis d\'admission',
+                'apply_instructions' => 'Instructions d\'application',
+                'contact_ulb.*.first_name' => 'Prénom',
+                'contact_ulb.*.last_name' => 'Nom',
+                'contact_ulb.*.email' => 'Email',
+                'contact_ulb.*.tel' => 'Téléphone',
+                'contact_ulb.*.address' => 'Addresse',
+                'contact_ext.*.first_name' => 'Prénom',
+                'contact_ext.*.last_name' => 'Nom',
+                'contact_ext.*.email' => 'Email',
+                'contact_ext.*.tel' => 'Téléphone',
+                'status' => 'Status',
+                'is_draft' => 'Brouillon',
+            ]);
 
             if ($validator->fails()) {
                 session()->flash('error', $validator->errors()->all());
-                $this->redirect('/projects/create');
+                return redirect()->back()->withInput();
             } else {
                 $data = $validator->validated();
             }
@@ -340,6 +379,8 @@ final class ProjectForm extends Component implements HasForms
                         $project->country()->associate($country_id);
                     }
                 }
+
+                dd($data);
                 $project->save();
             }
 

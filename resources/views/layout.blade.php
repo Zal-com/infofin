@@ -18,7 +18,12 @@
 @include('components.header')
 
 <main class="container w-75 m-auto flex-1">
-    @livewire('notifications')
+    @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+    @if(session('danger'))
+        <div class="alert alert-danger">{{ session('danger') }}</div>
+    @endif
     @yield('content')
     @filamentScripts
     @livewireScripts
