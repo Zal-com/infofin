@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y \
     npm \
     libzip-dev \
     libicu-dev \
-    && docker-php-ext-install pdo_mysql intl zip
+    && docker-php-ext-install pdo_mysql bcmath intl zip
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
