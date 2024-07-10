@@ -9,6 +9,7 @@
         "diglactic/laravel-breadcrumbs": "^9.0",
         "filament/forms": "^3.2",
         "filament/tables": "^3.2",
+        "jasig/phpcas": "^1.6",
         "laravel/framework": "^11.0",
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.5",
