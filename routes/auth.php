@@ -23,7 +23,7 @@ Route::middleware('guest')->group(function () {
 
     //CAS routes
     Route::get('login/cas', [CASController::class, 'redirectToCas'])->name('login.cas');
-    Route::get('login/cas/callback', [CASController::class, 'handleCallback']);
+    Route::get('login/cas/callback', [CASController::class, 'handleCasCallback']);
 
     //End of CAS routes
 
