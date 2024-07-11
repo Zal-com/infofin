@@ -9,6 +9,6 @@ class CAS extends Controller
     {
         phpCAS::setVerbose(true);
         phpCAS::client(SAML_VERSION_1_1, 'auth-pp.ulb.be', 443, 'https://infofin-f-departementrecherche.apps.dev.okd.hpda.ulb.ac.be', '');
-        phpCAS::forceAuthentication();
+        //phpCAS::forceAuthentication();
     }
 }

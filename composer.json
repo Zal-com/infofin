@@ -9,13 +9,13 @@
         "diglactic/laravel-breadcrumbs": "^9.0",
         "filament/forms": "^3.2",
         "filament/tables": "^3.2",
-        "jasig/phpcas": "^1.6",
         "laravel/framework": "^11.0",
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.5",
         "propaganistas/laravel-phone": "^5.3",
         "spatie/laravel-permission": "^6.7",
-        "staudenmeir/belongs-to-through": "^2.5"
+        "staudenmeir/belongs-to-through": "^2.5",
+        "subfission/cas": "^5.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.13",
