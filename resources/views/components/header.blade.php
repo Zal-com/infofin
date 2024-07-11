@@ -1,6 +1,6 @@
 <header>
     <a href="{{route('home')}}">
-    <div class="flex h-[120px] p-4 w-[75%] m-auto">
+    <div class="container flex h-[120px] p-4 w-[75%] m-auto">
         <div class="flex items-center">
             <img class="max-h-[100%] object-contain pr-4 border-r-2 border-blue-900" src="{{asset('img/ulb_logo.png')}}" alt="Logo de l'ULB"/>
         </div>
@@ -13,7 +13,7 @@
     </div>
     </a>
     <nav>
-        <div class="container flex justify-end gap-2">
+        <div class="container m-auto flex justify-end gap-2">
             @auth()
                 <a href="#"
                    class="inline-flex items-center px-4 py-2 bg-blue-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 focus:bg-gray-700 active:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
