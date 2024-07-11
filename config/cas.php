@@ -6,7 +6,7 @@ return [
     |--------------------------------------------------------------------------
     | Example: 'cas.myuniv.edu'.
     */
-    'cas_hostname' => env('CAS_HOSTNAME', 'cas.myuniv.edu'),
+    'cas_hostname' => env('CAS_HOSTNAME', 'auth-dev.ulb.be'),
 
     /*
     |--------------------------------------------------------------------------
@@ -16,7 +16,7 @@ return [
     | recommended for protecting against DOS attacks.  If using load
     | balanced hosts, then separate each with a comma.
     */
-    'cas_real_hosts' => env('CAS_REAL_HOSTS', 'cas.myuniv.edu'),
+    'cas_real_hosts' => env('CAS_REAL_HOSTS', 'auth-dev.ulb.be'),
 
 
     /*
@@ -57,7 +57,7 @@ return [
     |--------------------------------------------------------------------------
     | Sometimes is /cas
     */
-    'cas_uri' => env('CAS_URI', '/cas'),
+    'cas_uri' => env('CAS_URI', ''),
 
     /*
     |--------------------------------------------------------------------------
@@ -65,7 +65,7 @@ return [
     |--------------------------------------------------------------------------
     | Example: 'http://localhost', 'https://example.com:8888'
     */
-    'cas_client_service' => env('CAS_CLIENT_SERVICE', 'http://localhost'),
+    'cas_client_service' => env('CAS_CLIENT_SERVICE', 'https://infofin-f-departementrecherche.apps.dev.okd.hpda.ulb.ac.be'),
 
 
     /*
@@ -111,7 +111,7 @@ return [
     | CAS Logout URI
     |--------------------------------------------------------------------------
     */
-    'cas_logout_url' => env('CAS_LOGOUT_URL', 'https://cas.myuniv.edu/cas/logout'),
+    'cas_logout_url' => env('CAS_LOGOUT_URL', '/logout'),
 
     /*
     |--------------------------------------------------------------------------
@@ -130,7 +130,7 @@ return [
     | page in which the call was initiated.  You can override this method
     | and force the user to be redirected to a specific URL here.
     */
-    'cas_redirect_path' => env('CAS_REDIRECT_PATH', ''),
+    'cas_redirect_path' => env('CAS_REDIRECT_PATH', 'https://infofin-f-departementrecherche.apps.dev.okd.hpda.ulb.ac.be/login/cas/callback'),
 
     /*
     |--------------------------------------------------------------------------
@@ -168,7 +168,7 @@ return [
     | true | false
     |--------------------------------------------------------------------------
     */
-    'cas_verbose_errors' => env('CAS_VERBOSE_ERRORS', false),
+    'cas_verbose_errors' => env('CAS_VERBOSE_ERRORS', true),
 
     /*
     |--------------------------------------------------------------------------

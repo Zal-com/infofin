@@ -25,6 +25,8 @@ Route::middleware('guest')->group(function () {
     Route::get('login/cas', [CASController::class, 'redirectToCas'])->name('login.cas');
     Route::get('login/cas/callback', [CASController::class, 'handleCallback']);
 
+    //End of CAS routes
+
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
 
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
