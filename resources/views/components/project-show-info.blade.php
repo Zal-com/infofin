@@ -37,7 +37,7 @@
         </div>
 
         <div x-show="tab === 'infos'" class="m-4">
-           <x-filament::section.heading>
+           <x-filament::section.heading class="text-2xl">
                Type de programme
            </x-filament::section.heading>
                 @foreach($project->info_types as $info_type)
@@ -46,29 +46,36 @@
                     </x-filament::section.description>
                 @endforeach
             @if(!empty($project->funding))
-                <div class="markdown">
-                <x-filament::section.heading>
+                <div class="markdown mb-5">
+                <x-filament::section.heading class="text-2xl">
                     Financement
                 </x-filament::section.heading>
-                <x-filament::section.description class="mb-4 text-justify">
+                <x-filament::section.description class="mb-1 text-sm text-gray-500 dark:text-gray-400 text-justify">
+                    <div class="text-sm text-gray-500 dark:text-gray-400 text-justify">
                     {!! Str::of($project->funding)->markdown() !!}
+                    </div>
                 </x-filament::section.description>
                 </div>
             @endif
-            <div class="markdown">
-            <x-filament::section.heading>
+            <div class="markdown mb-5">
+            <x-filament::section.heading class="text-2xl">
                 Pour postuler
             </x-filament::section.heading>
-            <x-filament::section.description class="mb-4 text-justify list-inside">
-                {!! \Illuminate\Support\Str::of($project->apply_instructions)->markdown() !!}
+            <x-filament::section.description class="mb-1 text-justify list-inside">
+                <div class="text-sm text-gray-500 dark:text-gray-400 text-justify">
+                    {!! \Illuminate\Support\Str::of($project->apply_instructions)->markdown() !!}
+                </div>
+
             </x-filament::section.description>
             </div>
-            <div class="markdown">
-            <x-filament::section.heading>
+            <div class="markdown mb-5">
+            <x-filament::section.heading class="text-2xl">
                 Requis d'admission
             </x-filament::section.heading>
-            <x-filament::section.description class="mb-4 text-justify">
+            <x-filament::section.description class="mb-1 text-justify">
+                <div class="text-md text-gray-500 dark:text-gray-400 text-justify">
                 {!! \Illuminate\Support\Str::of($project->admission_requirements)->markdown() !!}
+                </div>
             </x-filament::section.description>
             </div>
         </div>
