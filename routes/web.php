@@ -21,10 +21,11 @@ Route::controller(ProjectController::class)->group(function () {
 
 Route::controller(UserController::class)->group(function (){
     Route::get('users', 'index')->name('users.index');
+    Route::get('users/{id}', 'show')->name('users.show');
 });
 
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });

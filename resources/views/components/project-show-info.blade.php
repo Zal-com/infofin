@@ -2,28 +2,28 @@
 
 <div class="grid grid-cols-5 gap-4 mb-10" x-data="{ tab: 'description' }">
     <x-filament::section class="col-span-4 row-span-2">
-            <x-filament::tabs>
-                <x-filament::tabs.item @click="tab = 'description'" :alpine-active="'tab === \'description\''">
-                    Description
-                </x-filament::tabs.item>
-                <x-filament::tabs.item @click="tab = 'dates'" :alpine-active="'tab === \'dates\''">
-                    Dates
-                </x-filament::tabs.item>
-                <x-filament::tabs.item @click="tab = 'infos'" :alpine-active="'tab === \'infos\''">
-                    Infos supplémentaires
-                </x-filament::tabs.item>
-                <x-filament::tabs.item @click="tab = 'documents'" :alpine-active="'tab === \'documents\''">
-                    Documents
-                </x-filament::tabs.item>
-            </x-filament::tabs>
+        <x-filament::tabs>
+            <x-filament::tabs.item @click="tab = 'description'" :alpine-active="'tab === \'description\''">
+                Description
+            </x-filament::tabs.item>
+            <x-filament::tabs.item @click="tab = 'dates'" :alpine-active="'tab === \'dates\''">
+                Dates
+            </x-filament::tabs.item>
+            <x-filament::tabs.item @click="tab = 'infos'" :alpine-active="'tab === \'infos\''">
+                Infos supplémentaires
+            </x-filament::tabs.item>
+            <x-filament::tabs.item @click="tab = 'documents'" :alpine-active="'tab === \'documents\''">
+                Documents
+            </x-filament::tabs.item>
+        </x-filament::tabs>
 
         <div x-show="tab === 'description'" class="m-4">
             <h1>{{$project->title}}</h1>
             <p>{{$project->organisation_id}}</p>
             <div class="markdown">
-            <x-filament::section.description class="my-3 text-justify">
-                {!! \Illuminate\Support\Str::of($project->long_description)->markdown()!!}
-            </x-filament::section.description>
+                <x-filament::section.description class="my-3 text-justify">
+                    {!! \Illuminate\Support\Str::of($project->long_description)->markdown()!!}
+                </x-filament::section.description>
             </div>
         </div>
 
@@ -37,110 +37,110 @@
         </div>
 
         <div x-show="tab === 'infos'" class="m-4">
-           <x-filament::section.heading class="text-2xl">
-               Type de programme
-           </x-filament::section.heading>
-                @foreach($project->info_types as $info_type)
-                    <x-filament::section.description class="mb-4 text-justify">
-                        {{$info_type['title']}}
-                    </x-filament::section.description>
-                @endforeach
+            <x-filament::section.heading class="text-2xl">
+                Type de programme
+            </x-filament::section.heading>
+            @foreach($project->info_types as $info_type)
+                <x-filament::section.description class="mb-4 text-justify">
+                    {{$info_type['title']}}
+                </x-filament::section.description>
+            @endforeach
             @if(!empty($project->funding))
                 <div class="markdown mb-5">
-                <x-filament::section.heading class="text-2xl">
-                    Financement
-                </x-filament::section.heading>
-                <x-filament::section.description class="mb-1 text-sm text-gray-500 dark:text-gray-400 text-justify">
-                    <div class="text-sm text-gray-500 dark:text-gray-400 text-justify">
-                    {!! Str::of($project->funding)->markdown() !!}
-                    </div>
-                </x-filament::section.description>
+                    <x-filament::section.heading class="text-2xl">
+                        Financement
+                    </x-filament::section.heading>
+                    <x-filament::section.description class="mb-1 text-sm text-gray-500 dark:text-gray-400 text-justify">
+                        <div class="text-sm text-gray-500 dark:text-gray-400 text-justify">
+                            {!! Str::of($project->funding)->markdown() !!}
+                        </div>
+                    </x-filament::section.description>
                 </div>
             @endif
             <div class="markdown mb-5">
-            <x-filament::section.heading class="text-2xl">
-                Pour postuler
-            </x-filament::section.heading>
-            <x-filament::section.description class="mb-1 text-justify list-inside">
-                <div class="text-sm text-gray-500 dark:text-gray-400 text-justify">
-                    {!! \Illuminate\Support\Str::of($project->apply_instructions)->markdown() !!}
-                </div>
+                <x-filament::section.heading class="text-2xl">
+                    Pour postuler
+                </x-filament::section.heading>
+                <x-filament::section.description class="mb-1 text-justify list-inside">
+                    <div class="text-sm text-gray-500 dark:text-gray-400 text-justify">
+                        {!! \Illuminate\Support\Str::of($project->apply_instructions)->markdown() !!}
+                    </div>
 
-            </x-filament::section.description>
+                </x-filament::section.description>
             </div>
             <div class="markdown mb-5">
-            <x-filament::section.heading class="text-2xl">
-                Requis d'admission
-            </x-filament::section.heading>
-            <x-filament::section.description class="mb-1 text-justify">
-                <div class="text-md text-gray-500 dark:text-gray-400 text-justify">
-                {!! \Illuminate\Support\Str::of($project->admission_requirements)->markdown() !!}
-                </div>
-            </x-filament::section.description>
+                <x-filament::section.heading class="text-2xl">
+                    Requis d'admission
+                </x-filament::section.heading>
+                <x-filament::section.description class="mb-1 text-justify">
+                    <div class="text-md text-gray-500 dark:text-gray-400 text-justify">
+                        {!! \Illuminate\Support\Str::of($project->admission_requirements)->markdown() !!}
+                    </div>
+                </x-filament::section.description>
             </div>
         </div>
     </x-filament::section>
     <div class="flex flex-col gap-4 sticky top-5">
         @if(!empty(json_decode($project->contact_ulb, true)))
-    <x-filament::section class="col-span-1 row-span-1">
-        <x-filament::section.heading class="text-xl mb-4">
-            Contacts ULB
-        </x-filament::section.heading>
-        @foreach(json_decode($project->contact_ulb, true) as $contact_ulb)
-            <div class="mb-3 last-of-type:mb-0">
-                <x-filament::section.heading>{{$contact_ulb['name']}}</x-filament::section.heading>
-                @if($contact_ulb['phone'] != "")
-                    <div class="flex items-center">
-                        <x-filament::icon icon="heroicon-s-phone" class="h-5 w-5 mr-2"/>
-                        {{$contact_ulb['phone']}}
+            <x-filament::section class="col-span-1 row-span-1">
+                <x-filament::section.heading class="text-xl mb-4">
+                    Contacts ULB
+                </x-filament::section.heading>
+                @foreach(json_decode($project->contact_ulb, true) as $contact_ulb)
+                    <div class="mb-3 last-of-type:mb-0">
+                        <x-filament::section.heading>{{$contact_ulb['name']}}</x-filament::section.heading>
+                        @if($contact_ulb['phone'] != "")
+                            <div class="flex items-center">
+                                <x-filament::icon icon="heroicon-s-phone" class="h-5 w-5 mr-2"/>
+                                {{$contact_ulb['phone']}}
+                            </div>
+                        @endif
+                        @if($contact_ulb['email'] != "")
+                            <div class="flex items-center">
+                                <x-filament::icon icon="heroicon-s-at-symbol" class="h-5 w-5 mr-2"/>
+                                {{$contact_ulb['email']}}
+                            </div>
+                        @endif
+                        @if($contact_ulb['address'] != "")
+                            <div class="flex items-center">
+                                <x-filament::icon icon="heroicon-s-envelope" class="h-5 w-5 mr-2"/>
+                                {{$contact_ulb['address']}}
+                            </div>
+                        @endif
                     </div>
-                @endif
-                @if($contact_ulb['email'] != "")
-                    <div class="flex items-center">
-                        <x-filament::icon icon="heroicon-s-at-symbol" class="h-5 w-5 mr-2"/>
-                        {{$contact_ulb['email']}}
-                    </div>
-                @endif
-                    @if($contact_ulb['address'] != "")
-                    <div class="flex items-center">
-                        <x-filament::icon icon="heroicon-s-envelope" class="h-5 w-5 mr-2"/>
-                        {{$contact_ulb['address']}}
-                    </div>
-                @endif
-            </div>
-        @endforeach
-    </x-filament::section>
+                @endforeach
+            </x-filament::section>
         @endif
         @if(!empty(json_decode($project->contact_ext, true)))
-    <x-filament::section class="col-span-1 row-span-1 sticky top-5">
-        <x-filament::section.heading class="text-xl mb-4">
-            Contacts externes
-        </x-filament::section.heading>
-        @foreach(json_decode($project->contact_ext, true) as $contact_ext)
+            <x-filament::section class="col-span-1 row-span-1 sticky top-5">
+                <x-filament::section.heading class="text-xl mb-4">
+                    Contacts externes
+                </x-filament::section.heading>
+                @foreach(json_decode($project->contact_ext, true) as $contact_ext)
 
-            <div class="mb-3 last-of-type:mb-0">
-                <x-filament::section.heading>{{$contact_ext['name']}}</x-filament::section.heading>
-                @if($contact_ext['phone'] != "")
-                    <div class="flex items-center">
-                        <x-filament::icon icon="heroicon-s-phone" class="h-5 w-5 mr-2"/>
-                        {{$contact_ext['phone']}}
+                    <div class="mb-3 last-of-type:mb-0">
+                        <x-filament::section.heading>{{$contact_ext['name']}}</x-filament::section.heading>
+                        @if($contact_ext['phone'] != "")
+                            <div class="flex items-center">
+                                <x-filament::icon icon="heroicon-s-phone" class="h-5 w-5 mr-2"/>
+                                {{$contact_ext['phone']}}
+                            </div>
+                        @endif
+                        @if($contact_ext['email'] != "")
+                            <div class="flex items-center">
+                                <x-filament::icon icon="heroicon-s-at-symbol" class="h-5 w-5 mr-2"/>
+                                {{$contact_ext['email']}}
+                            </div>
+                        @endif
+                        @if($contact_ext['address'] != "")
+                            <div class="flex items-center">
+                                <x-filament::icon icon="heroicon-s-envelope" class="h-5 w-5 mr-2"/>
+                                {{$contact_ext['address']}}
+                            </div>
+                        @endif
                     </div>
-                @endif
-                @if($contact_ext['email'] != "")
-                    <div class="flex items-center">
-                        <x-filament::icon icon="heroicon-s-at-symbol" class="h-5 w-5 mr-2"/>
-                        {{$contact_ext['email']}}
-                    </div>
-                @endif
-                @if($contact_ext['address'] != "")
-                    <div class="flex items-center">
-                        <x-filament::icon icon="heroicon-s-envelope" class="h-5 w-5 mr-2"/>
-                        {{$contact_ext['address']}}
-                    </div>
-                @endif
-            </div>
-        @endforeach
-    </x-filament::section>
-            @endif
+                @endforeach
+            </x-filament::section>
+        @endif
     </div>
 </div>
