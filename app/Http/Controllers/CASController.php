@@ -35,7 +35,7 @@ class CASController extends Controller
                 //$user = User::firstOrCreate(['email' => $casUser]);
 
                 //Auth::login($user);
-                return redirect()->intended('/home');
+                return redirect()->intended('/');
             }
         }
         return redirect()->route('login');
