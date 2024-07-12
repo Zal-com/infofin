@@ -2,7 +2,8 @@
 @props(['user'])
 @section('content')
 
-    <div class="grid grid-cols-5 gap-4 mb-10" x-data="{ tab: 'infos' }">
+    <div class="grid grid-cols-5 gap-4 mb-10" x-data="{ tab: localStorage.getItem('activeTab') || 'infos' }"
+         x-init="$watch('tab', value => localStorage.setItem('activeTab', value))">
         <x-filament::tabs class="flex-col max-h-min sticky top-5 row-span-1">
             <x-filament::tabs.item @click="tab = 'infos'" :alpine-active="'tab === \'infos\''">
                 Informations personnelles
@@ -23,7 +24,6 @@
                 <div>
                     @livewire('profile-form')
                 </div>
-
             </div>
             <div x-show="tab === 'drafts'" class="m-4">
                 <x-filament::section.heading>
@@ -32,7 +32,10 @@
                 @livewire('user-drafts')
             </div>
             <div x-show="tab === 'appels'" class="m-4">
-                Appels infofin
+                <x-filament::section.heading>
+                    Appels Infofin
+                </x-filament::section.heading>
+                @livewire('user-projects')
             </div>
         </x-filament::section>
     </div>
