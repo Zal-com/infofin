@@ -1,26 +1,33 @@
 <?php
+
 namespace App\Http\Controllers;
 
+use App\Models\Draft;
 use App\Models\Project;
 use Illuminate\Http\Request;
 
 class ProjectController extends Controller
 {
-    public function index(Request $request){
+    public function index(Request $request)
+    {
         return view('projects.index');
     }
 
-    public function show(Int $id){
-      $project = Project::find($id);
+    public function show(int $id)
+    {
+        $project = Project::find($id);
 
-      return view('projects.show', compact('project'));
+        return view('projects.show', compact('project'));
     }
 
-    public function create(){
-        return view('projects.create');
+    public function create($record)
+    {
+        $draft = Draft::find($record);
+        return view('projects.create', compact('draft'));
     }
 
-    public function store(Request $request){
+    public function store(Request $request)
+    {
         $validate = request()->validate([]);
         dd($validate);
     }

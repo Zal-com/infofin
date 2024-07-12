@@ -27,6 +27,7 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
@@ -37,6 +38,7 @@ final class ProjectForm extends Component implements HasForms
 {
     use InteractsWithForms;
 
+    public $record;
     public Project $project;
     public array $data = [];
 

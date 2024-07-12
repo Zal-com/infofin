@@ -14,12 +14,12 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::controller(ProjectController::class)->group(function () {
-    Route::get('projects/create', "create")->name('projects.create')->middleware(['auth', 'can:create,App\Models\Project']);
+    Route::get('projects/create/{record?}', "create")->name('projects.create')->middleware(['auth', 'can:create,App\Models\Project']);
     Route::get('/projects', "index")->name('projects.index');
     Route::get('/projects/{id}', "show")->name('projects.show');
 });
 
-Route::controller(UserController::class)->group(function (){
+Route::controller(UserController::class)->group(function () {
     Route::get('users', 'index')->name('users.index');
     Route::get('users/{id}', 'show')->name('users.show');
 });

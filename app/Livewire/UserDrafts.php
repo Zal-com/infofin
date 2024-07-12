@@ -39,7 +39,7 @@ class UserDrafts extends Component implements HasTable, HasForms
             ])
             ->defaultPaginationPageOption(25)
             ->paginationPageOptions([5, 10, 25, 50, 100])
-            ->recordUrl(fn($record) => route('projects.create', $record));
+            ->recordUrl(fn($record) => route('projects.create', $record->id));
     }
 
     public function render()
