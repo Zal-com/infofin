@@ -20,10 +20,14 @@ class ProjectController extends Controller
         return view('projects.show', compact('project'));
     }
 
-    public function create($record)
+    public function create(Request $request)
     {
-        $draft = Draft::find($record);
-        return view('projects.create', compact('draft'));
+        if ($request->query('record')) {
+            $draft = Draft::find($request->query('record'));
+            return view('projects.create', compact('draft'));
+        }
+        return view('projects.create');
+
     }
 
     public function store(Request $request)

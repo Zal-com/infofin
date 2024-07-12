@@ -38,13 +38,19 @@ final class ProjectForm extends Component implements HasForms
 {
     use InteractsWithForms;
 
-    public $record;
+    public $draft;
     public Project $project;
     public array $data = [];
 
     public function mount(Project $project = null)
     {
-        $this->project = $project ?? new Project();
+        if ($this->draft) {
+            $this->project = new Project(json_decode($this->draft->content, true));
+        } else {
+            $this->project = $project ?? new Project();
+        }
+
+
         $this->form->fill($this->project->toArray());
     }
 
