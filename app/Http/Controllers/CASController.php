@@ -18,6 +18,7 @@ class CASController extends Controller
     {
         if (Cas::isAuthenticated()) {
             $attributes = Cas::getAttributes();
+            dd($attributes);
             $matricule = null;
             if (isset($attributes['ulbEmployeeNumber'])) {
                 $matricule = Cas::getAttribute('ulbEmployeeNumber');
