@@ -17,7 +17,6 @@ class CASController extends Controller
         if(Cas::isAuthenticated()){
             dd(Cas::getAttributes());
             $casUser = Cas::getCurrentUser();
-            dd($casUser);
             $user = User::firstOrCreate(['email' => $casUser]);
 
             Auth::login($user);
