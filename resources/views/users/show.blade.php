@@ -1,6 +1,7 @@
 @extends('layout')
 @props(['user'])
 @section('content')
+
     <div class="grid grid-cols-5 gap-4 mb-10" x-data="{ tab: 'infos' }">
         <x-filament::tabs class="flex-col max-h-min sticky top-5 row-span-1">
             <x-filament::tabs.item @click="tab = 'infos'" :alpine-active="'tab === \'infos\''">

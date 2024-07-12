@@ -18,8 +18,8 @@
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
-    @if(session('danger'))
-        <div class="alert alert-danger">{{ session('danger') }}</div>
+    @if(session('error-layout'))
+        <div class="mt-4 p-4 bg-red-500 text-white rounded-2xl mb-4">{{ session('error-layout') }}</div>
     @endif
     @yield('content')
     @filamentScripts
