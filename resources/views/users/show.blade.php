@@ -21,7 +21,7 @@
                 <x-filament::section.heading>
                     Infos personnelles
                 </x-filament::section.heading>
-                <div>
+                <div class="mt-4">
                     @livewire('profile-form')
                 </div>
             </div>
