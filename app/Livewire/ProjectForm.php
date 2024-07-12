@@ -381,7 +381,6 @@ final class ProjectForm extends Component implements HasForms
                 }
             }
 
-            dd($data);
             $project->save();
         }
     }

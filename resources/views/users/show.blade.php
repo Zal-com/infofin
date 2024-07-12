@@ -25,7 +25,7 @@
 
             </div>
             <div x-show="tab === 'drafts'" class="m-4">
-                Brouillons
+                @livewire('user-drafts')
             </div>
             <div x-show="tab === 'appels'" class="m-4">
                 Appels infofin
