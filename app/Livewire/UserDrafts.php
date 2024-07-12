@@ -21,15 +21,25 @@ class UserDrafts extends Component implements HasTable, HasForms
     {
         return $table->query(Draft::where('poster_id', Auth::id()))
             ->columns([
-                TextColumn::make('content')
-                    ->label('Title')
-                    ->formatStateUsing(function ($state) {
-                        $content = json_decode($state, true);
-                        return $content['title'] ?? 'No Title'; // Accessing content.title
+                TextColumn::make('title')
+                    ->label('Titre')
+                    ->getStateUsing(function ($record) {
+                        $content = json_decode($record->content, true);
+                        return $content['title'] ?? 'N/A';
                     }),
+                TextColumn::make('short_description')
+                    ->label('Description')
+                    ->getStateUsing(function ($record) {
+                        $content = json_decode($record->content, true);
+                        return $content['short_description'] ?? 'N/A';
+                    }),
+                TextColumn::make('updated_at')
+                    ->dateTime('d/m/Y H:i')
+                    ->label('Date de modif.')
             ])
             ->defaultPaginationPageOption(25)
-            ->paginationPageOptions([5, 10, 25, 50, 100]);
+            ->paginationPageOptions([5, 10, 25, 50, 100])
+            ->recordUrl(fn($record) => route('projects.create', $record));
     }
 
     public function render()

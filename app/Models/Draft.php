@@ -10,11 +10,12 @@ class Draft extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['content',  'poster_id'];
-    public $timestamps = false;
+    protected $fillable = ['content', 'poster_id'];
+    public $timestamps = true;
 
 
-    public function poster() : BelongsTo {
+    public function poster(): BelongsTo
+    {
         return $this->belongsTo(User::class, 'id');
     }
 }

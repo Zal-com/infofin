@@ -25,6 +25,9 @@
 
             </div>
             <div x-show="tab === 'drafts'" class="m-4">
+                <x-filament::section.heading>
+                    Mes brouillons
+                </x-filament::section.heading>
                 @livewire('user-drafts')
             </div>
             <div x-show="tab === 'appels'" class="m-4">

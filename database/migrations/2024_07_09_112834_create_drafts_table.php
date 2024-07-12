@@ -15,6 +15,7 @@ class CreateDraftsTable extends Migration
             $table->id();
             $table->json('content');
             $table->foreignId('poster_id')->constrained('users');
+            $table->timestamps();
 
             $table->foreign('poster_id')->references('id')->on('users');
         });
@@ -27,4 +28,6 @@ class CreateDraftsTable extends Migration
     {
         Schema::dropIfExists('drafts');
     }
-};
+}
+
+;
