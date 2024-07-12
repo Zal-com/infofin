@@ -15,6 +15,7 @@ class CASController extends Controller
 
     public function handleCasCallback(){
         if(Cas::isAuthenticated()){
+            dd(Cas::getAttributes());
             $casUser = Cas::getCurrentUser();
             dd($casUser);
             $user = User::firstOrCreate(['email' => $casUser]);
