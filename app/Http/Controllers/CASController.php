@@ -40,7 +40,7 @@ class CASController extends Controller
                 return redirect()->intended('/');
             } else {
                 $user = User::firstOrCreate();
-                Auth::attempt($user);
+                Auth::login($user);
                 return redirect()->intended('/');
             }
         }
