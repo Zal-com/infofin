@@ -47,4 +47,9 @@ class AuthenticatedSessionController extends Controller
 
         return redirect('/');
     }
+
+    public function logoutPage(): RedirectResponse
+    {
+        return redirect('/');
+    }
 }
