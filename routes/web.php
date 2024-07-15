@@ -17,6 +17,7 @@ Route::controller(ProjectController::class)->group(function () {
     Route::get('projects/create/', "create")->name('projects.create')->middleware(['auth', 'can:create,App\Models\Project']);
     Route::get('/projects', "index")->name('projects.index');
     Route::get('/projects/{id}', "show")->name('projects.show');
+    Route::get('/projects/{id}/edit', "edit")->name('projects.edit');
 });
 
 Route::controller(UserController::class)->group(function () {
