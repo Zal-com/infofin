@@ -36,13 +36,11 @@ class CASController extends Controller
             $ifUser = User::where('matricule', $matricule)->first();
 
             if ($ifUser) {
-                Auth::attempt([$ifUser->email, $ifUser->password]);
+                Auth::login($ifUser);
                 return redirect()->intended('/');
             } else {
-                dd($attributes);
-                //$user = User::firstOrCreate();
-                //dd($attributes);
-                Auth::attempt([$casUser, $casUser->password, $casUser->password]);
+                $user = User::firstOrCreate();
+                Auth::attempt($user);
                 return redirect()->intended('/');
             }
         }
