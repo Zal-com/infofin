@@ -9,8 +9,8 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\CASController;
 use Illuminate\Support\Facades\Route;
-use \App\Http\Controllers\CASController;
 
 Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])
@@ -24,7 +24,7 @@ Route::middleware('guest')->group(function () {
     //CAS routes
     Route::get('login/cas', [CASController::class, 'redirectToCas'])->name('login.cas');
     Route::get('login/cas/callback', [CASController::class, 'handleCasCallback']);
-    Route::post('login/cas/logout', [CASController::class, 'logout'])->name('login.cas.logout');
+    Route::post('logout/cas', [CASController::class, 'logout'])->name('login.cas.logout');
 
     //End of CAS routes
 

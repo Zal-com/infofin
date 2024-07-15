@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -49,7 +48,7 @@ class CASController extends Controller
 
     public function logout(Request $request)
     {
-
+        dd(Auth::user());
         if (Cas::isAuthenticated()) {
             Cas::logout();
         }
