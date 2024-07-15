@@ -44,7 +44,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        Cas::logout();
+        Cas::logout(config('cas.cas_logout_url', config('cas.cas_client_service')));
 
         return redirect('/');
     }
