@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Subfission\Cas\Facades\Cas;
 
@@ -37,12 +39,30 @@ class CASController extends Controller
                 Auth::attempt([$ifUser->email, $ifUser->password]);
                 return redirect()->intended('/');
             } else {
-                //$user = User::firstOrCreate(['email' => $casUser]);
                 dd($attributes);
-                //Auth::login($user);
+                //$user = User::firstOrCreate();
+                //dd($attributes);
+                Auth::attempt([$casUser, $casUser->password, $casUser->password]);
                 return redirect()->intended('/');
             }
         }
+        return redirect()->route('login');
+    }
+
+    public function logout(Request $request)
+    {
+
+        if (Cas::isAuthenticated()) {
+            Cas::logout();
+        }
+
+        Auth::guard('web')->logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+
         return redirect()->route('login');
     }
 }
