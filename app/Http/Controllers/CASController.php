@@ -54,11 +54,10 @@ class CASController extends Controller
 
     public function logout(Request $request)
     {
+        Auth::guard('web')->logout();
         if (Cas::isAuthenticated()) {
             Cas::logout();
         }
-
-        Auth::guard('web')->logout();
 
         $request->session()->invalidate();
 
