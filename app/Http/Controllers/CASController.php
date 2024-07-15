@@ -16,6 +16,11 @@ class CASController extends Controller
 
     public function handleCasCallback()
     {
+        /*
+         * Authentification CAS :
+         * Si l'utilisateur existe dans la base de données avec son matricule, il sera automatiquement connecté avec ses informations
+         * Si l'utilisateur n'existe pas dans la base de données, il sera connecté avec son matricule, via le CAS
+         */
         if (Cas::isAuthenticated()) {
             $attributes = Cas::getAttributes();
             //dd($attributes);
@@ -29,11 +34,11 @@ class CASController extends Controller
             $ifUser = User::where('matricule', $matricule)->first();
 
             if ($ifUser) {
-                Auth::login($ifUser);
-                return redirect()->intended('/home');
+                Auth::attempt([$ifUser->email, $ifUser->password]);
+                return redirect()->intended('/');
             } else {
                 //$user = User::firstOrCreate(['email' => $casUser]);
-
+                dd($attributes);
                 //Auth::login($user);
                 return redirect()->intended('/');
             }
