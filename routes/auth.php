@@ -40,6 +40,8 @@ Route::middleware('guest')->group(function () {
 
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
+
+    Route::get('logout', [AuthenticatedSessionController::class, 'logoutPage'])->name('logout.page');
 });
 
 Route::middleware('auth')->group(function () {
@@ -61,8 +63,6 @@ Route::middleware('auth')->group(function () {
     Route::post('confirm-password', [ConfirmablePasswordController::class, 'store']);
 
     Route::put('password', [PasswordController::class, 'update'])->name('password.update');
-
-    Route::get('logout', [AuthenticatedSessionController::class, 'logoutPage'])->name('logout.page');
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
