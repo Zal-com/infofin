@@ -38,8 +38,13 @@ class CASController extends Controller
                 Auth::login($ifUser);
                 return redirect()->intended('/');
             } else {
-                dd($attributes);
-                //$user = new User(['matricule' => $attributes['ulbEmployeeNumber'], 'email' ]);
+                $user = new User([
+                    'matricule' => $matricule,
+                    'first_name' => $attributes['givenName'],
+                    'last_name' => $attributes['sn'],
+                    'password' => '',
+                    'email' => $attributes['mail']]);
+                $user->save();
                 Auth::login($user);
                 return redirect()->intended('/');
             }
