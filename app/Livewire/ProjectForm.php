@@ -33,6 +33,7 @@ use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use function PHPUnit\Framework\assertInstanceOf;
 
 final class ProjectForm extends Component implements HasForms
 {
@@ -49,8 +50,6 @@ final class ProjectForm extends Component implements HasForms
         } else {
             $this->project = $project ?? new Project();
         }
-
-
         $this->form->fill($this->project->toArray());
     }
 
@@ -219,10 +218,32 @@ final class ProjectForm extends Component implements HasForms
 
     public function saveAsDraft()
     {
-        $draft = new Draft(['content' => json_encode($this->data), 'poster_id' => Auth::id()]);
-        if ($draft->save()) {
-            return redirect()->route('projects.index')->with('success', 'Brouillon enregistré');
+        if ($this->draft) {
+            $updatedDraft = Draft::find($this->draft->id);
+
+            if ($updatedDraft) {
+                $updateSuccessful = $updatedDraft->update([
+                    'content' => json_encode($this->data),
+                    'poster_id' => Auth::id()
+                ]);
+
+                if ($updateSuccessful) {
+                    return redirect()->route('profile.show')->with('success', 'Le brouillon a bien été enregistré.');
+                }
+            }
         }
+
+        $draft = new Draft([
+            'content' => json_encode($this->data),
+            'poster_id' => Auth::id()
+        ]);
+
+        if ($draft->save()) {
+            return redirect()->route('profile.show')->with('success', 'Brouillon enregistré');
+        }
+
+        // Gérer le cas où la sauvegarde du nouveau brouillon échoue
+        return redirect()->back()->withErrors('La sauvegarde du brouillon a échoué.');
     }
 
     public function submit()

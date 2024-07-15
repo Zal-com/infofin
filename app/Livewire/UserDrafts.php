@@ -43,9 +43,11 @@ class UserDrafts extends Component implements HasTable, HasForms
             ])
             ->actions([
                 Action::make('edit')
+                    ->label('Modifier')
                     ->url(fn(Draft $record) => route('projects.create', ['record' => $record->id]))
                     ->icon('heroicon-o-pencil-square')->iconPosition(IconPosition::Before),
                 Action::make('delete')
+                    ->label('Supprimer')
                     ->requiresConfirmation()
                     ->action(fn(Draft $draft) => $draft->delete())
                     ->icon('heroicon-o-trash')->iconPosition(IconPosition::Before)
