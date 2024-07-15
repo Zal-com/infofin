@@ -25,7 +25,7 @@
                 <i class="fa-solid fa-user pr-2"></i>
                 Profil
                 </a>
-                <form method="post" action="{{route('login.cas.logout')}}">
+                <form method="post" action="{{route('logout.cas')}}">
                     @csrf
                     <button
                         type="submit"

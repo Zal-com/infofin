@@ -24,7 +24,7 @@ Route::middleware('guest')->group(function () {
     //CAS routes
     Route::get('login/cas', [CASController::class, 'redirectToCas'])->name('login.cas');
     Route::get('login/cas/callback', [CASController::class, 'handleCasCallback']);
-    Route::post('logout/cas', [CASController::class, 'logout'])->name('login.cas.logout');
+    Route::post('logout/cas', [CASController::class, 'logout'])->name('logout.cas');
 
     //End of CAS routes
 
