@@ -54,7 +54,6 @@ class CASController extends Controller
 
     public function logout(Request $request)
     {
-        dd(Auth::user());
         if (Cas::isAuthenticated()) {
             Cas::logout();
         }
