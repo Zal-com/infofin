@@ -64,7 +64,6 @@ Route::middleware('auth')->group(function () {
 
     Route::get('logout', [AuthenticatedSessionController::class, 'logoutPage'])->name('logout.page');
 
-
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
 

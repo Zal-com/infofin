@@ -43,9 +43,11 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        Cas::logout(url: "/login");
+        if (Cas::isAuthenticated()) {
+            Cas::logout();
+        }
 
-        return redirect('/');
+        return redirect('/logout');
     }
 
     public function logoutPage(): RedirectResponse
