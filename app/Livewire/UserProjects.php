@@ -32,7 +32,7 @@ class UserProjects extends Component implements HasTable, HasForms
             ->actions([
                 Action::make('edit')
                     ->label('Modifier')
-                    ->url(fn(project $record) => route('projects.edit', ['project' => $record->id]))
+                    ->url(fn(project $record) => route('projects.edit', ['id' => $record->id]))
                     ->icon('heroicon-o-pencil-square')->iconPosition(IconPosition::Before),
                 Action::make('delete')
                     ->label('Supprimer')

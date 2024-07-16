@@ -41,5 +41,12 @@ class ProjectController extends Controller
         dd($validate);
     }
 
+    public function edit(int $id)
+    {
+        $project = Project::find($id);
+
+        return view('projects.edit', compact('project'));
+    }
+
 }
 
