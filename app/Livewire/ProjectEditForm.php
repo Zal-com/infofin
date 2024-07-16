@@ -24,7 +24,7 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Livewire\Component;
-
+use Illuminate\Support\Facades\Log;
 
 class ProjectEditForm extends Component implements HasForms
 {
@@ -36,19 +36,22 @@ class ProjectEditForm extends Component implements HasForms
 
     public function render()
     {
+        Log::info('Render method called');
         return view('livewire.project-edit-form');
     }
 
     public function mount(Project $project)
-{
-    $this->project = $project;
+    {
+        $this->project = $project;
 
-    $this->project->contact_ulb = json_decode($this->project->contact_ulb, true);
-    $this->project->contact_ext = json_decode($this->project->contact_ext, true);
+        $this->project->contact_ulb = is_string($this->project->contact_ulb) ? json_decode($this->project->contact_ulb, true) : $this->project->contact_ulb;
+        $this->project->contact_ext = is_string($this->project->contact_ext) ? json_decode($this->project->contact_ext, true) : $this->project->contact_ext;
 
-    $this->form->fill($this->project->toArray());
-}
+        $this->project->contact_ulb = $this->project->contact_ulb ?? [];
+        $this->project->contact_ext = $this->project->contact_ext ?? [];
 
+        $this->form->fill($this->project->toArray());
+    }
 
     public function form(Form $form): Form
     {
