@@ -40,13 +40,15 @@ class ProjectEditForm extends Component implements HasForms
     }
 
     public function mount(Project $project)
-    {
-        $this->project = $project;
+{
+    $this->project = $project;
 
-        dd($this->project);
+    $this->project->contact_ulb = json_decode($this->project->contact_ulb, true);
+    $this->project->contact_ext = json_decode($this->project->contact_ext, true);
 
-        $this->form->fill($this->project->toArray());
-    }
+    $this->form->fill($this->project->toArray());
+}
+
 
     public function form(Form $form): Form
     {
