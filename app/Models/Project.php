@@ -23,48 +23,49 @@ class Project extends Model
     public $timestamps = true;
 
 
-    public function scientificDomains() : BelongsToMany
+    public function scientificDomains(): BelongsToMany
     {
         return $this->belongsToMany(ScientificDomain::class, 'projects_scientific_domains', 'project_id', 'scientific_domain_id');
     }
 
-    public function info_types() : BelongsToMany
+    public function info_types(): BelongsToMany
     {
         return $this->belongsToMany(InfoType::class, 'projects_info_types', 'project_id', 'info_type_id');
     }
 
-    public function country() : BelongsTo
+    public function country(): BelongsTo
     {
         return $this->belongsTo(Countries::class, 'country_id', "codePays");
     }
 
-    public function poster() : BelongsTo
+    public function poster(): BelongsTo
     {
         return $this->belongsTo(User::class, 'poster_id');
     }
 
-    public function continent() : BelongsTo
+    public function continent(): BelongsTo
     {
-            return $this->belongsTo(Continent::class, 'continent_id');
+        return $this->belongsTo(Continent::class, 'continent_id');
     }
 
-    public function organisations() : BelongsToMany
+    public function organisations(): BelongsToMany
     {
         return $this->belongsToMany(Organisation::class, 'projects_organisations', 'project_id', 'organisation_id');
     }
 
-    public function documents() : HasMany
+    public function documents(): HasMany
     {
         return $this->hasMany(Document::class, 'project_id');
     }
 
-    public function visit_rates() : HasMany
+    public function visit_rates(): HasMany
     {
         return $this->hasMany(VisitsRate::class, 'project_id');
     }
 
-    public function rate_mail() : BelongsToMany
+    public function rate_mail(): BelongsToMany
     {
         return $this->belongsToMany(User::class, "visits_rate_mail", "project_id", "user_id")->withPivot('date_consult');
     }
+
 }
