@@ -81,29 +81,35 @@ class User extends Authenticatable
         return $this->belongsToMany(Faculties::class, 'users_faculties', 'user_id', 'faculty_id');
     }
 
-    public function scientific_domains() : BelongsToMany
+    public function scientific_domains(): BelongsToMany
     {
         return $this->belongsToMany(ScientificDomain::class, 'users_scientific_domains', 'user_id', 'scientific_domain_id');
     }
 
-    public function info_types() : BelongsToMany
+    public function info_types(): BelongsToMany
     {
         return $this->belongsToMany(InfoType::class, 'users_info_types', 'user_id', 'info_type_id');
     }
 
 
-    public function searches() : HasMany
+    public function searches(): HasMany
     {
         return $this->hasMany(Searches::class, "user_id");
     }
 
-    public function projects() : HasMany
+    public function projects(): HasMany
     {
         return $this->hasMany(Project::class, "poster_id");
     }
 
-    public function rate_mail() : BelongsToMany
+    public function rate_mail(): BelongsToMany
     {
         return $this->belongsToMany(Project::class, "visits_rate_mail", "user_id", "project_id")->withPivot('date_consult');
     }
+
+    public function full_name()
+    {
+        return "{$this->first_name} {$this->last_name}";
+    }
+
 }
