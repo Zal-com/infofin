@@ -43,6 +43,8 @@ class ProjectEditForm extends Component implements HasForms
     {
         $this->project = $project;
 
+        dd($this->project);
+
         $this->form->fill($this->project->toArray());
     }
 
