@@ -45,7 +45,7 @@
                 @endif
             </div>
 
-            <div class="flex items-center mt-4 w-full justify-center">
+            <div class="flex flex-col gap-2 items-center mt-4 w-full justify-center">
                 <x-primary-button class="ms-3 w-2/3 justify-center">
                     {{ __('Log in') }}
                 </x-primary-button>
@@ -55,6 +55,11 @@
                 <x-secondary-button class="flex gap-2 pl-0 pt-0 pb-0 w-full">
                     <img src="{{url('img/ulb_logo_simple.png')}}" height="36" width="36" class="rounded-l">
                     <div class="flex w-full justify-center">Se connecter avec l'ULBID</div>
+                </x-secondary-button>
+            </a>
+            <a href="{{ route('register') }}" class="ms-3 w-2/3">
+                <x-secondary-button class="flex w-full justify-center">
+                    Créer un compte
                 </x-secondary-button>
             </a>
         </form>

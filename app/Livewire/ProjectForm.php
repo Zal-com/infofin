@@ -91,9 +91,8 @@ final class ProjectForm extends Component implements HasForms
                         ->options(InfoType::all()->sortBy('title')->pluck('title')->toArray())
                         ->columns(3)
                         ->required(),
-                    Select::make('Appel')
+                    CheckboxList::make('appel')
                         ->label("Disciplines scientifiques de l'appel")
-                        ->multiple()
                         ->required()
                         ->options(function () {
                             $categories = ScientificDomainCategory::with('domains')->get();
@@ -130,7 +129,7 @@ final class ProjectForm extends Component implements HasForms
                             return $options;
                         }),
 
-                ])->action,
+                ]),
                 Tabs\Tab::make('Dates importantes')->schema([
                     Section::make('Deadlines')->schema([
                         Fieldset::make('1ere deadline')->schema([
