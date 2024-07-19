@@ -32,14 +32,14 @@ class ProfileForm extends Component implements HasForms
                 TextInput::make('email')
                     ->label('Email')
                     ->required()
-                    ->columnSpan(2)
+                    ->columnSpan(1)
                     ->maxLength(191),
                 TextInput::make('matricule')
                     ->label('Matricule')
                     ->required()
                     ->maxLength(8)
                     ->minLength(8)
-                    ->columnSpan(2),
+                    ->columnSpan(1),
                 TextInput::make('first_name')
                     ->label('Prénom')
                     ->required()
