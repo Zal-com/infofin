@@ -3,7 +3,6 @@
     <div class="flex flex-col items-center">
         <!-- Session Status -->
         <x-auth-session-status class="mb-4" :status="session('status')"/>
-
         <form method="POST" action="{{ route('login') }}"
               class="mt-10 flex flex-col sm:justify-center items-center sm:pt-0 bg-gray-50 w-1/3 p-10 shadow rounded">
             @csrf

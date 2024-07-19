@@ -46,12 +46,12 @@ class RegisterForm extends Component implements HasForms
                     CheckboxList::make('appel.' . $category->id) // Unique name per category
                     ->options($sortedDomains)
                         ->label(false)
-                        ->columnSpanFull()
+                        ->columnSpan(2)
                         ->extraAttributes([
                             'class' => 'w-full'
-                        ])// We already have the label in the fieldset title
+                        ])->columns(2)// We already have the label in the fieldset title
                 ])
-                ->columnSpan(1)
+                ->columnSpan(3)
                 ->extraAttributes([
                     'class' => 'w-full'
                 ]);
@@ -79,10 +79,11 @@ class RegisterForm extends Component implements HasForms
                                 ->label('Email')
                                 ->required()
                                 ->columnSpan(1),
-                        ])->columns(2),
+                        ]),
                         Grid::make()->schema([
                             Checkbox::make('is_mail_subscriber')
-                                ->label("J'accepte de recevoir des mails concernants les derniers appels en lien avec mes centres d'intérêts")
+                                ->label("J'accepte de recevoir des mails en lien avec mes centres d'intérêts")
+                                ->default(true)
                                 ->columnSpan(1),
                         ])->columns(2),
                         TextInput::make('password')
@@ -111,21 +112,25 @@ class RegisterForm extends Component implements HasForms
                             ->placeholder('02XXXXXX / 05XXXXXX')
                             ->columnSpan(1),
                     ])->columns(2),
-                Step::make("Centres d'intérêt")
+                Step::make("Centres d'intérêt - Programmes")
                     ->schema([
                         Section::make("Types d'appels")
                             ->schema([
                                 CheckboxList::make('info_types')
                                     ->label(false)
                                     ->options(InfoType::all()->sortBy('title')->pluck('title')->toArray())
-                                    ->columns(3)
+                                    ->columns(2)
                             ]),
-                        Section::make('Domaines scientifiques')
+
+                    ]),
+                Step::make("Centres d'intérêts - Disciplines")
+                    ->schema([
+                        Section::make('Disciplines scientifiques')
                             ->schema($this->getFieldsetSchema())
                             ->columns(3),
-                    ]),
+                    ])
             ])->submitAction(new HtmlString(Blade::render(<<<BLADE
-                <x-filament::button type="submit">Créer mon compte</x-filament::button>
+                <x-filament::button type="submit"><i class="fa fa-solid fa-plus mr-2"></i>Créer mon compte</x-filament::button>
                 BLADE
             ))),
         ])->statePath('data');

@@ -1,6 +1,8 @@
 @extends('layout')
 @section('content')
-    <h1 class="font-bold mb-2">Création de compte</h1>
+    <div class="text-center">
+        <h1 class="font-bold mb-2">Créer un compte</h1>
+    </div>
     @livewire('register-form')
 @endsection
 {{--

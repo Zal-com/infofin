@@ -1,4 +1,4 @@
-<div>
+<div class="mt-10">
     <div class="flex gap-0">
         <span class="w-[9.09091%] inline-block h-[7px]" style="background: #000000"></span>
         <span class="w-[9.09091%] inline-block h-[7px]" style="background: #e6027c"></span>
