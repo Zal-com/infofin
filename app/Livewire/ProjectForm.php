@@ -27,6 +27,7 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
+use Filament\Resources\Components\Tab;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
@@ -129,7 +130,7 @@ final class ProjectForm extends Component implements HasForms
                             return $options;
                         }),
 
-                ]),
+                ])->action,
                 Tabs\Tab::make('Dates importantes')->schema([
                     Section::make('Deadlines')->schema([
                         Fieldset::make('1ere deadline')->schema([
@@ -168,24 +169,23 @@ final class ProjectForm extends Component implements HasForms
                     MarkdownEditor::make('long_description')
                         ->label('Description complète')
                         ->required(),
+                ]),
+                Tabs\Tab::make('Financement')->schema([
                     MarkdownEditor::make('funding')
+                        ->hint("Informations sur le financement et le budget de l'appel")
                         ->label("Financement")
                         ->required(),
                 ]),
                 Tabs\Tab::make("Critères d'admission")->schema([
                     MarkdownEditor::make('admission_requirements')
-                        ->label("")
+                        ->label("Critères d'admission")
                         ->required(),
                 ]),
                 Tabs\Tab::make("Pour postuler")->schema([
                     MarkdownEditor::make('apply_instructions')
-                        ->label("")
+                        ->label("Pour postuler")
                         ->required(),
-                    FileUpload::make('docs')
-                        ->multiple()
-                        ->disk('public')
-                        ->visibility('public')
-                        ->directory('uploads/docs')
+
                 ]),
                 Tabs\Tab::make("Contacts")->schema([
                     Fieldset::make('Internes')->schema([
@@ -207,6 +207,13 @@ final class ProjectForm extends Component implements HasForms
                         ])->columns(2)->addActionLabel('+ Nouveau contact')
                     ]),
                 ]),
+                Tabs\Tab::make('Documents')->schema([
+                    FileUpload::make('docs')
+                        ->label('Documents')
+                        ->multiple()
+                        ->disk('public')
+                        ->visibility('public')
+                        ->directory('uploads/docs')]),
             ]),
         ])->statePath('data')->model($this->project);
     }

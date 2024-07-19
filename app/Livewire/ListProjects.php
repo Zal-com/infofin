@@ -33,9 +33,9 @@ class ListProjects extends Component implements HasForms, HasTable
             IconColumn::make('status')
                 ->label('Est actif')
                 ->boolean()
-                ->trueIcon('heroicon-o-check-circle')
+                ->trueIcon('heroicon-s-check-circle')
                 ->trueColor('success')
-                ->falseIcon('heroicon-o-x-circle')
+                ->falseIcon('heroicon-s-x-circle')
                 ->falseColor('danger')
                 ->sortable()
                 ->alignCenter(),
@@ -79,7 +79,7 @@ class ListProjects extends Component implements HasForms, HasTable
                 ->searchable(),
             TextColumn::make('short_description')
                 ->label('Description courte')
-                ->formatStateUsing(fn (string $state) : HtmlString => new HtmlString($state))
+                ->formatStateUsing(fn(string $state): HtmlString => new HtmlString($state))
                 ->wrap()
                 ->lineClamp(2)
                 ->limit(100),
@@ -92,6 +92,6 @@ class ListProjects extends Component implements HasForms, HasTable
             ->defaultPaginationPageOption(25)
             ->defaultSort('updated_at', 'desc')
             ->paginationPageOptions([5, 10, 25, 50, 100])
-            ->recordUrl(fn ($record) => route('projects.show', $record->id));
+            ->recordUrl(fn($record) => route('projects.show', $record->id));
     }
 }
