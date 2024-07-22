@@ -8,8 +8,8 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Password;
 use Livewire\Component;
 
 class ProfileForm extends Component implements HasForms
@@ -67,8 +67,7 @@ class ProfileForm extends Component implements HasForms
 
     public function submit()
     {
-
-        if ($this->data['password'] === '') $this->data['password'] = null;
+        if (!(isset($this->data['password'])) || $this->data['password'] === '') $this->data['password'] = null;
 
         $rules = [
             'email' => ['required', 'email', 'max:255'],
