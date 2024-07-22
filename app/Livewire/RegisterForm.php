@@ -50,6 +50,7 @@ class RegisterForm extends Component implements HasForms
                     CheckboxList::make('appel.' . $category->id) // Unique name per category
                     ->options($sortedDomains)
                         ->label(false)
+                        ->bulkToggleable()
                         ->columnSpan(2)
                         ->extraAttributes([
                             'class' => 'w-full'
@@ -129,6 +130,7 @@ class RegisterForm extends Component implements HasForms
                             ->schema([
                                 CheckboxList::make('info_types')
                                     ->label(false)
+                                    ->bulkToggleable()
                                     ->options(InfoType::all()->sortBy('title')->pluck('title')->toArray())
                                     ->columns(2)
                                     ->validationAttribute("\"Types d'appels\"")
