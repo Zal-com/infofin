@@ -29,7 +29,7 @@ class ListProjects extends Component implements HasForms, HasTable
     public function table(Table $table): Table
     {
         /** @noinspection PhpIllegalArrayKeyTypeInspection */
-        return $table->query(Project::where('is_draft', 0))->columns([
+        return $table->query(Project::where('status', '!=', 2))->columns([
             IconColumn::make('status')
                 ->label('Est actif')
                 ->boolean()
@@ -91,6 +91,7 @@ class ListProjects extends Component implements HasForms, HasTable
         ])
             ->defaultPaginationPageOption(25)
             ->defaultSort('updated_at', 'desc')
+            ->defaultSort('status', 'desc')
             ->paginationPageOptions([5, 10, 25, 50, 100])
             ->recordUrl(fn($record) => route('projects.show', $record->id));
     }

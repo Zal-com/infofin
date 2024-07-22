@@ -44,6 +44,7 @@
                 <x-filament::section.heading>
                     Centres d'intérêt
                 </x-filament::section.heading>
+                @livewire('user-interests')
             </div>
         </x-filament::section>
     </div>
