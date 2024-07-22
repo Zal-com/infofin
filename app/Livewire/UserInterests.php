@@ -3,7 +3,6 @@
 namespace App\Livewire;
 
 use App\Models\InfoType;
-use App\Models\ScientificDomain;
 use App\Models\ScientificDomainCategory;
 use App\Models\User;
 use Filament\Forms\Components\CheckboxList;
@@ -12,14 +11,13 @@ use Filament\Forms\Components\Tabs;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
-use Filament\Tables\Concerns\InteractsWithTable;
-use Filament\Tables\Contracts\HasTable;
 use Livewire\Component;
 
 class UserInterests extends Component implements HasForms
 {
     use InteractsWithForms;
 
+    public User $user;
     public $data = [];
 
     public function render()
@@ -29,7 +27,15 @@ class UserInterests extends Component implements HasForms
 
     public function mount()
     {
-        $this->form->fill();
+        $this->user = auth()->user();
+        $this->user->load('info_types', 'scientific_domains');
+
+        $this->data = [
+            'info_types' => $this->user->info_types->pluck('id')->toArray(),
+            'scientific_domains' => $this->user->scientific_domains->pluck('id')->toArray()
+        ];
+
+        $this->form->fill($this->data);
     }
 
     protected function getFieldsetSchema(): array
@@ -41,14 +47,14 @@ class UserInterests extends Component implements HasForms
             $sortedDomains = $category->domains->sortBy('name')->pluck('name', 'id')->toArray();
             $fieldsets[] = Fieldset::make($category->name)
                 ->schema([
-                    CheckboxList::make('appel.' . $category->id) // Unique name per category
-                    ->options($sortedDomains)
+                    CheckboxList::make('scientific_domains')
                         ->label(false)
+                        ->options($sortedDomains)
                         ->bulkToggleable()
                         ->columnSpan(2)
                         ->extraAttributes([
                             'class' => 'w-full'
-                        ])->columns(3)// We already have the label in the fieldset title
+                        ])->columns(3)
                 ])
                 ->columnSpan(3)
                 ->extraAttributes([
@@ -69,13 +75,13 @@ class UserInterests extends Component implements HasForms
                     Tabs\Tab::make("Types d'appels")
                         ->schema([
                             CheckboxList::make('info_types')
-                                ->label(false)
+                                ->label('Types de programmes')
                                 ->options(InfoType::all()->sortBy('title')->pluck('title', 'id')->toArray())
                                 ->columns(3)
+                                ->relationship('info_types', 'title')
                         ])
                 ])->contained(false)
                 ->extraAttributes(['class' => 'left-aligned-tabs'])
-        ])->statePath('data')->model(User::class);
+        ])->statePath('data')->model($this->user);
     }
-
 }
