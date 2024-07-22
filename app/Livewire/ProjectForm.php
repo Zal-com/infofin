@@ -379,38 +379,37 @@ final class ProjectForm extends Component implements HasForms
         }
 
         if ($project = Project::create($data)) {
-            return redirect()->route('projects.index')->with('success', 'Votre appel a bien été ajouté.');
-        }
-
-        if (!empty($data['organisation'])) {
-            $project->organisations()->sync($data['organisation']);
-        }
-
-        if (!empty($data['info_types'])) {
-            $project->info_types()->sync($data['info_types']);
-        }
-
-        if (!empty($data['Appel'])) {
-            $project->scientific_domains()->sync($data['Appel']);
-        }
-
-        if (isset($data['docs'])) {
-            $data['docs'] = $this->moveFiles($data['docs']);
-            dd($data['docs']);
-        }
-
-        if (!empty($data['Geo_zones'])) {
-            foreach ($data['Geo_zones'] as $zone) {
-                if (strpos($zone, 'continent_') === 0) {
-                    $continent_id = str_replace('continent_', '', $zone);
-                    $project->continent()->associate($continent_id);
-                } elseif (strpos($zone, 'pays_') === 0) {
-                    $country_id = str_replace('pays_', '', $zone);
-                    $project->country()->associate($country_id);
-                }
+            if (!empty($data['organisation'])) {
+                $project->organisations()->sync($data['organisation']);
             }
 
-            $project->save();
+            if (!empty($data['info_types'])) {
+                $project->info_types()->sync($data['info_types']);
+            }
+
+            if (!empty($data['Appel'])) {
+                $project->scientific_domains()->sync($data['Appel']);
+            }
+
+            if (isset($data['docs'])) {
+                $data['docs'] = $this->moveFiles($data['docs']);
+                dd($data['docs']);
+            }
+
+            if (!empty($data['Geo_zones'])) {
+                foreach ($data['Geo_zones'] as $zone) {
+                    if (strpos($zone, 'continent_') === 0) {
+                        $continent_id = str_replace('continent_', '', $zone);
+                        $project->continent()->associate($continent_id);
+                    } elseif (strpos($zone, 'pays_') === 0) {
+                        $country_id = str_replace('pays_', '', $zone);
+                        $project->country()->associate($country_id);
+                    }
+                }
+
+                $project->save();
+            }
+            return redirect()->route('projects.index')->with('success', 'Votre appel a bien été ajouté.');
         }
     }
 
