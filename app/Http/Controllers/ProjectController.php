@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Draft;
 use App\Models\Project;
+use App\Models\VisitsRate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,6 +18,12 @@ class ProjectController extends Controller
     public function show(int $id)
     {
         $project = Project::find($id);
+
+        VisitsRate::create(["project_id" => $id]);
+
+        $project->visit_count = $project->visit_count + 1;
+
+        $project->save();
 
         return view('projects.show', compact('project'));
     }
