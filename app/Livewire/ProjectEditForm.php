@@ -33,6 +33,8 @@ class ProjectEditForm extends Component implements HasForms
     public $draft;
     public Project $project;
     public array $data = [];
+    public array $countries = [];
+    public array $continents = [];
 
     public function render()
     {
@@ -49,9 +51,24 @@ class ProjectEditForm extends Component implements HasForms
 
         $this->checkAndAddOrganisation($this->project->Organisation);
 
-        $data = $this->project->toArray();
+        $this->countries = Countries::all()->pluck('nomPays', 'id')->toArray();
+        $this->continents = Continent::all()->pluck('name', 'id')->toArray();
 
-        $data['scientific_domains'] = $this->project->scientific_domains->pluck('id')->toArray();
+        $geo_zones = [];
+        if ($this->project->country_id) {
+            $geo_zones[] = 'country_' . $this->project->country_id;
+        }
+        if ($this->project->continent_id) {
+            $geo_zones[] = 'continent_' . $this->project->continent_id;
+        }
+
+        $data = array_merge(
+            $this->project->toArray(),
+            [
+                'scientific_domains' => $this->project->scientific_domains->pluck('id')->toArray(),
+                'geo_zones' => $geo_zones,
+            ]
+        );
 
         $this->form->fill($data);
     }
@@ -153,7 +170,7 @@ class ProjectEditForm extends Component implements HasForms
                             }
                             return $options;
                         }),
-                    Select::make('Geo_zones')
+                    Select::make('geo_zones')
                         ->label("Zones géographiques")
                         ->multiple()
                         ->maxItems(3)
@@ -162,21 +179,21 @@ class ProjectEditForm extends Component implements HasForms
                                 'Monde entier' => 'Monde entier',
                             ];
 
-                            $continents = Continent::all()->pluck('name', 'id')->toArray();
-                            $pays = Countries::all()->pluck('nomPays', 'id')->toArray();
+                            $continents = $this->continents;
+                            $countries = $this->countries;
 
                             foreach ($continents as $id => $name) {
                                 $options["continent_$id"] = $name;
                             }
 
-                            foreach ($pays as $id => $name) {
-                                $options["pays_$id"] = $name;
+                            foreach ($countries as $id => $name) {
+                                $options["country_$id"] = $name;
                             }
 
                             return $options;
                         }),
-
                 ]),
+
                 Tabs\Tab::make('Dates importantes')->schema([
                     Section::make('Deadlines')->schema([
                         Fieldset::make('1ere deadline')->schema([
