@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Gate;
@@ -12,6 +13,7 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Register any application services.
      */
+
     public function register(): void
     {
         //
@@ -20,15 +22,17 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
+    public function boot(Schedule $schedule): void
     {
+
+        $schedule->command('newsletter:send')->weeklyOn(1, '15:23'); // 1 = Monday
         Schema::defaultStringLength(191);
 
-        Gate::before(function ($user, $ability){
+        Gate::before(function ($user, $ability) {
             return $user->hasRole('admin') ? true : null;
         });
 
-        if(config('app.env') !== 'local') {
+        if (config('app.env') !== 'local') {
             \URL::forceScheme('https');
         }
     }
