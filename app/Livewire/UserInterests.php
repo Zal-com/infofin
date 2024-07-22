@@ -84,4 +84,12 @@ class UserInterests extends Component implements HasForms
                 ->extraAttributes(['class' => 'left-aligned-tabs'])
         ])->statePath('data')->model($this->user);
     }
+
+    public function save()
+    {
+        $this->user->info_types()->sync($this->data['info_types']);
+        $this->user->scientific_domains()->sync($this->data['scientific_domains']);
+        session()->flash('success', 'Les modifications ont bien été enregistrées.');
+        return redirect()->route('profile.show');
+    }
 }
