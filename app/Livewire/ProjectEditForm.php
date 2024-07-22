@@ -255,6 +255,6 @@ class ProjectEditForm extends Component implements HasForms
                     ]),
                 ]),
             ]),
-        ])->statePath('data')->model($this->project);
+        ])->statePath('data')->model($this->project); //sauvegarde todo
     }
 }
