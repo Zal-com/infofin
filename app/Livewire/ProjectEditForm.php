@@ -23,8 +23,8 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
-use Livewire\Component;
 use Illuminate\Support\Facades\Log;
+use Livewire\Component;
 
 class ProjectEditForm extends Component implements HasForms
 {
@@ -42,15 +42,60 @@ class ProjectEditForm extends Component implements HasForms
 
     public function mount(Project $project)
     {
-        $this->project = $project;
+        $this->project = $project->load('organisations', 'scientific_domains', 'info_types', 'country', 'continent');
 
-        $this->project->contact_ulb = is_string($this->project->contact_ulb) ? json_decode($this->project->contact_ulb, true) : $this->project->contact_ulb;
-        $this->project->contact_ext = is_string($this->project->contact_ext) ? json_decode($this->project->contact_ext, true) : $this->project->contact_ext;
+        $this->project->contact_ulb = $this->transformContacts($this->project->contact_ulb);
+        $this->project->contact_ext = $this->transformContacts($this->project->contact_ext);
 
-        $this->project->contact_ulb = $this->project->contact_ulb ?? [];
-        $this->project->contact_ext = $this->project->contact_ext ?? [];
+        $this->checkAndAddOrganisation($this->project->Organisation);
 
-        $this->form->fill($this->project->toArray());
+        $data = $this->project->toArray();
+
+        $data['scientific_domains'] = $this->project->scientific_domains->pluck('id')->toArray();
+
+        $this->form->fill($data);
+    }
+
+    private function checkAndAddOrganisation($organisationName)
+    {
+        if (!$organisationName) {
+            return;
+        }
+
+        $organisation = Organisation::firstOrCreate(['title' => $organisationName]);
+
+        if (!$this->project->organisations->contains($organisation->id)) {
+            $this->project->organisations()->attach($organisation->id);
+        }
+    }
+
+    private function transformContacts($contacts)
+    {
+        if (is_string($contacts)) {
+            $contacts = json_decode($contacts, true);
+        }
+
+        if (!is_array($contacts)) {
+            return [];
+        }
+
+        $transformedContacts = [];
+
+        foreach ($contacts as $contact) {
+            $nameParts = explode(' ', $contact['name'], 2);
+            $firstName = $nameParts[0] ?? '';
+            $lastName = $nameParts[1] ?? '';
+
+            $transformedContacts[] = [
+                'first_name' => $firstName,
+                'last_name' => $lastName,
+                'email' => $contact['email'] ?? '',
+                'tel' => $contact['phone'] ?? '',
+                'address' => $contact['address'] ?? '',
+            ];
+        }
+
+        return $transformedContacts;
     }
 
     public function form(Form $form): Form
@@ -71,7 +116,7 @@ class ProjectEditForm extends Component implements HasForms
                         ])
                         ->label('Organisation')
                         ->required()
-                        ->relationship(name: 'organisations', titleAttribute: 'title')
+                        ->relationship('organisations', 'title')
                         ->options(Organisation::all()->pluck('title', 'id')->toArray()),
                     Checkbox::make('is_big')
                         ->label('Projet majeur')
@@ -89,11 +134,13 @@ class ProjectEditForm extends Component implements HasForms
                         ->label('Types de programmes')
                         ->options(InfoType::all()->sortBy('title')->pluck('title')->toArray())
                         ->columns(3)
-                        ->required(),
-                    Select::make('Appel')
+                        ->required()
+                        ->relationship('info_types', 'title'),
+                    Select::make('scientific_domains')
                         ->label("Disciplines scientifiques de l'appel")
                         ->multiple()
                         ->required()
+                        ->relationship('scientific_domains', 'name')
                         ->options(function () {
                             $categories = ScientificDomainCategory::with('domains')->get();
 

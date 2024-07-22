@@ -23,7 +23,7 @@ class Project extends Model
     public $timestamps = true;
 
 
-    public function scientificDomains(): BelongsToMany
+    public function scientific_domains(): BelongsToMany
     {
         return $this->belongsToMany(ScientificDomain::class, 'projects_scientific_domains', 'project_id', 'scientific_domain_id');
     }

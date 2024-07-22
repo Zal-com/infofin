@@ -3,17 +3,15 @@
 namespace App\Livewire;
 
 use App\Models\Continent;
+use App\Models\Countries;
 use App\Models\Draft;
 use App\Models\InfoType;
-use App\Models\Countries;
 use App\Models\Organisation;
-use App\Models\ScientificDomainCategory;
 use App\Models\Project;
-use Exception;
+use App\Models\ScientificDomainCategory;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\MarkdownEditor;
@@ -26,15 +24,11 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
-use Filament\Notifications\Notification;
 use Filament\Resources\Components\Tab;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Storage;
-use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use function PHPUnit\Framework\assertInstanceOf;
+use Livewire\Component;
 
 final class ProjectForm extends Component implements HasForms
 {
@@ -397,7 +391,7 @@ final class ProjectForm extends Component implements HasForms
         }
 
         if (!empty($data['Appel'])) {
-            $project->scientificDomains()->sync($data['Appel']);
+            $project->scientific_domains()->sync($data['Appel']);
         }
 
         if (isset($data['docs'])) {
