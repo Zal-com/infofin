@@ -19,8 +19,12 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
+use http\Env\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\HtmlString;
+use Illuminate\Validation\Rules\Password;
 use Livewire\Component;
 
 class RegisterForm extends Component implements HasForms
@@ -78,18 +82,21 @@ class RegisterForm extends Component implements HasForms
                             TextInput::make('email')
                                 ->label('Email')
                                 ->required()
+                                ->unique(table: User::class)
                                 ->columnSpan(1),
                         ]),
                         Grid::make()->schema([
-                            Checkbox::make('is_mail_subscriber')
+                            Checkbox::make('is_email_subscriber')
                                 ->label("J'accepte de recevoir des mails en lien avec mes centres d'intérêts")
                                 ->default(true)
+                                ->validationAttribute('souscription aux mails')
                                 ->columnSpan(1),
                         ])->columns(2),
                         TextInput::make('password')
                             ->password()
                             ->label('Mot de passe')
                             ->required()
+                            ->rules([Password::min(8)->letters()->mixedCase()->numbers()->symbols()->uncompromised()])
                             ->revealable(),
                         TextInput::make('password_confirmation')
                             ->password()
@@ -109,7 +116,11 @@ class RegisterForm extends Component implements HasForms
                             ->required()
                             ->hidden(fn(Get $get): bool => !$get('is_internal') == true)
                             ->live()
-                            ->placeholder('02XXXXXX / 05XXXXXX')
+                            ->unique(table: User::class)
+                            ->requiredIf('is_internal', true)
+                            ->length(8)
+                            ->regex('/^[2,5]\d{7}$/')
+                            ->placeholder('2XXXXXXX / 5XXXXXXX')
                             ->columnSpan(1),
                     ])->columns(2),
                 Step::make("Centres d'intérêt - Programmes")
@@ -120,6 +131,8 @@ class RegisterForm extends Component implements HasForms
                                     ->label(false)
                                     ->options(InfoType::all()->sortBy('title')->pluck('title')->toArray())
                                     ->columns(2)
+                                    ->validationAttribute("\"Types d'appels\"")
+                                    ->requiredIf('is_email_subscriber', true)
                             ]),
 
                     ]),
@@ -134,5 +147,31 @@ class RegisterForm extends Component implements HasForms
                 BLADE
             ))),
         ])->statePath('data');
+    }
+
+    public function save()
+    {
+        //dd($this->data);
+
+        $newUser = new User();
+        $newUser->fill($this->data);
+        if ($newUser->matricule == null && !$this->data['is_internal']) {
+            $newUser->matricule = 99999999;
+        }
+
+        if ($newUser->save()) {
+            $newUser->info_types()->sync($this->data['info_types']);
+            //dd($this->data);
+            $appels = [];
+            array_walk_recursive($this->data['appel'], function ($value) use (&$appels) {
+                $appels[] = $value;
+            });
+            $newUser->scientific_domains()->sync($appels);
+
+            Auth::loginUsingId($newUser->id);
+            return redirect()->route('projects.index');
+        }
+
+
     }
 }

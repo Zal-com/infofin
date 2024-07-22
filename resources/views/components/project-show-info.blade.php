@@ -1,6 +1,6 @@
 @props(['project'])
 
-<div class="grid grid-cols-5 gap-4 mb-10" x-data="{ tab: 'description' }">
+<div class="grid grid-cols-5 gap-4 mb-5" x-data="{ tab: 'description' }">
     <x-filament::section class="col-span-4 row-span-2">
         <x-filament::tabs>
             <x-filament::tabs.item @click="tab = 'description'" :alpine-active="'tab === \'description\''">
@@ -50,7 +50,8 @@
                     <x-filament::section.heading class="text-2xl">
                         Financement
                     </x-filament::section.heading>
-                    <x-filament::section.description class="mb-1 text-sm text-gray-500 dark:text-gray-400 text-justify">
+                    <x-filament::section.description
+                        class="mb-1 text-sm text-gray-500 dark:text-gray-400 text-justify list-inside">
                         <div class="text-sm text-gray-500 dark:text-gray-400 text-justify">
                             {!! Str::of($project->funding)->markdown() !!}
                         </div>
@@ -61,7 +62,8 @@
                 <x-filament::section.heading class="text-2xl">
                     Pour postuler
                 </x-filament::section.heading>
-                <x-filament::section.description class="mb-1 text-justify list-inside">
+                <x-filament::section.description
+                    class="mb-1 text-sm text-gray-500 dark:text-gray-400 text-justify list-inside">
                     <div class="text-sm text-gray-500 dark:text-gray-400 text-justify">
                         {!! \Illuminate\Support\Str::of($project->apply_instructions)->markdown() !!}
                     </div>
@@ -72,8 +74,9 @@
                 <x-filament::section.heading class="text-2xl">
                     Requis d'admission
                 </x-filament::section.heading>
-                <x-filament::section.description class="mb-1 text-justify">
-                    <div class="text-md text-gray-500 dark:text-gray-400 text-justify">
+                <x-filament::section.description
+                    class="mb-1 text-sm text-gray-500 dark:text-gray-400 text-justify list-inside">
+                    <div class="text-sm text-gray-500 dark:text-gray-400 text-justify">
                         {!! \Illuminate\Support\Str::of($project->admission_requirements)->markdown() !!}
                     </div>
                 </x-filament::section.description>

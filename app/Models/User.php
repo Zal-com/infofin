@@ -109,7 +109,7 @@ class User extends Authenticatable
 
     public function full_name()
     {
-        return "{$this->first_name} {$this->last_name}";
+        return strtoupper($this->last_name) . ' ' . $this->first_name;
     }
 
 }
