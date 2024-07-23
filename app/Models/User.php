@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Filament\Models\Contracts\HasName;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -9,7 +10,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable
+class User extends Authenticatable implements HasName
 {
 
     use HasFactory, Notifiable, HasRoles;
@@ -107,9 +108,13 @@ class User extends Authenticatable
         return $this->belongsToMany(Project::class, "visits_rate_mail", "user_id", "project_id")->withPivot('date_consult');
     }
 
-    public function full_name()
+    public function full_name(): string
     {
         return strtoupper($this->last_name) . ' ' . $this->first_name;
     }
 
+    public function getFilamentName(): string
+    {
+        return $this->full_name();
+    }
 }
