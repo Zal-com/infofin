@@ -4,21 +4,16 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\RoleResource\Pages;
 use App\Filament\Resources\RoleResource\RelationManagers;
-use App\Models\Role;
-use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Columns\SelectColumn;
-use Filament\Tables\Columns\TagsColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Spatie\Permission\Models\Role;
 
 class RoleResource extends Resource
 {
-    protected static ?string $table = \Spatie\Permission\Models\Role::class;
+    protected static ?string $model = Role::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationGroup = 'Authentication';
@@ -37,7 +32,15 @@ class RoleResource extends Resource
             ->columns([
                 TextColumn::make('id'),
                 TextColumn::make('name'),
-                TextColumn::make('permission.name')
+                TextColumn::make('permissions.name')
+                    ->label('Permissions')
+                    ->separator(', ')
+                    ->getStateUsing(function ($record) {
+                        if ($record->name === 'admin') {
+                            return ["Toutes"];
+                        }
+                        return $record->permissions->pluck('name')->toArray();
+                    }),
             ])
             ->filters([
                 //
