@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements HasName
@@ -116,5 +117,15 @@ class User extends Authenticatable implements HasName
     public function getFilamentName(): string
     {
         return $this->full_name();
+    }
+
+    public function getFullNameAttribute(): string
+    {
+        return $this->full_name();
+    }
+
+    public function getRoleAttribute(): string
+    {
+        return $this->roles->pluck('name')->implode(', ');
     }
 }

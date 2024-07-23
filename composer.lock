@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "48518a69692badff610135e97a904df7",
+    "content-hash": "1136e1a17141f2a3afd56144144a30dd",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -526,6 +526,56 @@
                 }
             ],
             "time": "2024-05-06T09:10:03+00:00"
+        },
+        {
+            "name": "daylaborers/laravel-mjml",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dayLaborers/laravel-mjml.git",
+                "reference": "c5932a2b395454e9d7ef2837c256c4091b7615ad"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dayLaborers/laravel-mjml/zipball/c5932a2b395454e9d7ef2837c256c4091b7615ad",
+                "reference": "c5932a2b395454e9d7ef2837c256c4091b7615ad",
+                "shasum": ""
+            },
+            "require": {
+                "ext-dom": "*",
+                "ext-libxml": "*",
+                "php": "^8.2.0",
+                "soundasleep/html2text": "^2.1"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "DayLaborers\\LaravelMjml\\MjmlServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "DayLaborers\\LaravelMjml\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ralf Kronen",
+                    "email": "ralf.kronen@daylaborers.de"
+                }
+            ],
+            "description": "Use MJML Templates with Laravel Mailables",
+            "support": {
+                "issues": "https://github.com/dayLaborers/laravel-mjml/issues",
+                "source": "https://github.com/dayLaborers/laravel-mjml/tree/1.0.1"
+            },
+            "time": "2024-04-07T18:14:57+00:00"
         },
         {
             "name": "dflydev/dot-access-data",
@@ -5241,6 +5291,61 @@
                 }
             ],
             "time": "2024-02-26T18:08:49+00:00"
+        },
+        {
+            "name": "soundasleep/html2text",
+            "version": "2.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/soundasleep/html2text.git",
+                "reference": "83502b6f8f1aaef8e2e238897199d64f284b4af3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/soundasleep/html2text/zipball/83502b6f8f1aaef8e2e238897199d64f284b4af3",
+                "reference": "83502b6f8f1aaef8e2e238897199d64f284b4af3",
+                "shasum": ""
+            },
+            "require": {
+                "ext-dom": "*",
+                "ext-libxml": "*",
+                "php": "^7.3|^8.0"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^1.9",
+                "phpunit/phpunit": "^7.0|^8.0|^9.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Soundasleep\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jevon Wright",
+                    "homepage": "https://jevon.org",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A PHP script to convert HTML into a plain text format",
+            "homepage": "https://github.com/soundasleep/html2text",
+            "keywords": [
+                "email",
+                "html",
+                "php",
+                "text"
+            ],
+            "support": {
+                "email": "support@jevon.org",
+                "issues": "https://github.com/soundasleep/html2text/issues",
+                "source": "https://github.com/soundasleep/html2text/tree/2.1.0"
+            },
+            "time": "2023-01-06T09:28:15+00:00"
         },
         {
             "name": "spatie/color",
