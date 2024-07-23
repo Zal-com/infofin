@@ -129,13 +129,13 @@ class User extends Authenticatable implements HasName
         return $this->roles->pluck('name')->implode(', ');
     }
 
-    public function getInfoTypeAttribute(): string
+    public function getInfoTypeAttribute(): Collection
     {
-        return $this->info_types->pluck('title')->implode(', ');
+        return $this->info_types->pluck('title');
     }
 
-    public function getScientificDomainAttribute(): string
+    public function getScientificDomainAttribute(): Collection
     {
-        return $this->scientific_domains->pluck('id')->implode(', ');
+        return $this->scientific_domains->pluck('name');
     }
 }

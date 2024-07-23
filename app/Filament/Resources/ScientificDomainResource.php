@@ -20,6 +20,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class ScientificDomainResource extends Resource
 {
     protected static ?string $model = ScientificDomain::class;
+    protected static ?string $navigationGroup = 'Domaines Scientifiques';
+    protected static ?string $label = 'Domaines';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 

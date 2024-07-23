@@ -4,6 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\RoleResource\Pages;
 use App\Filament\Resources\RoleResource\RelationManagers;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -18,11 +20,18 @@ class RoleResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationGroup = 'Authentication';
 
+    protected static ?int $navigationSort = 1;
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                //
+                Select::make('permissions')
+                    ->relationship('permissions', 'name')
+                    ->multiple()
+                    ->createOptionForm([
+                        TextInput::make('permission.name')
+                    ])
             ]);
     }
 
@@ -40,7 +49,7 @@ class RoleResource extends Resource
                             return ["Toutes"];
                         }
                         return $record->permissions->pluck('name')->toArray();
-                    }),
+                    })->badge(),
             ])
             ->filters([
                 //

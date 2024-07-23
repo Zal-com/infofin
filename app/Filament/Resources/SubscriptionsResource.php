@@ -7,10 +7,15 @@ use App\Filament\Resources\SubscriptionsResource\RelationManagers;
 use App\Models\InfoType;
 use App\Models\Subscriptions;
 use App\Models\User;
+use Faker\Core\Color;
 use Filament\Forms;
+use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TagsColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -19,7 +24,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class SubscriptionsResource extends Resource
 {
     protected static ?string $model = User::class;
-    protected static ?string $label = 'Subscriptions';
+    protected static ?string $label = 'Abonnements';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -27,7 +32,21 @@ class SubscriptionsResource extends Resource
     {
         return $form
             ->schema([
-                //
+                TextInput::make('email')
+                    ->disabledOn('edit')
+                    ->columnSpanFull(),
+                CheckboxList::make('scientific_domain')
+                    ->relationship('scientific_domains', 'name')
+                    ->label('Domaines scientifiques')
+                    ->columnSpanFull()
+                    ->bulkToggleable()
+                    ->columns(3),
+                CheckboxList::make('info_type')
+                    ->relationship('info_types', 'title')
+                    ->label('Types d\'infos')
+                    ->columnSpanFull()
+                    ->bulkToggleable()
+                    ->columns(3),
             ]);
     }
 
@@ -37,8 +56,8 @@ class SubscriptionsResource extends Resource
             ->query(User::where('is_email_subscriber', '=', 1))
             ->columns([
                 TextColumn::make('email'),
-                TextColumn::make('info_type'),
-                TextColumn::make('scientific_domain')
+                TextColumn::make('info_type')->label('Types d\'informations')->badge(),
+                TextColumn::make('scientific_domain')->label('Domaines scientifiques')->badge(),
             ])
             ->filters([
                 //

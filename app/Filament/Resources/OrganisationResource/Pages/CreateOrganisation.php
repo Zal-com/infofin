@@ -8,5 +8,6 @@ use Filament\Resources\Pages\CreateRecord;
 
 class CreateOrganisation extends CreateRecord
 {
+    protected static ?string $title = 'Nouvelle organisation';
     protected static string $resource = OrganisationResource::class;
 }

@@ -6,6 +6,7 @@ use App\Filament\Resources\ScientificDomainCategoryResource\Pages;
 use App\Filament\Resources\ScientificDomainCategoryResource\RelationManagers;
 use App\Models\ScientificDomainCategory;
 use Filament\Forms;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -17,6 +18,9 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class ScientificDomainCategoryResource extends Resource
 {
     protected static ?string $model = ScientificDomainCategory::class;
+    protected static ?string $label = 'Catégories';
+
+    protected static ?string $navigationGroup = 'Domaines Scientifiques';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -24,7 +28,7 @@ class ScientificDomainCategoryResource extends Resource
     {
         return $form
             ->schema([
-                //
+                TextInput::make('name')->label('Nom de la catégorie')->required(),
             ]);
     }
 
