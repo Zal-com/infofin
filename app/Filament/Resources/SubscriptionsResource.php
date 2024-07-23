@@ -2,13 +2,12 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ScientificDomainResource\Pages;
-use App\Filament\Resources\ScientificDomainResource\RelationManagers;
-use App\Models\ScientificDomain;
+use App\Filament\Resources\SubscriptionsResource\Pages;
+use App\Filament\Resources\SubscriptionsResource\RelationManagers;
+use App\Models\InfoType;
+use App\Models\Subscriptions;
 use App\Models\User;
 use Filament\Forms;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -17,9 +16,10 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class ScientificDomainResource extends Resource
+class SubscriptionsResource extends Resource
 {
-    protected static ?string $model = ScientificDomain::class;
+    protected static ?string $model = User::class;
+    protected static ?string $label = 'Subscriptions';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -27,18 +27,18 @@ class ScientificDomainResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name'),
-                Select::make('category')->relationship('category', 'name'),
+                //
             ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
+            ->query(User::where('is_email_subscriber', '=', 1))
             ->columns([
-                TextColumn::make('id'),
-                TextColumn::make('name'),
-                TextColumn::make('category.name')->sortable(),
+                TextColumn::make('email'),
+                TextColumn::make('info_type'),
+                TextColumn::make('scientific_domain')
             ])
             ->filters([
                 //
@@ -63,9 +63,9 @@ class ScientificDomainResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListScientificDomains::route('/'),
-            'create' => Pages\CreateScientificDomain::route('/create'),
-            'edit' => Pages\EditScientificDomain::route('/{record}/edit'),
+            'index' => Pages\ListSubscriptions::route('/'),
+            'create' => Pages\CreateSubscriptions::route('/create'),
+            'edit' => Pages\EditSubscriptions::route('/{record}/edit'),
         ];
     }
 }
