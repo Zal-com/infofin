@@ -85,8 +85,9 @@ final class ProjectForm extends Component implements HasForms
                         ->options(InfoType::all()->sortBy('title')->pluck('title')->toArray())
                         ->columns(3)
                         ->required(),
-                    CheckboxList::make('appel')
+                    Select::make('appel')
                         ->label("Disciplines scientifiques de l'appel")
+                        ->multiple()
                         ->required()
                         ->options(function () {
                             $categories = ScientificDomainCategory::with('domains')->get();
