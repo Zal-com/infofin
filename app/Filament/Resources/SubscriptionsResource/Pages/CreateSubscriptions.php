@@ -9,4 +9,5 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateSubscriptions extends CreateRecord
 {
     protected static string $resource = SubscriptionsResource::class;
+    protected static ?string $title = "Nouvelle souscription à la newsletter";
 }

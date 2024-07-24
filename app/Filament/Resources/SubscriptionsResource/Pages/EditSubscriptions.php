@@ -9,6 +9,7 @@ use Filament\Resources\Pages\EditRecord;
 class EditSubscriptions extends EditRecord
 {
     protected static string $resource = SubscriptionsResource::class;
+    protected static ?string $title = "Modifier la souscription";
 
     protected function getHeaderActions(): array
     {

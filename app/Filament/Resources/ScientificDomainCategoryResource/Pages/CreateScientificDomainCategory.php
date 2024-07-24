@@ -9,4 +9,5 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateScientificDomainCategory extends CreateRecord
 {
     protected static string $resource = ScientificDomainCategoryResource::class;
+    protected static ?string $title = "Nouvelle catégorie de domaine scientifique";
 }

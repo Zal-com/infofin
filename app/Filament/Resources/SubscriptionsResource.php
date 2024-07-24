@@ -32,7 +32,10 @@ class SubscriptionsResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('email')
+                Select::make('email')
+                    ->searchable()
+                    ->options(User::all()->pluck('email')->toArray())
+                    ->required()
                     ->disabledOn('edit')
                     ->columnSpanFull(),
                 CheckboxList::make('scientific_domain')

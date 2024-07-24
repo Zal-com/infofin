@@ -11,6 +11,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class RoleResource extends Resource
@@ -26,11 +27,16 @@ class RoleResource extends Resource
     {
         return $form
             ->schema([
+                TextInput::make('name')
+                    ->label('Nom du rôle')
+                    ->required(),
                 Select::make('permissions')
                     ->relationship('permissions', 'name')
+                    ->options(Permission::all()->pluck('name', 'id'))
                     ->multiple()
+                    ->required()
                     ->createOptionForm([
-                        TextInput::make('permission.name')
+                        TextInput::make('name')->required()->label('Permission')
                     ])
             ]);
     }

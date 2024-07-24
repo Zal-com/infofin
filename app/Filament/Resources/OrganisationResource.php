@@ -26,7 +26,10 @@ class OrganisationResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('title')->label('Nom de l\'organisation')
+                TextInput::make('title')
+                    ->label('Nom de l\'organisation')
+                    ->required()
+                    ->unique('organisations')
             ]);
     }
 

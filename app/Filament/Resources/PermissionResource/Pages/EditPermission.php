@@ -9,6 +9,7 @@ use Filament\Resources\Pages\EditRecord;
 class EditPermission extends EditRecord
 {
     protected static string $resource = PermissionResource::class;
+    protected static ?string $title = 'Modifier la permission';
 
     protected function getHeaderActions(): array
     {

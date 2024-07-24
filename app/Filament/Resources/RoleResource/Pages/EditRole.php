@@ -9,6 +9,7 @@ use Filament\Resources\Pages\EditRecord;
 class EditRole extends EditRecord
 {
     protected static string $resource = RoleResource::class;
+    protected static ?string $title = "Modifier le rôle";
 
     protected function getHeaderActions(): array
     {

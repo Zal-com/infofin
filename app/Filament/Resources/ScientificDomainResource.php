@@ -29,8 +29,15 @@ class ScientificDomainResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name'),
-                Select::make('category')->relationship('category', 'name'),
+                TextInput::make('name')->label('Domaine scientifique')->required(),
+                Select::make('category')
+                    ->relationship('category', 'name')
+                    ->createOptionForm([
+                        TextInput::make('name')
+                            ->label('Catégorie')
+                            ->required(),
+                    ])
+                    ->required(),
             ]);
     }
 

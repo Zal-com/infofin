@@ -9,6 +9,7 @@ use Filament\Resources\Pages\EditRecord;
 class EditProject extends EditRecord
 {
     protected static string $resource = ProjectResource::class;
+    protected static ?string $title = 'Modification du projet';
 
     protected function getHeaderActions(): array
     {

@@ -9,6 +9,7 @@ use Filament\Resources\Pages\EditRecord;
 class EditScientificDomain extends EditRecord
 {
     protected static string $resource = ScientificDomainResource::class;
+    protected static ?string $title = "Modifier le domaine scientifique";
 
     protected function getHeaderActions(): array
     {
