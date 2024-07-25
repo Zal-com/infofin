@@ -17,6 +17,7 @@ use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
@@ -174,6 +175,14 @@ class ProjectResource extends Resource
                     TextInput::make('tel')->label('Numéro de téléphone')->tel(),
                     TextInput::make('address')->label('Adresse')->columnSpan(2)
                 ])->columns(2)->addActionLabel('+ Nouveau contact')->label('Contact EXTERNE'),
+                FileUpload::make('docs')
+                    ->label('Documents')
+                    ->multiple()
+                    ->preserveFilenames()
+                    ->disk('public')
+                    ->directory('media')
+                    ->acceptedFileTypes(['pdf'])
+                    ->maxFiles(10),
             ]);
     }
 

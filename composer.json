@@ -2,22 +2,30 @@
     "name": "laravel/laravel",
     "type": "project",
     "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
+    "keywords": [
+        "laravel",
+        "framework"
+    ],
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "croustibat/filament-jobs-monitor": "^2.5",
         "daylaborers/laravel-mjml": "^1.0",
         "diglactic/laravel-breadcrumbs": "^9.0",
         "filament/filament": "^3.2",
         "filament/forms": "^3.2",
         "filament/tables": "^3.2",
+        "flowframe/laravel-trend": "*",
         "laravel/framework": "^11.0",
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.5",
         "propaganistas/laravel-phone": "^5.3",
+        "saade/filament-laravel-log": "^3.2",
+        "spatie/laravel-activitylog": "^4.8",
         "spatie/laravel-permission": "^6.7",
         "staudenmeir/belongs-to-through": "^2.5",
-        "subfission/cas": "^5.0"
+        "subfission/cas": "^5.0",
+        "z3d0x/filament-logger": "^0.7.2"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.13",
