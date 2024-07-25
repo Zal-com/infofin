@@ -2,7 +2,9 @@
 
 namespace App\Providers\Filament;
 
+use Amendozaaguiar\FilamentRouteStatistics\FilamentRouteStatisticsPlugin;
 use App\Http\Middleware\Admin;
+use BezhanSalleh\FilamentExceptions\FilamentExceptionsPlugin;
 use Croustibat\FilamentJobsMonitor\FilamentJobsMonitorPlugin;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -43,7 +45,9 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->plugins([
                     FilamentLaravelLogPlugin::make(),
-                    FilamentJobsMonitorPlugin::make()
+                    FilamentJobsMonitorPlugin::make(),
+                    FilamentExceptionsPlugin::make(),
+                    FilamentRouteStatisticsPlugin::make(),
                 ]
             )
             ->resources([
