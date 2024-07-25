@@ -138,4 +138,9 @@ class User extends Authenticatable implements HasName
     {
         return $this->scientific_domains->pluck('name');
     }
+
+    public function getNameAttribute(): string
+    {
+        return $this->full_name();
+    }
 }
