@@ -23,6 +23,11 @@ class Project extends Model
 
     public $timestamps = true;
 
+    protected $casts = [
+        'contact_ulb' => 'array',
+        'contact_ext' => 'array',
+    ];
+
 
     public function scientific_domains(): BelongsToMany
     {

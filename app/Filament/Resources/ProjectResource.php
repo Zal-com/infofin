@@ -75,7 +75,7 @@ class ProjectResource extends Resource
                     ->columns(3)
                     ->columnSpanFull()
                     ->required(),
-                /*CheckboxList::make('appel')
+                Select::make('appel')
                     ->label("Disciplines scientifiques de l'appel")
                     ->required()
                     ->options(function () {
@@ -90,7 +90,6 @@ class ProjectResource extends Resource
                         }
                         return $options;
                     }),
-                */
                 Select::make('Geo_zones')
                     ->label("Zones géographiques")
                     ->multiple()
