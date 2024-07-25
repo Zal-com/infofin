@@ -84,12 +84,12 @@
         </div>
     </x-filament::section>
     <div class="flex flex-col gap-4 sticky top-5">
-        @if(!empty(json_decode($project->contact_ulb, true)))
+        @if($project->contact_ulb)
             <x-filament::section class="col-span-1 row-span-1">
                 <x-filament::section.heading class="text-xl mb-4">
                     Contacts ULB
                 </x-filament::section.heading>
-                @foreach(json_decode($project->contact_ulb, true) as $contact_ulb)
+                @foreach($project->contact_ulb as $contact_ulb)
                     <div class="mb-3 last-of-type:mb-0">
                         <x-filament::section.heading>{{$contact_ulb['name']}}</x-filament::section.heading>
                         @if($contact_ulb['phone'] != "")
@@ -114,12 +114,12 @@
                 @endforeach
             </x-filament::section>
         @endif
-        @if(!empty(json_decode($project->contact_ext, true)))
+        @if($project->contact_ext)
             <x-filament::section class="col-span-1 row-span-1 sticky top-5">
                 <x-filament::section.heading class="text-xl mb-4">
                     Contacts externes
                 </x-filament::section.heading>
-                @foreach(json_decode($project->contact_ext, true) as $contact_ext)
+                @foreach($project->contact_ext as $contact_ext)
 
                     <div class="mb-3 last-of-type:mb-0">
                         <x-filament::section.heading>{{$contact_ext['name']}}</x-filament::section.heading>
