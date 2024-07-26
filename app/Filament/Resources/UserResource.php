@@ -45,7 +45,6 @@ class UserResource extends Resource
                     ->label('Nom')
                     ->required(),
                 Checkbox::make('is_internal')
-                    ->required()
                     ->afterStateUpdated(function (Forms\Set $set, $state) {
                         if (!$state) {
                             $set('matricule', '99999999');

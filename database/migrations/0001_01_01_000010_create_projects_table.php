@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -35,6 +36,7 @@ class CreateProjectsTable extends Migration
             $table->text('long_description');
             $table->string('short_description', 500);
             $table->boolean('is_draft')->default(false);
+            $table->string('origin_url')->nullable();
             $table->timestamps();
 
             //Relations

@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/', function () {
-    return view('homepage');
+    return redirect()->route('projects.index');
 })->name('home');
 
 Route::get('/dashboard', function () {

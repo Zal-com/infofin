@@ -71,6 +71,9 @@ final class ProjectForm extends Component implements HasForms
                     Checkbox::make('is_big')
                         ->label('Projet majeur')
                         ->default(false),
+                    TextInput::make('origin_url')
+                        ->label('Lien vers l\'appel original')
+                        ->url(),
                     Select::make('info')
                         ->label("Type d'information")
                         ->options([
@@ -78,7 +81,7 @@ final class ProjectForm extends Component implements HasForms
                             "Séance d'information organisée par l'ULB",
                             "Séance d'information organisée par un organisme externe"
                         ])
-                        ->selectablePlaceholder(false)
+                        ->selectablePlaceholder()
                         ->required(),
                     CheckboxList::make('info_types')
                         ->label('Types de programmes')
