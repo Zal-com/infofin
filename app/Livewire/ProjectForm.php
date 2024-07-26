@@ -394,7 +394,6 @@ final class ProjectForm extends Component implements HasForms
 
             if (isset($data['docs'])) {
                 $data['docs'] = $this->moveFiles($data['docs']);
-                dd($data['docs']);
             }
 
             if (!empty($data['Geo_zones'])) {
