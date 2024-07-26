@@ -12,7 +12,6 @@ use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Wizard;
 use Filament\Forms\Components\Wizard\Step;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -47,14 +46,14 @@ class RegisterForm extends Component implements HasForms
             $sortedDomains = $category->domains->sortBy('name')->pluck('name', 'id')->toArray();
             $fieldsets[] = Fieldset::make($category->name)
                 ->schema([
-                    CheckboxList::make('appel.' . $category->id) // Unique name per category
+                    CheckboxList::make('appel.' . $category->id)
                     ->options($sortedDomains)
                         ->label(false)
                         ->bulkToggleable()
                         ->columnSpan(2)
                         ->extraAttributes([
                             'class' => 'w-full'
-                        ])->columns(2)// We already have the label in the fieldset title
+                        ])->columns(2)
                 ])
                 ->columnSpan(3)
                 ->extraAttributes([
@@ -131,7 +130,7 @@ class RegisterForm extends Component implements HasForms
                                 CheckboxList::make('info_types')
                                     ->label(false)
                                     ->bulkToggleable()
-                                    ->options(InfoType::all()->sortBy('title')->pluck('title')->toArray())
+                                    ->options(InfoType::all()->sortBy('title')->pluck('title', 'id')->toArray())
                                     ->columns(2)
                                     ->validationAttribute("\"Types d'appels\"")
                                     ->requiredIf('is_email_subscriber', true)
