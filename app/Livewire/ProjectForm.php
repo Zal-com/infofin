@@ -392,7 +392,7 @@ final class ProjectForm extends Component implements HasForms
                 $project->scientific_domains()->sync($data['Appel']);
             }
 
-            if (isset($data['docs'])) {
+            if (isset($data['docs']) && count($data['docs']) > 0) {
                 $data['docs'] = $this->moveFiles($data['docs']);
             }
 
