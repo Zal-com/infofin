@@ -7,3 +7,4 @@
         par {{$project->poster->full_name()}}
     </x-filament::section.description>
 @endsection
+

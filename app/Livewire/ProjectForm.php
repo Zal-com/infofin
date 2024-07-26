@@ -28,7 +28,9 @@ use Filament\Resources\Components\Tab;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\HtmlString;
 use Livewire\Component;
+use Nette\Utils\Html;
 
 final class ProjectForm extends Component implements HasForms
 {
@@ -55,6 +57,7 @@ final class ProjectForm extends Component implements HasForms
                 Tabs\Tab::make('Informations')->schema([
                     TextInput::make('title')
                         ->label('Titre')
+                        ->placeholder('Titre concis, évitez les acronymes seuls')
                         ->maxLength(255)
                         ->required()
                         ->autofocus(),
@@ -161,25 +164,32 @@ final class ProjectForm extends Component implements HasForms
                         ->label('Description courte')
                         ->maxLength(500)
                         ->hint(fn($state, $component) => strlen($state) . '/' . $component->getMaxLength())
+                        ->placeholder('Courte et catchy, elle sera visible depuis la page principale et dans la newsletter')
                         ->live()
                         ->required(),
                     MarkdownEditor::make('long_description')
                         ->label('Description complète')
+                        ->placeholder('Description la plus complète possible du projet, aucune limite de caractères')
+                        ->hint(new HtmlString('Ce champ supporte la syntaxe MarkDown. <a target="blank_" href="https://www.markdownguide.org/cheat-sheet/" style="text-decoration: underline">Comment faire la mise en forme ? <i class="fa fa-solid fa-arrow-up-right-from-square fa-xs"></i></a>'))
                         ->required(),
                 ]),
                 Tabs\Tab::make('Financement')->schema([
                     MarkdownEditor::make('funding')
                         ->hint("Informations sur le financement et le budget de l'appel")
                         ->label("Financement")
-                        ->required(),
+                        ->required()
+                        ->hint(new HtmlString('Ce champ supporte la syntaxe MarkDown. <a target="blank_" href="https://www.markdownguide.org/cheat-sheet/" style="text-decoration: underline">Comment faire la mise en forme ? <i class="fa fa-solid fa-arrow-up-right-from-square fa-xs"></i></a>'))
+                        ->placeholder('Informations sur le montant du financement, sa durée, etc.'),
                 ]),
                 Tabs\Tab::make("Critères d'admission")->schema([
                     MarkdownEditor::make('admission_requirements')
                         ->label("Critères d'admission")
+                        ->hint(new HtmlString('Ce champ supporte la syntaxe MarkDown. <a target="blank_" href="https://www.markdownguide.org/cheat-sheet/" style="text-decoration: underline">Comment faire la mise en forme ? <i class="fa fa-solid fa-arrow-up-right-from-square fa-xs"></i></a>'))
                         ->required(),
                 ]),
                 Tabs\Tab::make("Pour postuler")->schema([
                     MarkdownEditor::make('apply_instructions')
+                        ->hint(new HtmlString('Ce champ supporte la syntaxe MarkDown. <a target="blank_" href="https://www.markdownguide.org/cheat-sheet/" style="text-decoration: underline">Comment faire la mise en forme ? <i class="fa fa-solid fa-arrow-up-right-from-square fa-xs"></i></a>'))
                         ->label("Pour postuler")
                         ->required(),
 

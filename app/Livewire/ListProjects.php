@@ -2,18 +2,25 @@
 
 namespace App\Livewire;
 
+use App\Models\Organisation;
 use App\Models\Project;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Pages\Dashboard\Actions\FilterAction;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\HtmlString;
 use Illuminate\View\View;
 use Livewire\Component;
+use Nette\Utils\Html;
 
 class ListProjects extends Component implements HasForms, HasTable
 {
@@ -31,7 +38,7 @@ class ListProjects extends Component implements HasForms, HasTable
         /** @noinspection PhpIllegalArrayKeyTypeInspection */
         return $table->query(Project::where('status', '!=', 2))->columns([
             IconColumn::make('status')
-                ->label('Est actif')
+                ->label(false)
                 ->boolean()
                 ->trueIcon('heroicon-s-check-circle')
                 ->trueColor('success')
@@ -46,6 +53,12 @@ class ListProjects extends Component implements HasForms, HasTable
                 ->weight(FontWeight::SemiBold)
                 ->sortable()
                 ->searchable(),
+            TextColumn::make('is_big')->badge()->label(false)->formatStateUsing(function ($state) {
+                return $state == 1 ? 'Projet majeur' : null;
+            })
+                ->color(function ($state) {
+                    return $state == 1 ? 'info' : 'secondary';
+                }),
             TextColumn::make('deadline')
                 ->label('Deadline 1')
                 ->sortable()
@@ -93,6 +106,25 @@ class ListProjects extends Component implements HasForms, HasTable
             ->defaultSort('updated_at', 'desc')
             ->defaultSort('status', 'desc')
             ->paginationPageOptions([5, 10, 25, 50, 100])
-            ->recordUrl(fn($record) => route('projects.show', $record->id));
+            ->recordUrl(fn($record) => route('projects.show', $record->id))
+            ->filters([
+                Filter::make('is_big')->label('Projets majeurs')->query(fn($query) => $query->where('is_big', '=', 1)),
+                Filter::make('organisation')->label('Organisation')->form([
+                    Select::make('organisation_id')
+                        ->label('Organisation')
+                        ->options(function () {
+                            return Organisation::query()->pluck('title', 'id')->toArray();
+                        })
+                        ->searchable()
+                ])
+                    ->query(function ($query, $data) {
+                        return $query->when($data['organisation_id'], function ($query, $organisationId) {
+                            return $query->whereHas('organisations', function ($query) use ($organisationId) {
+                                $query->where('organisation_id', $organisationId);
+                            });
+                        });
+                    })
+                    ->indicateUsing(fn($data) => isset($data['organisation_id']) ? 'Organisation : ' . Organisation::find($data['organisation_id'])->title : null),
+            ]);
     }
 }
