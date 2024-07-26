@@ -58,10 +58,11 @@ class SubscriptionsResource extends Resource
         return $table
             ->query(User::where('is_email_subscriber', '=', 1))
             ->columns([
-                TextColumn::make('email'),
+                TextColumn::make('email')->searchable()->sortable(),
                 TextColumn::make('info_type')->label('Types d\'informations')->badge(),
                 TextColumn::make('scientific_domain')->label('Domaines scientifiques')->badge(),
             ])
+            ->actionsPosition(Tables\Enums\ActionsPosition::BeforeColumns)
             ->filters([
                 //
             ])
