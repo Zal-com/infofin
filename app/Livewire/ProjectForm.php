@@ -82,7 +82,7 @@ final class ProjectForm extends Component implements HasForms
                         ->required(),
                     CheckboxList::make('info_types')
                         ->label('Types de programmes')
-                        ->options(InfoType::all()->sortBy('title')->pluck('title')->toArray())
+                        ->options(InfoType::all()->sortBy('title')->pluck('title', 'id')->toArray())
                         ->columns(3)
                         ->required(),
                     Select::make('appel')
