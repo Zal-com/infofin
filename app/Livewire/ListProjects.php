@@ -2,8 +2,12 @@
 
 namespace App\Livewire;
 
+use App\Models\InfoType;
+use App\Models\InfoTypeCategory;
 use App\Models\Organisation;
 use App\Models\Project;
+use Awcodes\FilamentBadgeableColumn\Components\Badge;
+use Awcodes\FilamentBadgeableColumn\Components\BadgeableColumn;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -46,19 +50,34 @@ class ListProjects extends Component implements HasForms, HasTable
                 ->falseColor('danger')
                 ->sortable()
                 ->alignCenter(),
-            TextColumn::make('title')
+            BadgeableColumn::make('title')
                 ->label('Programme')
                 ->wrap()
-                ->lineClamp(2)
+                ->lineClamp(3)
                 ->weight(FontWeight::SemiBold)
                 ->sortable()
+                ->suffixBadges(function (Project $record) {
+                    // Conditionally add the badge only if the condition is met
+                    if ($record->is_big) {
+                        return [
+                            Badge::make('is_big')
+                                ->label('Projet majeur')
+                                ->color('info')
+                        ];
+                    }
+
+                    return [];
+                })
+                ->separator(false)
                 ->searchable(),
+            /*
             TextColumn::make('is_big')->badge()->label(false)->formatStateUsing(function ($state) {
                 return $state == 1 ? 'Projet majeur' : null;
             })
                 ->color(function ($state) {
                     return $state == 1 ? 'info' : 'secondary';
                 }),
+            */
             TextColumn::make('deadline')
                 ->label('Deadline 1')
                 ->sortable()
@@ -125,6 +144,31 @@ class ListProjects extends Component implements HasForms, HasTable
                         });
                     })
                     ->indicateUsing(fn($data) => isset($data['organisation_id']) ? 'Organisation : ' . Organisation::find($data['organisation_id'])->title : null),
+                Filter::make('info_type_category')
+                    ->label('Catégories')
+                    ->form([
+                        Select::make('category_id')
+                            ->label('Categorie')
+                            ->multiple()  // Permettre la sélection multiple
+                            ->options(function () {
+                                return InfoTypeCategory::all()->pluck('name', 'id')->toArray();
+                            })
+                    ])
+                    ->query(function ($query, $data) {
+                        if (!empty($data['category_id'])) {
+                            return $query->whereHas('info_types', function ($query) use ($data) {
+                                $query->whereIn('info_types_cat_id', $data['category_id']);
+                            });
+                        }
+                        return $query;
+                    })
+                    ->indicateUsing(function ($data) {
+                        if (isset($data['category_id']) && !empty($data['category_id'])) {
+                            $categoryNames = InfoTypeCategory::whereIn('id', $data['category_id'])->pluck('name')->toArray();
+                            return 'Catégories : ' . implode(', ', $categoryNames);
+                        }
+                        return null;
+                    })
             ]);
     }
 }

@@ -14,6 +14,7 @@ export default {
         './app/Filament/**/*.php',
         './resources/views/filament/**/*.blade.php',
         './vendor/filament/**/*.blade.php',
+        './vendor/awcodes/filament-badgeable-column/resources/**/*.blade.php',
     ],
 
     theme: {
