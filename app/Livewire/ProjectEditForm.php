@@ -207,25 +207,32 @@ class ProjectEditForm extends Component implements HasForms
                 ]),
 
                 Tabs\Tab::make('Dates importantes')->schema([
-                    Section::make('Deadlines')->schema([
-                        Fieldset::make('1ere deadline')->schema([
-                            DatePicker::make('deadline'),
-                            TextInput::make('proof')
-                                ->label('Justificatif'),
-                            Checkbox::make('continuous')
-                                ->label('Continu')
-                                ->default(false)
-                        ]),
-                        Fieldset::make('2eme deadline')->schema([
-                            DatePicker::make('deadline_2'),
-                            TextInput::make('proof_2')
-                                ->label('Justificatif'),
-                            Checkbox::make('continuous_2')
-                                ->label('Continu')
-                                ->default(false)
-                                ->inline(true)
-                        ]),
+                    Fieldset::make('Deadlines')->schema([
+                        Repeater::make('deadlines')->schema([
+                            DatePicker::make('date')->label('Date'),
+                            TextInput::make('proof')->label('Justificatif'),
+                            Checkbox::make('continuous')->default(false),
+                        ])->label(false)->addActionLabel('+ Ajouter une deadline')->minItems(1)->required()->defaultItems(1),
                     ]),
+                    // Section::make('Deadlines')->schema([
+                    //     Fieldset::make('1ere deadline')->schema([
+                    //         DatePicker::make('deadline'),
+                    //         TextInput::make('proof')
+                    //             ->label('Justificatif'),
+                    //         Checkbox::make('continuous')
+                    //             ->label('Continu')
+                    //             ->default(false)
+                    //     ]),
+                    //     Fieldset::make('2eme deadline')->schema([
+                    //         DatePicker::make('deadline_2'),
+                    //         TextInput::make('proof_2')
+                    //             ->label('Justificatif'),
+                    //         Checkbox::make('continuous_2')
+                    //             ->label('Continu')
+                    //             ->default(false)
+                    //             ->inline(true)
+                    //     ]),
+                    // ]),
                     Select::make('periodicity')
                         ->label('Periodicité')
                         ->options(['Sans', 'Annuel', 'Biennal', 'Triennal', 'Quadriennal', 'Quinquennal'])
