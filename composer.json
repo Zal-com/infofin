@@ -10,6 +10,7 @@
     "require": {
         "php": "^8.2",
         "amendozaaguiar/filament-route-statistics": "^3.0",
+        "awcodes/filament-badgeable-column": "^2.3",
         "bezhansalleh/filament-exceptions": "^2.1",
         "croustibat/filament-jobs-monitor": "^2.5",
         "daylaborers/laravel-mjml": "^1.0",
