@@ -53,7 +53,7 @@ class ListProjects extends Component implements HasForms, HasTable
             BadgeableColumn::make('title')
                 ->label('Programme')
                 ->wrap()
-                ->lineClamp(2)
+                ->lineClamp(3)
                 ->weight(FontWeight::SemiBold)
                 ->sortable()
                 ->suffixBadges(function (Project $record) {
@@ -149,6 +149,7 @@ class ListProjects extends Component implements HasForms, HasTable
                     ->form([
                         Select::make('category_id')
                             ->label('Categorie')
+                            ->multiple()  // Permettre la sélection multiple
                             ->options(function () {
                                 return InfoTypeCategory::all()->pluck('name', 'id')->toArray();
                             })
@@ -156,13 +157,18 @@ class ListProjects extends Component implements HasForms, HasTable
                     ->query(function ($query, $data) {
                         if (!empty($data['category_id'])) {
                             return $query->whereHas('info_types', function ($query) use ($data) {
-                                $query->where('info_types_cat_id', $data['category_id']);
+                                $query->whereIn('info_types_cat_id', $data['category_id']);
                             });
                         }
                         return $query;
                     })
-                    ->indicateUsing(fn($data) => isset($data['category_id']) ? 'Catégorie : ' . InfoTypeCategory::find($data['category_id'])->name : null),
-
+                    ->indicateUsing(function ($data) {
+                        if (isset($data['category_id']) && !empty($data['category_id'])) {
+                            $categoryNames = InfoTypeCategory::whereIn('id', $data['category_id'])->pluck('name')->toArray();
+                            return 'Catégories : ' . implode(', ', $categoryNames);
+                        }
+                        return null;
+                    })
             ]);
     }
 }
