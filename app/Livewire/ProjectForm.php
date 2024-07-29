@@ -38,15 +38,35 @@ final class ProjectForm extends Component implements HasForms
     public $draft;
     public Project $project;
     public array $data = [];
+    public $fromPrev;
 
     public function mount(Project $project = null)
     {
-        if ($this->draft) {
-            $this->project = new Project(json_decode($this->draft->content, true));
+        if (session()->has('fromPreviewData')) {
+            $this->fromPrev = session('fromPreviewData');
+            $this->project = new Project($this->fromPrev);
+            if (isset($this->fromPrev['organisation'])) {
+                $this->project->organisation = $this->fromPrev['organisation'];
+            }
+            if (isset($this->fromPrev['scientific_domains'])) {
+                $this->project->scientific_domains = $this->fromPrev['scientific_domains'];
+            }
+            if (isset($this->fromPrev['info_types'])) {
+                $this->project->info_types = $this->fromPrev['info_types'];
+            }
+            if (isset($this->fromPrev['Geo_zones'])) {
+                $this->project->Geo_zones = $this->fromPrev['Geo_zones'];
+            }
+            $this->form->fill($this->project->toArray());
         } else {
-            $this->project = $project ?? new Project();
+            if ($this->draft) {
+                $this->project = new Project(json_decode($this->draft->content, true));
+            } else {
+                $this->project = $project ?? new Project();
+            }
+
+            $this->form->fill($this->project->toArray());
         }
-        $this->form->fill($this->project->toArray());
     }
 
     public function form(Form $form): Form
