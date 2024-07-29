@@ -371,7 +371,7 @@ final class ProjectForm extends Component implements HasForms
             $data['periodicity'] = 0;
         }
 
-
+        //contact
         $contactsUlB = [];
         if (isset($data['contact_ulb'])) {
             foreach ($data['contact_ulb'] as $contact) {
