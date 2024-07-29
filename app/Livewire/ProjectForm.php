@@ -30,7 +30,6 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\HtmlString;
 use Livewire\Component;
-use Nette\Utils\Html;
 
 final class ProjectForm extends Component implements HasForms
 {
@@ -91,7 +90,7 @@ final class ProjectForm extends Component implements HasForms
                         ->options(InfoType::all()->sortBy('title')->pluck('title', 'id')->toArray())
                         ->columns(3)
                         ->required(),
-                    Select::make('appel')
+                    Select::make('scientific_domains')
                         ->label("Disciplines scientifiques de l'appel")
                         ->multiple()
                         ->required()
@@ -260,6 +259,12 @@ final class ProjectForm extends Component implements HasForms
         return redirect()->back()->withErrors('La sauvegarde du brouillon a échoué.');
     }
 
+    public function preview()
+    {
+        session()->flash('previewData', $this->data);
+        return redirect()->route('projects.preview');
+    }
+
     public function submit()
     {
 
@@ -271,7 +276,7 @@ final class ProjectForm extends Component implements HasForms
             'organisation' => 'array',
             'info_types' => 'array',
             'docs' => 'array',
-            'Appel' => 'array',
+            'scientific_domains' => 'array',
             'Geo_zones' => 'array',
             'deadline' => 'nullable|date|required_if:continuous,false',
             'proof' => 'nullable|string|max:50',
@@ -304,7 +309,7 @@ final class ProjectForm extends Component implements HasForms
             'is_big' => 'Projet Majeur',
             'organisation' => 'Organisation',
             'info_types' => 'Types de programme',
-            'Appel' => 'Disciplines scientifiques',
+            'scientific_domains' => 'Disciplines scientifiques',
             'Geo_zones' => 'Zones géographiques',
             'deadline' => 'Deadline 1',
             'proof' => 'Justificatif de la 1ere deadline',
@@ -401,8 +406,8 @@ final class ProjectForm extends Component implements HasForms
                 $project->info_types()->sync($data['info_types']);
             }
 
-            if (!empty($data['Appel'])) {
-                $project->scientific_domains()->sync($data['Appel']);
+            if (!empty($data['scientific_domains'])) {
+                $project->scientific_domains()->sync($data['scientific_domains']);
             }
 
             if (isset($data['docs']) && count($data['docs']) > 0) {

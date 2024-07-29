@@ -15,6 +15,11 @@ class ProjectController extends Controller
         return view('projects.index');
     }
 
+    public function preview()
+    {
+        return view('projects.preview');
+    }
+
     public function show(int $id)
     {
         $project = Project::find($id);
