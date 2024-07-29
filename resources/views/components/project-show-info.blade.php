@@ -1,6 +1,8 @@
 @props(['project'])
 
-<div class="grid grid-cols-5 gap-4 mb-5" x-data="{ tab: 'description' }">
+<div class="grid grid-cols-5 gap-4 mb-5"
+     x-data="{ tab: localStorage.getItem('activeTab') || 'description' }"
+     x-init="$watch('tab', value => localStorage.setItem('activeTab', value))">
     <x-filament::section class="col-span-4 row-span-2">
         <x-filament::tabs>
             <x-filament::tabs.item @click="tab = 'description'" :alpine-active="'tab === \'description\''">
@@ -19,7 +21,7 @@
 
         <div x-show="tab === 'description'" class="m-4">
             <h1>{{$project->title ?? ''}}</h1>
-            <p>{{$project->organisations->first()->title ?? ''}}</p>
+            <p>{{$project->organisations->first()->title ?? $project->Organisation}}</p>
             <div class="markdown">
                 <x-filament::section.description class="my-3 text-justify">
                     {!! \Illuminate\Support\Str::of($project->long_description)->markdown()!!}
@@ -37,14 +39,6 @@
         </div>
 
         <div x-show="tab === 'infos'" class="m-4">
-            <x-filament::section.heading class="text-2xl">
-                Type de programme
-            </x-filament::section.heading>
-            @foreach($project->info_types as $info_type)
-                <x-filament::section.description class="mb-4 text-justify">
-                    {{$info_type->title ?? ''}}
-                </x-filament::section.description>
-            @endforeach
             @if(!empty($project->funding))
                 <div class="markdown mb-5">
                     <x-filament::section.heading class="text-2xl">
@@ -82,8 +76,22 @@
                 </x-filament::section.description>
             </div>
         </div>
+        <div x-show="tab === 'documents'" class="m-4">
+            <x-filament-tables::empty-state icon="heroicon-o-archive-box-x-mark"
+                                            heading="Pas de documents"></x-filament-tables::empty-state>
+        </div>
     </x-filament::section>
     <div class="flex flex-col gap-4 sticky top-5">
+        <x-filament::section>
+            <x-filament::section.heading class="text-xl mb-4">
+                Types de programme
+            </x-filament::section.heading>
+            <x-filament::section.description class="flex flex-wrap gap-1">
+                @foreach($project->info_types as $info_type)
+                    <x-filament::badge>{{$info_type->title ?? ''}}</x-filament::badge>
+                @endforeach
+            </x-filament::section.description>
+        </x-filament::section>
         @if($project->contact_ulb)
             <x-filament::section class="col-span-1 row-span-1">
                 <x-filament::section.heading class="text-xl mb-4">
@@ -124,7 +132,7 @@
                         <x-filament::section.heading>{{$contact_ext['name']}}</x-filament::section.heading>
                         @if($contact_ext['phone'] != "")
                             <div class="flex items-center">
-                                <x-filament::icon icon="heroicon-s-phone" class="h-5 w-5 mr-2"/>
+                                <x-filament::icon icon="heroicon-s-phone" size="md" class="mr-2"/>
                                 {{$contact_ext['phone']}}
                             </div>
                         @endif
