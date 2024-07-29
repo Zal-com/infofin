@@ -84,7 +84,7 @@
         </div>
     </x-filament::section>
     <div class="flex flex-col gap-4 sticky top-5">
-        @if($project->contact_ext)
+        @if($project->contact_ulb)
             <x-filament::section class="col-span-1 row-span-1">
                 <x-filament::section.heading class="text-xl mb-4">
                     Contacts ULB
@@ -92,19 +92,19 @@
                 @foreach($project->contact_ulb as $contact_ulb)
                     <div class="mb-3 last-of-type:mb-0">
                         <x-filament::section.heading>{{$contact_ulb['name']}}</x-filament::section.heading>
-                        @if($contact_ulb['phone'] != "")
+                        @if(!empty($contact_ulb['phone']))
                             <div class="flex items-center">
                                 <x-filament::icon icon="heroicon-s-phone" class="h-5 w-5 mr-2"/>
                                 {{$contact_ulb['phone']}}
                             </div>
                         @endif
-                        @if($contact_ulb['email'] != "")
+                        @if(!empty($contact_ulb['email']))
                             <div class="flex items-center">
                                 <x-filament::icon icon="heroicon-s-at-symbol" class="h-5 w-5 mr-2"/>
                                 {{$contact_ulb['email']}}
                             </div>
                         @endif
-                        @if($contact_ulb['address'] != "")
+                        @if(!empty($contact_ulb['address']))
                             <div class="flex items-center">
                                 <x-filament::icon icon="heroicon-s-envelope" class="h-5 w-5 mr-2"/>
                                 {{$contact_ulb['address']}}
@@ -119,7 +119,7 @@
                 <x-filament::section.heading class="text-xl mb-4">
                     Contacts externes
                 </x-filament::section.heading>
-                @foreach(json_decode($project->contact_ext, true) as $contact_ext)
+                @foreach($project->contact_ext as $contact_ext)
                     <div class="mb-3 last-of-type:mb-0">
                         <x-filament::section.heading>{{$contact_ext['name']}}</x-filament::section.heading>
                         @if($contact_ext['phone'] != "")
