@@ -14,6 +14,7 @@
             </div>
         @endif
         <form wire:submit.prevent="submit" wire:model="project">
+            @csrf
             {{ $this->form }}
 
             <div class="mt-4 flex justify-end gap-2">
