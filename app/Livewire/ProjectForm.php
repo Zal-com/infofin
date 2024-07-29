@@ -9,6 +9,7 @@ use App\Models\InfoType;
 use App\Models\Organisation;
 use App\Models\Project;
 use App\Models\ScientificDomainCategory;
+use Faker\Provider\Text;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
@@ -30,6 +31,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\HtmlString;
 use Livewire\Component;
+use Nette\Utils\Html;
+use Ramsey\Uuid\Guid\Fields;
 
 final class ProjectForm extends Component implements HasForms
 {
@@ -151,6 +154,15 @@ final class ProjectForm extends Component implements HasForms
 
                 ]),
                 Tabs\Tab::make('Dates importantes')->schema([
+                    Fieldset::make('Deadlines')->schema([
+                        Repeater::make('deadlines')->schema([
+                            DatePicker::make('date')->label('Date'),
+                            TextInput::make('proof')->label('Justificatif'),
+                            Checkbox::make('continuous')->default(false),
+                        ])->label(false)->addActionLabel('+ Ajouter une deadline')->minItems(1)->required()->defaultItems(1),
+                    ]),
+
+                    /*
                     Section::make('Deadlines')->schema([
                         Fieldset::make('1ere deadline')->schema([
                             DatePicker::make('deadline'),
@@ -170,6 +182,7 @@ final class ProjectForm extends Component implements HasForms
                                 ->inline(true)
                         ]),
                     ]),
+                    */
                     Select::make('periodicity')
                         ->label('Periodicité')
                         ->options(['Sans', 'Annuel', 'Biennal', 'Triennal', 'Quadriennal', 'Quinquennal'])
@@ -221,7 +234,7 @@ final class ProjectForm extends Component implements HasForms
                             TextInput::make('email')->label('E-mail')->email(),
                             TextInput::make('tel')->label('Numéro de téléphone')->tel(),
                             TextInput::make('address')->label('Adresse')->columnSpan(2)
-                        ])->columns(2)->addActionLabel('+ Nouveau contact')->label('')
+                        ])->columns(2)->addActionLabel('+ Nouveau contact')->label(false)->maxItems(3)
                     ]),
                     Fieldset::make('Externes')->schema([
                         Repeater::make('contact_ext')->schema([
@@ -230,7 +243,7 @@ final class ProjectForm extends Component implements HasForms
                             TextInput::make('email')->label('E-mail')->email(),
                             TextInput::make('tel')->label('Numéro de téléphone')->tel(),
                             TextInput::make('address')->label('Adresse')->columnSpan(2)
-                        ])->columns(2)->addActionLabel('+ Nouveau contact')
+                        ])->columns(2)->addActionLabel('+ Nouveau contact')->label(false)->maxItems(3)
                     ]),
                 ]),
                 Tabs\Tab::make('Documents')->schema([

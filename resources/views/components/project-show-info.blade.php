@@ -20,6 +20,11 @@
         </x-filament::tabs>
 
         <div x-show="tab === 'description'" class="m-4">
+            <x-filament::section.description class="flex flex-wrap gap-1">
+                @foreach($project->info_types as $info_type)
+                    <x-filament::badge>{{$info_type->title ?? ''}}</x-filament::badge>
+                @endforeach
+            </x-filament::section.description>
             <h1>{{$project->title ?? ''}}</h1>
             <p>{{$project->organisations->first()->title ?? $project->Organisation}}</p>
             <div class="markdown">
@@ -82,17 +87,7 @@
         </div>
     </x-filament::section>
     <div class="flex flex-col gap-4 sticky top-5">
-        <x-filament::section>
-            <x-filament::section.heading class="text-xl mb-4">
-                Types de programme
-            </x-filament::section.heading>
-            <x-filament::section.description class="flex flex-wrap gap-1">
-                @foreach($project->info_types as $info_type)
-                    <x-filament::badge>{{$info_type->title ?? ''}}</x-filament::badge>
-                @endforeach
-            </x-filament::section.description>
-        </x-filament::section>
-        @if($project->contact_ulb)
+        @if(!empty($project->contact_ulb))
             <x-filament::section class="col-span-1 row-span-1">
                 <x-filament::section.heading class="text-xl mb-4">
                     Contacts ULB
@@ -122,7 +117,7 @@
                 @endforeach
             </x-filament::section>
         @endif
-        @if($project->contact_ext)
+        @if(!empty($project->contact_ext))
             <x-filament::section class="col-span-1 row-span-1 sticky top-5">
                 <x-filament::section.heading class="text-xl mb-4">
                     Contacts externes

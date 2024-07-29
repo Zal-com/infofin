@@ -14,6 +14,8 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/agenda', [AgendaController::class, 'index'])->name('agenda');
+
 Route::controller(ProjectController::class)->group(function () {
     Route::get('/projects/preview', "preview")->name('projects.preview');
     Route::get('projects/create/', "create")->name('projects.create')->middleware(['auth', 'can:create,App\Models\Project']);
