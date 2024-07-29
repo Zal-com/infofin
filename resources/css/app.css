@@ -39,4 +39,12 @@
     right: 0;
 }
 
+.custom-badge {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 100% !important;
+    display: inline-block !important;
+}
+
 
