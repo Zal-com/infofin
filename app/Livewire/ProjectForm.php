@@ -9,7 +9,6 @@ use App\Models\InfoType;
 use App\Models\Organisation;
 use App\Models\Project;
 use App\Models\ScientificDomainCategory;
-use Faker\Provider\Text;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
@@ -17,7 +16,6 @@ use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Textarea;
@@ -31,8 +29,6 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\HtmlString;
 use Livewire\Component;
-use Nette\Utils\Html;
-use Ramsey\Uuid\Guid\Fields;
 
 final class ProjectForm extends Component implements HasForms
 {
@@ -300,7 +296,6 @@ final class ProjectForm extends Component implements HasForms
 
     public function submit()
     {
-
         $userId = Auth::id();
 
         $rules = [

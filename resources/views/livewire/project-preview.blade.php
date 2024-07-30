@@ -167,6 +167,21 @@
                     @endforeach
                 </x-filament::section>
             @endif
+            @if(!empty($project->deadlines))
+                <x-filament::section class="col-span-1 row-span-1 sticky top-5">
+                    <x-filament::section.heading class="text-xl mb-4">
+                        Dates
+                    </x-filament::section.heading>
+                    @foreach($project->deadlines as $deadline)
+                        <div class="mb-3 last-of-type:mb-0">
+                            <x-filament::section>
+                                <div>{{$deadline['continuous'] === 1 ? "Continue" : \Carbon\Carbon::make($deadline['date'])->format('d/m/Y')}}</div>
+                                {{$deadline['proof'] ?? ""}}
+                            </x-filament::section>
+                        </div>
+                    @endforeach
+                </x-filament::section>
+            @endif
         </div>
     </div>
 
