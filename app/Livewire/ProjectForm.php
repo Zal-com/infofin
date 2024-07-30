@@ -247,6 +247,10 @@ final class ProjectForm extends Component implements HasForms
                         ->label('Documents')
                         ->disk('public')
                         ->visibility('public')
+                        ->saveUploadedFileUsing(function ($file, $state) {
+                            dump('Saving uploaded file', ['file' => $file->getClientOriginalName()]);
+                            return $file->store('docs', 'public');
+                        })
                     ]),
             ]),
         ])->statePath('data')->model($this->project);
