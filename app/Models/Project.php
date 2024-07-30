@@ -80,18 +80,35 @@ class Project extends Model
     {
         $deadlines = $this->attributes['deadlines'] ? json_decode($this->attributes['deadlines'], true) : [];
 
-        if (isset($deadlines[0])) {
-            $firstDeadline = $deadlines[0];
-
-            if ($firstDeadline['continuous'] == 1) {
-                return 'Continu';
-            } else {
-                // Format the date, e.g., convert it to a more readable format
-                return Carbon::parse($firstDeadline['date'])->format('d/m/Y');
-            }
+        if (empty($deadlines)) {
+            return 'No deadline';
         }
 
-        return 'No deadline';
+        usort($deadlines, function($a, $b) {
+            return strtotime($a['date']) - strtotime($b['date']);
+        });
+
+        $futureDeadlines = array_filter($deadlines, function($deadline) {
+            return Carbon::parse($deadline['date'])->isAfter(today());
+        });
+
+        if (!empty($futureDeadlines)) {
+            $firstFutureDeadline = reset($futureDeadlines);
+
+            if ($firstFutureDeadline['continuous'] == 1) {
+                return 'Continu';
+            } else {
+                return Carbon::parse($firstFutureDeadline['date'])->format('d/m/Y');
+            }
+        } else {
+            $lastDeadline = end($deadlines);
+
+            if ($lastDeadline['continuous'] == 1) {
+                return 'Continu';
+            } else {
+                return Carbon::parse($lastDeadline['date'])->format('d/m/Y');
+            }
+        }
     }
 
 }
