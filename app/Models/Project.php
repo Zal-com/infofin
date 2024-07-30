@@ -87,7 +87,7 @@ class Project extends Model
                 return 'Continu';
             } else {
                 // Format the date, e.g., convert it to a more readable format
-                return Carbon::parse($firstDeadline['date'])->format('d-m-Y');
+                return Carbon::parse($firstDeadline['date'])->format('d/m/Y');
             }
         }
 
