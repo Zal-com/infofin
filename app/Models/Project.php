@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
 class Project extends Model
 {
@@ -73,6 +74,24 @@ class Project extends Model
     public function rate_mail(): BelongsToMany
     {
         return $this->belongsToMany(User::class, "visits_rate_mail", "project_id", "user_id")->withPivot('date_consult');
+    }
+
+    public function getFirstDeadlineAttribute()
+    {
+        $deadlines = $this->attributes['deadlines'] ? json_decode($this->attributes['deadlines'], true) : [];
+
+        if (isset($deadlines[0])) {
+            $firstDeadline = $deadlines[0];
+
+            if ($firstDeadline['continuous'] == 1) {
+                return 'Continu';
+            } else {
+                // Format the date, e.g., convert it to a more readable format
+                return Carbon::parse($firstDeadline['date'])->format('d-m-Y');
+            }
+        }
+
+        return 'No deadline';
     }
 
 }

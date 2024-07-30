@@ -2,29 +2,24 @@
 
 namespace App\Livewire;
 
-use App\Models\InfoType;
 use App\Models\InfoTypeCategory;
 use App\Models\Organisation;
 use App\Models\Project;
 use Awcodes\FilamentBadgeableColumn\Components\Badge;
 use Awcodes\FilamentBadgeableColumn\Components\BadgeableColumn;
-use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Pages\Dashboard\Actions\FilterAction;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Filters\Filter;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\HtmlString;
 use Illuminate\View\View;
 use Livewire\Component;
-use Nette\Utils\Html;
 
 class ListProjects extends Component implements HasForms, HasTable
 {
@@ -104,6 +99,10 @@ class ListProjects extends Component implements HasForms, HasTable
                         return \Carbon\Carbon::parse($record->deadline_2)->format('d/m/Y');
                     }
                 }),
+            TextColumn::make('first_deadline')
+                ->sortable()
+                ->searchable()
+                ->label('Prochaine deadline'),
             TextColumn::make('organisations.title')
                 ->label('Organisation')
                 ->wrap()

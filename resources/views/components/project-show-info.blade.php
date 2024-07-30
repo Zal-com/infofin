@@ -155,7 +155,7 @@
                 @foreach($project->deadlines as $deadline)
                     <div class="mb-3 last-of-type:mb-0">
                         <x-filament::section>
-                            <div>{{$deadline['continuous'] === 1 ? "Continue" : \Carbon\Carbon::make($deadline['date'])->format('d/m/Y')}}</div>
+                            <div>{{$deadline['continuous'] == 1 ? "Continue" : \Carbon\Carbon::make($deadline['date'])->format('d/m/Y')}}</div>
                             {{$deadline['proof'] ?? ""}}
                         </x-filament::section>
                     </div>
