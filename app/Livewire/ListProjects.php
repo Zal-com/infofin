@@ -100,8 +100,6 @@ class ListProjects extends Component implements HasForms, HasTable
                     }
                 }),
             TextColumn::make('first_deadline')
-                ->sortable()
-                ->searchable()
                 ->label('Prochaine deadline'),
             TextColumn::make('organisations.title')
                 ->label('Organisation')
