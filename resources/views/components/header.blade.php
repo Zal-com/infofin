@@ -8,6 +8,7 @@
             <div class="text-blue-900 p-4">
                 <h1 class="select-none">Infofin</h1>
                 {{ env('APP_URL') }}
+                {{ env('FILESYSTEM_DISK') }}
             </div>
             <div class="flex-1">
                 <img class="max-h-[100%] float-end" src="{{asset('img/header_img.png')}}" alt="Image décorative"/>
