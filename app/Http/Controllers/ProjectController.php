@@ -60,9 +60,9 @@ class ProjectController extends Controller
         return view('projects.edit', compact('project'));
     }
 
-    public function archives()
+    public function archive()
     {
-        return "ok";
+        return view('projects.archives');
     }
 
 }

@@ -24,3 +24,10 @@ Breadcrumbs::for('project', function (BreadcrumbTrail $trail, $project) {
     $trail->parent('projects');
     $trail->push($project->title, route('projects.show', $project));
 });
+
+// Home > Projects > Archives
+Breadcrumbs::for('archives', function (BreadcrumbTrail $trail) {
+    $trail->parent('projects');
+    $trail->push('Archives', route('projects.archive'));
+});
+

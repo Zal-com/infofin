@@ -18,11 +18,11 @@ Route::get('/agenda', [AgendaController::class, 'index'])->name('agenda');
 
 Route::controller(ProjectController::class)->group(function () {
     Route::get('/projects/preview', "preview")->name('projects.preview');
+    Route::get('/projects/archive', "archive")->name("projects.archive");
     Route::get('projects/create/', "create")->name('projects.create');
     Route::get('/projects', "index")->name('projects.index');
     Route::get('/projects/{id}', "show")->name('projects.show');
     Route::get('/projects/{id}/edit', "edit")->name('projects.edit');
-    Route::get('/projects/archive', "archive")->name("projects.archive");
 });
 
 Route::controller(UserController::class)->group(function () {
