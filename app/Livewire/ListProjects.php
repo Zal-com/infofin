@@ -35,7 +35,14 @@ class ListProjects extends Component implements HasForms, HasTable
     public function table(Table $table): Table
     {
         /** @noinspection PhpIllegalArrayKeyTypeInspection */
-        return $table->query(Project::where('status', '!=', 2))->columns([
+        return $table->query(
+            Project::where('status', '!=', 2)
+                ->where(function ($query) {
+                    $query->where('updated_at', '>', now()->subYears(2))
+                          ->orWhereJsonContains('deadlines->date', function ($subQuery) {
+                              $subQuery->where('date', '>', now());
+                          });
+                }))->columns([
             IconColumn::make('status')
                 ->label(false)
                 ->boolean()

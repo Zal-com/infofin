@@ -111,4 +111,15 @@ class Project extends Model
         }
     }
 
+    public function hasUpcomingDeadline()
+    {
+        $deadlines = json_decode($this->deadlines, true);
+        foreach ($deadlines as $deadline) {
+            if ($deadline['continuous'] && \Carbon\Carbon::parse($deadline['date'])->isAfter(now())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

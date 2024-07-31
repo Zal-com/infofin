@@ -22,6 +22,7 @@ Route::controller(ProjectController::class)->group(function () {
     Route::get('/projects', "index")->name('projects.index');
     Route::get('/projects/{id}', "show")->name('projects.show');
     Route::get('/projects/{id}/edit', "edit")->name('projects.edit');
+    Route::get('/projects/archive', "archive")->name("projects.archive");
 });
 
 Route::controller(UserController::class)->group(function () {
