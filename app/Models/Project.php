@@ -13,8 +13,7 @@ class Project extends Model
 
     protected $table = 'projects';
     protected $fillable = [
-        'title', 'deadline', 'deadline_2', 'continuous',
-        'continuous_2', 'proof', 'proof_2', 'contact_ulb', 'contact_ext',
+        'title', 'contact_ulb', 'contact_ext',
         'periodicity', 'admission_requirements', 'funding', 'apply_instructions',
         'poster_id', 'is_view_for_mail', 'date_lessor', 'info_lessor',
         'visit_count', 'last_update_user_id', 'country_id', 'continent_id',
@@ -84,11 +83,11 @@ class Project extends Model
             return 'No deadline';
         }
 
-        usort($deadlines, function($a, $b) {
+        usort($deadlines, function ($a, $b) {
             return strtotime($a['date']) - strtotime($b['date']);
         });
 
-        $futureDeadlines = array_filter($deadlines, function($deadline) {
+        $futureDeadlines = array_filter($deadlines, function ($deadline) {
             return Carbon::parse($deadline['date'])->isAfter(today());
         });
 

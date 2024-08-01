@@ -79,7 +79,7 @@ class ListProjects extends Component implements HasForms, HasTable
                 ->color(function ($state) {
                     return $state == 1 ? 'info' : 'secondary';
                 }),
-
+*/
             TextColumn::make('deadline')
                 ->label('Deadline 1')
                 ->sortable()
@@ -106,9 +106,10 @@ class ListProjects extends Component implements HasForms, HasTable
                         return \Carbon\Carbon::parse($record->deadline_2)->format('d/m/Y');
                     }
                 }),
-            */
+            /*
             TextColumn::make('first_deadline')
                 ->label('Prochaine deadline'),
+            */
             TextColumn::make('organisations.title')
                 ->label('Organisation')
                 ->wrap()

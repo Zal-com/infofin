@@ -250,7 +250,7 @@ final class ProjectForm extends Component implements HasForms
                         ->saveUploadedFileUsing(function ($file, $state) {
                             return Storage::put('img', $file);
                         })
-                    ]),
+                ]),
             ]),
         ])->statePath('data')->model($this->project);
     }
@@ -388,9 +388,9 @@ final class ProjectForm extends Component implements HasForms
                     ];
                 }
             }
-            $data['contact_ulb'] = !empty($contactsUlB) ? json_encode($contactsUlB) : '[]';
+            $data['contact_ulb'] = !empty($contactsUlB) ? json_encode($contactsUlB) : [];
         } else {
-            $data['contact_ulb'] = '[]';
+            $data['contact_ulb'] = [];
         }
 
 
@@ -411,9 +411,9 @@ final class ProjectForm extends Component implements HasForms
                     ];
                 }
             }
-            $data['contact_ext'] = !empty($contactsExt) ? json_encode($contactsExt) : '[]';
+            $data['contact_ext'] = !empty($contactsExt) ? json_encode($contactsExt) : [];
         } else {
-            $data['contact_ext'] = '[]';
+            $data['contact_ext'] = [];
         }
 
         if ($project = Project::create($data)) {
