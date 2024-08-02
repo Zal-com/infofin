@@ -16,8 +16,6 @@
         <form wire:submit.prevent="submit" wire:model="project">
             @csrf
             {{ $this->form }}
-            <label for="test">Test</label>
-            <input type="file" id="test" name="test"/>
             <div class="mt-4 flex justify-end gap-2">
                 <x-filament::button type="button" wire:click="saveAsDraft">
                     Garder en brouillon
