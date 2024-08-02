@@ -296,6 +296,7 @@ final class ProjectForm extends Component implements HasForms
 
     public function submit()
     {
+        dd($this->data);
         $userId = Auth::id();
 
         $rules = [
