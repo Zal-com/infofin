@@ -245,11 +245,6 @@ final class ProjectForm extends Component implements HasForms
                 Tabs\Tab::make('Documents')->schema([
                     FileUpload::make('docs')
                         ->label('Documents')
-                        ->disk('public')
-                        ->visibility('public')
-                        ->saveUploadedFileUsing(function ($file, $state) {
-                            return Storage::put('img', $file);
-                        })
                 ]),
             ]),
         ])->statePath('data')->model($this->project);
