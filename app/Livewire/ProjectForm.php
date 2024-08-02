@@ -247,6 +247,8 @@ final class ProjectForm extends Component implements HasForms
                         ->label('Documents')
                         ->disk('public')
                         ->visibility('public')
+                        ->acceptedFileTypes(['application/pdf'])
+                        ->multiple()
                         ->saveUploadedFileUsing(function ($file, $state) {
                             return Storage::put('img', $file);
                         })
