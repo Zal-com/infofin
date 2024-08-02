@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Continent;
 use App\Models\Countries;
+use App\Models\Document;
 use App\Models\Draft;
 use App\Models\InfoType;
 use App\Models\Organisation;
@@ -252,6 +253,7 @@ final class ProjectForm extends Component implements HasForms
                         ->saveUploadedFileUsing(function ($file, $state) {
                             return Storage::put('img', $file);
                         })
+                        ->model(Document::class)
                 ]),
             ]),
         ])->statePath('data')->model($this->project);
