@@ -5,8 +5,7 @@ use Bilfeldt\LaravelRouteStatistics\Http\Middleware\RouteStatisticsMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use Illuminate\Foundation\Exceptions\Handler;
-use Illuminate\Http\Middleware\TrustProxies;
+use Illuminate\Http\Middleware\HandleCors;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -17,7 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->use([
             RouteStatisticsMiddleware::class,
-        ])->trustProxies('*');
+            HandleCors::class
+        ])
+        ->trustProxies('*');
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->report(function (Throwable $e) {
