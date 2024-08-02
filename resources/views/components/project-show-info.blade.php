@@ -94,17 +94,27 @@
                 </x-filament::section.heading>
                 @foreach($project->contact_ulb as $contact_ulb)
                     <div class="mb-3 last-of-type:mb-0">
-                        <x-filament::section.heading>{{$contact_ulb['name']}}</x-filament::section.heading>
+                        <x-filament::section.heading>
+                            <p class="flex-1 flex-wrap overflow-ellipsis line-clamp-1">
+                                {{$contact_ulb['name']}}
+                            </p>
+                        </x-filament::section.heading>
                         @if(!empty($contact_ulb['phone']))
                             <div class="flex items-center">
                                 <x-filament::icon icon="heroicon-s-phone" class="h-5 w-5 mr-2"/>
-                                {{$contact_ulb['phone']}}
+                                <p class="flex-1 flex-wrap overflow-ellipsis line-clamp-1">
+                                    {{$contact_ulb['phone']}}
+                                </p>
                             </div>
                         @endif
                         @if(!empty($contact_ulb['email']))
                             <div class="flex items-center">
                                 <x-filament::icon icon="heroicon-s-at-symbol" class="h-5 w-5 mr-2"/>
-                                {{$contact_ulb['email']}}
+                                <p class="flex-1 flex-wrap overflow-ellipsis line-clamp-1">
+                                    <a href="mailto:{{trim($contact_ulb['email'])}}">
+                                        {{$contact_ulb['email']}}
+                                    </a>
+                                </p>
                             </div>
                         @endif
                         @if(!empty($contact_ulb['address']))
@@ -124,23 +134,36 @@
                 </x-filament::section.heading>
                 @foreach($project->contact_ext as $contact_ext)
                     <div class="mb-3 last-of-type:mb-0">
-                        <x-filament::section.heading>{{$contact_ext['name']}}</x-filament::section.heading>
+                        <x-filament::section.heading>
+                            <p class="flex-1 flex-wrap overflow-ellipsis line-clamp-1">
+                                {{$contact_ext['name']}}
+                            </p>
+                        </x-filament::section.heading>
                         @if($contact_ext['phone'] != "")
                             <div class="flex items-center">
-                                <x-filament::icon icon="heroicon-s-phone" size="md" class="mr-2"/>
-                                {{$contact_ext['phone']}}
+                                <x-filament::icon icon="heroicon-s-phone" class="h-[24px] w-[24px] mr-2"/>
+                                <p class="flex-1 flex-wrap overflow-ellipsis line-clamp-1">
+                                    {{$contact_ext['phone']}}
+                                </p>
                             </div>
                         @endif
                         @if($contact_ext['email'] != "")
                             <div class="flex items-center">
-                                <x-filament::icon icon="heroicon-s-at-symbol" class="h-5 w-5 mr-2"/>
-                                {{$contact_ext['email']}}
+                                <x-filament::icon icon="heroicon-s-at-symbol" class="h-[24px] w-[24px] mr-2"/>
+                                <p class="flex-1 flex-wrap overflow-ellipsis line-clamp-1">
+                                    <a href="mailto:{{trim($contact_ext['email'])}}">
+                                        {{$contact_ext['email']}}
+                                    </a>
+                                </p>
                             </div>
                         @endif
                         @if($contact_ext['address'] != "")
                             <div class="flex items-center">
-                                <x-filament::icon icon="heroicon-s-envelope" class="h-5 w-5 mr-2 overflow-auto"/>
-                                {{$contact_ext['address']}}
+                                <x-filament::icon icon="heroicon-s-envelope"
+                                                  class="h-[24px] w-[24px] mr-2"/>
+                                <p class="flex-1 flex-wrap overflow-ellipsis line-clamp-1">
+                                    {{$contact_ext['address']}}
+                                </p>
                             </div>
                         @endif
                     </div>

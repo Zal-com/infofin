@@ -13,8 +13,7 @@ class Project extends Model
 
     protected $table = 'projects';
     protected $fillable = [
-        'title', 'deadline', 'deadline_2', 'continuous',
-        'continuous_2', 'proof', 'proof_2', 'contact_ulb', 'contact_ext',
+        'title', 'contact_ulb', 'contact_ext',
         'periodicity', 'admission_requirements', 'funding', 'apply_instructions',
         'poster_id', 'is_view_for_mail', 'date_lessor', 'info_lessor',
         'visit_count', 'last_update_user_id', 'country_id', 'continent_id',
@@ -80,18 +79,46 @@ class Project extends Model
     {
         $deadlines = $this->attributes['deadlines'] ? json_decode($this->attributes['deadlines'], true) : [];
 
-        if (isset($deadlines[0])) {
-            $firstDeadline = $deadlines[0];
-
-            if ($firstDeadline['continuous'] == 1) {
-                return 'Continu';
-            } else {
-                // Format the date, e.g., convert it to a more readable format
-                return Carbon::parse($firstDeadline['date'])->format('d/m/Y');
-            }
+        if (empty($deadlines)) {
+            return 'No deadline';
         }
 
-        return 'No deadline';
+        usort($deadlines, function ($a, $b) {
+            return strtotime($a['date']) - strtotime($b['date']);
+        });
+
+        $futureDeadlines = array_filter($deadlines, function ($deadline) {
+            return Carbon::parse($deadline['date'])->isAfter(today());
+        });
+
+        if (!empty($futureDeadlines)) {
+            $firstFutureDeadline = reset($futureDeadlines);
+
+            if ($firstFutureDeadline['continuous'] == 1) {
+                return 'Continu';
+            } else {
+                return Carbon::parse($firstFutureDeadline['date'])->format('d/m/Y');
+            }
+        } else {
+            $lastDeadline = end($deadlines);
+
+            if ($lastDeadline['continuous'] == 1) {
+                return 'Continu';
+            } else {
+                return Carbon::parse($lastDeadline['date'])->format('d/m/Y');
+            }
+        }
+    }
+
+    public function hasUpcomingDeadline()
+    {
+        $deadlines = json_decode($this->deadlines, true);
+        foreach ($deadlines as $deadline) {
+            if ($deadline['continuous'] && \Carbon\Carbon::parse($deadline['date'])->isAfter(now())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

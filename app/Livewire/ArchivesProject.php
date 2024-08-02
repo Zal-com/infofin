@@ -21,14 +21,14 @@ use Illuminate\Support\HtmlString;
 use Illuminate\View\View;
 use Livewire\Component;
 
-class ListProjects extends Component implements HasForms, HasTable
+class ArchivesProject extends Component implements HasForms, HasTable
 {
     use InteractsWithForms;
     use InteractsWithTable;
 
     public function render(): View
     {
-        return view('livewire.list-projects');
+        return view('livewire.archives-project');
     }
 
     /** @noinspection PhpIllegalArrayKeyTypeInspection */
@@ -36,11 +36,11 @@ class ListProjects extends Component implements HasForms, HasTable
     {
         /** @noinspection PhpIllegalArrayKeyTypeInspection */
         return $table->query(
-            Project::where('status', '!=', 2)
+            Project::where('status', '=', 2)
                 ->where(function ($query) {
-                    $query->where('updated_at', '>', now()->subYears(2))
+                    $query->where('updated_at', '<=', now()->subYears(2))
                           ->orWhereJsonContains('deadlines->date', function ($subQuery) {
-                              $subQuery->where('date', '>', now());
+                              $subQuery->where('date', '<', now());
                           });
                 }))->columns([
             IconColumn::make('status')
@@ -79,7 +79,7 @@ class ListProjects extends Component implements HasForms, HasTable
                 ->color(function ($state) {
                     return $state == 1 ? 'info' : 'secondary';
                 }),
-*/
+
             TextColumn::make('deadline')
                 ->label('Deadline 1')
                 ->sortable()
@@ -106,10 +106,9 @@ class ListProjects extends Component implements HasForms, HasTable
                         return \Carbon\Carbon::parse($record->deadline_2)->format('d/m/Y');
                     }
                 }),
-            /*
+            */
             TextColumn::make('first_deadline')
                 ->label('Prochaine deadline'),
-            */
             TextColumn::make('organisations.title')
                 ->label('Organisation')
                 ->wrap()
