@@ -19,9 +19,9 @@ class SendWeeklyNewsletter implements ShouldQueue
 
     protected $jwtService;
 
-    public function __construct(JWTService $jwtService)
+    public function __construct(JWTService $jwtService = null)
     {
-        $this->jwtService = $jwtService;
+        $this->jwtService = $jwtService ?: app(JWTService::class);
     }
 
     public function handle()
@@ -38,7 +38,6 @@ class SendWeeklyNewsletter implements ShouldQueue
             $url = url('/unsubscribe') . '?token=' . $token;
 
             $data['url'] = $url;
-
 
             //Tous les projets de moins d'une semaine qui ont les memes info_types que les centres d'interet de l'utilisateur + vérifier le domaine scientifique
 
@@ -62,8 +61,6 @@ class SendWeeklyNewsletter implements ShouldQueue
                 $data['projects'] = $projects;
                 Mail::to($subscriber->email)->send(new WeeklyNewsletter($data));
             }
-
-
         }
     }
 }
