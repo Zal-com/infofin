@@ -1,5 +1,4 @@
 @props(['project'])
-
 <div class="grid grid-cols-5 gap-4 mb-5"
      x-data="{ tab: localStorage.getItem('activeTab') || 'description' }"
      x-init="$watch('tab', value => localStorage.setItem('activeTab', value))">
