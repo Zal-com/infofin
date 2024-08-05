@@ -11,7 +11,6 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <title>Infofin</title>
     @filamentStyles
-    @livewireStyles
 </head>
 <body class="flex flex-col min-h-screen">
 @include('components.header')
@@ -25,9 +24,7 @@
     @endif
     @yield('content')
     @filamentScripts
-    @livewireScripts
 </main>
 @include('components.footer')
-@livewireScripts
 </body>
 </html>

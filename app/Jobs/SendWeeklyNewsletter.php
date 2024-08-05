@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Filament\Widgets\ProjectsChart;
 use App\Mail\WeeklyNewsletter;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
@@ -11,6 +12,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use App\Models\Project;
 
 class SendWeeklyNewsletter implements ShouldQueue
 {
@@ -26,7 +28,35 @@ class SendWeeklyNewsletter implements ShouldQueue
         $subscribers = User::where('is_email_subscriber', 1)->get();
 
         foreach ($subscribers as $subscriber) {
-            Mail::to($subscriber->email)->send(new WeeklyNewsletter());
+
+            $data = [
+                'prenom' => $subscriber->first_name,
+            ];
+
+
+            //Tous les projets de moins d'une semaine qui ont les memes info_types que les centres d'interet de l'utilisateur + vérifier le domaine scientifique
+
+            $projects = Project::where('created_at', '>=', now()->subWeek())->get();
+
+            // Filtrer par domaines scientifiques de l'utilisateur
+            $userScientificDomains = $subscriber->scientific_domains->pluck('id')->toArray();
+            $projects = $projects->filter(function ($project) use ($userScientificDomains) {
+                $projectScientificDomains = $project->scientific_domains->pluck('id')->toArray();
+                return !empty(array_intersect($projectScientificDomains, $userScientificDomains));
+            });
+
+            // Filtrer par info_types de l'utilisateur
+            $userInfoTypes = $subscriber->info_types->pluck('id')->toArray();
+            $projects = $projects->filter(function ($project) use ($userInfoTypes) {
+                $projectInfoTypes = $project->info_types->pluck('id')->toArray();
+                return !empty(array_intersect($projectInfoTypes, $userInfoTypes));
+            });
+
+
+            $data['projects'] = $projects;
+
+
+            Mail::to($subscriber->email)->send(new WeeklyNewsletter($data));
         }
     }
 }

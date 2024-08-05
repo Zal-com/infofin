@@ -18,9 +18,8 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->use([
             RouteStatisticsMiddleware::class,
-            HandleCors::class
-        ])
-            ->trustProxies('*');
+
+        ]);
     })
     ->withSchedule(function (Schedule $schedule) {
         $schedule->job(new DailyDeleteProject())->dailyAt('02:00');
