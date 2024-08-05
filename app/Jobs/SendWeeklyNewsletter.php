@@ -52,11 +52,12 @@ class SendWeeklyNewsletter implements ShouldQueue
                 return !empty(array_intersect($projectInfoTypes, $userInfoTypes));
             });
 
+            if (!$projects->isEmpty()) {
+                $data['projects'] = $projects;
+                Mail::to($subscriber->email)->send(new WeeklyNewsletter($data));
+            }
 
-            $data['projects'] = $projects;
 
-
-            Mail::to($subscriber->email)->send(new WeeklyNewsletter($data));
         }
     }
 }
