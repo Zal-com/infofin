@@ -3,10 +3,9 @@
 namespace App\Providers;
 
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Gate;
-use Subfission\Cas\Facades\Cas;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -32,7 +31,7 @@ class AppServiceProvider extends ServiceProvider
             return $user->hasRole('admin') ? true : null;
         });
 
-        if (config('app.env') === 'local') {
+        if (config('app.env') != 'local') {
             \URL::forceScheme('https');
         }
     }
