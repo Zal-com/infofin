@@ -39,4 +39,4 @@ RUN npm i vite && npm run build
 
 # Expose port 9000 and start php-fpm server
 EXPOSE 9000
-CMD ["php-fpm"]
+CMD ["php-fpm && php artisan queue:work"]
