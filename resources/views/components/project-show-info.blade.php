@@ -7,9 +7,6 @@
             <x-filament::tabs.item @click="tab = 'description'" :alpine-active="'tab === \'description\''">
                 Description
             </x-filament::tabs.item>
-            <x-filament::tabs.item @click="tab = 'dates'" :alpine-active="'tab === \'dates\''">
-                Dates
-            </x-filament::tabs.item>
             <x-filament::tabs.item @click="tab = 'infos'" :alpine-active="'tab === \'infos\''">
                 Infos supplémentaires
             </x-filament::tabs.item>
@@ -32,16 +29,6 @@
                 </x-filament::section.description>
             </div>
         </div>
-
-        <div x-show="tab === 'dates'" class="m-4">
-            <h2>Première deadline</h2>
-            <p>{{$project-> deadline ? \Carbon\Carbon::make($project->deadline)->format('d/m/Y') : ''}}</p>
-            <p>{{$project->proof ?? ''}}</p>
-            <h2>Seconde deadline</h2>
-            <p>{{$project->deadline_2 ? \Carbon\Carbon::make($project->deadline_2)->format('d/m/Y') : ''}}</p>
-            <p>{{$project->proof_2 ?? ''}}</p>
-        </div>
-
         <div x-show="tab === 'infos'" class="m-4">
             @if(!empty($project->funding))
                 <div class="markdown mb-5">
@@ -86,6 +73,21 @@
         </div>
     </x-filament::section>
     <div class="flex flex-col gap-4 sticky top-5">
+        @if(!empty($project->deadlines))
+            <x-filament::section class="col-span-1 row-span-1 sticky top-5">
+                <x-filament::section.heading class="text-xl mb-4">
+                    Dates
+                </x-filament::section.heading>
+                @foreach($project->deadlines as $deadline)
+                    <div class="mb-3 last-of-type:mb-0">
+                        <x-filament::section>
+                            <div>{{$deadline['continuous'] == 1 ? "Continue" : \Carbon\Carbon::make($deadline['date'])->format('d/m/Y')}}</div>
+                            {{$deadline['proof'] ?? ""}}
+                        </x-filament::section>
+                    </div>
+                @endforeach
+            </x-filament::section>
+        @endif
         @if(!empty($project->contact_ulb))
             <x-filament::section class="col-span-1 row-span-1">
                 <x-filament::section.heading class="text-xl mb-4">
@@ -165,21 +167,6 @@
                                 </p>
                             </div>
                         @endif
-                    </div>
-                @endforeach
-            </x-filament::section>
-        @endif
-        @if(!empty($project->deadlines))
-            <x-filament::section class="col-span-1 row-span-1 sticky top-5">
-                <x-filament::section.heading class="text-xl mb-4">
-                    Dates
-                </x-filament::section.heading>
-                @foreach($project->deadlines as $deadline)
-                    <div class="mb-3 last-of-type:mb-0">
-                        <x-filament::section>
-                            <div>{{$deadline['continuous'] == 1 ? "Continue" : \Carbon\Carbon::make($deadline['date'])->format('d/m/Y')}}</div>
-                            {{$deadline['proof'] ?? ""}}
-                        </x-filament::section>
                     </div>
                 @endforeach
             </x-filament::section>
