@@ -32,11 +32,13 @@ class CASController extends Controller
                 $matricule = Cas::getAttribute('ulbStudentNumber');
             }
 
+            $redirectUrl = session()->pull('url.intended', '/');
+
             $ifUser = User::where('matricule', $matricule)->first();
 
             if ($ifUser) {
                 Auth::login($ifUser);
-                return back();
+                return redirect()->intended($redirectUrl);
             } else {
                 $user = new User([
                     'matricule' => $matricule,
@@ -46,7 +48,7 @@ class CASController extends Controller
                     'email' => $attributes['mail']]);
                 $user->save();
                 Auth::login($user);
-                return back();
+                return redirect()->intended($redirectUrl);
             }
         }
         return redirect()->route('login');
