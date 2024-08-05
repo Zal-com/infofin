@@ -1,7 +1,9 @@
 <?php
 
+use App\Jobs\DailyDeleteProject;
 use BezhanSalleh\FilamentExceptions\FilamentExceptions;
 use Bilfeldt\LaravelRouteStatistics\Http\Middleware\RouteStatisticsMiddleware;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -18,10 +20,15 @@ return Application::configure(basePath: dirname(__DIR__))
             RouteStatisticsMiddleware::class,
             HandleCors::class
         ])
-        ->trustProxies('*');
+            ->trustProxies('*');
+    })
+    ->withSchedule(function (Schedule $schedule) {
+        $schedule->job(new DailyDeleteProject())->dailyAt('02:00');
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->report(function (Throwable $e) {
             FilamentExceptions::report($e);
         });
     })->create();
+
+
