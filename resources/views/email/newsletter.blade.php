@@ -1,4 +1,5 @@
 <!doctype html>
+{{--
 <html>
 <head>
     <meta charset="utf-8">
@@ -224,19 +225,21 @@
                 <p>Université libre de Bruxelles, 1050 Bruxelles</p>
                 <p>Plus envie de recevoir ce mail? <a href="{{$data['url']}}">Se désabonner.</a></p>
             </div>
-            {{--
+
             <div class="social-icons">
                 <a href="https://www.facebook.com/ulb"><img src="facebook-icon.png" alt="Facebook"></a>
                 <a href="https://www.linkedin.com/school/ulb"><img src="linkedin-icon.png" alt="LinkedIn"></a>
                 <a href="https://www.youtube.com/user/ulbvideo"><img src="youtube-icon.png" alt="YouTube"></a>
             </div>
-            --}}
+
         </div>
     </div>
 </div>
 </body>
 </html>
-
+--}}
+<html>
+<body>
 <div
     style="width: 100%; height: 100%; padding-left: 100px; padding-right: 100px; padding-top: 24px; padding-bottom: 24px; background: #F4F5F6; flex-direction: column; justify-content: flex-start; align-items: center; gap: 24px; display: inline-flex">
     <div style="justify-content: flex-start; align-items: center; display: inline-flex">
@@ -264,13 +267,13 @@
                         style="align-self: stretch; height: 57px; flex-direction: column; justify-content: flex-start; align-items: flex-start; display: flex">
                         <div
                             style="align-self: stretch; color: #004C93; font-size: 16px; font-family: Fira Sans; font-weight: 700; line-height: 20px; word-wrap: break-word">
-                            Financement séjour à l’étranger pour doctorants
+                            {{$card->title}}
                         </div>
                         <div
                             style="align-self: stretch; justify-content: flex-start; align-items: flex-start; gap: 16px; display: inline-flex">
                             <div
                                 style="flex: 1 1 0; color: #153654; font-size: 12px; font-family: Fira Sans; font-style: italic; font-weight: 400; line-height: 17px; word-wrap: break-word">
-                                Commission de classement des crédits internationaux
+                                {{$card->organisation}}
                             </div>
                             <div
                                 style="padding-left: 4px; padding-right: 4px; background: rgba(39, 109, 32, 0.10); border-radius: 4px; justify-content: center; align-items: center; gap: 2px; display: flex">
@@ -289,18 +292,12 @@
                         </div>
                         <div
                             style="color: black; font-size: 11px; font-family: Inter; font-style: italic; font-weight: 600; word-wrap: break-word">
-                            31/08/2024
+                            {{$card->firstDeadline}}
                         </div>
                     </div>
                     <div
                         style="align-self: stretch; flex: 1 1 0; text-align: justify; color: #161F33; font-size: 12px; font-family: Fira Sans; font-weight: 400; line-height: 16px; word-wrap: break-word">
-                        Crédits octroyés aux doctorants de l'ULB dans le cadre de la préparation de leur thèse de
-                        doctorat
-                        pour participer au financement de séjours, de courte et moyenne durée (2 à 6 mois maximum), au
-                        sein
-                        d'une université étrangère (crédits CCCI et bourses FWB) ou sur un terrain de recherche (bourses
-                        FWB
-                        uniquement)
+                        {{$card->short_description}}
                     </div>
                     <div
                         style="align-self: stretch; height: 29px; flex-direction: column; justify-content: flex-start; align-items: flex-end; gap: 10px; display: flex">
@@ -348,3 +345,7 @@
                     </div>
                 </div>
         </div>
+    </div>
+</div>
+</body>
+</html>
