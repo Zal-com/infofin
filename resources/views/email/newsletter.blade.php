@@ -73,25 +73,26 @@
 <body>
 <div class="container">
     <div class="header">
-        <img src="https://www.ulb.be/image/logo-ulb.png" alt="ULB Logo" width="200">
+        <img src="{{asset('img/ulb_logo.png')}}" alt="ULB Logo" width="200">
     </div>
     <div class="content">
         <p>Bonjour {{ $data['prenom'] }},</p>
         <p>Ces appels sont apparus la semaine dernière et pourraient vous intéresser :</p>
     </div>
     @foreach ($data['projects'] as $card)
-        <div class="card" style="background-color: #{{ $card['backgroundColor'] }}">
-            <h2>{{ $card['title'] }}</h2>
-            <p>{{ $card['organization'] }}</p>
-            <p><strong>Prochaine deadline :</strong> {{ $card['deadline'] }}</p>
-            <p>{{ $card['description'] }}</p>
-            <a href="{{ $card['buttonLink'] }}" class="button" style="background-color: #{{ $card['buttonColor'] }}">En
+        <div class="card" style="background-color: #FFFFFF">
+            <h2>{{ $card->title }}</h2>
+            <p>{{ $card->organisation }}</p>
+            <p><strong>Prochaine deadline :</strong> {{ $card->firstDeadline }}</p>
+            <p>{{ $card->short_description }}</p>
+            <a href={{ url('/projects/' . $card->id) }} class="button"
+               style="background-color: #FFFFFF">En
                 savoir plus</a>
         </div>
     @endforeach
     <div class="footer">
         <p>Université libre de Bruxelles, 1050 Bruxelles</p>
-        <p><a href="#">Plus envie de recevoir ce mail? Se désabonner.</a></p>
+        <p>Plus envie de recevoir ce mail? <a href="#">Se désabonner.</a></p>
         {{--
         <div class="social-icons">
             <a href="https://www.facebook.com/ulb"><img src="facebook-icon.png" alt="Facebook"></a>
