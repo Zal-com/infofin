@@ -222,7 +222,7 @@
         <div class="footer">
             <div class="footer-text">
                 <p>Université libre de Bruxelles, 1050 Bruxelles</p>
-                <p>Plus envie de recevoir ce mail? <a href="#">Se désabonner.</a></p>
+                <p>Plus envie de recevoir ce mail? <a href="{{$data['url']}}">Se désabonner.</a></p>
             </div>
             {{--
             <div class="social-icons">
@@ -236,3 +236,115 @@
 </div>
 </body>
 </html>
+
+<div
+    style="width: 100%; height: 100%; padding-left: 100px; padding-right: 100px; padding-top: 24px; padding-bottom: 24px; background: #F4F5F6; flex-direction: column; justify-content: flex-start; align-items: center; gap: 24px; display: inline-flex">
+    <div style="justify-content: flex-start; align-items: center; display: inline-flex">
+        <img style="width: 300px; height: 48px; position: relative" src="https://via.placeholder.com/300x48"/>
+        <div
+            style="width: 300px; text-align: center; color: #004C93; font-size: 32px; font-family: Fira Sans; font-weight: 700; line-height: 18px; word-wrap: break-word">
+            Infofin
+        </div>
+    </div>
+    <div
+        style="padding: 24px; background: white; border-radius: 16px; border: 1px #EAEBED solid; flex-direction: column; justify-content: flex-start; align-items: center; gap: 16px; display: flex">
+        <div style="width: 552px; justify-content: flex-start; align-items: flex-start; display: inline-flex">
+            <div
+                style="flex: 1 1 0; color: #161F33; font-size: 14px; font-family: Fira Sans; font-weight: 400; line-height: 20px; word-wrap: break-word">
+                Bonjour {{$data['prenom']}},<br/><br/>Ces appels sont apparus la semaine dernière et pourraient vous
+                intéresser :
+            </div>
+        </div>
+        <div
+            style="width: 561px; border-radius: 5px; justify-content: flex-start; align-items: flex-start; gap: 10px; display: inline-flex">
+            @foreach($data['projects'] as $card)
+                <div
+                    style="width: 275px; height: 216px; padding: 8px; border-radius: 5px; border: 2px #276D20 solid; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 8px; display: inline-flex">
+                    <div
+                        style="align-self: stretch; height: 57px; flex-direction: column; justify-content: flex-start; align-items: flex-start; display: flex">
+                        <div
+                            style="align-self: stretch; color: #004C93; font-size: 16px; font-family: Fira Sans; font-weight: 700; line-height: 20px; word-wrap: break-word">
+                            Financement séjour à l’étranger pour doctorants
+                        </div>
+                        <div
+                            style="align-self: stretch; justify-content: flex-start; align-items: flex-start; gap: 16px; display: inline-flex">
+                            <div
+                                style="flex: 1 1 0; color: #153654; font-size: 12px; font-family: Fira Sans; font-style: italic; font-weight: 400; line-height: 17px; word-wrap: break-word">
+                                Commission de classement des crédits internationaux
+                            </div>
+                            <div
+                                style="padding-left: 4px; padding-right: 4px; background: rgba(39, 109, 32, 0.10); border-radius: 4px; justify-content: center; align-items: center; gap: 2px; display: flex">
+                                <div
+                                    style="color: #276D20; font-size: 10px; font-family: Inter; font-weight: 600; line-height: 16px; word-wrap: break-word">
+                                    Financement
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        style="align-self: stretch; justify-content: flex-start; align-items: flex-start; gap: 53px; display: inline-flex">
+                        <div
+                            style="flex: 1 1 0; color: black; font-size: 11px; font-family: Fira Sans; font-style: italic; font-weight: 600; word-wrap: break-word">
+                            Prochaine deadline :
+                        </div>
+                        <div
+                            style="color: black; font-size: 11px; font-family: Inter; font-style: italic; font-weight: 600; word-wrap: break-word">
+                            31/08/2024
+                        </div>
+                    </div>
+                    <div
+                        style="align-self: stretch; flex: 1 1 0; text-align: justify; color: #161F33; font-size: 12px; font-family: Fira Sans; font-weight: 400; line-height: 16px; word-wrap: break-word">
+                        Crédits octroyés aux doctorants de l'ULB dans le cadre de la préparation de leur thèse de
+                        doctorat
+                        pour participer au financement de séjours, de courte et moyenne durée (2 à 6 mois maximum), au
+                        sein
+                        d'une université étrangère (crédits CCCI et bourses FWB) ou sur un terrain de recherche (bourses
+                        FWB
+                        uniquement)
+                    </div>
+                    <div
+                        style="align-self: stretch; height: 29px; flex-direction: column; justify-content: flex-start; align-items: flex-end; gap: 10px; display: flex">
+                        <div
+                            style="width: 123px; padding-left: 2px; padding-right: 2px; padding-top: 6px; padding-bottom: 6px; background: #276D20; border-radius: 4px; justify-content: space-between; align-items: center; display: inline-flex">
+                            <div
+                                style="text-align: center; color: white; font-size: 12px; font-family: Fira Sans; font-weight: 400; line-height: 17px; word-wrap: break-word">
+                                En savoir plus
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+                <div
+                    style="align-self: stretch; height: 108px; flex-direction: column; justify-content: flex-start; align-items: center; gap: 24px; display: flex">
+                    <div
+                        style="align-self: stretch; justify-content: flex-end; align-items: center; gap: 10px; display: inline-flex">
+                        <div
+                            style="text-align: center; color: #9A9EA6; font-size: 12px; font-family: Helvetica; font-weight: 400; line-height: 18px; word-wrap: break-word">
+                            Université libre de Bruxelles, 1050 Bruxelles <br/>Plus envie de recevoir ce mail? Se
+                            désabonner.
+                        </div>
+                    </div>
+                    <div
+                        style="align-self: stretch; justify-content: center; align-items: flex-start; gap: 8px; display: inline-flex">
+                        <div style="width: 48px; height: 48px; position: relative">
+                            <div
+                                style="width: 48px; height: 48px; left: 0px; top: 0px; position: absolute; background: white; border-radius: 9999px; border: 2px #9A9EA6 solid"></div>
+                            <div
+                                style="width: 12.18px; height: 26.11px; left: 18px; top: 11px; position: absolute; background: #9A9EA6"></div>
+                        </div>
+                        <div style="width: 48px; height: 48px; position: relative">
+                            <div
+                                style="width: 48px; height: 48px; left: 0px; top: 0px; position: absolute; background: white; border-radius: 9999px; border: 2px #9A9EA6 solid"></div>
+                            <img style="width: 25.38px; height: 24.22px; left: 11.20px; top: 12px; position: absolute"
+                                 src="https://via.placeholder.com/25x24"/>
+                        </div>
+                        <div style="width: 48px; height: 48px; position: relative">
+                            <div
+                                style="width: 48px; height: 48px; left: 0px; top: 0px; position: absolute; background: white; border-radius: 9999px; border: 2px #9A9EA6 solid"></div>
+                            <img
+                                style="width: 25.60px; height: 18.40px; left: 11.20px; top: 15.20px; position: absolute"
+                                src="https://via.placeholder.com/26x18"/>
+                        </div>
+                    </div>
+                </div>
+        </div>
