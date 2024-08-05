@@ -36,7 +36,7 @@ class CASController extends Controller
 
             if ($ifUser) {
                 Auth::login($ifUser);
-                return redirect()->intended('/');
+                return back();
             } else {
                 $user = new User([
                     'matricule' => $matricule,
@@ -46,7 +46,7 @@ class CASController extends Controller
                     'email' => $attributes['mail']]);
                 $user->save();
                 Auth::login($user);
-                return redirect()->intended('/');
+                return back();
             }
         }
         return redirect()->route('login');
