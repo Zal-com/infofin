@@ -121,4 +121,13 @@ class Project extends Model
         return false;
     }
 
+    public function upcomingDeadlines()
+    {
+        return collect($this->deadlines)
+            ->filter(function ($deadline) {
+                return isset($deadline['date']) && $deadline['date'] >= now();
+            })
+            ->sortBy('date');
+    }
+
 }

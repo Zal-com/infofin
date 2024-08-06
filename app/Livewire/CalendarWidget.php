@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Project;
 use Saade\FilamentFullCalendar\Widgets\FullCalendarWidget;
 use Illuminate\Support\Carbon;
 
@@ -11,7 +12,30 @@ class CalendarWidget extends FullCalendarWidget
 
     public function fetchEvents(array $fetchInfo): array
     {
-        return [];
+        $startDate = Carbon::parse($fetchInfo['start']);
+        $endDate = Carbon::parse($fetchInfo['end']);
+
+        $projects = Project::whereJsonContains('deadlines', function ($query) use ($startDate, $endDate) {
+            $query->whereBetween('date', [$startDate, $endDate]);
+        })->get();
+
+        $events = [];
+
+        foreach ($projects as $project) {
+            foreach ($project->upcomingDeadlines() as $deadline) {
+                $deadlineDate = Carbon::parse($deadline['date']);
+                if ($deadlineDate >= $fetchInfo['start'] && $deadlineDate <= $fetchInfo['end']) {
+                    $events[] = [
+                        'title' => $project->title,
+                        'start' => $deadlineDate->format('Y-m-d'),
+                        'end' => $deadlineDate->format('Y-m-d'),
+                        'url' => route('projects.show', $project->id),
+                    ];
+                }
+            }
+        }
+
+        return $events;
     }
 
     public function config(): array

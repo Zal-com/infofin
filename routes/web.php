@@ -39,7 +39,7 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/unsubscribe', [UnsubscribeController::class, 'unsubscribe']);
 
-Route::get('/calendar', function () {
+Route::get('/agenda', function () {
     return view('calendar');
 });
 
