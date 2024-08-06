@@ -39,4 +39,8 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/unsubscribe', [UnsubscribeController::class, 'unsubscribe']);
 
+Route::get('/calendar', function () {
+    return view('calendar');
+});
+
 require __DIR__ . '/auth.php';

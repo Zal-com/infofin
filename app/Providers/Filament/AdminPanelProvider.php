@@ -21,6 +21,7 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Saade\FilamentLaravelLog\FilamentLaravelLogPlugin;
+use Saade\FilamentFullCalendar\FilamentFullCalendarPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -48,6 +49,7 @@ class AdminPanelProvider extends PanelProvider
                     FilamentJobsMonitorPlugin::make(),
                     FilamentExceptionsPlugin::make(),
                     FilamentRouteStatisticsPlugin::make(),
+                    FilamentFullCalendarPlugin::make(),
                 ]
             )
             ->resources([
