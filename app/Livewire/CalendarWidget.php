@@ -12,13 +12,10 @@ class CalendarWidget extends FullCalendarWidget
 
     public function fetchEvents(array $fetchInfo): array
     {
-        $startDate = Carbon::parse($fetchInfo['start']);
-        $endDate = Carbon::parse($fetchInfo['end']);
 
-        $projects = Project::whereJsonContains('deadlines', function ($query) use ($startDate, $endDate) {
-            $query->whereBetween('date', [$startDate, $endDate]);
-        })->get();
-
+        $projects = Project::whereJsonContains('deadlines', function ($query) {
+            $query->whereBetween('date', '>=', now());
+        })->get(['id', 'title', 'deadlines']);
         $events = [];
 
         foreach ($projects as $project) {
