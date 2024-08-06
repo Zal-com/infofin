@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1f75ae1fcb0f6bae5a97202dd6e49e64",
+    "content-hash": "e36eb8ddecd588c40df91f225370a0a2",
     "packages": [
         {
             "name": "amendozaaguiar/filament-route-statistics",
@@ -1848,6 +1848,72 @@
                 }
             ],
             "time": "2023-10-06T06:47:41+00:00"
+        },
+        {
+            "name": "evanschleret/lara-mjml",
+            "version": "v0.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/EvanSchleret/lara-mjml.git",
+                "reference": "20c035d6f75df46691c6bfb82ecef59290288c89"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/EvanSchleret/lara-mjml/zipball/20c035d6f75df46691c6bfb82ecef59290288c89",
+                "reference": "20c035d6f75df46691c6bfb82ecef59290288c89",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/config": "^11.16",
+                "illuminate/support": "^11.16",
+                "php": "^8.2",
+                "spatie/mjml-php": "^1.2"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.0",
+                "pestphp/pest": "^2.20",
+                "spatie/ray": "^1.28"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "EvanSchleret\\LaraMjml\\Providers\\LaraMjmlServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "EvanSchleret\\LaraMjml\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Evan Schleret",
+                    "email": "evan@schleret.ch"
+                }
+            ],
+            "description": "Just a service provider for Spatie's MJML wrapper",
+            "homepage": "https://github.com/evanschleret/lara-mjml",
+            "keywords": [
+                "EvanSchleret",
+                "lara-mjml"
+            ],
+            "support": {
+                "issues": "https://github.com/EvanSchleret/lara-mjml/issues",
+                "source": "https://github.com/EvanSchleret/lara-mjml/tree/v0.1.2"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/EvanSchleret",
+                    "type": "github"
+                }
+            ],
+            "time": "2024-07-23T12:10:42+00:00"
         },
         {
             "name": "facade/ignition-contracts",
@@ -6850,6 +6916,67 @@
                 }
             ],
             "time": "2024-06-22T23:04:52+00:00"
+        },
+        {
+            "name": "spatie/mjml-php",
+            "version": "1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/mjml-php.git",
+                "reference": "c188a8f71f7b5642c585e9ba40d2afbf92eae95f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/mjml-php/zipball/c188a8f71f7b5642c585e9ba40d2afbf92eae95f",
+                "reference": "c188a8f71f7b5642c585e9ba40d2afbf92eae95f",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.1",
+                "symfony/process": "^6.3.2|^7.0"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.11",
+                "pestphp/pest": "^2.16",
+                "spatie/ray": "^1.37.2"
+            },
+            "suggest": {
+                "spatie/mjml-sidecar": "When you want to run MJML compilation through Sidecar in a Laravel project"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\Mjml\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Convert MJML to HTML using PHP",
+            "homepage": "https://github.com/spatie/mjml-php",
+            "keywords": [
+                "mjml-php",
+                "spatie"
+            ],
+            "support": {
+                "issues": "https://github.com/spatie/mjml-php/issues",
+                "source": "https://github.com/spatie/mjml-php/tree/1.2.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/spatie",
+                    "type": "github"
+                }
+            ],
+            "time": "2024-07-09T15:31:15+00:00"
         },
         {
             "name": "staudenmeir/belongs-to-through",

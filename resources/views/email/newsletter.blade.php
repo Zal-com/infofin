@@ -1,351 +1,393 @@
 <!doctype html>
-{{--
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml"
+      xmlns:o="urn:schemas-microsoft-com:office:office">
+
 <head>
-    <meta charset="utf-8">
-    <style>
+    <title>
+    </title>
+    <!--[if !mso]><!-->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!--<![endif]-->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type="text/css">
+        #outlook a {
+            padding: 0;
+        }
+
         body {
-            font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
-            color: #ffffff;
-            background-color: #333333;
+            margin: 0;
+            padding: 0;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
         }
 
-        .container {
-            display: inline-flex;
-            min-width: 800px;
-            max-width: 800px;
-            padding: var(--L, 24px) 100px;
-            flex-direction: column;
-            align-items: center;
-            gap: var(--L, 24px);
-            background: var(--Light-Grey, #F4F5F6);
+        table,
+        td {
+            border-collapse: collapse;
+            mso-table-lspace: 0pt;
+            mso-table-rspace: 0pt;
         }
 
-        .header {
-            display: flex;
-            align-items: center;
-        }
-
-        .content {
-            display: flex;
-            max-width: 600px;
-            padding: var(--L, 24px);
-            flex-direction: column;
-            align-items: center;
-            gap: 16px;
-            border-radius: var(--Main-Border-Radius, 16px);
-            border: 1px solid var(--Grey, #EAEBED);
-            background: var(--White, #FFF);
-        }
-
-        .content-text {
-            display: flex;
-            width: 552px;
-            align-items: flex-start;
-        }
-
-        .cards-container {
-            display: flex;
-            width: 561px;
-            align-items: flex-start;
-            align-content: flex-start;
-            gap: 10px;
-            flex-wrap: wrap;
-            border-radius: 5px;
-        }
-
-        .card {
-            display: flex;
-            width: 275px;
-            height: 216px;
-            min-width: 200px;
-            max-width: 275px;
-            padding: var(--S, 8px);
-            flex-direction: column;
-            align-items: flex-start;
-            gap: var(--S, 8px);
-            flex-shrink: 0;
-            border-radius: 5px;
-            border: 2px solid #276D20;
-        }
-
-        .card h2 {
-            display: -webkit-box;
-            -webkit-box-orient: vertical;
-            -webkit-line-clamp: 2;
-            align-self: stretch;
-            overflow: hidden;
-            color: var(--ULB, #004C93);
-            font-feature-settings: 'liga' off, 'clig' off;
-            text-overflow: ellipsis;
-            font-family: "Fira Sans";
-            font-size: 16px;
-            font-style: normal;
-            font-weight: 700;
-            line-height: 20px; /* 125% */
-        }
-
-        .organisation {
-            display: -webkit-box;
-            -webkit-box-orient: vertical;
-            -webkit-line-clamp: 1;
-            flex: 1 0 0;
-            overflow: hidden;
-            color: #153654;
-            font-feature-settings: 'liga' off, 'clig' off;
-            text-overflow: ellipsis;
-            font-family: "Fira Sans";
-            font-size: 12px;
-            font-style: italic;
-            font-weight: 400;
-            line-height: 17px; /* 141.667% */
-        }
-
-        .next-deadline {
-            display: flex;
-            align-items: flex-start;
-            gap: 53px;
-            align-self: stretch;
-        }
-
-        .next-deadline strong {
-            flex: 1 0 0;
-            color: var(--Polytech, #000);
-            font-family: "Fira Sans";
-            font-size: 11px;
-            font-style: italic;
-            font-weight: 600;
-            line-height: normal;
-        }
-
-        .next-deadline span {
-            color: var(--Polytech, #000);
-            font-family: Inter;
-            font-size: 11px;
-            font-style: italic;
-            font-weight: 600;
-            line-height: normal;
-        }
-
-        .description {
-            flex: 1 0 0;
-            align-self: stretch;
-            overflow: hidden;
-            color: var(--Black, #161F33);
-            text-align: justify;
-            font-feature-settings: 'liga' off, 'clig' off;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            font-family: "Fira Sans";
-            font-size: 12px;
-            font-style: normal;
-            font-weight: 400;
-            line-height: 16px; /* 133.333% */
-        }
-
-        .btn-container {
-            display: flex;
-            width: 275px;
-            height: 216px;
-            min-width: 200px;
-            max-width: 275px;
-            padding: var(--S, 8px);
-            flex-direction: column;
-            align-items: flex-start;
-            gap: var(--S, 8px);
-            flex-shrink: 0;
-            border-radius: 5px;
-            border: 2px solid #276D20;
-        }
-
-        .button {
-            display: flex;
-            width: 123px;
-            padding: 6px 2px;
-            justify-content: space-between;
-            align-items: center;
-            border-radius: var(--Button-Border-Radius, 4px);
-            background: #276D20;
-        }
-
-        .footer {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: var(--L, 24px);
-            align-self: stretch;
-        }
-
-        .footer-text {
-            color: var(--Dark-Grey, #9A9EA6);
-            text-align: center;
-            font-feature-settings: 'liga' off, 'clig' off;
-
-            /* Footer Text */
-            font-family: Helvetica;
-            font-size: 12px;
-            font-style: normal;
-            font-weight: 400;
-            line-height: 18px; /* 150% */
-        }
-
-        .footer a {
-            color: #ffffff;
+        img {
+            border: 0;
+            height: auto;
+            line-height: 100%;
+            outline: none;
             text-decoration: none;
+            -ms-interpolation-mode: bicubic;
+        }
+
+        p {
+            display: block;
+            margin: 13px 0;
+        }
+    </style>
+    <!--[if mso]>
+    <noscript>
+        <xml>
+            <o:OfficeDocumentSettings>
+                <o:AllowPNG/>
+                <o:PixelsPerInch>96</o:PixelsPerInch>
+            </o:OfficeDocumentSettings>
+        </xml>
+    </noscript>
+    <![endif]-->
+    <!--[if lte mso 11]>
+    <style type="text/css">
+        .mj-outlook-group-fix {
+            width: 100% !important;
+        }
+    </style>
+    <![endif]-->
+    <style type="text/css">
+        @media only screen and (min-width: 480px) {
+            .mj-column-per-50 {
+                width: 50% !important;
+                max-width: 50%;
+            }
+
+            .mj-column-per-100 {
+                width: 100% !important;
+                max-width: 100%;
+            }
+
+            .mj-column-per-47 {
+                width: 47% !important;
+                max-width: 47%;
+            }
+        }
+    </style>
+    <style media="screen and (min-width:480px)">
+        .moz-text-html .mj-column-per-50 {
+            width: 50% !important;
+            max-width: 50%;
+        }
+
+        .moz-text-html .mj-column-per-100 {
+            width: 100% !important;
+            max-width: 100%;
+        }
+
+        .moz-text-html .mj-column-per-47 {
+            width: 47% !important;
+            max-width: 47%;
+        }
+    </style>
+    <style type="text/css">
+        @media only screen and (max-width: 480px) {
+            table.mj-full-width-mobile {
+                width: 100% !important;
+            }
+
+            td.mj-full-width-mobile {
+                width: auto !important;
+            }
         }
     </style>
 </head>
-<body>
-<div class="container">
-    <div class="header">
-        <img src="{{asset('img/ulb_logo.png')}}" alt="ULB Logo" width="200">
-    </div>
-    <div class="content">
-        <div class="content-text">
-            <p>Bonjour {{ $data['prenom'] }},</p>
-            <p>Ces appels sont apparus la semaine dernière et pourraient vous intéresser :</p>
-        </div>
-        <div class="cards-container">
-            @foreach ($data['projects'] as $card)
-                <div class="card">
-                    <h2>{{ $card->title }}</h2>
-                    <p class="organisation">{{ $card->organisation }}</p>
-                    <div class="next-deadline">
-                        <strong>Prochaine deadline :</strong>
-                        <span>{{ $card->firstDeadline }}</span></div>
-                    <p class="description">{{ $card->short_description }}</p>
-                    <div class="btn-container">
-                        <a href="{{ url('/projects/' . $card->id) }}" class="button">En savoir plus</a>
-                    </div>
-                </div>
-            @endforeach
-        </div>
-        <div class="footer">
-            <div class="footer-text">
-                <p>Université libre de Bruxelles, 1050 Bruxelles</p>
-                <p>Plus envie de recevoir ce mail? <a href="{{$data['url']}}">Se désabonner.</a></p>
-            </div>
 
-            <div class="social-icons">
-                <a href="https://www.facebook.com/ulb"><img src="facebook-icon.png" alt="Facebook"></a>
-                <a href="https://www.linkedin.com/school/ulb"><img src="linkedin-icon.png" alt="LinkedIn"></a>
-                <a href="https://www.youtube.com/user/ulbvideo"><img src="youtube-icon.png" alt="YouTube"></a>
-            </div>
-
-        </div>
+<body style="word-spacing:normal;background-color:#F4F5F6;">
+<div style="background-color:#F4F5F6;">
+    <!-- HEADER -->
+    <!--[if mso | IE]>
+    <table align="center" border="0" cellpadding="0" cellspacing="0" class="" style="width:600px;" width="600">
+        <tr>
+            <td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+    <div style="margin:0px auto;max-width:600px;">
+        <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;">
+            <tbody>
+            <tr>
+                <td style="direction:ltr;font-size:0px;padding:20px 0;text-align:center;">
+                    <!--[if mso | IE]>
+                    <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td class="" style="vertical-align:middle;width:300px;"><![endif]-->
+                    <div class="mj-column-per-50 mj-outlook-group-fix"
+                         style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:middle;width:100%;">
+                        <table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%">
+                            <tbody>
+                            <tr>
+                                <td style="vertical-align:middle;padding:0px;">
+                                    <table border="0" cellpadding="0" cellspacing="0" role="presentation" style=""
+                                           width="100%">
+                                        <tbody>
+                                        <tr>
+                                            <td align="center"
+                                                style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                                                <table border="0" cellpadding="0" cellspacing="0" role="presentation"
+                                                       style="border-collapse:collapse;border-spacing:0px;">
+                                                    <tbody>
+                                                    <tr>
+                                                        <td style="width:250px;">
+                                                            <img height="auto"
+                                                                 src="https://infofin-f-departementrecherche.apps.dev.okd.hpda.ulb.ac.be/img/ulb_logo.png"
+                                                                 style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;"
+                                                                 width="250"/>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!--[if mso | IE]></td>
+                    <td class="" style="vertical-align:middle;width:300px;"><![endif]-->
+                    <div class="mj-column-per-50 mj-outlook-group-fix"
+                         style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:middle;width:100%;">
+                        <table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%">
+                            <tbody>
+                            <tr>
+                                <td style="vertical-align:middle;padding:0px;">
+                                    <table border="0" cellpadding="0" cellspacing="0" role="presentation" style=""
+                                           width="100%">
+                                        <tbody>
+                                        <tr>
+                                            <td align="center"
+                                                style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                                                <div
+                                                    style="font-family:Fira Sans;font-size:32px;font-weight:700;line-height:18px;text-align:center;color:#004C93;">
+                                                    Infofin
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!--[if mso | IE]></td></tr></table><![endif]-->
+                </td>
+            </tr>
+            </tbody>
+        </table>
     </div>
-</div>
-</body>
-</html>
---}}
-<html>
-<body>
-<div
-    style="width: 100%; height: 100%; padding-left: 100px; padding-right: 100px; padding-top: 24px; padding-bottom: 24px; background: #F4F5F6; flex-direction: column; justify-content: flex-start; align-items: center; gap: 24px; display: inline-flex">
-    <div style="justify-content: flex-start; align-items: center; display: inline-flex">
-        <img style="width: 300px; height: 48px; position: relative" src="https://via.placeholder.com/300x48"/>
-        <div
-            style="width: 300px; text-align: center; color: #004C93; font-size: 32px; font-family: Fira Sans; font-weight: 700; line-height: 18px; word-wrap: break-word">
-            Infofin
-        </div>
-    </div>
-    <div
-        style="padding: 24px; background: white; border-radius: 16px; border: 1px #EAEBED solid; flex-direction: column; justify-content: flex-start; align-items: center; gap: 16px; display: flex">
-        <div style="width: 552px; justify-content: flex-start; align-items: flex-start; display: inline-flex">
-            <div
-                style="flex: 1 1 0; color: #161F33; font-size: 14px; font-family: Fira Sans; font-weight: 400; line-height: 20px; word-wrap: break-word">
-                Bonjour {{$data['prenom']}},<br/><br/>Ces appels sont apparus la semaine dernière et pourraient vous
-                intéresser :
-            </div>
-        </div>
-        <div
-            style="width: 561px; border-radius: 5px; justify-content: flex-start; align-items: flex-start; gap: 10px; display: inline-flex">
-            @foreach($data['projects'] as $card)
-                <div
-                    style="width: 275px; height: 216px; padding: 8px; border-radius: 5px; border: 2px #276D20 solid; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 8px; display: inline-flex">
-                    <div
-                        style="align-self: stretch; height: 57px; flex-direction: column; justify-content: flex-start; align-items: flex-start; display: flex">
-                        <div
-                            style="align-self: stretch; color: #004C93; font-size: 16px; font-family: Fira Sans; font-weight: 700; line-height: 20px; word-wrap: break-word">
-                            {{$card->title}}
-                        </div>
-                        <div
-                            style="align-self: stretch; justify-content: flex-start; align-items: flex-start; gap: 16px; display: inline-flex">
-                            <div
-                                style="flex: 1 1 0; color: #153654; font-size: 12px; font-family: Fira Sans; font-style: italic; font-weight: 400; line-height: 17px; word-wrap: break-word">
-                                {{$card->organisation}}
-                            </div>
-                            <div
-                                style="padding-left: 4px; padding-right: 4px; background: rgba(39, 109, 32, 0.10); border-radius: 4px; justify-content: center; align-items: center; gap: 2px; display: flex">
-                                <div
-                                    style="color: #276D20; font-size: 10px; font-family: Inter; font-weight: 600; line-height: 16px; word-wrap: break-word">
-                                    Financement
-                                </div>
-                            </div>
-                        </div>
+    <!--[if mso | IE]></td></tr></table>
+    <table align="center" border="0" cellpadding="0" cellspacing="0" class="" style="width:600px;" width="600"
+           bgcolor="#FFFFFF">
+        <tr>
+            <td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+    <div style="background:#FFFFFF;background-color:#FFFFFF;margin:0px auto;border-radius:15px;max-width:600px;">
+        <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation"
+               style="background:#FFFFFF;background-color:#FFFFFF;width:100%;border-radius:15px;">
+            <tbody>
+            <tr>
+                <td style="direction:ltr;font-size:0px;padding:20px 0;text-align:center;">
+                    <!--[if mso | IE]>
+                    <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td class="" style="vertical-align:top;width:600px;"><![endif]-->
+                    <div class="mj-column-per-100 mj-outlook-group-fix"
+                         style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+                        <table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%">
+                            <tbody>
+                            <tr>
+                                <td style="vertical-align:top;padding:0px;">
+                                    <table border="0" cellpadding="0" cellspacing="0" role="presentation" style=""
+                                           width="100%">
+                                        <tbody>
+                                        <tr>
+                                            <td align="left"
+                                                style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                                                <div
+                                                    style="font-family:Fira Sans;font-size:14px;line-height:20px;text-align:left;color:#000000;">
+                                                    Bonjour Prénom,
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align="left"
+                                                style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                                                <div
+                                                    style="font-family:Fira Sans;font-size:14px;line-height:20px;text-align:left;color:#000000;">
+                                                    Ces appels sont apparus la semaine dernière et pourraient vous
+                                                    intéresser ;
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-size:0px;word-break:break-word;">
+                                                <div style="height:20px;line-height:20px;">&#8202;</div>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <div
-                        style="align-self: stretch; justify-content: flex-start; align-items: flex-start; gap: 53px; display: inline-flex">
-                        <div
-                            style="flex: 1 1 0; color: black; font-size: 11px; font-family: Fira Sans; font-style: italic; font-weight: 600; word-wrap: break-word">
-                            Prochaine deadline :
-                        </div>
-                        <div
-                            style="color: black; font-size: 11px; font-family: Inter; font-style: italic; font-weight: 600; word-wrap: break-word">
-                            {{$card->firstDeadline}}
-                        </div>
+                    <!--[if mso | IE]></td><![endif]-->
+                    <!-- START CARD -->
+                    @foreach($data['projects'] as $card)
+                    <!--[if mso | IE]>
+                    <td class="" style="vertical-align:top;width:282px;"><![endif]-->
+                    <div class="mj-column-per-47 mj-outlook-group-fix"
+                         style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+                        <table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%">
+                            <tbody>
+                            <tr>
+                                <td style="vertical-align:top;padding:0px;">
+                                    <table border="0" cellpadding="0" cellspacing="0" role="presentation" style=""
+                                           width="100%">
+                                        <tbody>
+                                        <tr>
+                                            <td align="left" style="font-size:0px;padding:8px;word-break:break-word;">
+                                                <table cellpadding="0" cellspacing="0" width="100%" border="0"
+                                                       style="color:#000000;font-family:Fira Sans;font-size:13px;line-height:22px;table-layout:auto;width:100%;border:none;">
+                                                    <tbody style="border: 2px solid #004C93; border-radius: 5px;">
+                                                    <tr>
+                                                        <td colspan="2"
+                                                            style="color: #004C93; font-weight: 700; padding: 8px 8px 0">
+                                                            {{$card->title}}
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="overflow: auto; font-size: 12px; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 6rem; padding: 0 0 0 8px;">
+                                                            Commission de classement des crédits internationaux
+                                                        </td>
+                                                        <td style="padding-left: 4px; padding-right: 4px; background: rgba(39, 109, 32, 0.10); border-radius: 4px; justify-content: center; gap: 2px; display: inline-flex;">
+                                                            <div
+                                                                style="color: #276D20; font-size: 10px; font-weight: 600; line-height: 16px; word-wrap: break-word">
+                                                                Financement
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="color: black; font-size: 11px; font-family: Fira Sans; font-style: italic; font-weight: 600; word-wrap: break-word; padding: 0 0 0 8px;">
+                                                            Prochaine deadline:
+                                                        </td>
+                                                        <td style="color: black; font-size: 11px; font-style: italic; font-weight: 600; word-wrap: break-word;">
+                                                            {{$card->firstDeadline}}
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2"
+                                                            style="color: #161F33; font-size: 12px; font-weight: 400; line-height: 16px; word-wrap: break-word; padding: 0 8px 0 8px; text-align: justify;">
+                                                            {{ substr($card->short_description,0, 200)}}...
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="text-align: right; padding: 8px;" colspan="2">
+                                                            <a href="{{url('/projects/' . $card->id)}}">
+                                                                <button
+                                                                    style="color: white; font-size: 12px; font-weight: 400; line-height: 17px; word-wrap: break-word; padding: 6px 20px; background: #276D20; border: none; border-radius: 5px;">
+                                                                    <span
+                                                                        style="color: white; font-size: 12px; font-weight: 400; line-height: 17px; word-wrap: break-word;">En savoir plus</span>
+                                                                </button>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <div
-                        style="align-self: stretch; flex: 1 1 0; text-align: justify; color: #161F33; font-size: 12px; font-family: Fira Sans; font-weight: 400; line-height: 16px; word-wrap: break-word">
-                        {{$card->short_description}}
-                    </div>
-                    <div
-                        style="align-self: stretch; height: 29px; flex-direction: column; justify-content: flex-start; align-items: flex-end; gap: 10px; display: flex">
-                        <div
-                            style="width: 123px; padding-left: 2px; padding-right: 2px; padding-top: 6px; padding-bottom: 6px; background: #276D20; border-radius: 4px; justify-content: space-between; align-items: center; display: inline-flex">
-                            <div
-                                style="text-align: center; color: white; font-size: 12px; font-family: Fira Sans; font-weight: 400; line-height: 17px; word-wrap: break-word">
-                                En savoir plus
-                            </div>
-                        </div>
-                    </div>
+                    <!--[if mso | IE]></td><![endif]-->
+                    <!-- END CARD -->
                     @endforeach
-                </div>
-                <div
-                    style="align-self: stretch; height: 108px; flex-direction: column; justify-content: flex-start; align-items: center; gap: 24px; display: flex">
-                    <div
-                        style="align-self: stretch; justify-content: flex-end; align-items: center; gap: 10px; display: inline-flex">
-                        <div
-                            style="text-align: center; color: #9A9EA6; font-size: 12px; font-family: Helvetica; font-weight: 400; line-height: 18px; word-wrap: break-word">
-                            Université libre de Bruxelles, 1050 Bruxelles <br/>Plus envie de recevoir ce mail? Se
-                            désabonner.
-                        </div>
-                    </div>
-                    <div
-                        style="align-self: stretch; justify-content: center; align-items: flex-start; gap: 8px; display: inline-flex">
-                        <div style="width: 48px; height: 48px; position: relative">
-                            <div
-                                style="width: 48px; height: 48px; left: 0px; top: 0px; position: absolute; background: white; border-radius: 9999px; border: 2px #9A9EA6 solid"></div>
-                            <div
-                                style="width: 12.18px; height: 26.11px; left: 18px; top: 11px; position: absolute; background: #9A9EA6"></div>
-                        </div>
-                        <div style="width: 48px; height: 48px; position: relative">
-                            <div
-                                style="width: 48px; height: 48px; left: 0px; top: 0px; position: absolute; background: white; border-radius: 9999px; border: 2px #9A9EA6 solid"></div>
-                            <img style="width: 25.38px; height: 24.22px; left: 11.20px; top: 12px; position: absolute"
-                                 src="https://via.placeholder.com/25x24"/>
-                        </div>
-                        <div style="width: 48px; height: 48px; position: relative">
-                            <div
-                                style="width: 48px; height: 48px; left: 0px; top: 0px; position: absolute; background: white; border-radius: 9999px; border: 2px #9A9EA6 solid"></div>
-                            <img
-                                style="width: 25.60px; height: 18.40px; left: 11.20px; top: 15.20px; position: absolute"
-                                src="https://via.placeholder.com/26x18"/>
-                        </div>
-                    </div>
-                </div>
-        </div>
+                    <!--[if mso | IE]></tr></table><![endif]-->
+                </td>
+            </tr>
+            </tbody>
+        </table>
     </div>
+    <!--[if mso | IE]></td></tr></table>
+    <table align="center" border="0" cellpadding="0" cellspacing="0" class="" style="width:600px;" width="600">
+        <tr>
+            <td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+    <div style="margin:0px auto;max-width:600px;">
+        <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;">
+            <tbody>
+            <tr>
+                <td style="direction:ltr;font-size:0px;padding:20px 0;text-align:center;">
+                    <!--[if mso | IE]>
+                    <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td class="" style="width:600px;"><![endif]-->
+                    <div class="mj-column-per-100 mj-outlook-group-fix"
+                         style="font-size:0;line-height:0;text-align:left;display:inline-block;width:100%;direction:ltr;">
+                        <!--[if mso | IE]>
+                        <table border="0" cellpadding="0" cellspacing="0" role="presentation">
+                            <tr>
+                                <td style="vertical-align:top;width:600px;"><![endif]-->
+                        <div class="mj-column-per-100 mj-outlook-group-fix"
+                             style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+                            <table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%">
+                                <tbody>
+                                <tr>
+                                    <td style="vertical-align:top;padding:0px;">
+                                        <table border="0" cellpadding="0" cellspacing="0" role="presentation" style=""
+                                               width="100%">
+                                            <tbody>
+                                            <tr>
+                                                <td align="right"
+                                                    style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                                                    <div
+                                                        style="font-family:Helvetica;font-size:12px;font-weight:400;line-height:18px;text-align:right;color:#9A9EA6;">
+                                                        Université libre de Bruxelles, 1050 Bruxelles<br/> Plus envie de
+                                                        recevoir ce mail ? <a href="{{$card['url']}}">Se désabonner.</a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td align="left"
+                                                    style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                                                    <div
+                                                        style="font-family:Fira Sans;font-size:13px;line-height:1;text-align:left;color:#000000;"></div>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!--[if mso | IE]></td></tr></table><![endif]-->
+                    </div>
+                    <!--[if mso | IE]></td></tr></table><![endif]-->
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <!--[if mso | IE]></td></tr></table><![endif]-->
 </div>
 </body>
+
 </html>

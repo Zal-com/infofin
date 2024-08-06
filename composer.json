@@ -15,6 +15,7 @@
         "croustibat/filament-jobs-monitor": "^2.5",
         "daylaborers/laravel-mjml": "^1.0",
         "diglactic/laravel-breadcrumbs": "^9.0",
+        "evanschleret/lara-mjml": "^0.1.2",
         "filament/filament": "^3.2",
         "filament/forms": "^3.2",
         "filament/tables": "^3.2",
