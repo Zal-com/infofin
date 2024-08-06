@@ -219,7 +219,7 @@
                                                 style="font-size:0px;padding:10px 25px;word-break:break-word;">
                                                 <div
                                                     style="font-family:Fira Sans;font-size:14px;line-height:20px;text-align:left;color:#000000;">
-                                                    Bonjour Prénom,
+                                                    Bonjour {{$data['prenom']}},
                                                 </div>
                                             </td>
                                         </tr>
