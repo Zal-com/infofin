@@ -31,7 +31,7 @@
         </div>
         <div x-show="tab === 'infos'" class="m-4">
             @if(!empty($project->funding))
-                <div class="markdown">
+                <div class="markdown mb-5">
                     <x-filament::section.heading class="text-2xl">
                         Financement
                     </x-filament::section.heading>
@@ -43,31 +43,35 @@
                     </x-filament::section.description>
                 </div>
             @endif
-            <hr>
-            <div class="markdown mt-5">
-                <x-filament::section.heading class="text-2xl">
-                    Pour postuler
-                </x-filament::section.heading>
-                <x-filament::section.description
-                    class="mb-1 text-sm text-gray-500 dark:text-gray-400 text-justify list-inside">
-                    <div class="text-sm text-gray-500 dark:text-gray-400 text-justify">
-                        {!! \Illuminate\Support\Str::of($project->apply_instructions)->markdown() !!}
-                    </div>
+            @if(!empty($project->apply_instructions))
+                <hr>
+                <div class="markdown mt-5 mb-5">
+                    <x-filament::section.heading class="text-2xl">
+                        Pour postuler
+                    </x-filament::section.heading>
+                    <x-filament::section.description
+                        class="mb-1 text-sm text-gray-500 dark:text-gray-400 text-justify list-inside">
+                        <div class="text-sm text-gray-500 dark:text-gray-400 text-justify">
+                            {!! \Illuminate\Support\Str::of($project->apply_instructions)->markdown() !!}
+                        </div>
 
-                </x-filament::section.description>
-            </div>
-            <hr>
-            <div class="markdown mt-5">
-                <x-filament::section.heading class="text-2xl">
-                    Requis d'admission
-                </x-filament::section.heading>
-                <x-filament::section.description
-                    class="mb-1 text-sm text-gray-500 dark:text-gray-400 text-justify list-inside">
-                    <div class="text-sm text-gray-500 dark:text-gray-400 text-justify">
-                        {!! \Illuminate\Support\Str::of($project->admission_requirements)->markdown() !!}
-                    </div>
-                </x-filament::section.description>
-            </div>
+                    </x-filament::section.description>
+                </div>
+            @endif
+            @if(!empty($project->apply_instructions))
+                <hr>
+                <div class="markdown mt-5">
+                    <x-filament::section.heading class="text-2xl">
+                        Requis d'admission
+                    </x-filament::section.heading>
+                    <x-filament::section.description
+                        class="mb-1 text-sm text-gray-500 dark:text-gray-400 text-justify list-inside">
+                        <div class="text-sm text-gray-500 dark:text-gray-400 text-justify">
+                            {!! \Illuminate\Support\Str::of($project->admission_requirements)->markdown() !!}
+                        </div>
+                    </x-filament::section.description>
+                </div>
+            @endif
         </div>
         <div x-show="tab === 'documents'" class="m-4">
             <x-filament-tables::empty-state icon="heroicon-o-archive-box-x-mark"
@@ -121,7 +125,7 @@
                         </x-filament::section.heading>
                         @if(!empty($contact_ulb['phone']))
                             <div class="flex items-center">
-                                <x-filament::icon icon="heroicon-s-phone" class="h-5 w-5 mr-2"/>
+                                <x-filament::icon icon="heroicon-s-phone" class="h-[24px] w-[24px] mr-2"/>
                                 <p class="flex-1 flex-wrap overflow-ellipsis line-clamp-1">
                                     {{$contact_ulb['phone']}}
                                 </p>
@@ -129,7 +133,7 @@
                         @endif
                         @if(!empty($contact_ulb['email']))
                             <div class="flex items-center">
-                                <x-filament::icon icon="heroicon-s-at-symbol" class="h-5 w-5 mr-2"/>
+                                <x-filament::icon icon="heroicon-s-at-symbol" class="h-[24px] w-[24px] mr-2"/>
                                 <p class="flex-1 flex-wrap overflow-ellipsis line-clamp-1">
                                     <a href="mailto:{{trim($contact_ulb['email'])}}">
                                         {{$contact_ulb['email']}}
@@ -139,7 +143,7 @@
                         @endif
                         @if(!empty($contact_ulb['address']))
                             <div class="flex items-center">
-                                <x-filament::icon icon="heroicon-s-envelope" class="h-5 w-5 mr-2"/>
+                                <x-filament::icon icon="heroicon-s-envelope" class="h-[24px] w-[24px] mr-2"/>
                                 {{$contact_ulb['address']}}
                             </div>
                         @endif
