@@ -31,7 +31,7 @@
         </div>
         <div x-show="tab === 'infos'" class="m-4">
             @if(!empty($project->funding))
-                <div class="markdown mb-5">
+                <div class="markdown">
                     <x-filament::section.heading class="text-2xl">
                         Financement
                     </x-filament::section.heading>
@@ -43,7 +43,8 @@
                     </x-filament::section.description>
                 </div>
             @endif
-            <div class="markdown mb-5">
+            <hr>
+            <div class="markdown mt-5">
                 <x-filament::section.heading class="text-2xl">
                     Pour postuler
                 </x-filament::section.heading>
@@ -55,7 +56,8 @@
 
                 </x-filament::section.description>
             </div>
-            <div class="markdown mb-5">
+            <hr>
+            <div class="markdown mt-5">
                 <x-filament::section.heading class="text-2xl">
                     Requis d'admission
                 </x-filament::section.heading>
