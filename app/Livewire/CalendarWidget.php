@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\Project;
 use Saade\FilamentFullCalendar\Widgets\FullCalendarWidget;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 
 class CalendarWidget extends FullCalendarWidget
 {
@@ -12,25 +13,34 @@ class CalendarWidget extends FullCalendarWidget
 
     public function fetchEvents(array $fetchInfo): array
     {
+        $start = Carbon::parse($fetchInfo['start'])->toDateString();
+        $end = Carbon::parse($fetchInfo['end'])->toDateString();
+        $cacheKey = "events_{$start}_{$end}";
 
-        $projects = Project::whereJsonContains('deadlines', function ($query) {
-            $query->whereBetween('date', '>=', now());
-        })->get(['id', 'title', 'deadlines']);
-        $events = [];
+        // Check if the events are already cached
+        $events = Cache::remember($cacheKey, 60, function () use ($start, $end, $fetchInfo) {
+            $projects = Project::whereRaw("
+                JSON_CONTAINS_PATH(deadlines, 'one', '$[*].date')
+            ")->get(['id', 'title', 'deadlines']);
 
-        foreach ($projects as $project) {
-            foreach ($project->upcomingDeadlines() as $deadline) {
-                $deadlineDate = Carbon::parse($deadline['date']);
-                if ($deadlineDate >= $fetchInfo['start'] && $deadlineDate <= $fetchInfo['end']) {
-                    $events[] = [
-                        'title' => $project->title,
-                        'start' => $deadlineDate->format('Y-m-d'),
-                        'end' => $deadlineDate->format('Y-m-d'),
-                        'url' => route('projects.show', $project->id),
-                    ];
+            $events = [];
+
+            foreach ($projects as $project) {
+                foreach ($project->deadlines as $deadline) {
+                    $deadlineDate = Carbon::parse($deadline['date']);
+                    if ($deadlineDate >= $fetchInfo['start'] && $deadlineDate <= $fetchInfo['end']) {
+                        $events[] = [
+                            'title' => $project->title,
+                            'start' => $deadlineDate->format('Y-m-d'),
+                            'end' => $deadlineDate->format('Y-m-d'),
+                            'url' => route('projects.show', $project->id),
+                        ];
+                    }
                 }
             }
-        }
+
+            return $events;
+        });
 
         return $events;
     }
