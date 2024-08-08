@@ -97,7 +97,7 @@ class Project extends Model
             if ($firstFutureDeadline['continuous'] == 1) {
                 return 'Continu';
             } else {
-                return Carbon::parse($firstFutureDeadline['date'])->format('d/m/Y');
+                return ['date' => Carbon::parse($firstFutureDeadline['date'])->format('d/m/Y'), 'proof' => $firstFutureDeadline['proof']];
             }
         } else {
             $lastDeadline = end($deadlines);
@@ -110,24 +110,29 @@ class Project extends Model
         }
     }
 
-    public function hasUpcomingDeadline()
+    public function hasUpcomingDeadline(): bool
     {
-        $deadlines = json_decode($this->deadlines, true);
+        $deadlines = $this->deadlines;
         foreach ($deadlines as $deadline) {
-            if ($deadline['continuous'] && \Carbon\Carbon::parse($deadline['date'])->isAfter(now())) {
+            if ($deadline['continuous'] || \Carbon\Carbon::parse($deadline['date'])->isAfter(now())) {
                 return true;
-            }
+            } else continue;
         }
         return false;
     }
 
-    public function upcomingDeadlines()
+    public function getUpcomingDeadlinesAttribute()
     {
         return collect($this->deadlines)
             ->filter(function ($deadline) {
                 return isset($deadline['date']) && $deadline['date'] >= now();
             })
             ->sortBy('date');
+    }
+
+    public function getAllDeadlinesSortedAttribute()
+    {
+        return collect($this->deadlines)->sortBy('date');
     }
 
 }

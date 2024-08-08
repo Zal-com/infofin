@@ -360,7 +360,8 @@
                                                     <div
                                                         style="font-family:Helvetica;font-size:12px;font-weight:400;line-height:18px;text-align:right;color:#9A9EA6;">
                                                         Université libre de Bruxelles, 1050 Bruxelles<br/> Plus envie de
-                                                        recevoir ce mail ? <a href="{{$card['url']}}">Se désabonner.</a>
+                                                        recevoir ce mail ? <a href="{{$card['url   ']}}">Se
+                                                            désabonner.</a>
                                                     </div>
                                                 </td>
                                             </tr>

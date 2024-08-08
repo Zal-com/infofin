@@ -73,20 +73,37 @@
         </div>
     </x-filament::section>
     <div class="flex flex-col gap-4 sticky top-5">
-        @if(!empty($project->deadlines))
-            <x-filament::section class="col-span-1 row-span-1 sticky top-5">
-                <x-filament::section.heading class="text-xl mb-4">
-                    Dates
-                </x-filament::section.heading>
-                @foreach($project->deadlines as $deadline)
-                    <div class="mb-3 last-of-type:mb-0">
-                        <x-filament::section>
-                            <div>{{$deadline['continuous'] == 1 ? "Continue" : \Carbon\Carbon::make($deadline['date'])->format('d/m/Y')}}</div>
-                            {{$deadline['proof'] ?? ""}}
-                        </x-filament::section>
+        @if($project->hasUpcomingDeadline())
+            <x-zeus-accordion::accordion>
+                <x-zeus-accordion::accordion.item
+                    icon="heroicon-o-calendar-days"
+                    label="{{$project->firstDeadline['proof']}} : {{$project->firstDeadline['date']}}"
+                >
+                    <div class="bg-white p-4">
+                        @foreach($project->allDeadlinesSorted as $sortedDeadline)
+                            <p @if(\Carbon\Carbon::make($sortedDeadline['date'])->format("d/m/Y") === $project->firstDeadline['date']) style="font-weight: bold" @endif
+                            >
+                                {{$sortedDeadline['proof']}}
+                                : {{\Carbon\Carbon::make($sortedDeadline['date'])->format("d/m/Y")}}</p>
+                        @endforeach
                     </div>
-                @endforeach
-            </x-filament::section>
+                </x-zeus-accordion::accordion.item>
+            </x-zeus-accordion::accordion>
+        @else
+            <x-zeus-accordion::accordion>
+                <x-zeus-accordion::accordion.item
+                    icon="heroicon-o-calendar-days"
+                    label="Projet terminé"
+                >
+                    <div class="bg-white p-4">
+                        @foreach($project->allDeadlinesSorted as $sortedDeadline)
+                            <p>
+                                {{$sortedDeadline['proof']}}
+                                : {{\Carbon\Carbon::make($sortedDeadline['date'])->format("d/m/Y - H:i")}}</p>
+                        @endforeach
+                    </div>
+                </x-zeus-accordion::accordion.item>
+            </x-zeus-accordion::accordion>
         @endif
         @if(!empty($project->contact_ulb))
             <x-filament::section class="col-span-1 row-span-1">
