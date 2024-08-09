@@ -33,6 +33,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->colors([
                 'primary' => Color::Amber,
+                'secondary' => Color::Green,
                 'danger' => Color::hex('#E32119'),
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')

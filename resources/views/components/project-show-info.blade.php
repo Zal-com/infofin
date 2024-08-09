@@ -90,8 +90,8 @@
                         @foreach($project->allDeadlinesSorted as $sortedDeadline)
                             <p @if(\Carbon\Carbon::make($sortedDeadline['date'])->format("d/m/Y") === explode('|',$project->firstDeadline)[0]) style="font-weight: bold" @endif
                             >
-                                {{$sortedDeadline['proof']}}
-                                : {{\Carbon\Carbon::make($sortedDeadline['date'])->format("d/m/Y")}}</p>
+                                {{$sortedDeadline['proof'] != '' ? $sortedDeadline['proof'] . ' :'  : ''}}
+                                {{\Carbon\Carbon::make($sortedDeadline['date'])->format("d/m/Y")}}</p>
                         @endforeach
                     </div>
                 </x-zeus-accordion::accordion.item>

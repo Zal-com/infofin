@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use Filament\Support\Colors\Color;
+use Filament\Support\Facades\FilamentColor;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
@@ -23,6 +25,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(Schedule $schedule): void
     {
+
+        FilamentColor::register([
+            'danger' => Color::hex('#EA4335'),
+            'warning' => Color::hex('#FBBC05'),
+            'info' => Color::hex('#4285F4'),
+            'success' => Color::hex('#34A853'),
+            'primary' => Color::hex('#1A73E8'),
+            'secondary' => Color::hex('#F3F4F6'),
+            'tertiary' => Color::hex('#202124'),
+        ]);
 
         $schedule->command('newsletter:send')->weeklyOn(1, '15:23'); // 1 = Monday
         Schema::defaultStringLength(191);

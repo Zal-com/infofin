@@ -4,11 +4,10 @@
     <div class="flex justify-between items-center mb-4">
         {{ \Diglactic\Breadcrumbs\Breadcrumbs::render('project', $project) }}
         @can('create', App\Models\Project::class)
-            <a href="{{ url(route('projects.edit', $project->id)) }}"
-               class="inline-flex items-center px-4 py-2 bg-orange-400 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-orange-500 focus:bg-orange-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                <i class="fa fa-solid fa-plus pr-2"></i>
-                Edit
-            </a>
+            <x-filament::button icon="heroicon-s-pencil" tag="a"
+                                href="{{ url(route('projects.edit', $project->id)) }}">
+                Modifier
+            </x-filament::button>
         @endcan
     </div>
     <x-project-show-info :project="$project"/>

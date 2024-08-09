@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Continent;
 use App\Models\Countries;
+use App\Models\Draft;
 use App\Models\InfoType;
 use App\Models\Organisation;
 use App\Models\Project;
@@ -24,9 +25,11 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
+use Filament\Support\Enums\VerticalAlignment;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
+use Spatie\Color\Color;
 
 class ProjectEditForm extends Component implements HasForms
 {
@@ -147,7 +150,7 @@ class ProjectEditForm extends Component implements HasForms
                         ->required()
                         ->autofocus(),
                     Select::make('organisation')
-                        ->multiple()
+                        ->searchable()
                         ->createOptionForm([
                             TextInput::make('title')
                                 ->required()
@@ -223,25 +226,6 @@ class ProjectEditForm extends Component implements HasForms
                             Checkbox::make('continuous')->default(false),
                         ])->label(false)->addActionLabel('+ Ajouter une deadline')->minItems(1)->required()->defaultItems(1),
                     ]),
-                    // Section::make('Deadlines')->schema([
-                    //     Fieldset::make('1ere deadline')->schema([
-                    //         DatePicker::make('deadline'),
-                    //         TextInput::make('proof')
-                    //             ->label('Justificatif'),
-                    //         Checkbox::make('continuous')
-                    //             ->label('Continu')
-                    //             ->default(false)
-                    //     ]),
-                    //     Fieldset::make('2eme deadline')->schema([
-                    //         DatePicker::make('deadline_2'),
-                    //         TextInput::make('proof_2')
-                    //             ->label('Justificatif'),
-                    //         Checkbox::make('continuous_2')
-                    //             ->label('Continu')
-                    //             ->default(false)
-                    //             ->inline(true)
-                    //     ]),
-                    // ]),
                     Select::make('periodicity')
                         ->label('Periodicité')
                         ->options(['Sans', 'Annuel', 'Biennal', 'Triennal', 'Quadriennal', 'Quinquennal'])
@@ -302,16 +286,26 @@ class ProjectEditForm extends Component implements HasForms
             ]),
 
             Actions::make([
+                Action::make('submit')
+                    ->label('Valider les modifications')
+                    ->color('primary')
+                    ->icon('heroicon-o-check')
+                    ->action('submit'),
+                Action::make('saveAsDraft')
+                    ->icon('heroicon-o-clipboard-document-list')
+                    ->label('Garder en brouillon')
+                    ->color('info')
+                    ->action('saveAsDraft'),
                 Action::make('archive')
                     ->label('Supprimer')
-                    ->icon('heroicon-s-trash')
+                    ->icon('heroicon-o-trash')
                     ->color('danger')
                     ->requiresConfirmation()
                     ->modalHeading('Supprimer le projet.')
                     ->modalDescription('Voulez-vous vraiment supprimer ce projet ?.')
                     ->action('archiveProject')
                     ->button(),
-            ]),
+            ])->alignEnd()
         ])->statePath('data')->model($this->project); //sauvegarde todo
     }
 
@@ -466,6 +460,36 @@ class ProjectEditForm extends Component implements HasForms
 
         session()->flash('success', 'Le projet a été mis à jour');
         return redirect()->route('projects.index');
+    }
+
+    public function saveAsDraft()
+    {
+        if ($this->draft) {
+            $updatedDraft = Draft::find($this->draft->id);
+
+            if ($updatedDraft) {
+                $updateSuccessful = $updatedDraft->update([
+                    'content' => json_encode($this->data),
+                    'poster_id' => Auth::id()
+                ]);
+
+                if ($updateSuccessful) {
+                    return redirect()->route('profile.show')->with('success', 'Le brouillon a bien été enregistré.');
+                }
+            }
+        }
+
+        $draft = new Draft([
+            'content' => json_encode($this->data),
+            'poster_id' => Auth::id()
+        ]);
+
+        if ($draft->save()) {
+            return redirect()->route('profile.show')->with('success', 'Brouillon enregistré');
+        }
+
+        // Gérer le cas où la sauvegarde du nouveau brouillon échoue
+        return redirect()->back()->withErrors('La sauvegarde du brouillon a échoué.');
     }
 
 }
