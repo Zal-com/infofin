@@ -75,7 +75,7 @@ class Project extends Model
         return $this->belongsToMany(User::class, "visits_rate_mail", "project_id", "user_id")->withPivot('date_consult');
     }
 
-    public function getFirstDeadlineAttribute()
+    public function getFirstDeadlineAttribute(): string
     {
         $deadlines = $this->attributes['deadlines'] ? json_decode($this->attributes['deadlines'], true) : [];
 
@@ -97,7 +97,7 @@ class Project extends Model
             if ($firstFutureDeadline['continuous'] == 1) {
                 return 'Continu';
             } else {
-                return ['date' => Carbon::parse($firstFutureDeadline['date'])->format('d/m/Y'), 'proof' => $firstFutureDeadline['proof']];
+                return Carbon::parse($firstFutureDeadline['date'])->format('d/m/Y') . '|' . $firstFutureDeadline['proof'];
             }
         } else {
             $lastDeadline = end($deadlines);

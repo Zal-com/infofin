@@ -18,7 +18,9 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
 use Illuminate\View\View;
 use Livewire\Component;
@@ -63,31 +65,18 @@ class ListProjects extends Component implements HasForms, HasTable
                 })
                 ->separator(false)
                 ->searchable(),
-            TextColumn::make('deadline')
-                ->label('Deadline 1')
-                ->sortable()
-                ->searchable()
+            TextColumn::make('firstDeadline')
+                ->label('Prochaine deadline')
                 ->formatStateUsing(function ($record) {
-                    if ($record->continuous) {
-                        return 'Continue';
-                    } elseif ($record->deadline == '0000-00-00 00:00:00') {
-                        return 'N/A';
-                    } else {
-                        return \Carbon\Carbon::parse($record->deadline)->format('d/m/Y');
-                    }
-                }),
-            TextColumn::make('deadline_2')
-                ->label('Deadline 2')
-                ->sortable()
-                ->searchable()
-                ->formatStateUsing(function ($record) {
-                    if ($record->continuous_2) {
-                        return 'Continue';
-                    } elseif ($record->deadline_2 == '0000-00-00 00:00:00') {
-                        return 'N/A';
-                    } else {
-                        return \Carbon\Carbon::parse($record->deadline_2)->format('d/m/Y');
-                    }
+                    $deadline = explode('|', $record->firstDeadline);
+                    return new HtmlString("
+    <div>
+        <p class='my-0'>{$deadline[0]}</p>
+        <p class='text-gray-500 text-xs'>" . ($deadline[1] ?? '') . "</p>
+    </div>
+");
+
+
                 }),
             TextColumn::make('organisations.title')
                 ->label('Organisation')
@@ -121,60 +110,60 @@ class ListProjects extends Component implements HasForms, HasTable
             Project::where('status', '!=', 2)
                 ->where(function ($query) {
                     $query->where('updated_at', '>', now()->subYears(2))
-                          ->orWhereJsonContains('deadlines->date', function ($subQuery) {
-                              $subQuery->where('date', '>', now());
-                          });
+                        ->orWhereJsonContains('deadlines->date', function ($subQuery) {
+                            $subQuery->where('date', '>', now());
+                        });
                 }))
-                ->columns($columns)
-                ->actions($actions)
-                ->defaultPaginationPageOption(25)
-                ->defaultSort('updated_at', 'desc')
-                ->defaultSort('status', 'desc')
-                ->paginationPageOptions([5, 10, 25, 50, 100])
-                ->recordUrl(fn($record) => route('projects.show', $record->id))
-                ->filters([
-                    Filter::make('is_big')->label('Projets majeurs')->query(fn($query) => $query->where('is_big', '=', 1)),
-                    Filter::make('organisation')->label('Organisation')->form([
-                        Select::make('organisation_id')
-                            ->label('Organisation')
-                            ->options(function () {
-                                return Organisation::query()->pluck('title', 'id')->toArray();
-                            })
-                            ->searchable()
-                    ])
-                        ->query(function ($query, $data) {
-                            return $query->when($data['organisation_id'], function ($query, $organisationId) {
-                                return $query->whereHas('organisations', function ($query) use ($organisationId) {
-                                    $query->where('organisation_id', $organisationId);
-                                });
+            ->columns($columns)
+            ->actions($actions)
+            ->defaultPaginationPageOption(25)
+            ->defaultSort('updated_at', 'desc')
+            ->defaultSort('status', 'desc')
+            ->paginationPageOptions([5, 10, 25, 50, 100])
+            ->recordUrl(fn($record) => route('projects.show', $record->id))
+            ->filters([
+                Filter::make('is_big')->label('Projets majeurs')->query(fn($query) => $query->where('is_big', '=', 1)),
+                Filter::make('organisation')->label('Organisation')->form([
+                    Select::make('organisation_id')
+                        ->label('Organisation')
+                        ->options(function () {
+                            return Organisation::query()->pluck('title', 'id')->toArray();
+                        })
+                        ->searchable()
+                ])
+                    ->query(function ($query, $data) {
+                        return $query->when($data['organisation_id'], function ($query, $organisationId) {
+                            return $query->whereHas('organisations', function ($query) use ($organisationId) {
+                                $query->where('organisation_id', $organisationId);
                             });
-                        })
-                        ->indicateUsing(fn($data) => isset($data['organisation_id']) ? 'Organisation : ' . Organisation::find($data['organisation_id'])->title : null),
-                    Filter::make('info_type_category')
-                        ->label('Catégories')
-                        ->form([
-                            Select::make('category_id')
-                                ->label('Categorie')
-                                ->multiple()
-                                ->options(function () {
-                                    return InfoTypeCategory::all()->pluck('name', 'id')->toArray();
-                                })
-                        ])
-                        ->query(function ($query, $data) {
-                            if (!empty($data['category_id'])) {
-                                return $query->whereHas('info_types', function ($query) use ($data) {
-                                    $query->whereIn('info_types_cat_id', $data['category_id']);
-                                });
-                            }
-                            return $query;
-                        })
-                        ->indicateUsing(function ($data) {
-                            if (isset($data['category_id']) && !empty($data['category_id'])) {
-                                $categoryNames = InfoTypeCategory::whereIn('id', $data['category_id'])->pluck('name')->toArray();
-                                return 'Catégories : ' . implode(', ', $categoryNames);
-                            }
-                            return null;
-                        })
-                ]);
+                        });
+                    })
+                    ->indicateUsing(fn($data) => isset($data['organisation_id']) ? 'Organisation : ' . Organisation::find($data['organisation_id'])->title : null),
+                Filter::make('info_type_category')
+                    ->label('Catégories')
+                    ->form([
+                        Select::make('category_id')
+                            ->label('Categorie')
+                            ->multiple()
+                            ->options(function () {
+                                return InfoTypeCategory::all()->pluck('name', 'id')->toArray();
+                            })
+                    ])
+                    ->query(function ($query, $data) {
+                        if (!empty($data['category_id'])) {
+                            return $query->whereHas('info_types', function ($query) use ($data) {
+                                $query->whereIn('info_types_cat_id', $data['category_id']);
+                            });
+                        }
+                        return $query;
+                    })
+                    ->indicateUsing(function ($data) {
+                        if (isset($data['category_id']) && !empty($data['category_id'])) {
+                            $categoryNames = InfoTypeCategory::whereIn('id', $data['category_id'])->pluck('name')->toArray();
+                            return 'Catégories : ' . implode(', ', $categoryNames);
+                        }
+                        return null;
+                    })
+            ]);
     }
 }
