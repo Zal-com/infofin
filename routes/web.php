@@ -34,6 +34,7 @@ Route::controller(UserController::class)->group(function () {
 
 Route::controller(DraftController::class)->group(function () {
     Route::get('drafts', 'index')->name('drafts.index');
+    Route::get('drafts/{id}', 'show')->name('drafts.show');
 });
 
 Route::middleware('auth')->group(function () {

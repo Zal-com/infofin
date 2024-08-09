@@ -105,7 +105,7 @@ class ListDraft extends Component implements HasForms, HasTable
             ->actions($actions)
             ->defaultPaginationPageOption(25)
             ->defaultSort('updated_at', 'desc')
-            ->paginationPageOptions([5, 10, 25, 50, 100]);
-        //->recordUrl(fn($record) => route('drafts.show', $record->id));
+            ->paginationPageOptions([5, 10, 25, 50, 100])
+            ->recordUrl(fn($record) => route('drafts.show', $record->id));
     }
 }

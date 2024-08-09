@@ -26,7 +26,7 @@ class Draft extends Model
     {
         $content = $this->attributes['content'] ? json_decode($this->attributes['content'], true) : null;
 
-        if ($content && isset($content['deadlines'])) {
+        if ($content && !empty($content['deadlines'])) {
             $deadlines = array_values($content['deadlines']);
             usort($deadlines, function ($a, $b) {
                 return strtotime($a['date']) - strtotime($b['date']);
