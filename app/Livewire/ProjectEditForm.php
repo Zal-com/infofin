@@ -462,7 +462,7 @@ class ProjectEditForm extends Component implements HasForms
                 ]);
 
                 if ($updateSuccessful) {
-                    return redirect()->route('profile.show')->with('success', 'Le brouillon a bien été enregistré.');
+                    redirect()->route('profile.show')->with('success', 'Le brouillon a bien été enregistré.');
                 }
             }
         }
@@ -473,11 +473,11 @@ class ProjectEditForm extends Component implements HasForms
         ]);
 
         if ($draft->save()) {
-            return redirect()->route('profile.show')->with('success', 'Brouillon enregistré');
+            redirect()->route('profile.show')->with('success', 'Brouillon enregistré');
         }
 
         // Gérer le cas où la sauvegarde du nouveau brouillon échoue
-        return redirect()->back()->withErrors('La sauvegarde du brouillon a échoué.');
+        redirect()->back()->withErrors('La sauvegarde du brouillon a échoué.');
     }
 
 }
