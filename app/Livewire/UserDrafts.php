@@ -6,6 +6,7 @@ use App\Models\Draft;
 use Filament\Actions\DeleteAction;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Notifications\Notification;
 use Filament\Support\Enums\IconPosition;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
@@ -49,7 +50,14 @@ class UserDrafts extends Component implements HasTable, HasForms
                 Action::make('delete')
                     ->label('Supprimer')
                     ->requiresConfirmation()
-                    ->action(fn(Draft $draft) => $draft->delete())
+                    ->action(function (Draft $draft) {
+                        $draft->delete();
+                        Notification::make()->title('Brouillon supprimé.')
+                            ->icon('heroicon-o-check-circle')
+                            ->iconColor('success')
+                            ->seconds(5)
+                            ->send();
+                    })
                     ->icon('heroicon-o-trash')->iconPosition(IconPosition::Before)
                     ->color('danger')
 

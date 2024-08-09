@@ -11,6 +11,7 @@ use Filament\Forms\Components\Tabs;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Livewire\Component;
 
 class UserInterests extends Component implements HasForms
@@ -87,9 +88,22 @@ class UserInterests extends Component implements HasForms
 
     public function save()
     {
-        $this->user->info_types()->sync($this->data['info_types']);
-        $this->user->scientific_domains()->sync($this->data['scientific_domains']);
-        session()->flash('success', 'Les modifications ont bien été enregistrées.');
-        return redirect()->route('profile.show');
+        try {
+            $this->user->info_types()->sync($this->data['info_types']);
+            $this->user->scientific_domains()->sync($this->data['scientific_domains']);
+            Notification::make()
+                ->title('Profil mis à jour.')
+                ->icon('heroicon-o-check-circle')
+                ->iconColor('success')
+                ->seconds(5)
+                ->send();
+        } catch (\Exception $e) {
+            Notification::make()
+                ->title('Problème lors de la mise a jour du profil. Veuillez réessayer plus tard.')
+                ->icon('heroicon-o-x-circle')
+                ->iconColor('danger')
+                ->seconds(5)
+                ->send();
+        }
     }
 }

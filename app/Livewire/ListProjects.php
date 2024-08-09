@@ -67,7 +67,7 @@ class ListProjects extends Component implements HasForms, HasTable
                         return [
                             Badge::make('is_big')
                                 ->label('Projet majeur')
-                                ->color('info')
+                                ->color('primary')
                         ];
                     }
                     return [];

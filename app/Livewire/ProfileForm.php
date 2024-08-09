@@ -7,10 +7,12 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
 use Livewire\Component;
+use PharIo\Manifest\ElementCollectionException;
 
 class ProfileForm extends Component implements HasForms
 {
@@ -81,18 +83,45 @@ class ProfileForm extends Component implements HasForms
         $validator = Validator::make($this->data, $rules);
 
         if ($validator->fails()) {
-            session()->flash('error', $validator->errors()->all());
-            return redirect()->back()->withInput();
+            foreach ($validator->errors()->all() as $error) {
+                Notification::make()
+                    ->title($error)
+                    ->icon('heroicon-o-x-circle')
+                    ->iconColor('danger')
+                    ->color('danger')
+                    ->seconds(5)
+                    ->send();
+            }
+            // session()->flash('error', $validator->errors()->all());
+            //return redirect()->back()->withInput();
+        } else {
+            // Mise à jour des données utilisateur
+            if ($this->data['password'] === null) {
+                unset($this->data['password']);
+            }
+            try {
+                $this->user->update($this->data);
+                Notification::make()
+                    ->title('Profil mis à jour.')
+                    ->icon('heroicon-o-check-circle')
+                    ->iconColor('success')
+                    ->color('success')
+                    ->seconds(5)
+                    ->send();
+            } catch (\Exception $exception) {
+                Notification::make()
+                    ->title('Problème lors de la mise a jour du profil. Veuillez réessayer plus tard.')
+                    ->icon('heroicon-o-x-circle')
+                    ->iconColor('danger')
+                    ->color('danger')
+                    ->seconds(5)
+                    ->send();
+            }
         }
 
-        // Mise à jour des données utilisateur
-        if ($this->data['password'] === null) {
-            unset($this->data['password']);
-        }
-        $this->user->update($this->data);
 
-        session()->flash('success', 'Profil mis à jour avec succès.');
-        return redirect()->back()->withInput();
+        //session()->flash('success', 'Profil mis à jour avec succès.');
+        //return redirect()->back()->withInput();
     }
 
     public function render()

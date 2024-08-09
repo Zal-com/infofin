@@ -5,7 +5,8 @@
     <div class="grid grid-cols-6 gap-2 mb-10" x-data="{ tab: localStorage.getItem('activeTab') || 'infos' }"
          x-init="$watch('tab', value => localStorage.setItem('activeTab', value))">
         <x-filament::tabs class="flex-col max-h-min sticky top-5 row-span-1">
-            <x-filament::tabs.item @click="tab = 'infos'" :alpine-active="'tab === \'infos\''">
+            <x-filament::tabs.item @click="tab = 'infos'"
+                                   :alpine-active="'tab === \'infos\''">
                 Informations personnelles
             </x-filament::tabs.item>
             <x-filament::tabs.item @click="tab = 'drafts'" :alpine-active="'tab === \'drafts\''">

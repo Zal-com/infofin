@@ -25,6 +25,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Support\Enums\VerticalAlignment;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -485,7 +486,12 @@ class ProjectEditForm extends Component implements HasForms
         ]);
 
         if ($draft->save()) {
-            return redirect()->route('profile.show')->with('success', 'Brouillon enregistré');
+            Notification::make()
+                ->title('Brouillon enregistré.')
+                ->send()
+                ->seconds(5)
+                ->color('success');
+            redirect()->route('profile.show');
         }
 
         // Gérer le cas où la sauvegarde du nouveau brouillon échoue

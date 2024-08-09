@@ -45,9 +45,9 @@
             </div>
 
             <div class="flex flex-col gap-2 items-center mt-4 w-full justify-center">
-                <x-primary-button class="ms-3 w-2/3 justify-center">
+                <x-filament::button color="primary" type="submit" class="ms-3 w-2/3 justify-center">
                     {{ __('Log in') }}
-                </x-primary-button>
+                </x-filament::button>
             </div>
             <div id="or">OU</div>
             <a href="{{ route('login.cas') }}" class="ms-3 w-2/3">

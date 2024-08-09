@@ -27,13 +27,23 @@ class AppServiceProvider extends ServiceProvider
     {
 
         FilamentColor::register([
+            /*
             'danger' => Color::hex('#EA4335'),
             'warning' => Color::hex('#FBBC05'),
             'info' => Color::hex('#4285F4'),
             'success' => Color::hex('#34A853'),
             'primary' => Color::hex('#1A73E8'),
             'secondary' => Color::hex('#F3F4F6'),
-            'tertiary' => Color::hex('#202124'),
+            'tertiary' => Color::hex('#202124'),*/
+            'danger' => Color::hex('#E63946'),
+            'warning' => Color::hex('#F4A261'),
+            'info' => Color::hex('#2A9D8F'),
+            'success' => Color::hex('#4CAF50'),
+            'primary' => Color::hex('#007BFF'),
+            'secondary' => Color::hex('#6C757D'),
+            'tertiary' => Color::hex('#495057'),
+
+
         ]);
 
         $schedule->command('newsletter:send')->weeklyOn(1, '15:23'); // 1 = Monday
