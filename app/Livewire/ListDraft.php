@@ -84,7 +84,7 @@ class ListDraft extends Component implements HasForms, HasTable
         if (Auth::check() && Auth::user()->can('create projects')) {
             $actions[] = Action::make('edit')
                 ->label('Edit')
-                //->url(fn($record) => route('projects.edit', $record->id))
+                ->url(fn(Draft $record) => route('projects.create', ['record' => $record->id]))
                 ->icon('heroicon-s-pencil')
                 ->color('primary');
 
@@ -94,7 +94,8 @@ class ListDraft extends Component implements HasForms, HasTable
                 ->color('danger')
                 ->requiresConfirmation()
                 ->modalHeading('Supprimer le projet.')
-                ->modalDescription('Voulez-vous vraiment supprimer ce projet ?.');
+                ->modalDescription('Voulez-vous vraiment supprimer ce projet ?.')
+                ->action(fn($record) => $record->delete());
         }
 
         return $table->query(
