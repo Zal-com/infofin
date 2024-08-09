@@ -17,6 +17,9 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(): View
     {
+        if (Auth::check()) {
+            redirect()->route('projects.index');
+        }
         session(['url.intended' => url()->previous()]);
         return view('auth.login');
     }
@@ -30,8 +33,8 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        $redirectUrl = session()->pull('url.intended', '/');
-        
+        $redirectUrl = session()->pull('url.intended', '/projects');
+
         return redirect()->intended($redirectUrl);
     }
 

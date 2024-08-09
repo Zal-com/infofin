@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentColor;
+use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
@@ -56,5 +57,9 @@ class AppServiceProvider extends ServiceProvider
         if (config('app.env') !== 'local') {
             \URL::forceScheme('https');
         }
+
+        RedirectIfAuthenticated::redirectUsing(function () {
+            return route('projects.index');
+        });
     }
 }
