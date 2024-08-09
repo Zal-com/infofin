@@ -128,12 +128,12 @@ class ListProjects extends Component implements HasForms, HasTable
         }
 
         return $table->query(
-            Project::where('status', '!=', 2)
+            Project::where('status', '!=', 2)->where('status', '!=', -1)
                 ->where(function ($query) {
                     $query->where('updated_at', '>', now()->subYears(2))
-                          ->orWhereJsonContains('deadlines->date', function ($subQuery) {
-                              $subQuery->where('date', '>', now());
-                          });
+                        ->orWhereJsonContains('deadlines->date', function ($subQuery) {
+                            $subQuery->where('date', '>', now());
+                        });
                 }))
             ->columns($columns)
             ->actions($actions)
