@@ -11,18 +11,17 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Support\Enums\FontWeight;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
 use Illuminate\View\View;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class ListProjects extends Component implements HasForms, HasTable
@@ -30,9 +29,19 @@ class ListProjects extends Component implements HasForms, HasTable
     use InteractsWithForms;
     use InteractsWithTable;
 
+    protected $listeners = ['projectDeleted'];
+
     public function render(): View
     {
         return view('livewire.list-projects');
+    }
+
+    #[On('projectDeleted')]
+    public function projectDeleted()
+    {
+        session()->flash('success', "Le projet a été supprimé avec succès.");
+
+        return redirect()->route('projects.index');
     }
 
     public function table(Table $table): Table
@@ -104,21 +113,32 @@ class ListProjects extends Component implements HasForms, HasTable
                 ->url(fn($record) => route('projects.edit', $record->id))
                 ->icon('heroicon-s-pencil')
                 ->color('primary');
+
+            $actions[] = Action::make('archive')
+                ->label('Supprimer')
+                ->icon('heroicon-s-trash')
+                ->color('danger')
+                ->requiresConfirmation()
+                ->modalHeading('Supprimer le projet.')
+                ->modalDescription('Voulez-vous vraiment supprimer ce projet ?.')
+                ->action(function ($record) {
+                    $record->update(['status' => -1]);
+                    $this->dispatch("projectDeleted");
+                });
         }
 
         return $table->query(
             Project::where('status', '!=', 2)
                 ->where(function ($query) {
                     $query->where('updated_at', '>', now()->subYears(2))
-                        ->orWhereJsonContains('deadlines->date', function ($subQuery) {
-                            $subQuery->where('date', '>', now());
-                        });
+                          ->orWhereJsonContains('deadlines->date', function ($subQuery) {
+                              $subQuery->where('date', '>', now());
+                          });
                 }))
             ->columns($columns)
             ->actions($actions)
             ->defaultPaginationPageOption(25)
             ->defaultSort('updated_at', 'desc')
-            ->defaultSort('status', 'desc')
             ->paginationPageOptions([5, 10, 25, 50, 100])
             ->recordUrl(fn($record) => route('projects.show', $record->id))
             ->filters([
