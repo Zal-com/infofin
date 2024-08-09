@@ -23,6 +23,7 @@ class ProjectController extends Controller
     public function show(int $id)
     {
         $project = Project::find($id);
+        $project->timestamps = false;
 
         VisitsRate::create(["project_id" => $id]);
 
