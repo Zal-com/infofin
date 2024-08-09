@@ -80,7 +80,7 @@ final class ProjectForm extends Component implements HasForms
                         ->required()
                         ->autofocus(),
                     Select::make('organisation')
-                        ->multiple()
+                        ->searchable()
                         ->createOptionForm([
                             TextInput::make('title')
                                 ->required()
