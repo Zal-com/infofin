@@ -74,31 +74,18 @@ class ListProjects extends Component implements HasForms, HasTable
                 })
                 ->separator(false)
                 ->searchable(),
-            TextColumn::make('deadline')
-                ->label('Deadline 1')
-                ->sortable()
-                ->searchable()
+            TextColumn::make('firstDeadline')
+                ->label('Prochaine deadline')
                 ->formatStateUsing(function ($record) {
-                    if ($record->continuous) {
-                        return 'Continue';
-                    } elseif ($record->deadline == '0000-00-00 00:00:00') {
-                        return 'N/A';
-                    } else {
-                        return \Carbon\Carbon::parse($record->deadline)->format('d/m/Y');
-                    }
-                }),
-            TextColumn::make('deadline_2')
-                ->label('Deadline 2')
-                ->sortable()
-                ->searchable()
-                ->formatStateUsing(function ($record) {
-                    if ($record->continuous_2) {
-                        return 'Continue';
-                    } elseif ($record->deadline_2 == '0000-00-00 00:00:00') {
-                        return 'N/A';
-                    } else {
-                        return \Carbon\Carbon::parse($record->deadline_2)->format('d/m/Y');
-                    }
+                    $deadline = explode('|', $record->firstDeadline);
+                    return new HtmlString("
+    <div>
+        <p class='my-0'>{$deadline[0]}</p>
+        <p class='text-gray-500 text-xs'>" . ($deadline[1] ?? '') . "</p>
+    </div>
+");
+
+
                 }),
             TextColumn::make('organisations.title')
                 ->label('Organisation')
@@ -144,9 +131,9 @@ class ListProjects extends Component implements HasForms, HasTable
             Project::where('status', '!=', 2)
                 ->where(function ($query) {
                     $query->where('updated_at', '>', now()->subYears(2))
-                        ->orWhereJsonContains('deadlines->date', function ($subQuery) {
-                            $subQuery->where('date', '>', now());
-                        });
+                          ->orWhereJsonContains('deadlines->date', function ($subQuery) {
+                              $subQuery->where('date', '>', now());
+                          });
                 }))
             ->columns($columns)
             ->actions($actions)

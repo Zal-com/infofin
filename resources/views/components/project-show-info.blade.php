@@ -83,11 +83,12 @@
             <x-zeus-accordion::accordion>
                 <x-zeus-accordion::accordion.item
                     icon="heroicon-o-calendar-days"
-                    label="{{$project->firstDeadline['proof']}} : {{$project->firstDeadline['date']}}"
+
+                    label="{{explode('|', $project->firstDeadline)[1]}} : {{explode('|',$project->firstDeadline)[0]}}"
                 >
                     <div class="bg-white p-4">
                         @foreach($project->allDeadlinesSorted as $sortedDeadline)
-                            <p @if(\Carbon\Carbon::make($sortedDeadline['date'])->format("d/m/Y") === $project->firstDeadline['date']) style="font-weight: bold" @endif
+                            <p @if(\Carbon\Carbon::make($sortedDeadline['date'])->format("d/m/Y") === explode('|',$project->firstDeadline)[0]) style="font-weight: bold" @endif
                             >
                                 {{$sortedDeadline['proof']}}
                                 : {{\Carbon\Carbon::make($sortedDeadline['date'])->format("d/m/Y")}}</p>
