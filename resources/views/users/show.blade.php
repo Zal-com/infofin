@@ -30,13 +30,13 @@
                 </div>
             </div>
             <div x-show="tab === 'drafts'" class="m-4">
-                <x-filament::section.heading>
+                <x-filament::section.heading class="mb-5">
                     Mes brouillons
                 </x-filament::section.heading>
                 @livewire('user-drafts')
             </div>
             <div x-show="tab === 'appels'" class="m-4">
-                <x-filament::section.heading>
+                <x-filament::section.heading class="mb-5">
                     Appels Infofin
                 </x-filament::section.heading>
                 @livewire('user-projects')

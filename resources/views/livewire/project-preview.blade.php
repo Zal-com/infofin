@@ -187,9 +187,10 @@
 
     <div class="mt-4 grid grid-cols-5">
         <div class="col-span-4 flex justify-end">
-            <x-filament::button wire:click="return" icon="heroicon-o-arrow-uturn-left" class="mx-2">Retour
+            <x-filament::button wire:click="return" color="secondary" icon="heroicon-o-arrow-uturn-left" class="mx-2">
+                Retour
             </x-filament::button>
-            <x-filament::button wire:click="create" icon="heroicon-o-plus">Créer</x-filament::button>
+            <x-filament::button wire:click="create" color="primary" icon="heroicon-o-plus">Créer</x-filament::button>
         </div>
     </div>
 </div>

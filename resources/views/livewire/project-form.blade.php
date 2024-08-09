@@ -16,18 +16,6 @@
         <form wire:submit.prevent="submit" wire:model="project">
             @csrf
             {{ $this->form }}
-            <div class="mt-4 flex justify-end gap-2">
-                <x-filament::button type="button" wire:click="saveAsDraft">
-                    Garder en brouillon
-                </x-filament::button>
-                <x-filament::button type="button" wire:click="preview">
-                    Prévisualiser le projet
-                </x-filament::button>
-                <x-filament::button type="submit">
-                    Ajouter le projet
-                </x-filament::button>
-            </div>
-
             <x-filament-actions::modals/>
         </form>
 
