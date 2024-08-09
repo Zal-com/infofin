@@ -8,6 +8,8 @@ use App\Models\InfoType;
 use App\Models\Organisation;
 use App\Models\Project;
 use App\Models\ScientificDomainCategory;
+use Filament\Forms\Components\Actions;
+use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
@@ -15,7 +17,6 @@ use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Textarea;
@@ -43,6 +44,14 @@ class ProjectEditForm extends Component implements HasForms
     {
         return view('livewire.project-edit-form');
     }
+
+    public function archiveProject()
+    {
+        $this->project->update(['status' => -1]);
+        session()->flash('success', "Le projet a été supprimé avec succès.");
+        return redirect()->route('projects.index');
+    }
+
 
     public function mount(Project $project)
     {
@@ -291,13 +300,23 @@ class ProjectEditForm extends Component implements HasForms
                     ]),
                 ]),
             ]),
+
+            Actions::make([
+                Action::make('archive')
+                    ->label('Supprimer')
+                    ->icon('heroicon-s-trash')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->modalHeading('Supprimer le projet.')
+                    ->modalDescription('Voulez-vous vraiment supprimer ce projet ?.')
+                    ->action('archiveProject')
+                    ->button(),
+            ]),
         ])->statePath('data')->model($this->project); //sauvegarde todo
     }
 
     public function submit()
     {
-        $project_id = $this->id;
-
         $userId = Auth::id();
 
         $rules = [
