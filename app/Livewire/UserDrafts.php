@@ -3,7 +3,6 @@
 namespace App\Livewire;
 
 use App\Models\Draft;
-use Filament\Actions\DeleteAction;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
@@ -26,18 +25,10 @@ class UserDrafts extends Component implements HasTable, HasForms
     {
         return $table->query(Draft::where('poster_id', Auth::id()))
             ->columns([
-                TextColumn::make('title')
-                    ->label('Titre')
-                    ->getStateUsing(function ($record) {
-                        $content = json_decode($record->content, true);
-                        return $content['title'] ?? 'N/A';
-                    }),
-                TextColumn::make('short_description')
-                    ->label('Description')
-                    ->getStateUsing(function ($record) {
-                        $content = json_decode($record->content, true);
-                        return $content['short_description'] ?? 'N/A';
-                    }),
+                TextColumn::make('content.title')
+                    ->label('Titre'),
+                TextColumn::make('content.short_description')
+                    ->label('Description'),
                 TextColumn::make('updated_at')
                     ->dateTime('d/m/Y H:i')
                     ->label('Date de modif.')

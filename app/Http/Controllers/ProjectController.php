@@ -65,6 +65,5 @@ class ProjectController extends Controller
     {
         return view('projects.archives');
     }
-
 }
 

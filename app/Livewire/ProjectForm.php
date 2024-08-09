@@ -60,7 +60,7 @@ final class ProjectForm extends Component implements HasForms
             $this->form->fill($this->project->toArray());
         } else {
             if ($this->draft) {
-                $this->project = new Project(json_decode($this->draft->content, true));
+                $this->project = new Project($this->draft->content);
             } else {
                 $this->project = $project ?? new Project();
             }

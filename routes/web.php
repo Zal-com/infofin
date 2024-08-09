@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DraftController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\UnsubscribeController;
@@ -29,6 +30,10 @@ Route::controller(ProjectController::class)->group(function () {
 Route::controller(UserController::class)->group(function () {
     Route::get('users', 'index')->name('users.index');
     Route::get('users/{id}', 'show')->name('users.show');
+});
+
+Route::controller(DraftController::class)->group(function () {
+    Route::get('drafts', 'index')->name('drafts.index');
 });
 
 Route::middleware('auth')->group(function () {
