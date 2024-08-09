@@ -11,9 +11,9 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Support\Enums\FontWeight;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Filters\Filter;
@@ -21,6 +21,7 @@ use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\HtmlString;
 use Illuminate\View\View;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class ListProjects extends Component implements HasForms, HasTable
@@ -28,9 +29,19 @@ class ListProjects extends Component implements HasForms, HasTable
     use InteractsWithForms;
     use InteractsWithTable;
 
+    protected $listeners = ['projectDeleted'];
+
     public function render(): View
     {
         return view('livewire.list-projects');
+    }
+
+    #[On('projectDeleted')]
+    public function projectDeleted()
+    {
+        session()->flash('success', "Le projet a été supprimé avec succès.");
+
+        return redirect()->route('projects.index');
     }
 
     public function table(Table $table): Table
@@ -115,66 +126,77 @@ class ListProjects extends Component implements HasForms, HasTable
                 ->url(fn($record) => route('projects.edit', $record->id))
                 ->icon('heroicon-s-pencil')
                 ->color('primary');
+
+            $actions[] = Action::make('archive')
+                ->label('Supprimer')
+                ->icon('heroicon-s-trash')
+                ->color('danger')
+                ->requiresConfirmation()
+                ->modalHeading('Supprimer le projet.')
+                ->modalDescription('Voulez-vous vraiment supprimer ce projet ?.')
+                ->action(function ($record) {
+                    $record->update(['status' => -1]);
+                    $this->dispatch("projectDeleted");
+                });
         }
 
         return $table->query(
             Project::where('status', '!=', 2)
                 ->where(function ($query) {
                     $query->where('updated_at', '>', now()->subYears(2))
-                          ->orWhereJsonContains('deadlines->date', function ($subQuery) {
-                              $subQuery->where('date', '>', now());
-                          });
+                        ->orWhereJsonContains('deadlines->date', function ($subQuery) {
+                            $subQuery->where('date', '>', now());
+                        });
                 }))
-                ->columns($columns)
-                ->actions($actions)
-                ->defaultPaginationPageOption(25)
-                ->defaultSort('updated_at', 'desc')
-                ->defaultSort('status', 'desc')
-                ->paginationPageOptions([5, 10, 25, 50, 100])
-                ->recordUrl(fn($record) => route('projects.show', $record->id))
-                ->filters([
-                    Filter::make('is_big')->label('Projets majeurs')->query(fn($query) => $query->where('is_big', '=', 1)),
-                    Filter::make('organisation')->label('Organisation')->form([
-                        Select::make('organisation_id')
-                            ->label('Organisation')
-                            ->options(function () {
-                                return Organisation::query()->pluck('title', 'id')->toArray();
-                            })
-                            ->searchable()
-                    ])
-                        ->query(function ($query, $data) {
-                            return $query->when($data['organisation_id'], function ($query, $organisationId) {
-                                return $query->whereHas('organisations', function ($query) use ($organisationId) {
-                                    $query->where('organisation_id', $organisationId);
-                                });
+            ->columns($columns)
+            ->actions($actions)
+            ->defaultPaginationPageOption(25)
+            ->defaultSort('updated_at', 'desc')
+            ->paginationPageOptions([5, 10, 25, 50, 100])
+            ->recordUrl(fn($record) => route('projects.show', $record->id))
+            ->filters([
+                Filter::make('is_big')->label('Projets majeurs')->query(fn($query) => $query->where('is_big', '=', 1)),
+                Filter::make('organisation')->label('Organisation')->form([
+                    Select::make('organisation_id')
+                        ->label('Organisation')
+                        ->options(function () {
+                            return Organisation::query()->pluck('title', 'id')->toArray();
+                        })
+                        ->searchable()
+                ])
+                    ->query(function ($query, $data) {
+                        return $query->when($data['organisation_id'], function ($query, $organisationId) {
+                            return $query->whereHas('organisations', function ($query) use ($organisationId) {
+                                $query->where('organisation_id', $organisationId);
                             });
-                        })
-                        ->indicateUsing(fn($data) => isset($data['organisation_id']) ? 'Organisation : ' . Organisation::find($data['organisation_id'])->title : null),
-                    Filter::make('info_type_category')
-                        ->label('Catégories')
-                        ->form([
-                            Select::make('category_id')
-                                ->label('Categorie')
-                                ->multiple()
-                                ->options(function () {
-                                    return InfoTypeCategory::all()->pluck('name', 'id')->toArray();
-                                })
-                        ])
-                        ->query(function ($query, $data) {
-                            if (!empty($data['category_id'])) {
-                                return $query->whereHas('info_types', function ($query) use ($data) {
-                                    $query->whereIn('info_types_cat_id', $data['category_id']);
-                                });
-                            }
-                            return $query;
-                        })
-                        ->indicateUsing(function ($data) {
-                            if (isset($data['category_id']) && !empty($data['category_id'])) {
-                                $categoryNames = InfoTypeCategory::whereIn('id', $data['category_id'])->pluck('name')->toArray();
-                                return 'Catégories : ' . implode(', ', $categoryNames);
-                            }
-                            return null;
-                        })
-                ]);
+                        });
+                    })
+                    ->indicateUsing(fn($data) => isset($data['organisation_id']) ? 'Organisation : ' . Organisation::find($data['organisation_id'])->title : null),
+                Filter::make('info_type_category')
+                    ->label('Catégories')
+                    ->form([
+                        Select::make('category_id')
+                            ->label('Categorie')
+                            ->multiple()
+                            ->options(function () {
+                                return InfoTypeCategory::all()->pluck('name', 'id')->toArray();
+                            })
+                    ])
+                    ->query(function ($query, $data) {
+                        if (!empty($data['category_id'])) {
+                            return $query->whereHas('info_types', function ($query) use ($data) {
+                                $query->whereIn('info_types_cat_id', $data['category_id']);
+                            });
+                        }
+                        return $query;
+                    })
+                    ->indicateUsing(function ($data) {
+                        if (isset($data['category_id']) && !empty($data['category_id'])) {
+                            $categoryNames = InfoTypeCategory::whereIn('id', $data['category_id'])->pluck('name')->toArray();
+                            return 'Catégories : ' . implode(', ', $categoryNames);
+                        }
+                        return null;
+                    })
+            ]);
     }
 }
