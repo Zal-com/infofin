@@ -10,9 +10,6 @@ use App\Models\InfoType;
 use App\Models\Organisation;
 use App\Models\Project;
 use App\Models\ScientificDomainCategory;
-use Faker\Provider\Text;
-use Filament\Actions\DeleteAction;
-use Filament\Forms;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
@@ -28,8 +25,6 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ProjectResource extends Resource
 {
@@ -75,7 +70,7 @@ class ProjectResource extends Resource
                     ->columns(3)
                     ->columnSpanFull()
                     ->required(),
-                Select::make('appel')
+                Select::make('scientific_domains')
                     ->label("Disciplines scientifiques de l'appel")
                     ->required()
                     ->options(function () {
@@ -112,22 +107,12 @@ class ProjectResource extends Resource
 
                         return $options;
                     }),
-                Fieldset::make('1ere deadline')->schema([
-                    DatePicker::make('deadline'),
-                    TextInput::make('proof')
-                        ->label('Justificatif'),
-                    Checkbox::make('continuous')
-                        ->label('Continu')
-                        ->default(false)
-                ]),
-                Fieldset::make('2eme deadline')->schema([
-                    DatePicker::make('deadline_2'),
-                    TextInput::make('proof_2')
-                        ->label('Justificatif'),
-                    Checkbox::make('continuous_2')
-                        ->label('Continu')
-                        ->default(false)
-                        ->inline(true)
+                Fieldset::make('Deadlines')->schema([
+                    Repeater::make('deadlines')->schema([
+                        DatePicker::make('date')->label('Date'),
+                        TextInput::make('proof')->label('Justificatif'),
+                        Checkbox::make('continuous')->default(false),
+                    ])->label(false)->addActionLabel('+ Ajouter une deadline')->minItems(1)->required()->defaultItems(1),
                 ]),
                 Select::make('periodicity')
                     ->label('Periodicité')
