@@ -19,14 +19,14 @@
             </div>
             <div class="flex gap-2">
                 @auth()
-                    <x-filament::button tag="a" href="{{route('profile.show')}}" color="tertiary"
+                    <x-filament::button tag="a" href="{{route('profile.show')}}" color="primary"
                                         icon="heroicon-o-user">Profil
                     </x-filament::button>
 
                     <form method="post" action="{{route('logout')}}">
                         @csrf
                         <x-filament::button type="submit" icon="heroicon-o-arrow-right-start-on-rectangle"
-                                            color="warning">Déconnexion
+                                            color="secondary">Déconnexion
                         </x-filament::button>
                     </form>
                 @else

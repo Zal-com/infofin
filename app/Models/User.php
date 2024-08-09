@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Filament\Models\Contracts\HasName;
+use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -11,10 +12,11 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements HasName
+class User extends Authenticatable implements HasName, CanResetPassword
 {
 
-    use HasFactory, Notifiable, HasRoles;
+
+    use HasFactory, Notifiable, HasRoles, \Illuminate\Auth\Passwords\CanResetPassword;
 
     protected $table = 'users';
 

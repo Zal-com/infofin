@@ -9,6 +9,8 @@ use App\Models\InfoType;
 use App\Models\Organisation;
 use App\Models\Project;
 use App\Models\ScientificDomainCategory;
+use Filament\Forms\Components\Actions;
+use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
@@ -234,6 +236,23 @@ final class ProjectForm extends Component implements HasForms
                         })
                 ]),
             ]),
+            Actions::make([
+                Action::make('submit')
+                    ->label('Valider')
+                    ->color('primary')
+                    ->icon('heroicon-o-check')
+                    ->action('submit'),
+                Action::make('preview')
+                    ->label('Prévisualiser')
+                    ->icon('heroicon-o-eye')
+                    ->color('tertiary')
+                    ->action('preview'),
+                Action::make('saveAsDraft')
+                    ->icon('heroicon-o-clipboard-document-list')
+                    ->label('Garder en brouillon')
+                    ->color('info')
+                    ->action('saveAsDraft')
+            ])->alignEnd()
         ])->statePath('data')->model($this->project);
     }
 
