@@ -30,7 +30,6 @@ use Filament\Support\Enums\VerticalAlignment;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
-use Spatie\Color\Color;
 
 class ProjectEditForm extends Component implements HasForms
 {
@@ -322,12 +321,7 @@ class ProjectEditForm extends Component implements HasForms
             'docs' => 'array',
             'scientific_domains' => 'array',
             'geo_zones' => 'array',
-            'deadline' => 'nullable|date|required_if:continuous,false',
-            'proof' => 'nullable|string|max:50',
-            'continuous' => 'boolean',
-            'deadline_2' => 'nullable|date|required_if:continuous_2,false',
-            'proof_2' => 'nullable|string|max:50',
-            'continuous_2' => 'boolean',
+            'deadlines' => 'array',
             'periodicity' => 'nullable|integer',
             'date_lessor' => 'nullable|date',
             'short_description' => 'nullable|string|max:500',
@@ -355,12 +349,7 @@ class ProjectEditForm extends Component implements HasForms
             'info_types' => 'Types de programme',
             'scientific_domains' => 'Disciplines scientifiques',
             'geo_zones' => 'Zones géographiques',
-            'deadline' => 'Deadline 1',
-            'proof' => 'Justificatif de la 1ere deadline',
-            'continuous' => 'Continu',
-            'deadline_2' => 'Deadline 2',
-            'proof_2' => 'Justificatif de la 2nde deadline',
-            'continuous_2' => 'Continu',
+            'deadlines' => 'Deadlines',
             'periodicity' => 'Périodicité',
             'date_lessor' => 'Date Bailleur',
             'short_description' => 'Description courte',
@@ -475,7 +464,7 @@ class ProjectEditForm extends Component implements HasForms
                 ]);
 
                 if ($updateSuccessful) {
-                    return redirect()->route('profile.show')->with('success', 'Le brouillon a bien été enregistré.');
+                    redirect()->route('profile.show')->with('success', 'Le brouillon a bien été enregistré.');
                 }
             }
         }
@@ -495,7 +484,7 @@ class ProjectEditForm extends Component implements HasForms
         }
 
         // Gérer le cas où la sauvegarde du nouveau brouillon échoue
-        return redirect()->back()->withErrors('La sauvegarde du brouillon a échoué.');
+        redirect()->back()->withErrors('La sauvegarde du brouillon a échoué.');
     }
 
 }
