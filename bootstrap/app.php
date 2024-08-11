@@ -18,7 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->use([
             RouteStatisticsMiddleware::class,
-
+            \App\Http\Middleware\TrustProxies::class,
         ]);
     })
     ->withSchedule(function (Schedule $schedule) {
