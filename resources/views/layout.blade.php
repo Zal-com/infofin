@@ -5,6 +5,14 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="@yield('og:title', 'Infofin')"/>
+    <meta property="og:description" content="@yield('og:description', 'Description Infofin')"/>
+    <meta property="og:image" content="@yield('og:image', asset('default-image.jpg'))"/>
+    <meta property="og:url" content="@yield('og:url', url()->current())"/>
+    <meta property="og:type" content="@yield('og:type', 'website')"/>
+
+    <!-- Other meta tags, styles, etc. -->
     <link rel="icon" href="{{ url('img/favicon.svg') }}">
     <link href="{{ asset('css/fonts.css') }}" rel="stylesheet">
     <script src="https://kit.fontawesome.com/d8f60edc6b.js" crossorigin="anonymous"></script>

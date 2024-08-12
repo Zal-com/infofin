@@ -27,6 +27,8 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
+use FilamentTiptapEditor\Enums\TiptapOutput;
+use FilamentTiptapEditor\TiptapEditor;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -244,27 +246,37 @@ class ProjectEditForm extends Component implements HasForms
                         ->hint(fn($state, $component) => strlen($state) . '/' . $component->getMaxLength())
                         ->live()
                         ->required(),
-                    MarkdownEditor::make('long_description')
+                    TiptapEditor::make('long_description')
+                        ->extraInputAttributes(['style' => 'min-height: 12rem;'])
+                        ->maxContentWidth('full')
+                        ->disableFloatingMenus()
                         ->label('Description complète')
                         ->required(),
-                    MarkdownEditor::make('funding')
-                        ->label("Financement")
+                ]),
+                Tabs\Tab::make('Financement')->schema([
+                    TiptapEditor::make('funding')
+                        ->label(false)
+                        ->extraInputAttributes(['style' => 'min-height: 12rem;'])
+                        ->maxContentWidth('full')
+                        ->disableFloatingMenus()
                         ->required(),
+
                 ]),
                 Tabs\Tab::make("Critères d'admission")->schema([
-                    MarkdownEditor::make('admission_requirements')
-                        ->label("")
+                    TiptapEditor::make('admission_requirements')
+                        ->label(false)
+                        ->extraInputAttributes(['style' => 'min-height: 12rem;'])
+                        ->maxContentWidth('full')
+                        ->disableFloatingMenus()
                         ->required(),
                 ]),
                 Tabs\Tab::make("Pour postuler")->schema([
-                    MarkdownEditor::make('apply_instructions')
-                        ->label("")
+                    TiptapEditor::make('apply_instructions')
+                        ->label(false)
+                        ->extraInputAttributes(['style' => 'min-height: 12rem;'])
+                        ->maxContentWidth('full')
+                        ->disableFloatingMenus()
                         ->required(),
-                    FileUpload::make('docs')
-                        ->multiple()
-                        ->disk('public')
-                        ->visibility('public')
-                        ->directory('uploads/docs')
                 ]),
                 Tabs\Tab::make("Contacts")->schema([
                     Fieldset::make('Internes')->schema([
@@ -322,7 +334,7 @@ class ProjectEditForm extends Component implements HasForms
         ])->statePath('data')->model($this->project); //sauvegarde todo
     }
 
-    public function submit()
+    public function submit(): void
     {
         $userId = Auth::id();
 
@@ -338,10 +350,10 @@ class ProjectEditForm extends Component implements HasForms
             'periodicity' => 'nullable|integer',
             'date_lessor' => 'nullable|date',
             'short_description' => 'nullable|string|max:500',
-            'long_description' => 'nullable|string',
-            'funding' => 'nullable|string',
-            'admission_requirements' => 'nullable|string',
-            'apply_instructions' => 'nullable|string',
+            'long_description' => 'nullable|array',
+            'funding' => 'nullable|array',
+            'admission_requirements' => 'nullable|array',
+            'apply_instructions' => 'nullable|array',
             'contact_ulb.*.first_name' => 'nullable|string',
             'contact_ulb.*.last_name' => 'nullable|string',
             'contact_ulb.*.email' => 'nullable|email',
@@ -385,84 +397,90 @@ class ProjectEditForm extends Component implements HasForms
 
 
         if ($validator->fails()) {
-            session()->flash('error', $validator->errors()->all());
-            return redirect()->back()->withInput();
+            foreach ($validator->errors()->all() as $error) {
+                Notification::make()->color('danger')->icon('heroicon-o-x-circle')->seconds(5)->send()->title($error);
+            }
         } else {
             $data = $validator->validated();
         }
 
-        $data['last_update_user_id'] = $userId;
+        try {
 
-        if ($data['periodicity'] === null) {
-            $data['periodicity'] = 0;
-        }
+            $data['last_update_user_id'] = $userId;
 
-        if (isset($data['contact_ulb'])) {
-            $contactsUlB = [];
-            foreach ($data['contact_ulb'] as $contact) {
-                $name = trim(($contact['first_name'] ?? '') . ' ' . ($contact['last_name'] ?? ''));
-                $email = $contact['email'] ?? '';
-                $phone = $contact['tel'] ?? '';
-                $address = $contact['address'] ?? '';
+            if ($data['periodicity'] === null) {
+                $data['periodicity'] = 0;
+            }
 
-                if ($name !== '' || $email !== '' || $phone !== '' || $address !== '') {
-                    $contactsUlB[] = [
-                        'name' => $name,
-                        'email' => $email,
-                        'phone' => $phone,
-                        'address' => $address,
-                    ];
+            if (isset($data['contact_ulb'])) {
+                $contactsUlB = [];
+                foreach ($data['contact_ulb'] as $contact) {
+                    $name = trim(($contact['first_name'] ?? '') . ' ' . ($contact['last_name'] ?? ''));
+                    $email = $contact['email'] ?? '';
+                    $phone = $contact['tel'] ?? '';
+                    $address = $contact['address'] ?? '';
+
+                    if ($name !== '' || $email !== '' || $phone !== '' || $address !== '') {
+                        $contactsUlB[] = [
+                            'name' => $name,
+                            'email' => $email,
+                            'phone' => $phone,
+                            'address' => $address,
+                        ];
+                    }
+                }
+                $data['contact_ulb'] = $contactsUlB;
+            }
+
+            if (isset($data['contact_ext'])) {
+                $contactsExt = [];
+                foreach ($data['contact_ext'] as $contact) {
+                    $name = trim(($contact['first_name'] ?? '') . ' ' . ($contact['last_name'] ?? ''));
+                    $email = $contact['email'] ?? '';
+                    $phone = $contact['tel'] ?? '';
+                    $address = $contact['address'] ?? '';
+
+                    if ($name !== '' || $email !== '' || $phone !== '' || $address !== '') {
+                        $contactsExt[] = [
+                            'name' => $name,
+                            'email' => $email,
+                            'phone' => $phone,
+                            'address' => $address,
+                        ];
+                    }
+                }
+                $data['contact_ext'] = $contactsExt;
+            }
+            $this->project->update($data);
+
+            $this->project->organisations()->sync($data['organisation'] ?? null);
+            $this->project->info_types()->sync($data['info_types'] ?? []);
+            $this->project->scientific_domains()->sync($data['scientific_domains'] ?? []);
+
+            if (isset($data['documents'])) {
+                $this->handleDocumentUpdates($data['documents'], $this->project);
+            }
+
+            if (!empty($data['geo_zones'])) {
+                foreach ($data['geo_zones'] as $zone) {
+                    if (strpos($zone, 'continent_') === 0) {
+                        $continent_id = str_replace('continent_', '', $zone);
+                        $this->project->continent()->associate($continent_id);
+                    } elseif (strpos($zone, 'pays_') === 0) {
+                        $country_id = str_replace('pays_', '', $zone);
+                        $this->project->country()->associate($country_id);
+                    }
                 }
             }
-            $data['contact_ulb'] = $contactsUlB;
+
+            $this->project->save();
+            Notification::make()->title('Le projet a été modifié avec success.')->icon('heroicon-o-check-circle')->seconds(5)->color('success')->send();
+            redirect()->route('projects.index');
+        } catch (\Exception $e) {
+            Notification::make()->title("Le projet n'a pas pu être modifié.")->icon('heroicon-o-x-circle')->seconds(5)->color('danger')->send();
+
+            redirect()->route('projects.index');
         }
-
-        if (isset($data['contact_ext'])) {
-            $contactsExt = [];
-            foreach ($data['contact_ext'] as $contact) {
-                $name = trim(($contact['first_name'] ?? '') . ' ' . ($contact['last_name'] ?? ''));
-                $email = $contact['email'] ?? '';
-                $phone = $contact['tel'] ?? '';
-                $address = $contact['address'] ?? '';
-
-                if ($name !== '' || $email !== '' || $phone !== '' || $address !== '') {
-                    $contactsExt[] = [
-                        'name' => $name,
-                        'email' => $email,
-                        'phone' => $phone,
-                        'address' => $address,
-                    ];
-                }
-            }
-            $data['contact_ext'] = $contactsExt;
-        }
-
-        $this->project->update($data);
-
-        $this->project->organisations()->sync($data['organisation'] ?? []);
-        $this->project->info_types()->sync($data['info_types'] ?? []);
-        $this->project->scientific_domains()->sync($data['scientific_domains'] ?? []);
-
-        if (isset($data['documents'])) {
-            $this->handleDocumentUpdates($data['documents'], $this->project);
-        }
-
-        if (!empty($data['geo_zones'])) {
-            foreach ($data['geo_zones'] as $zone) {
-                if (strpos($zone, 'continent_') === 0) {
-                    $continent_id = str_replace('continent_', '', $zone);
-                    $this->project->continent()->associate($continent_id);
-                } elseif (strpos($zone, 'pays_') === 0) {
-                    $country_id = str_replace('pays_', '', $zone);
-                    $this->project->country()->associate($country_id);
-                }
-            }
-        }
-
-        $this->project->save();
-
-        session()->flash('success', 'Le projet a été mis à jour');
-        return redirect()->route('projects.index');
     }
 
     public function saveAsDraft()

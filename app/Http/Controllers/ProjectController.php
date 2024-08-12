@@ -7,6 +7,7 @@ use App\Models\Project;
 use App\Models\VisitsRate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class ProjectController extends Controller
 {
@@ -31,7 +32,14 @@ class ProjectController extends Controller
 
         $project->save();
 
-        return view('projects.show', compact('project'));
+        return view('projects.show', [
+            'project' => $project,
+            'og_title' => $project->title,
+            'og_description' => Str::limit($project->short_description, 150),
+            'og_image' => asset('img/ulb_logo_simple.png'),
+            'og_url' => route('projects.show', $project->id),
+            'og_type' => 'website'
+        ]);
     }
 
     public function create(Request $request)

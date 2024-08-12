@@ -20,8 +20,8 @@
                     <x-filament::badge>{{$info_type->title ?? ''}}</x-filament::badge>
                 @endforeach
             </x-filament::section.description>
-            <h1 class="tiptap">{{$project->title ?? ''}}</h1>
-            <p>{{$project->organisations->first()->title ?? $project->Organisation}}</p>
+            <h1 class="font-bold text-4xl">{{$project->title ?? ''}}</h1>
+            <p class="text-md italic">{{$project->organisations->first()->title ?? $project->Organisation}}</p>
             <div class="markdown">
                 <x-filament::section.description class="my-3 text-justify">
                     @php
