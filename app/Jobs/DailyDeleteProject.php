@@ -9,7 +9,6 @@ use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
 
 class DailyDeleteProject implements ShouldQueue
 {
@@ -35,7 +34,6 @@ class DailyDeleteProject implements ShouldQueue
             $allContinuousZero = true;
 
             foreach ($project->deadlines as $deadline) {
-                Log::info($deadline);
                 $deadlineDate = Carbon::parse($deadline['date']);
 
                 if ($deadlineDate->isFuture()) {
@@ -44,6 +42,7 @@ class DailyDeleteProject implements ShouldQueue
 
                 if ($deadline['continuous'] == 1) {
                     $allContinuousZero = false;
+                    break;
                 }
             }
 
