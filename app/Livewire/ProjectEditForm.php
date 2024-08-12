@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Continent;
 use App\Models\Countries;
+use App\Models\Document;
 use App\Models\Draft;
 use App\Models\InfoType;
 use App\Models\Organisation;
@@ -26,8 +27,8 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
-use Filament\Support\Enums\VerticalAlignment;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
 
@@ -40,6 +41,7 @@ class ProjectEditForm extends Component implements HasForms
     public array $data = [];
     public array $countries = [];
     public array $continents = [];
+    public array $originalDocuments = [];
 
     public $id;
 
@@ -58,7 +60,7 @@ class ProjectEditForm extends Component implements HasForms
 
     public function mount(Project $project)
     {
-        $this->project = $project->load('organisations', 'scientific_domains', 'info_types', 'country', 'continent');
+        $this->project = $project->load('organisations', 'scientific_domains', 'info_types', 'country', 'continent', 'documents');
 
         $this->project->contact_ulb = $this->transformContacts($this->project->contact_ulb);
         $this->project->contact_ext = $this->transformContacts($this->project->contact_ext);
@@ -80,19 +82,20 @@ class ProjectEditForm extends Component implements HasForms
             $this->project->info = "Financement";
         }
 
+        $documents = $this->project->documents->pluck('filename')->toArray();
+
+        $this->originalDocuments = $documents;
+
         $data = array_merge(
             $this->project->toArray(),
             [
                 'scientific_domains' => $this->project->scientific_domains->pluck('id')->toArray(),
                 'geo_zones' => $geo_zones,
+                'documents' => $documents
             ]
         );
 
         $this->id = $data["id"];
-
-        if ($data["deadline_2"] == "0000-00-00 00:00:00") {
-            $data["deadline_2"] = null;
-        }
 
         $this->form->fill($data);
     }
@@ -283,6 +286,16 @@ class ProjectEditForm extends Component implements HasForms
                         ])->columns(2)->addActionLabel('+ Nouveau contact')
                     ]),
                 ]),
+                Tabs\Tab::make('Documents')->schema([
+                    FileUpload::make('documents')
+                        ->label('Documents')
+                        ->disk('public')
+                        ->visibility('public')
+                        ->acceptedFileTypes(['application/pdf'])
+                        ->multiple()
+                        ->moveFiles()
+                        ->default(fn() => $this->project->documents->pluck('filename')->toArray())
+                ])
             ]),
 
             Actions::make([
@@ -318,7 +331,7 @@ class ProjectEditForm extends Component implements HasForms
             'is_big' => 'boolean',
             'organisation' => 'array',
             'info_types' => 'array',
-            'docs' => 'array',
+            'documents' => 'array',
             'scientific_domains' => 'array',
             'geo_zones' => 'array',
             'deadlines' => 'array',
@@ -384,8 +397,8 @@ class ProjectEditForm extends Component implements HasForms
             $data['periodicity'] = 0;
         }
 
-        $contactsUlB = [];
         if (isset($data['contact_ulb'])) {
+            $contactsUlB = [];
             foreach ($data['contact_ulb'] as $contact) {
                 $name = trim(($contact['first_name'] ?? '') . ' ' . ($contact['last_name'] ?? ''));
                 $email = $contact['email'] ?? '';
@@ -401,14 +414,11 @@ class ProjectEditForm extends Component implements HasForms
                     ];
                 }
             }
-            $data['contact_ulb'] = !empty($contactsUlB) ? json_encode($contactsUlB) : '[]';
-        } else {
-            $data['contact_ulb'] = '[]';
+            $data['contact_ulb'] = $contactsUlB;
         }
 
-
-        $contactsExt = [];
-        if (isset($data["contact_ext"])) {
+        if (isset($data['contact_ext'])) {
+            $contactsExt = [];
             foreach ($data['contact_ext'] as $contact) {
                 $name = trim(($contact['first_name'] ?? '') . ' ' . ($contact['last_name'] ?? ''));
                 $email = $contact['email'] ?? '';
@@ -424,9 +434,7 @@ class ProjectEditForm extends Component implements HasForms
                     ];
                 }
             }
-            $data['contact_ext'] = !empty($contactsExt) ? json_encode($contactsExt) : '[]';
-        } else {
-            $data['contact_ext'] = '[]';
+            $data['contact_ext'] = $contactsExt;
         }
 
         $this->project->update($data);
@@ -434,6 +442,11 @@ class ProjectEditForm extends Component implements HasForms
         $this->project->organisations()->sync($data['organisation'] ?? []);
         $this->project->info_types()->sync($data['info_types'] ?? []);
         $this->project->scientific_domains()->sync($data['scientific_domains'] ?? []);
+
+        if (isset($data['documents'])) {
+            $this->handleDocumentUpdates($data['documents'], $this->project);
+        }
+
         if (!empty($data['geo_zones'])) {
             foreach ($data['geo_zones'] as $zone) {
                 if (strpos($zone, 'continent_') === 0) {
@@ -486,5 +499,54 @@ class ProjectEditForm extends Component implements HasForms
         // Gérer le cas où la sauvegarde du nouveau brouillon échoue
         redirect()->back()->withErrors('La sauvegarde du brouillon a échoué.');
     }
+
+    private function handleDocumentUpdates(array $newDocuments, Project $project)
+    {
+        $existingDocuments = $project->documents->pluck('filename')->toArray();
+
+        $deletedDocuments = array_diff($existingDocuments, $newDocuments);
+
+        foreach ($deletedDocuments as $deletedDocument) {
+            Storage::disk('public')->delete($deletedDocument);
+            Document::where('filename', $deletedDocument)->where('project_id', $project->id)->delete();
+        }
+
+        $this->moveFiles($newDocuments, $project);
+    }
+
+    private function moveFiles(array $files, Project $project): array
+    {
+        $movedFiles = [];
+        foreach ($files as $file) {
+            if (is_string($file)) {
+                continue;
+            }
+
+            $finalPath = 'uploads/docs/' . $file->getFilename();
+
+            Storage::disk('public')->putFileAs(
+                'uploads/docs',
+                $file,
+                $file->getFilename()
+            );
+
+            $document = Document::create([
+                'project_id' => $project->id,
+                'title' => $file->getClientOriginalName(),
+                'filename' => $finalPath,
+                'download_count' => 0,
+            ]);
+
+            $movedFiles[] = $document->id;
+
+            // Optionally delete the temp file
+            if (file_exists($file->getPathname())) {
+                unlink($file->getPathname());
+            }
+        }
+
+        return $movedFiles;
+    }
+
 
 }

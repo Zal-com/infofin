@@ -103,8 +103,44 @@
             @endif
         </div>
         <div x-show="tab === 'documents'" class="m-4">
-            <x-filament-tables::empty-state icon="heroicon-o-archive-box-x-mark"
-                                            heading="Pas de documents"></x-filament-tables::empty-state>
+            @if($project->documents && $project->documents->isNotEmpty())
+                <x-filament::section.heading class="text-2xl mb-4">
+                    Documents disponibles
+                </x-filament::section.heading>
+                <ul>
+                    @foreach($project->documents as $document)
+                        <x-filament::section class="w-1/3">
+                            <li>
+                                <div class="flex justify-between">
+                                    <div class="flex items-center">
+                                        <x-filament::icon icon="heroicon-o-document"
+                                                          class="h-[24px] w-[24px] mr-2"/>
+                                        <a href="{{ route('download', ['name'=> $document->title ,'file' => $document->filename]) }}"
+                                           class="text-blue-600 hover:underline">
+                                            {{ $document->title }}
+                                        </a>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <a href="{{ route('download', ['name'=> $document->title ,'file' => $document->filename]) }}"
+                                           class="inline-block">
+                                            <x-filament::button color="tertiary"
+                                                                style="border-radius: 50%; padding: 0.5rem; display: inline-flex; justify-content: center; align-items: center; background:transparent; border:1px solid #42484e">
+                                                <x-filament::icon icon="heroicon-o-arrow-down-tray"
+                                                                  class="min-h-[16px] min-w-[16px] text-gray-900"/>
+                                            </x-filament::button>
+                                        </a>
+                                    </div>
+                                </div>
+                            </li>
+
+                        </x-filament::section>
+                    @endforeach
+                </ul>
+            @else
+                <x-filament-tables::empty-state icon="heroicon-o-archive-box-x-mark"
+                                                heading="Pas de documents disponibles">
+                </x-filament-tables::empty-state>
+            @endif
         </div>
     </x-filament::section>
     <div class="flex flex-col gap-4 sticky top-5">

@@ -9,9 +9,10 @@ class Document extends Model
 {
     protected $table = 'documents';
     public $timestamps = true;
-    protected $fillable = ['project_id', 'title', 'description', 'filename', 'download_count'];
+    protected $fillable = ['project_id', 'title', 'filename', 'download_count'];
 
-    public function project() : BelongsTo {
+    public function project(): BelongsTo
+    {
         return $this->belongsTo(Project::class, 'project_id');
     }
 }

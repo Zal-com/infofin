@@ -9,7 +9,6 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables\Actions\Action;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -32,15 +31,6 @@ class ListDraft extends Component implements HasForms, HasTable
     public function table(Table $table): Table
     {
         $columns = [
-            IconColumn::make('content.status')
-                ->label(false)
-                ->boolean()
-                ->trueIcon('heroicon-s-check-circle')
-                ->trueColor('success')
-                ->falseIcon('heroicon-s-x-circle')
-                ->falseColor('danger')
-                ->sortable()
-                ->alignCenter(),
             BadgeableColumn::make('content.title')
                 ->label('Programme')
                 ->wrap()

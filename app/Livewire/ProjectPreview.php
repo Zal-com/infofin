@@ -39,7 +39,7 @@ class ProjectPreview extends Component
 
     private function transformGeoZones()
     {
-        $geoZones = $this->data['Geo_zones'] ?? [];
+        $geoZones = $this->data['geo_zones'] ?? [];
         foreach ($geoZones as $zone) {
             if (strpos($zone, 'continent_') === 0) {
                 $continent_id = str_replace('continent_', '', $zone);
@@ -81,7 +81,7 @@ class ProjectPreview extends Component
             'info_types' => 'array',
             'docs' => 'array',
             'scientific_domains' => 'array',
-            'Geo_zones' => 'array',
+            'geo_zones' => 'array',
             'deadline' => 'nullable|date|required_if:continuous,false',
             'proof' => 'nullable|string|max:50',
             'continuous' => 'boolean',
@@ -114,7 +114,7 @@ class ProjectPreview extends Component
             'organisation' => 'Organisation',
             'info_types' => 'Types de programme',
             'scientific_domains' => 'Disciplines scientifiques',
-            'Geo_zones' => 'Zones géographiques',
+            'geo_zones' => 'Zones géographiques',
             'deadline' => 'Deadline 1',
             'proof' => 'Justificatif de la 1ere deadline',
             'continuous' => 'Continu',
@@ -218,8 +218,8 @@ class ProjectPreview extends Component
                 $data['docs'] = $this->moveFiles($data['docs']);
             }
 
-            if (!empty($data['Geo_zones'])) {
-                foreach ($data['Geo_zones'] as $zone) {
+            if (!empty($data['geo_zones'])) {
+                foreach ($data['geo_zones'] as $zone) {
                     if (strpos($zone, 'continent_') === 0) {
                         $continent_id = str_replace('continent_', '', $zone);
                         $project->continent()->associate($continent_id);

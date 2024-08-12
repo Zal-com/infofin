@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Continent;
 use App\Models\Countries;
+use App\Models\Document;
 use App\Models\Draft;
 use App\Models\InfoType;
 use App\Models\Organisation;
@@ -59,8 +60,8 @@ final class ProjectForm extends Component implements HasForms
             if (isset($this->fromPrev['info_types'])) {
                 $this->project->info_types = $this->fromPrev['info_types'];
             }
-            if (isset($this->fromPrev['Geo_zones'])) {
-                $this->project->Geo_zones = $this->fromPrev['Geo_zones'];
+            if (isset($this->fromPrev['geo_zones'])) {
+                $this->project->geo_zones = $this->fromPrev['geo_zones'];
             }
             $this->form->fill($this->project->toArray());
         } else {
@@ -131,7 +132,7 @@ final class ProjectForm extends Component implements HasForms
                             }
                             return $options;
                         }),
-                    Select::make('Geo_zones')
+                    Select::make('geo_zones')
                         ->label("Zones géographiques")
                         ->multiple()
                         ->maxItems(3)
@@ -237,16 +238,13 @@ final class ProjectForm extends Component implements HasForms
                     ]),
                 ]),
                 Tabs\Tab::make('Documents')->schema([
-                    FileUpload::make('docs')
+                    FileUpload::make('documents')
                         ->label('Documents')
                         ->disk('public')
                         ->visibility('public')
                         ->acceptedFileTypes(['application/pdf'])
                         ->multiple()
                         ->moveFiles()
-                        ->saveUploadedFileUsing(function ($file, $state) {
-                            return Storage::put('img', $file);
-                        })
                 ]),
             ]),
             Actions::make([
@@ -316,6 +314,7 @@ final class ProjectForm extends Component implements HasForms
 
     public function submit()
     {
+
         $userId = Auth::id();
 
         $rules = [
@@ -323,9 +322,9 @@ final class ProjectForm extends Component implements HasForms
             'is_big' => 'boolean',
             'organisation' => 'string',
             'info_types' => 'array',
-            'docs' => 'array',
+            'documents' => 'array',
             'scientific_domains' => 'array',
-            'Geo_zones' => 'array',
+            'geo_zones' => 'array',
             'deadlines' => 'array',
             'periodicity' => 'nullable|integer',
             'date_lessor' => 'nullable|date',
@@ -353,7 +352,7 @@ final class ProjectForm extends Component implements HasForms
             'organisation' => 'Organisation',
             'info_types' => 'Types de programme',
             'scientific_domains' => 'Disciplines scientifiques',
-            'Geo_zones' => 'Zones géographiques',
+            'geo_zones' => 'Zones géographiques',
             'deadlines' => 'Deadlines',
             'periodicity' => 'Périodicité',
             'date_lessor' => 'Date Bailleur',
@@ -447,12 +446,12 @@ final class ProjectForm extends Component implements HasForms
                 $project->scientific_domains()->sync($data['scientific_domains']);
             }
 
-            if (isset($data['docs']) && count($data['docs']) > 0) {
-                $data['docs'] = $this->moveFiles($data['docs']);
+            if (isset($data['documents']) && count($data['documents']) > 0) {
+                $this->moveFiles($data['documents'], $project);
             }
 
-            if (!empty($data['Geo_zones'])) {
-                foreach ($data['Geo_zones'] as $zone) {
+            if (!empty($data['geo_zones'])) {
+                foreach ($data['geo_zones'] as $zone) {
                     if (strpos($zone, 'continent_') === 0) {
                         $continent_id = str_replace('continent_', '', $zone);
                         $project->continent()->associate($continent_id);
@@ -468,24 +467,27 @@ final class ProjectForm extends Component implements HasForms
         }
     }
 
-    private function moveFiles(array $files): array
+    private function moveFiles(array $files, Project $project): array
     {
         $movedFiles = [];
         foreach ($files as $file) {
-            // Define the final path for the file
             $finalPath = 'uploads/docs/' . $file->getFilename();
 
-            // Move the file from the temporary location to the final location
             Storage::disk('public')->putFileAs(
                 'uploads/docs',
                 $file,
                 $file->getFilename()
             );
 
-            // Add the final path to the movedFiles array
-            $movedFiles[] = $finalPath;
+            $document = Document::create([
+                'project_id' => $project->id,
+                'title' => $file->getClientOriginalName(),
+                'filename' => $finalPath,
+                'download_count' => 0,
+            ]);
 
-            // Delete the temporary file
+            $movedFiles[] = $document->id;
+
             if (file_exists($file->getPathname())) {
                 unlink($file->getPathname());
             }
@@ -493,5 +495,6 @@ final class ProjectForm extends Component implements HasForms
 
         return $movedFiles;
     }
+
 
 }

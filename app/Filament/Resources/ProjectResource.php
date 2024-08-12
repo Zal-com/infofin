@@ -85,7 +85,7 @@ class ProjectResource extends Resource
                         }
                         return $options;
                     }),
-                Select::make('Geo_zones')
+                Select::make('geo_zones')
                     ->label("Zones géographiques")
                     ->multiple()
                     ->maxItems(3)
