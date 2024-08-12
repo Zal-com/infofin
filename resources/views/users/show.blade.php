@@ -30,14 +30,26 @@
                 </div>
             </div>
             <div x-show="tab === 'drafts'" class="m-4">
-                <x-filament::section.heading class="mb-5">
+                <x-filament::section.heading class="mb-5 flex justify-between items-center">
                     Mes brouillons
+                    @can('create', \App\Models\Project::class)
+                        <x-filament::button icon="heroicon-o-plus" class="m-0" tag="a"
+                                            href="{{route('projects.create')}}">
+                            Créer un projet
+                        </x-filament::button>
+                    @endcan
                 </x-filament::section.heading>
                 @livewire('user-drafts')
             </div>
             <div x-show="tab === 'appels'" class="m-4">
-                <x-filament::section.heading class="mb-5">
+                <x-filament::section.heading class="mb-5 flex justify-between items-center">
                     Appels Infofin
+                    @can('create', \App\Models\Project::class)
+                        <x-filament::button icon="heroicon-o-plus" class="m-0" tag="a"
+                                            href="{{route('projects.create')}}">
+                            Créer un projet
+                        </x-filament::button>
+                    @endcan
                 </x-filament::section.heading>
                 @livewire('user-projects')
             </div>
