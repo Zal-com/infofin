@@ -17,25 +17,22 @@ use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Tabs;
-use FilamentTiptapEditor\Enums\TiptapOutput;
-use FilamentTiptapEditor\TiptapEditor;
-use Schmeits\FilamentCharacterCounter\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Components\Tab;
+use FilamentTiptapEditor\Enums\TiptapOutput;
+use FilamentTiptapEditor\TiptapEditor;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\HtmlString;
 use Livewire\Component;
+use Schmeits\FilamentCharacterCounter\Forms\Components\Textarea;
 
 final class ProjectForm extends Component implements HasForms
 {
@@ -279,7 +276,7 @@ final class ProjectForm extends Component implements HasForms
 
             if ($updatedDraft) {
                 $updateSuccessful = $updatedDraft->update([
-                    'content' => json_encode($this->data),
+                    'content' => $this->data,
                     'poster_id' => Auth::id()
                 ]);
 
@@ -432,7 +429,7 @@ final class ProjectForm extends Component implements HasForms
         } else {
             $data['contact_ext'] = [];
         }
-        
+
         if ($project = Project::create($data)) {
             if (!empty($data['organisation'])) {
                 $project->organisations()->sync($data['organisation']);

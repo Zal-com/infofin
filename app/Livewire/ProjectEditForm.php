@@ -472,7 +472,7 @@ class ProjectEditForm extends Component implements HasForms
 
             if ($updatedDraft) {
                 $updateSuccessful = $updatedDraft->update([
-                    'content' => json_encode($this->data),
+                    'content' => $this->data,
                     'poster_id' => Auth::id()
                 ]);
 
@@ -483,7 +483,7 @@ class ProjectEditForm extends Component implements HasForms
         }
 
         $draft = new Draft([
-            'content' => json_encode($this->data),
+            'content' => $this->data,
             'poster_id' => Auth::id()
         ]);
 
