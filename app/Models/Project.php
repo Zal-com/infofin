@@ -184,10 +184,10 @@ class Project extends Model
         // Check if the value is an array
         if (is_array($value)) {
             // Convert the array to a JSON string
-            $this->attributes['long_description'] = json_encode($value);
+            $this->attributes['apply_instructions'] = json_encode($value);
         } else {
             // Otherwise, just store the value as is
-            $this->attributes['long_description'] = $value;
+            $this->attributes['apply_instructions'] = $value;
         }
     }
 
@@ -212,10 +212,10 @@ class Project extends Model
         // Check if the value is an array
         if (is_array($value)) {
             // Convert the array to a JSON string
-            $this->attributes['long_description'] = json_encode($value);
+            $this->attributes['funding'] = json_encode($value);
         } else {
             // Otherwise, just store the value as is
-            $this->attributes['long_description'] = $value;
+            $this->attributes['funding'] = $value;
         }
     }
 
@@ -240,10 +240,10 @@ class Project extends Model
         // Check if the value is an array
         if (is_array($value)) {
             // Convert the array to a JSON string
-            $this->attributes['long_description'] = json_encode($value);
+            $this->attributes['admission_requirements'] = json_encode($value);
         } else {
             // Otherwise, just store the value as is
-            $this->attributes['long_description'] = $value;
+            $this->attributes['admission_requirements'] = $value;
         }
     }
 
