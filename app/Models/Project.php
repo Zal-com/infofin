@@ -27,7 +27,6 @@ class Project extends Model
         'contact_ulb' => 'array',
         'contact_ext' => 'array',
         'deadlines' => 'array',
-        'long_description' => 'json',
         'apply_instructions' => 'json',
         'funding' => 'json',
         'admission_requirements' => 'json',
@@ -137,6 +136,34 @@ class Project extends Model
     public function getAllDeadlinesSortedAttribute()
     {
         return collect($this->deadlines)->sortBy('date');
+    }
+
+    public function getLongDescriptionAttribute($value)
+    {
+        // Check if the value is already an array or JSON string
+        if (is_string($value)) {
+            // Try decoding the string as JSON
+            $decoded = json_decode($value, true);
+            // If decoding succeeds and results in an array, return the array
+            if (json_last_error() === JSON_ERROR_NONE) {
+                return $decoded;
+            }
+        }
+
+        // If it's not a string or if decoding fails, return it as is (string)
+        return $value;
+    }
+
+    public function setLongDescriptionAttribute($value)
+    {
+        // Check if the value is an array
+        if (is_array($value)) {
+            // Convert the array to a JSON string
+            $this->attributes['long_description'] = json_encode($value);
+        } else {
+            // Otherwise, just store the value as is
+            $this->attributes['long_description'] = $value;
+        }
     }
 
 }

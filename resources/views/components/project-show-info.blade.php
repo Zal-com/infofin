@@ -24,13 +24,13 @@
             <p>{{$project->organisations->first()->title ?? $project->Organisation}}</p>
             <div class="markdown">
                 <x-filament::section.description class="my-3 text-justify">
-                    @dd($project->long_description)
                     @php
-                        try{
+                        try {
+                            // Check if it's markdown or HTML content
                             echo tiptap_converter()->asHTML($project->long_description);
-                        }
-                        catch (Exception $e){
-                            echo \Illuminate\Support\Str::of($project->long_description)->markdown();
+                        } catch (Exception $e) {
+                            // Fallback to plain text
+                            echo nl2br(e($project->long_description));
                         }
                     @endphp
                 </x-filament::section.description>
