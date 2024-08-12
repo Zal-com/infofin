@@ -8,6 +8,7 @@ use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -55,7 +56,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         if (config('app.env') !== 'local') {
-            \URL::forceScheme('https');
+            URL::forceScheme('https');
         }
 
         RedirectIfAuthenticated::redirectUsing(function () {
