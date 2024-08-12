@@ -232,9 +232,6 @@ final class ProjectForm extends Component implements HasForms
                         ->acceptedFileTypes(['application/pdf'])
                         ->multiple()
                         ->moveFiles()
-                        ->saveUploadedFileUsing(function ($file, $state) {
-                            return Storage::put('img', $file);
-                        })
                 ]),
             ]),
             Actions::make([
