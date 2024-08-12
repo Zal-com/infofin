@@ -26,7 +26,6 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
-use Filament\Support\Enums\VerticalAlignment;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
@@ -58,7 +57,7 @@ class ProjectEditForm extends Component implements HasForms
 
     public function mount(Project $project)
     {
-        $this->project = $project->load('organisations', 'scientific_domains', 'info_types', 'country', 'continent');
+        $this->project = $project->load('organisations', 'scientific_domains', 'info_types', 'country', 'continent', 'documents');
 
         $this->project->contact_ulb = $this->transformContacts($this->project->contact_ulb);
         $this->project->contact_ext = $this->transformContacts($this->project->contact_ext);
@@ -89,10 +88,6 @@ class ProjectEditForm extends Component implements HasForms
         );
 
         $this->id = $data["id"];
-
-        if ($data["deadline_2"] == "0000-00-00 00:00:00") {
-            $data["deadline_2"] = null;
-        }
 
         $this->form->fill($data);
     }
