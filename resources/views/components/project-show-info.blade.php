@@ -74,8 +74,30 @@
             @endif
         </div>
         <div x-show="tab === 'documents'" class="m-4">
-            <x-filament-tables::empty-state icon="heroicon-o-archive-box-x-mark"
-                                            heading="Pas de documents"></x-filament-tables::empty-state>
+            @if($project->documents && $project->documents->isNotEmpty())
+                <x-filament::section>
+                    <x-filament::section.heading class="text-2xl mb-4">
+                        Documents disponibles
+                    </x-filament::section.heading>
+                    <ul>
+                        @foreach($project->documents as $document)
+                            <li class="mb-3">
+                                <div class="flex items-center">
+                                    <x-filament::icon icon="heroicon-o-document" class="h-[24px] w-[24px] mr-2"/>
+                                    <a href="{{ route('download', ['name'=> $document->title ,'file' => $document->filename]) }}"
+                                       class="text-blue-600 hover:underline">
+                                        {{ $document->title }}
+                                    </a>
+                                </div>
+                            </li>
+                        @endforeach
+                    </ul>
+                </x-filament::section>
+            @else
+                <x-filament-tables::empty-state icon="heroicon-o-archive-box-x-mark"
+                                                heading="Pas de documents disponibles">
+                </x-filament-tables::empty-state>
+            @endif
         </div>
     </x-filament::section>
     <div class="flex flex-col gap-4 sticky top-5">

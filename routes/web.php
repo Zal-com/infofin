@@ -5,7 +5,9 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\UnsubscribeController;
 use App\Http\Controllers\UserController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 
 Route::get('/', function () {
@@ -48,5 +50,17 @@ Route::get('/unsubscribe', [UnsubscribeController::class, 'unsubscribe']);
 Route::get('/agenda', function () {
     return view('calendar');
 });
+
+Route::get('/download', function (Request $request) {
+    $filename = $request->query('file');
+    $name = $request->query('name');
+
+    if (Storage::exists($filename)) {
+        return Storage::download($filename, $name);
+    } else {
+        return abort(404, 'File not found');
+    }
+})->name('download');
+
 
 require __DIR__ . '/auth.php';
