@@ -27,6 +27,10 @@ class Project extends Model
         'contact_ulb' => 'array',
         'contact_ext' => 'array',
         'deadlines' => 'array',
+        'long_description' => 'json',
+        'apply_instructions' => 'json',
+        'funding' => 'json',
+        'admission_requirements' => 'json',
     ];
 
 

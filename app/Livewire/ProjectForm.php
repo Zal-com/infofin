@@ -18,9 +18,12 @@ use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Tabs;
-use Filament\Forms\Components\Textarea;
+use FilamentTiptapEditor\Enums\TiptapOutput;
+use FilamentTiptapEditor\TiptapEditor;
+use Schmeits\FilamentCharacterCounter\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -172,33 +175,43 @@ final class ProjectForm extends Component implements HasForms
                     Textarea::make('short_description')
                         ->label('Description courte')
                         ->maxLength(500)
-                        ->hint(fn($state, $component) => strlen($state) . '/' . $component->getMaxLength())
+                        ->characterLimit(500)
+                        ->showInsideControl()
                         ->placeholder('Courte et catchy, elle sera visible depuis la page principale et dans la newsletter')
                         ->live()
                         ->required(),
-                    MarkdownEditor::make('long_description')
+                    TiptapEditor::make('long_description')
+                        ->profile('default')
+                        ->output(TiptapOutput::Json)
+                        ->maxContentWidth('full')
                         ->label('Description complète')
+                        ->extraInputAttributes(['style' => 'min-height: 12rem;'])
+                        ->disableFloatingMenus()
                         ->placeholder('Description la plus complète possible du projet, aucune limite de caractères')
-                        ->hint(new HtmlString('Ce champ supporte la syntaxe MarkDown. <a target="blank_" href="https://www.markdownguide.org/cheat-sheet/" style="text-decoration: underline">Comment faire la mise en forme ? <i class="fa fa-solid fa-arrow-up-right-from-square fa-xs"></i></a>'))
                         ->required(),
                 ]),
                 Tabs\Tab::make('Financement')->schema([
-                    MarkdownEditor::make('funding')
-                        ->hint("Informations sur le financement et le budget de l'appel")
+                    TiptapEditor::make('funding')
                         ->label("Financement")
+                        ->extraInputAttributes(['style' => 'min-height: 12rem;'])
+                        ->maxContentWidth('full')
+                        ->disableFloatingMenus()
                         ->required()
-                        ->hint(new HtmlString('Ce champ supporte la syntaxe MarkDown. <a target="blank_" href="https://www.markdownguide.org/cheat-sheet/" style="text-decoration: underline">Comment faire la mise en forme ? <i class="fa fa-solid fa-arrow-up-right-from-square fa-xs"></i></a>'))
                         ->placeholder('Informations sur le montant du financement, sa durée, etc.'),
                 ]),
                 Tabs\Tab::make("Critères d'admission")->schema([
-                    MarkdownEditor::make('admission_requirements')
+                    TiptapEditor::make('admission_requirements')
                         ->label("Critères d'admission")
-                        ->hint(new HtmlString('Ce champ supporte la syntaxe MarkDown. <a target="blank_" href="https://www.markdownguide.org/cheat-sheet/" style="text-decoration: underline">Comment faire la mise en forme ? <i class="fa fa-solid fa-arrow-up-right-from-square fa-xs"></i></a>'))
+                        ->extraInputAttributes(['style' => 'min-height: 12rem;'])
+                        ->maxContentWidth('full')
+                        ->disableFloatingMenus()
                         ->required(),
                 ]),
                 Tabs\Tab::make("Pour postuler")->schema([
-                    MarkdownEditor::make('apply_instructions')
-                        ->hint(new HtmlString('Ce champ supporte la syntaxe MarkDown. <a target="blank_" href="https://www.markdownguide.org/cheat-sheet/" style="text-decoration: underline">Comment faire la mise en forme ? <i class="fa fa-solid fa-arrow-up-right-from-square fa-xs"></i></a>'))
+                    TiptapEditor::make('apply_instructions')
+                        ->extraInputAttributes(['style' => 'min-height: 12rem;'])
+                        ->maxContentWidth('full')
+                        ->disableFloatingMenus()
                         ->label("Pour postuler")
                         ->required(),
 
@@ -308,7 +321,7 @@ final class ProjectForm extends Component implements HasForms
         $rules = [
             'title' => 'required|string|max:255',
             'is_big' => 'boolean',
-            'organisation' => 'array',
+            'organisation' => 'string',
             'info_types' => 'array',
             'docs' => 'array',
             'scientific_domains' => 'array',
@@ -317,10 +330,10 @@ final class ProjectForm extends Component implements HasForms
             'periodicity' => 'nullable|integer',
             'date_lessor' => 'nullable|date',
             'short_description' => 'nullable|string|max:500',
-            'long_description' => 'nullable|string',
-            'funding' => 'nullable|string',
-            'admission_requirements' => 'nullable|string',
-            'apply_instructions' => 'nullable|string',
+            'long_description' => 'array',
+            'funding' => 'array',
+            'admission_requirements' => 'array',
+            'apply_instructions' => 'array',
             'contact_ulb.*.first_name' => 'nullable|string',
             'contact_ulb.*.last_name' => 'nullable|string',
             'contact_ulb.*.email' => 'nullable|email',
@@ -420,7 +433,7 @@ final class ProjectForm extends Component implements HasForms
         } else {
             $data['contact_ext'] = [];
         }
-
+        
         if ($project = Project::create($data)) {
             if (!empty($data['organisation'])) {
                 $project->organisations()->sync($data['organisation']);

@@ -14,18 +14,25 @@
                 Documents
             </x-filament::tabs.item>
         </x-filament::tabs>
-
         <div x-show="tab === 'description'" class="m-4">
             <x-filament::section.description class="flex flex-wrap gap-1">
                 @foreach($project->info_types as $info_type)
                     <x-filament::badge>{{$info_type->title ?? ''}}</x-filament::badge>
                 @endforeach
             </x-filament::section.description>
-            <h1>{{$project->title ?? ''}}</h1>
+            <h1 class="tiptap">{{$project->title ?? ''}}</h1>
             <p>{{$project->organisations->first()->title ?? $project->Organisation}}</p>
             <div class="markdown">
                 <x-filament::section.description class="my-3 text-justify">
-                    {!! \Illuminate\Support\Str::of($project->long_description)->markdown()!!}
+                    @dd($project->long_description)
+                    @php
+                        try{
+                            echo tiptap_converter()->asHTML($project->long_description);
+                        }
+                        catch (Exception $e){
+                            echo \Illuminate\Support\Str::of($project->long_description)->markdown();
+                        }
+                    @endphp
                 </x-filament::section.description>
             </div>
         </div>
@@ -38,7 +45,15 @@
                     <x-filament::section.description
                         class="mb-1 text-sm text-gray-500 dark:text-gray-400 text-justify list-inside">
                         <div class="text-sm text-gray-500 dark:text-gray-400 text-justify">
-                            {!! Illuminate\Support\Str::of($project->funding)->markdown() !!}
+                            @php
+                                try{
+                                    echo tiptap_converter()->asHTML($project->funding);
+                                }
+                                catch (Exception $e){
+                                    echo \Illuminate\Support\Str::of($project->funding)->markdown();
+                                }
+                            @endphp
+
                         </div>
                     </x-filament::section.description>
                 </div>
@@ -52,7 +67,14 @@
                     <x-filament::section.description
                         class="mb-1 text-sm text-gray-500 dark:text-gray-400 text-justify list-inside">
                         <div class="text-sm text-gray-500 dark:text-gray-400 text-justify">
-                            {!! \Illuminate\Support\Str::of($project->apply_instructions)->markdown() !!}
+                            @php
+                                try{
+                                    echo tiptap_converter()->asHTML($project->apply_instructions);
+                                }
+                                catch (Exception $e){
+                                    echo \Illuminate\Support\Str::of($project->apply_instructions)->markdown();
+                                }
+                            @endphp
                         </div>
 
                     </x-filament::section.description>
@@ -67,7 +89,14 @@
                     <x-filament::section.description
                         class="mb-1 text-sm text-gray-500 dark:text-gray-400 text-justify list-inside">
                         <div class="text-sm text-gray-500 dark:text-gray-400 text-justify">
-                            {!! \Illuminate\Support\Str::of($project->admission_requirements)->markdown() !!}
+                            @php
+                                try{
+                                    echo tiptap_converter()->asHTML($project->admission_requirements);
+                                }
+                                catch (Exception $e){
+                                    echo \Illuminate\Support\Str::of($project->admission_requirements)->markdown();
+                                }
+                            @endphp
                         </div>
                     </x-filament::section.description>
                 </div>
