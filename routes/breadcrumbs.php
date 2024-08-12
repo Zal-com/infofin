@@ -21,7 +21,6 @@ Breadcrumbs::for('project', function (BreadcrumbTrail $trail, $project) {
 
 // Home > Projects > Archives
 Breadcrumbs::for('archives', function (BreadcrumbTrail $trail) {
-    $trail->parent('home');
     $trail->push('Archives', route('projects.archive'));
 });
 
