@@ -16,7 +16,7 @@
     <link rel="icon" href="{{ url('img/favicon.svg') }}">
     <link href="{{ asset('css/fonts.css') }}" rel="stylesheet">
     <script src="https://kit.fontawesome.com/d8f60edc6b.js" crossorigin="anonymous"></script>
-    @vite(['resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <title>Infofin</title>
     @filamentStyles
 </head>
