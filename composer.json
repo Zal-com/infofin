@@ -11,7 +11,7 @@
         "php": "^8.2",
         "amendozaaguiar/filament-route-statistics": "^3.0",
         "awcodes/filament-badgeable-column": "^2.3",
-        "awcodes/filament-tiptap-editor": "^3.0",
+        "awcodes/filament-tiptap-editor": "^3.4",
         "bezhansalleh/filament-exceptions": "^2.1",
         "croustibat/filament-jobs-monitor": "^2.5",
         "daylaborers/laravel-mjml": "^1.0",
