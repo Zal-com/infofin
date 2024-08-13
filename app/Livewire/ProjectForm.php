@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Extensions\CharacterCount;
 use App\Models\Continent;
 use App\Models\Countries;
 use App\Models\Document;
@@ -18,8 +19,10 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Tabs;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -32,7 +35,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
-use Schmeits\FilamentCharacterCounter\Forms\Components\Textarea;
 
 final class ProjectForm extends Component implements HasForms
 {
@@ -170,14 +172,24 @@ final class ProjectForm extends Component implements HasForms
                         ->label('Date Bailleur'),
                 ]),
                 Tabs\Tab::make('Description')->schema([
-                    Textarea::make('short_description')
+                    RichEditor::make('short_description')
                         ->label('Description courte')
-                        ->maxLength(500)
-                        ->characterLimit(500)
-                        ->showInsideControl()
                         ->placeholder('Courte et catchy, elle sera visible depuis la page principale et dans la newsletter')
+                        ->required()
                         ->live()
-                        ->required(),
+                        ->maxLength(500) // This ensures the backend enforces the limit
+                        ->extraAttributes(['maxlength' => 500, 'script' => ""]) // This ensures the frontend enforces the limit
+                        ->hint(function ($component, $state) {
+                            return strlen($state) . '/' . $component->getMaxLength() . ' caractères';
+                        })
+                        ->helperText('Maximum 500 caractères')
+                        ->afterStateHydrated(function ($component, $state) {
+                            if (strlen($state) >= 500) {
+                                $component->disabled(true);
+                            }
+                        })
+                        ->dehydrated(false)
+                        ->reactive(),
                     TiptapEditor::make('long_description')
                         ->profile('default')
                         ->output(TiptapOutput::Json)
