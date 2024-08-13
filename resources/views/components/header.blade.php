@@ -4,9 +4,9 @@
             <div class="flex items-center">
                 <img class="max-h-[100%] object-contain pr-4 border-r-2 border-blue-900"
                      src="{{asset('img/ulb_logo.png')}}" alt="Logo de l'ULB"/>
-            </div>
-            <div class="text-blue-900 p-4 m-auto">
-                <h1 class="select-none font-bold text-5xl items-center">Infofin</h1>
+                <div class="text-blue-900 p-4">
+                    <h1 class="select-none font-bold text-5xl items-center">Infofin</h1>
+                </div>
             </div>
             <div class="flex-1">
                 <img class="max-h-[100%] float-end" src="{{asset('img/header_img.png')}}"
