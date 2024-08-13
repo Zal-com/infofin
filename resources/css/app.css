@@ -50,75 +50,82 @@
     display: inline-block !important;
 }
 
-.tiptap p {
-    font-size: 16px;
-    color: #333;
-    line-height: 1.6;
+.tiptap-content {
+    p {
+        font-size: 16px;
+        color: #333;
+        line-height: 1.6;
+    }
+
+    /* Style for h1 */
+
+    h1 {
+        font-size: 32px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        line-height: 1.2;
+    }
+
+    /* Style for h2 */
+
+    h2 {
+        font-size: 28px;
+        font-weight: bold;
+        margin-bottom: 18px;
+        line-height: 1.3;
+    }
+
+    /* Style for h3 */
+
+    h3 {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 16px;
+        line-height: 1.4;
+    }
+
+    /* Style for h4 */
+
+    h4 {
+        font-size: 20px;
+        font-weight: semi-bold;
+        margin-bottom: 14px;
+        line-height: 1.5;
+    }
+
+    /* Style for h5 */
+
+    h5 {
+        font-size: 18px;
+        font-weight: semi-bold;
+        margin-bottom: 12px;
+        line-height: 1.6;
+    }
+
+    /* Style for h6 */
+
+    h6 {
+        font-size: 16px;
+        font-weight: semi-bold;
+        margin-bottom: 10px;
+        line-height: 1.7;
+    }
+
+
+    blockquote {
+        border-left: 4px solid #2d3748;
+        padding-left: 15px;
+        font-style: italic;
+        color: #4a5568;
+    }
+
+    ol {
+        list-style-type: decimal;
+        padding-left: 20px;
+    }
+
+    ul {
+        list-style-type: disc;
+        padding-left: 20px;
+    }
 }
-
-/* Style for h1 */
-.tiptap h1 {
-    font-size: 32px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    line-height: 1.2;
-}
-
-/* Style for h2 */
-.tiptap h2 {
-    font-size: 28px;
-    font-weight: bold;
-    margin-bottom: 18px;
-    line-height: 1.3;
-}
-
-/* Style for h3 */
-.tiptap h3 {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 16px;
-    line-height: 1.4;
-}
-
-/* Style for h4 */
-.tiptap h4 {
-    font-size: 20px;
-    font-weight: semi-bold;
-    margin-bottom: 14px;
-    line-height: 1.5;
-}
-
-/* Style for h5 */
-.tiptap h5 {
-    font-size: 18px;
-    font-weight: semi-bold;
-    margin-bottom: 12px;
-    line-height: 1.6;
-}
-
-/* Style for h6 */
-.tiptap h6 {
-    font-size: 16px;
-    font-weight: semi-bold;
-    margin-bottom: 10px;
-    line-height: 1.7;
-}
-
-
-.tiptap blockquote {
-    border-left: 4px solid #2d3748;
-    padding-left: 15px;
-    font-style: italic;
-    color: #4a5568;
-}
-
-.tiptap ol {
-    list-style-type: decimal;
-    padding-left: 20px;
-}
-
-.tiptap ul {
-    list-style-type: disc;
-    padding-left: 20px;
-}
-
