@@ -5,6 +5,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' https://infofin-f-departementrecherche.apps.dev.okd.hpda.ulb.ac.be">
     <!-- Open Graph Meta Tags -->
     <meta property="og:title" content="@yield('og:title', 'Infofin')"/>
     <meta property="og:description" content="@yield('og:description', 'Description Infofin')"/>
