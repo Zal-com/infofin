@@ -11,6 +11,7 @@ use App\Models\InfoType;
 use App\Models\Organisation;
 use App\Models\Project;
 use App\Models\ScientificDomainCategory;
+use Doctrine\DBAL\Driver\PDO\Exception;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Checkbox;
@@ -177,11 +178,15 @@ final class ProjectForm extends Component implements HasForms
                         ->placeholder('Courte et catchy, elle sera visible depuis la page principale et dans la newsletter')
                         ->required()
                         ->live()
-                        ->maxLength(500) // This ensures the backend enforces the limit
-                        ->extraAttributes(['maxlength' => 500, 'script' => ""]) // This ensures the frontend enforces the limit
-                        ->hint(function ($component, $state) {
-                            return strlen($state) . '/' . $component->getMaxLength() . ' caractères';
-                        })
+                        ->toolbarButtons([
+                            'bold',
+                            'italic',
+                            'redo',
+                            'strike',
+                            'underline',
+                            'undo',
+                        ])
+                        ->extraAttributes(['maxlength' => 500, 'script']) // This ensures the frontend enforces the limit
                         ->helperText('Maximum 500 caractères')
                         ->afterStateHydrated(function ($component, $state) {
                             if (strlen($state) >= 500) {
@@ -193,6 +198,7 @@ final class ProjectForm extends Component implements HasForms
                     TiptapEditor::make('long_description')
                         ->profile('default')
                         ->output(TiptapOutput::Json)
+                        ->columnSpan(1)
                         ->maxContentWidth('full')
                         ->label('Description complète')
                         ->extraInputAttributes(['style' => 'min-height: 12rem;'])
