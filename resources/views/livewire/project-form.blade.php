@@ -18,5 +18,5 @@
             {{ $this->form }}
             <x-filament-actions::modals/>
         </form>
-
     </div>
+</div>

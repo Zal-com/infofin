@@ -11,7 +11,6 @@ use App\Models\InfoType;
 use App\Models\Organisation;
 use App\Models\Project;
 use App\Models\ScientificDomainCategory;
-use Doctrine\DBAL\Driver\PDO\Exception;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Checkbox;
@@ -23,7 +22,6 @@ use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Tabs;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -187,6 +185,12 @@ final class ProjectForm extends Component implements HasForms
                             'undo',
                         ])
                         ->extraAttributes(['maxlength' => 500, 'script']) // This ensures the frontend enforces the limit
+                        ->maxLength(500) // This ensures the backend enforces the limit
+                        ->extraAttributes(['maxlength' => 500, 'script' => ""]) // This ensures the frontend enforces the limit
+                        ->hint(function ($component, $state) {
+                            $cleanedState = strip_tags($state);
+                            return strlen($cleanedState) . '/' . $component->getMaxLength() . ' caractères';
+                        })
                         ->helperText('Maximum 500 caractères')
                         ->afterStateHydrated(function ($component, $state) {
                             if (strlen($state) >= 500) {
