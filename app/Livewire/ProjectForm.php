@@ -214,6 +214,7 @@ final class ProjectForm extends Component implements HasForms
                     TiptapEditor::make('funding')
                         ->label("Financement")
                         ->extraInputAttributes(['style' => 'min-height: 12rem;'])
+                        ->output(TiptapOutput::Json)
                         ->maxContentWidth('full')
                         ->disableFloatingMenus()
                         ->required()
@@ -222,6 +223,7 @@ final class ProjectForm extends Component implements HasForms
                 Tabs\Tab::make("Critères d'admission")->schema([
                     TiptapEditor::make('admission_requirements')
                         ->label("Critères d'admission")
+                        ->output(TiptapOutput::Json)
                         ->extraInputAttributes(['style' => 'min-height: 12rem;'])
                         ->maxContentWidth('full')
                         ->disableFloatingMenus()
