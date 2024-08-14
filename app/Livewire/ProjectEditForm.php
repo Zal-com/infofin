@@ -17,7 +17,6 @@ use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Tabs;
@@ -27,11 +26,11 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
-use FilamentTiptapEditor\Enums\TiptapOutput;
 use FilamentTiptapEditor\TiptapEditor;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use League\HTMLToMarkdown\HtmlConverter;
 use Livewire\Component;
 
 class ProjectEditForm extends Component implements HasForms
@@ -407,6 +406,11 @@ class ProjectEditForm extends Component implements HasForms
         try {
 
             $data['last_update_user_id'] = $userId;
+
+            $converter = new HtmlConverter();
+            $markdown = $converter->convert($this->data["short_description"]);
+
+            $data['short_description'] = $markdown;
 
             if ($data['periodicity'] === null) {
                 $data['periodicity'] = 0;

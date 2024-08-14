@@ -2,7 +2,6 @@
 
 namespace App\Livewire;
 
-use App\Extensions\CharacterCount;
 use App\Models\Continent;
 use App\Models\Countries;
 use App\Models\Document;
@@ -33,6 +32,7 @@ use FilamentTiptapEditor\TiptapEditor;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use League\HTMLToMarkdown\HtmlConverter;
 use Livewire\Component;
 
 final class ProjectForm extends Component implements HasForms
@@ -335,7 +335,6 @@ final class ProjectForm extends Component implements HasForms
 
     public function submit()
     {
-
         $userId = Auth::id();
 
         $rules = [
@@ -401,6 +400,12 @@ final class ProjectForm extends Component implements HasForms
         } else {
             $data = $validator->validated();
         }
+
+
+        $converter = new HtmlConverter();
+        $markdown = $converter->convert($this->data["short_description"]);
+
+        $data['short_description'] = $markdown;
 
         $data['poster_id'] = $userId;
         $data['last_update_user_id'] = $userId;
