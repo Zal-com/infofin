@@ -22,7 +22,6 @@ use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Tabs;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -180,7 +179,8 @@ final class ProjectForm extends Component implements HasForms
                         ->maxLength(500) // This ensures the backend enforces the limit
                         ->extraAttributes(['maxlength' => 500, 'script' => ""]) // This ensures the frontend enforces the limit
                         ->hint(function ($component, $state) {
-                            return strlen($state) . '/' . $component->getMaxLength() . ' caractères';
+                            $cleanedState = strip_tags($state);
+                            return strlen($cleanedState) . '/' . $component->getMaxLength() . ' caractères';
                         })
                         ->helperText('Maximum 500 caractères')
                         ->afterStateHydrated(function ($component, $state) {
@@ -274,6 +274,42 @@ final class ProjectForm extends Component implements HasForms
                     ->action('saveAsDraft')
             ])->alignEnd()
         ])->statePath('data')->model($this->project);
+    }
+
+    private function getTextContentFromJson(array $json): string
+    {
+        // Recursively extract text content from the JSON structure.
+        $text = '';
+        if (isset($json['content'])) {
+            foreach ($json['content'] as $content) {
+                if (isset($content['text'])) {
+                    $text .= $content['text'];
+                }
+                if (isset($content['content'])) {
+                    $text .= $this->getTextContentFromJson($content);
+                }
+            }
+        }
+        return $text;
+    }
+
+    private function updateJsonWithTrimmedText(array $json, string $trimmedText): array
+    {
+        // Update the JSON structure with the trimmed text.
+        if (isset($json['content'])) {
+            $currentLength = 0;
+            foreach ($json['content'] as &$content) {
+                if (isset($content['text'])) {
+                    $remainingLength = $trimmedText - $currentLength;
+                    $content['text'] = substr($content['text'], 0, $remainingLength);
+                    $currentLength += strlen($content['text']);
+                }
+                if ($currentLength >= strlen($trimmedText)) {
+                    break;
+                }
+            }
+        }
+        return $json;
     }
 
     public function render()
