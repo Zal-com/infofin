@@ -18,9 +18,9 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Tabs;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -230,12 +230,26 @@ class ProjectEditForm extends Component implements HasForms
                         ->label('Date Bailleur'),
                 ]),
                 Tabs\Tab::make('Description')->schema([
-                    Textarea::make('short_description')
+                    RichEditor::make('short_description')
                         ->label('Description courte')
-                        ->maxLength(500)
-                        ->hint(fn($state, $component) => strlen($state) . '/' . $component->getMaxLength())
+                        ->placeholder('Courte et catchy, elle sera visible depuis la page principale et dans la newsletter')
+                        ->required()
                         ->live()
-                        ->required(),
+                        ->maxLength(500)
+                        ->toolbarButtons([
+                            'bold',
+                            'italic',
+                            'redo',
+                            'strike',
+                            'underline',
+                            'undo',
+                        ])
+                        ->hint(function ($component, $state) {
+                            $cleanedState = strip_tags($state);
+                            return strlen($cleanedState) . '/' . $component->getMaxLength() . ' caractères';
+                        })
+                        ->helperText('Maximum 500 caractères')
+                        ->dehydrated(false),
                     TiptapEditor::make('long_description')
                         ->extraInputAttributes(['style' => 'min-height: 12rem;'])
                         ->maxContentWidth('full')

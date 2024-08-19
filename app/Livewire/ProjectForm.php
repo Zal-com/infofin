@@ -163,6 +163,7 @@ final class ProjectForm extends Component implements HasForms
                         ->placeholder('Courte et catchy, elle sera visible depuis la page principale et dans la newsletter')
                         ->required()
                         ->live()
+                        ->maxLength(500)
                         ->toolbarButtons([
                             'bold',
                             'italic',
@@ -171,21 +172,12 @@ final class ProjectForm extends Component implements HasForms
                             'underline',
                             'undo',
                         ])
-                        ->extraAttributes(['maxlength' => 500, 'script']) // This ensures the frontend enforces the limit
-                        ->maxLength(500) // This ensures the backend enforces the limit
-                        ->extraAttributes(['maxlength' => 500, 'script' => ""]) // This ensures the frontend enforces the limit
                         ->hint(function ($component, $state) {
                             $cleanedState = strip_tags($state);
                             return strlen($cleanedState) . '/' . $component->getMaxLength() . ' caractères';
                         })
                         ->helperText('Maximum 500 caractères')
-                        ->afterStateHydrated(function ($component, $state) {
-                            if (strlen($state) >= 500) {
-                                $component->disabled(true);
-                            }
-                        })
-                        ->dehydrated(false)
-                        ->reactive(),
+                        ->dehydrated(false),
                     TiptapEditor::make('long_description')
                         ->profile('default')
                         ->output(TiptapOutput::Json)
