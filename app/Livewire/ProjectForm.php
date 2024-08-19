@@ -4,12 +4,12 @@ namespace App\Livewire;
 
 use App\Models\Continent;
 use App\Models\Countries;
-use App\Models\Document;
 use App\Models\Draft;
 use App\Models\InfoType;
 use App\Models\Organisation;
 use App\Models\Project;
 use App\Models\ScientificDomainCategory;
+use App\Services\FileService;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Checkbox;
@@ -30,7 +30,6 @@ use Filament\Resources\Components\Tab;
 use FilamentTiptapEditor\Enums\TiptapOutput;
 use FilamentTiptapEditor\TiptapEditor;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use League\HTMLToMarkdown\HtmlConverter;
 use Livewire\Component;
@@ -43,9 +42,11 @@ final class ProjectForm extends Component implements HasForms
     public Project $project;
     public array $data = [];
     public $fromPrev;
+    protected $fileService;
 
-    public function mount(Project $project = null)
+    public function mount(FileService $fileService, Project $project = null)
     {
+        $this->fileService = $fileService;
         if (session()->has('fromPreviewData')) {
             $this->initializeProjectFromData(session('fromPreviewData'));
         } elseif ($this->draft) {
@@ -274,6 +275,13 @@ final class ProjectForm extends Component implements HasForms
 
     public function saveAsDraft()
     {
+        if (!$this->fileService) {
+            $this->fileService = app(FileService::class);
+        }
+        if (!empty($this->data['documents'])) {
+            $docs = $this->fileService->moveForDraft($this->data['documents']);
+            $this->data["docs"] = $docs;
+        }
         if ($this->draft) {
             $updatedDraft = Draft::find($this->draft->id);
 
@@ -314,6 +322,9 @@ final class ProjectForm extends Component implements HasForms
 
     public function submit()
     {
+        if (!$this->fileService) {
+            $this->fileService = app(FileService::class);
+        }
         $userId = Auth::id();
 
         $rules = [
@@ -452,7 +463,7 @@ final class ProjectForm extends Component implements HasForms
             }
 
             if (isset($data['documents']) && count($data['documents']) > 0) {
-                $this->moveFiles($data['documents'], $project);
+                $this->fileService->moveFiles($data['documents'], $project);
             }
 
             if (!empty($data['geo_zones'])) {
@@ -470,35 +481,6 @@ final class ProjectForm extends Component implements HasForms
             }
             return redirect()->route('projects.index')->with('success', 'Votre appel a bien été ajouté.');
         }
-    }
-
-    private function moveFiles(array $files, Project $project): array
-    {
-        $movedFiles = [];
-        foreach ($files as $file) {
-            $finalPath = 'uploads/docs/' . $file->getFilename();
-
-            Storage::disk('public')->putFileAs(
-                'uploads/docs',
-                $file,
-                $file->getFilename()
-            );
-
-            $document = Document::create([
-                'project_id' => $project->id,
-                'title' => $file->getClientOriginalName(),
-                'filename' => $finalPath,
-                'download_count' => 0,
-            ]);
-
-            $movedFiles[] = $document->id;
-
-            if (file_exists($file->getPathname())) {
-                unlink($file->getPathname());
-            }
-        }
-
-        return $movedFiles;
     }
 
 
