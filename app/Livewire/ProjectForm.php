@@ -191,7 +191,6 @@ final class ProjectForm extends Component implements HasForms
                             $cleanedState = strip_tags($state);
                             return strlen($cleanedState) . '/' . $component->getMaxLength() . ' caractères';
                         })
-                        ->helperText('Maximum 500 caractères')
                         ->afterStateHydrated(function ($component, $state) {
                             if (strlen($state) >= 500) {
                                 $component->disabled(true);
