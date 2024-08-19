@@ -166,15 +166,6 @@ class ProjectEditForm extends Component implements HasForms
                     Checkbox::make('is_big')
                         ->label('Projet majeur')
                         ->default(false),
-                    Select::make('info')
-                        ->label("Type d'information")
-                        ->options([
-                            'Financement',
-                            "Séance d'information organisée par l'ULB",
-                            "Séance d'information organisée par un organisme externe"
-                        ])
-                        ->selectablePlaceholder(false)
-                        ->required(),
                     CheckboxList::make('info_types')
                         ->label('Types de programmes')
                         ->options(InfoType::all()->sortBy('title')->pluck('title')->toArray())

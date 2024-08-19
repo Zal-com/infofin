@@ -100,15 +100,6 @@ final class ProjectForm extends Component implements HasForms
                     TextInput::make('origin_url')
                         ->label('Lien vers l\'appel original')
                         ->url(),
-                    Select::make('info')
-                        ->label("Type d'information")
-                        ->options([
-                            'Financement',
-                            "Séance d'information organisée par l'ULB",
-                            "Séance d'information organisée par un organisme externe"
-                        ])
-                        ->selectablePlaceholder()
-                        ->required(),
                     CheckboxList::make('info_types')
                         ->label('Types de programmes')
                         ->options(InfoType::all()->sortBy('title')->pluck('title', 'id')->toArray())
