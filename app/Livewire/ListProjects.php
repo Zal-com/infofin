@@ -29,8 +29,9 @@ class ListProjects extends Component implements HasForms, HasTable
     use InteractsWithForms;
     use InteractsWithTable;
 
-    protected $listeners = ['projectDeleted'];
+    protected $listeners = ['projectDeleted', 'refreshTable'];
 
+    #[On('refreshTable')]
     public function render(): View
     {
         return view('livewire.list-projects');
@@ -107,25 +108,45 @@ class ListProjects extends Component implements HasForms, HasTable
 
         $actions = [];
 
-        if (Auth::check() && Auth::user()->can('create projects')) {
-            $actions[] = Action::make('edit')
-                ->label('Edit')
-                ->url(fn($record) => route('projects.edit', $record->id))
-                ->icon('heroicon-s-pencil')
-                ->color('primary');
+        if (Auth::check()) {
+            if (Auth::user()->can('create projects')) {
+                $actions[] = Action::make('edit')
+                    ->label('Edit')
+                    ->url(fn($record) => route('projects.edit', $record->id))
+                    ->icon('heroicon-s-pencil')
+                    ->color('primary');
 
-            $actions[] = Action::make('archive')
-                ->label('Supprimer')
-                ->icon('heroicon-s-trash')
-                ->color('danger')
-                ->requiresConfirmation()
-                ->modalHeading('Supprimer le projet.')
-                ->modalDescription('Voulez-vous vraiment supprimer ce projet ?.')
-                ->action(function ($record) {
-                    $record->update(['status' => -1]);
-                    $this->dispatch("projectDeleted");
-                });
+                $actions[] = Action::make('archive')
+                    ->label('Supprimer')
+                    ->icon('heroicon-s-trash')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->modalHeading('Supprimer le projet.')
+                    ->modalDescription('Voulez-vous vraiment supprimer ce projet ?.')
+                    ->action(function ($record) {
+                        $record->update(['status' => -1]);
+                        $this->dispatch("projectDeleted");
+                    });
+
+            }
+
+            $actions[] =
+                Action::make('toggle_favorite')
+                    ->label(false)
+                    ->icon(fn($record) => Auth::user()->favorites->contains($record->id) ? 'heroicon-s-bookmark' : 'heroicon-o-bookmark')
+                    ->iconButton()
+                    ->color('black')
+                    ->action(function ($record) {
+                        $user = Auth::user();
+                        $user->favorites->contains($record->id)
+                            ? $user->removeFromFavorites($record->id)
+                            : $user->addToFavorites($record->id);
+
+                        $user->load('favorites');
+                        $record->refresh();
+                    });
         }
+
 
         return $table->query(
             Project::where('status', '!=', 2)->where('status', '!=', -1)
