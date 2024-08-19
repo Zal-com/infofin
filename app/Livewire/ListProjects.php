@@ -7,11 +7,9 @@ use App\Models\Organisation;
 use App\Models\Project;
 use Awcodes\FilamentBadgeableColumn\Components\Badge;
 use Awcodes\FilamentBadgeableColumn\Components\BadgeableColumn;
-use Filament\Facades\Filament;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Notifications\Notification;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\IconColumn;
@@ -25,7 +23,6 @@ use Illuminate\Support\HtmlString;
 use Illuminate\View\View;
 use Livewire\Attributes\On;
 use Livewire\Component;
-use Livewire\Livewire;
 
 class ListProjects extends Component implements HasForms, HasTable
 {
@@ -141,9 +138,12 @@ class ListProjects extends Component implements HasForms, HasTable
                     ->color('black')
                     ->action(function ($record) {
                         $user = Auth::user();
-                        $user->favorites->contains($record->id) ? $user->removeFromFavorites($record->id) : $user->addToFavorites($record->id);
-                        $this->dispatch("refreshTable");
-                        //$record->refresh();
+                        $user->favorites->contains($record->id)
+                            ? $user->removeFromFavorites($record->id)
+                            : $user->addToFavorites($record->id);
+
+                        $user->load('favorites');
+                        $record->refresh();
                     });
         }
 
