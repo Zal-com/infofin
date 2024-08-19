@@ -47,29 +47,25 @@ final class ProjectForm extends Component implements HasForms
     public function mount(Project $project = null)
     {
         if (session()->has('fromPreviewData')) {
-            $this->fromPrev = session('fromPreviewData');
-            $this->project = new Project($this->fromPrev);
-            if (isset($this->fromPrev['organisation'])) {
-                $this->project->organisation = $this->fromPrev['organisation'];
-            }
-            if (isset($this->fromPrev['scientific_domains'])) {
-                $this->project->scientific_domains = $this->fromPrev['scientific_domains'];
-            }
-            if (isset($this->fromPrev['info_types'])) {
-                $this->project->info_types = $this->fromPrev['info_types'];
-            }
-            if (isset($this->fromPrev['geo_zones'])) {
-                $this->project->geo_zones = $this->fromPrev['geo_zones'];
-            }
-            $this->form->fill($this->project->toArray());
+            $this->initializeProjectFromData(session('fromPreviewData'));
+        } elseif ($this->draft) {
+            $this->initializeProjectFromData($this->draft->content);
         } else {
-            if ($this->draft) {
-                $this->project = new Project($this->draft->content);
-            } else {
-                $this->project = $project ?? new Project();
-            }
+            $this->project = $project ?? new Project();
+        }
 
-            $this->form->fill($this->project->toArray());
+        $this->form->fill($this->project->toArray());
+    }
+
+    private function initializeProjectFromData(array $data)
+    {
+        $this->fromPrev = $data;
+        $this->project = new Project($data);
+
+        foreach (['organisation', 'scientific_domains', 'info_types', 'geo_zones', 'documents'] as $attribute) {
+            if (isset($data[$attribute])) {
+                $this->project->{$attribute} = $data[$attribute];
+            }
         }
     }
 
@@ -201,9 +197,9 @@ final class ProjectForm extends Component implements HasForms
                         ->placeholder('Description la plus complète possible du projet, aucune limite de caractères')
                         ->required(),
                 ]),
-                Tabs\Tab::make('Financement')->schema([
+                Tabs\Tab::make('Budget et dépenses')->schema([
                     TiptapEditor::make('funding')
-                        ->label("Financement")
+                        ->label(false)
                         ->extraInputAttributes(['style' => 'min-height: 12rem;'])
                         ->output(TiptapOutput::Json)
                         ->maxContentWidth('full')
@@ -213,7 +209,7 @@ final class ProjectForm extends Component implements HasForms
                 ]),
                 Tabs\Tab::make("Critères d'admission")->schema([
                     TiptapEditor::make('admission_requirements')
-                        ->label("Critères d'admission")
+                        ->label(false)
                         ->output(TiptapOutput::Json)
                         ->extraInputAttributes(['style' => 'min-height: 12rem;'])
                         ->maxContentWidth('full')
@@ -225,7 +221,7 @@ final class ProjectForm extends Component implements HasForms
                         ->extraInputAttributes(['style' => 'min-height: 12rem;'])
                         ->maxContentWidth('full')
                         ->disableFloatingMenus()
-                        ->label("Pour postuler")
+                        ->label(false)
                         ->required(),
 
                 ]),

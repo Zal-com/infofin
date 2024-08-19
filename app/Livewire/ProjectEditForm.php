@@ -243,7 +243,7 @@ class ProjectEditForm extends Component implements HasForms
                         ->label('Description complète')
                         ->required(),
                 ]),
-                Tabs\Tab::make('Financement')->schema([
+                Tabs\Tab::make('Budget et dépenses')->schema([
                     TiptapEditor::make('funding')
                         ->label(false)
                         ->extraInputAttributes(['style' => 'min-height: 12rem;'])
