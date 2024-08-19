@@ -115,13 +115,13 @@
                                     <div class="flex items-center">
                                         <x-filament::icon icon="heroicon-o-document"
                                                           class="h-[24px] w-[24px] mr-2"/>
-                                        <a href="{{ route('download', ['name'=> $document->title ,'file' => $document->filename]) }}"
+                                        <a href="{{ route('download', ['name'=> $document->filename ,'file' => $document->path]) }}"
                                            class="text-blue-600 hover:underline">
-                                            {{ $document->title }}
+                                            {{ $document->filename }}
                                         </a>
                                     </div>
                                     <div class="flex items-center">
-                                        <a href="{{ route('download', ['name'=> $document->title ,'file' => $document->filename]) }}"
+                                        <a href="{{ route('download', ['name'=> $document->filename ,'file' => $document->path]) }}"
                                            class="inline-block">
                                             <x-filament::button color="tertiary"
                                                                 style="border-radius: 50%; padding: 0.5rem; display: inline-flex; justify-content: center; align-items: center; background:transparent; border:1px solid #42484e">
