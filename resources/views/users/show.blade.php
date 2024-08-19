@@ -18,6 +18,9 @@
             <x-filament::tabs.item @click="tab = 'interests'" :alpine-active="'tab === \'interests\''">
                 Mes centres d'intérêt
             </x-filament::tabs.item>
+            <x-filament::tabs.item @click="tab = 'favorites'" :alpine-active="'tab === \'favorites\''">
+                Mes favoris
+            </x-filament::tabs.item>
         </x-filament::tabs>
 
         <x-filament::section class="col-span-5 row-span-2">
@@ -58,6 +61,12 @@
                     Centres d'intérêt
                 </x-filament::section.heading>
                 @livewire('user-interests')
+            </div>
+            <div x-show="tab === 'favorites'" class="m-4">
+                <x-filament::section.heading class="mb-5">
+                    Mes favoris
+                </x-filament::section.heading>
+                @livewire('user-favorites')
             </div>
         </x-filament::section>
     </div>
