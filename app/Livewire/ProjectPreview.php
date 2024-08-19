@@ -8,6 +8,7 @@ use App\Models\InfoType;
 use App\Models\Organisation;
 use App\Models\Project;
 use App\Models\ScientificDomain;
+use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
@@ -142,8 +143,8 @@ class ProjectPreview extends Component
         ]);
 
         if ($validator->fails()) {
-            session()->flash('error', $validator->errors()->all());
-            return redirect()->back()->withInput();
+            Notification::make()->title($validator->errors()->all())->icon('heroicon-o-check-circle')->seconds(5)->color('success')->send();
+            return redirect()->back();
         } else {
             $data = $validator->validated();
         }
@@ -231,7 +232,10 @@ class ProjectPreview extends Component
 
                 $project->save();
             }
-            return redirect()->route('projects.index')->with('success', 'Votre appel a bien été ajouté.');
+
+            Notification::make()->title('Votre appel a bien été ajouté')->icon('heroicon-o-check-circle')->seconds(5)->color('success')->send();
+
+            return redirect()->route('projects.index');
         }
     }
 

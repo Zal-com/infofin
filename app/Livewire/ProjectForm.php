@@ -317,7 +317,12 @@ final class ProjectForm extends Component implements HasForms
                 ]);
 
                 if ($updateSuccessful) {
-                    return redirect()->route('profile.show')->with('success', 'Le brouillon a bien été enregistré.');
+                    Notification::make()
+                        ->title("Brouillon enregistré")
+                        ->color('success')
+                        ->seconds(5)
+                        ->send();
+                    return redirect()->route('profile.show');
                 }
             }
         }
@@ -336,7 +341,12 @@ final class ProjectForm extends Component implements HasForms
         }
 
         // Gérer le cas où la sauvegarde du nouveau brouillon échoue
-        return redirect()->back()->withErrors('La sauvegarde du brouillon a échoué.');
+        Notification::make()
+            ->title("La sauvegarde du brouillon a échoué")
+            ->color('danger')
+            ->seconds(5)
+            ->send();
+        return redirect()->back();
     }
 
     public function preview()
@@ -410,8 +420,8 @@ final class ProjectForm extends Component implements HasForms
         ]);
 
         if ($validator->fails()) {
-            session()->flash('error', $validator->errors()->all());
-            return redirect()->back()->withInput();
+            Notification::make()->title($validator->errors()->all())->icon('heroicon-o-check-circle')->seconds(5)->color('success')->send();
+            return redirect()->back();
         } else {
             $data = $validator->validated();
         }
@@ -504,7 +514,8 @@ final class ProjectForm extends Component implements HasForms
 
                 $project->save();
             }
-            return redirect()->route('projects.index')->with('success', 'Votre appel a bien été ajouté.');
+            Notification::make()->title('Votre appel a bien été ajouté.')->icon('heroicon-o-check-circle')->seconds(5)->color('success')->send();
+            return redirect()->route('projects.index');
         }
     }
 

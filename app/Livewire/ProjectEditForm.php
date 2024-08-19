@@ -54,7 +54,9 @@ class ProjectEditForm extends Component implements HasForms
     public function archiveProject()
     {
         $this->project->update(['status' => -1]);
-        session()->flash('success', "Le projet a été supprimé avec succès.");
+
+        Notification::make()->title('Le projet a été supprimé avec success.')->icon('heroicon-o-check-circle')->seconds(5)->color('success')->send();
+
         return redirect()->route('projects.index');
     }
 
@@ -524,7 +526,12 @@ class ProjectEditForm extends Component implements HasForms
         }
 
         // Gérer le cas où la sauvegarde du nouveau brouillon échoue
-        redirect()->back()->withErrors('La sauvegarde du brouillon a échoué.');
+        Notification::make()
+            ->title('La sauvegarde du brouillon a échoué.')
+            ->send()
+            ->seconds(5)
+            ->color('danger');
+        redirect()->back();
     }
 
     private function handleDocumentUpdates(array $newDocuments, Project $project)

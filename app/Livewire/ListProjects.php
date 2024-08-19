@@ -10,6 +10,7 @@ use Awcodes\FilamentBadgeableColumn\Components\BadgeableColumn;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Notifications\Notification;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\IconColumn;
@@ -40,7 +41,13 @@ class ListProjects extends Component implements HasForms, HasTable
     #[On('projectDeleted')]
     public function projectDeleted()
     {
-        session()->flash('success', "Le projet a été supprimé avec succès.");
+        Notification::make()
+            ->title("Projet supprimé avec succès")
+            ->icon('heroicon-o-x-circle')
+            ->iconColor('danger')
+            ->color('danger')
+            ->seconds(5)
+            ->send();
 
         return redirect()->route('projects.index');
     }
