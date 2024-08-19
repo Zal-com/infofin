@@ -529,7 +529,7 @@ class ProjectEditForm extends Component implements HasForms
 
     private function handleDocumentUpdates(array $newDocuments, Project $project)
     {
-        $existingDocuments = $project->documents->pluck('filename')->toArray();
+        $existingDocuments = $project->documents->pluck('path')->toArray();
 
         $deletedDocuments = array_diff($existingDocuments, $newDocuments);
 
@@ -559,8 +559,8 @@ class ProjectEditForm extends Component implements HasForms
 
             $document = Document::create([
                 'project_id' => $project->id,
-                'title' => $file->getClientOriginalName(),
-                'filename' => $finalPath,
+                'filename' => $file->getClientOriginalName(),
+                'path' => $finalPath,
                 'download_count' => 0,
             ]);
 
