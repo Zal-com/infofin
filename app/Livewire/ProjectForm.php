@@ -301,7 +301,12 @@ final class ProjectForm extends Component implements HasForms
                 ]);
 
                 if ($updateSuccessful) {
-                    return redirect()->route('profile.show')->with('success', 'Le brouillon a bien été enregistré.');
+                    Notification::make()
+                        ->title("Brouillon enregistré")
+                        ->color('success')
+                        ->seconds(5)
+                        ->send();
+                    return redirect()->route('profile.show');
                 }
             }
         }
@@ -320,7 +325,12 @@ final class ProjectForm extends Component implements HasForms
         }
 
         // Gérer le cas où la sauvegarde du nouveau brouillon échoue
-        return redirect()->back()->withErrors('La sauvegarde du brouillon a échoué.');
+        Notification::make()
+            ->title("La sauvegarde du brouillon a échoué")
+            ->color('danger')
+            ->seconds(5)
+            ->send();
+        return redirect()->back();
     }
 
     public function preview()
