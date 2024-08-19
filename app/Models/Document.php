@@ -9,7 +9,7 @@ class Document extends Model
 {
     protected $table = 'documents';
     public $timestamps = true;
-    protected $fillable = ['project_id', 'title', 'filename', 'download_count'];
+    protected $fillable = ['project_id', 'name', 'filename', 'download_count', 'path', 'is_draft'];
 
     public function project(): BelongsTo
     {

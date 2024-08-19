@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Continent;
 use App\Models\Countries;
+use App\Models\Document;
 use App\Models\Draft;
 use App\Models\InfoType;
 use App\Models\Organisation;
@@ -63,7 +64,15 @@ final class ProjectForm extends Component implements HasForms
         $this->fromPrev = $data;
         $this->project = new Project($data);
 
-        foreach (['organisation', 'scientific_domains', 'info_types', 'geo_zones', 'documents'] as $attribute) {
+
+        if (!empty($data['documents'])) {
+            $data['document_filenames'] = array_map(function ($docPath) {
+                $document = Document::where('path', $docPath)->first();
+                return $document ? $document->filename : basename($docPath);
+            }, $data['documents']);
+        }
+
+        foreach (['organisation', 'scientific_domains', 'info_types', 'geo_zones', 'documents', 'document_filenames'] as $attribute) {
             if (isset($data[$attribute])) {
                 $this->project->{$attribute} = $data[$attribute];
             }
@@ -245,7 +254,7 @@ final class ProjectForm extends Component implements HasForms
                         ->visibility('public')
                         ->acceptedFileTypes(['application/pdf'])
                         ->multiple()
-                        ->moveFiles()
+                        ->moveFiles(),
                 ]),
             ]),
             Actions::make([
@@ -279,8 +288,8 @@ final class ProjectForm extends Component implements HasForms
             $this->fileService = app(FileService::class);
         }
         if (!empty($this->data['documents'])) {
-            $docs = $this->fileService->moveForDraft($this->data['documents']);
-            $this->data["docs"] = $docs;
+            $docs = $this->fileService->moveForDraft($this->data['documents'], $this->draft->content["documents"]);
+            $this->data["documents"] = $docs;
         }
         if ($this->draft) {
             $updatedDraft = Draft::find($this->draft->id);

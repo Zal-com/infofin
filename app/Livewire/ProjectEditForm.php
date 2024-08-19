@@ -83,7 +83,7 @@ class ProjectEditForm extends Component implements HasForms
             $this->project->info = "Financement";
         }
 
-        $documents = $this->project->documents->pluck('filename')->toArray();
+        $documents = $this->project->documents->pluck('path')->toArray();
 
         $this->originalDocuments = $documents;
 
