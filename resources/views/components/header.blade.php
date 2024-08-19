@@ -20,6 +20,11 @@
             </div>
             <div class="flex gap-2">
                 @auth()
+                    @role('admin')
+                    <x-filament::button tag="a" href="{{url('/admin')}}" color="primary"
+                                        icon="heroicon-o-chart-bar-square">Administration
+                    </x-filament::button>
+                    @endrole
                     <x-filament::button tag="a" href="{{route('profile.show')}}" color="primary"
                                         icon="heroicon-o-user">Profil
                     </x-filament::button>

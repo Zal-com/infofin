@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Filament\Models\Contracts\HasName;
+use Filament\Notifications\Notification;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -10,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements HasName, CanResetPassword
@@ -51,6 +53,52 @@ class User extends Authenticatable implements HasName, CanResetPassword
         'password',
         'remember_token',
     ];
+
+    public function addToFavorites($id)
+    {
+        try {
+            $this->favorites()->syncWithoutDetaching($id);
+            Notification::make()
+                ->color('success')
+                ->icon('heroicon-o-check-circle')
+                ->iconColor('success')
+                ->title('Projet ajouté à vos favoris.')
+                ->send()
+                ->seconds(5);
+        } catch (\Exception $e) {
+            Notification::make()
+                ->color('danger')
+                ->icon('heroicon-o-x-circle')
+                ->iconColor('danger')
+                ->title('Impossible d\'ajouter le projet en favori. Veuillez réessayer plus tard.')
+                ->send()
+                ->seconds(5);
+        }
+
+
+    }
+
+    public function removeFromFavorites($id)
+    {
+        try {
+            $this->favorites()->detach($id);
+            Notification::make()
+                ->color('success')
+                ->icon('heroicon-o-check-circle')
+                ->iconColor('success')
+                ->title('Projet retiré de vos favoris.')
+                ->send()
+                ->seconds(5);
+        } catch (\Exception $e) {
+            Notification::make()
+                ->color('danger')
+                ->icon('heroicon-o-x-circle')
+                ->iconColor('danger')
+                ->title('Impossible de retirer le projet de vos favoris. Veuillez réessayer plus tard.')
+                ->send()
+                ->seconds(5);
+        }
+    }
 
     /**
      * Get the attributes that should be cast.
@@ -104,6 +152,11 @@ class User extends Authenticatable implements HasName, CanResetPassword
     public function projects(): HasMany
     {
         return $this->hasMany(Project::class, "poster_id");
+    }
+
+    public function favorites(): BelongsToMany
+    {
+        return $this->belongsToMany(Project::class, 'users_favorite_projects', "user_id", "project_id");
     }
 
     public function rate_mail(): BelongsToMany
