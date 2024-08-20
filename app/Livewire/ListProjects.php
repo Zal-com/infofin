@@ -115,6 +115,51 @@ class ListProjects extends Component implements HasForms, HasTable
 
         $actions = [];
 
+        $filters = [
+            Filter::make('is_big')->label('Projets majeurs')->query(fn($query) => $query->where('is_big', '=', 1)),
+            Filter::make('organisation')->label('Organisation')->form([
+                Select::make('organisation_id')
+                    ->label('Organisation')
+                    ->options(function () {
+                        return Organisation::query()->pluck('title', 'id')->toArray();
+                    })
+                    ->searchable()
+            ])
+                ->query(function ($query, $data) {
+                    return $query->when($data['organisation_id'], function ($query, $organisationId) {
+                        return $query->whereHas('organisations', function ($query) use ($organisationId) {
+                            $query->where('organisation_id', $organisationId);
+                        });
+                    });
+                })
+                ->indicateUsing(fn($data) => isset($data['organisation_id']) ? 'Organisation : ' . Organisation::find($data['organisation_id'])->title : null),
+            Filter::make('info_type_category')
+                ->label('Catégories')
+                ->form([
+                    Select::make('category_id')
+                        ->label('Categorie')
+                        ->multiple()
+                        ->options(function () {
+                            return InfoTypeCategory::all()->pluck('name', 'id')->toArray();
+                        })
+                ])
+                ->query(function ($query, $data) {
+                    if (!empty($data['category_id'])) {
+                        return $query->whereHas('info_types', function ($query) use ($data) {
+                            $query->whereIn('info_types_cat_id', $data['category_id']);
+                        });
+                    }
+                    return $query;
+                })
+                ->indicateUsing(function ($data) {
+                    if (isset($data['category_id']) && !empty($data['category_id'])) {
+                        $categoryNames = InfoTypeCategory::whereIn('id', $data['category_id'])->pluck('name')->toArray();
+                        return 'Catégories : ' . implode(', ', $categoryNames);
+                    }
+                    return null;
+                })
+        ];
+
         if (Auth::check()) {
             if (Auth::user()->can('create projects')) {
                 $actions[] = Action::make('edit')
@@ -152,6 +197,25 @@ class ListProjects extends Component implements HasForms, HasTable
                         $user->load('favorites');
                         $record->refresh();
                     });
+
+            $filters[] = Filter::make('pour_moi')
+                ->label('Pour moi')
+                ->query(function ($query) {
+                    $user = Auth::user();
+                    if ($user) {
+                        $userInfoTypes = $user->info_types->pluck('id')->toArray();
+                        $userScientificDomains = $user->scientific_domains->pluck('id')->toArray();
+
+                        return $query->where(function ($query) use ($userInfoTypes, $userScientificDomains) {
+                            $query->whereHas('info_types', function ($query) use ($userInfoTypes) {
+                                $query->whereIn('info_type_id', $userInfoTypes);
+                            })->orWhereHas('scientific_domains', function ($query) use ($userScientificDomains) {
+                                $query->whereIn('scientific_domain_id', $userScientificDomains);
+                            });
+                        });
+                    }
+                    return $query;
+                });
         }
 
 
@@ -169,49 +233,6 @@ class ListProjects extends Component implements HasForms, HasTable
             ->defaultSort('updated_at', 'desc')
             ->paginationPageOptions([5, 10, 25, 50, 100])
             ->recordUrl(fn($record) => route('projects.show', $record->id))
-            ->filters([
-                Filter::make('is_big')->label('Projets majeurs')->query(fn($query) => $query->where('is_big', '=', 1)),
-                Filter::make('organisation')->label('Organisation')->form([
-                    Select::make('organisation_id')
-                        ->label('Organisation')
-                        ->options(function () {
-                            return Organisation::query()->pluck('title', 'id')->toArray();
-                        })
-                        ->searchable()
-                ])
-                    ->query(function ($query, $data) {
-                        return $query->when($data['organisation_id'], function ($query, $organisationId) {
-                            return $query->whereHas('organisations', function ($query) use ($organisationId) {
-                                $query->where('organisation_id', $organisationId);
-                            });
-                        });
-                    })
-                    ->indicateUsing(fn($data) => isset($data['organisation_id']) ? 'Organisation : ' . Organisation::find($data['organisation_id'])->title : null),
-                Filter::make('info_type_category')
-                    ->label('Catégories')
-                    ->form([
-                        Select::make('category_id')
-                            ->label('Categorie')
-                            ->multiple()
-                            ->options(function () {
-                                return InfoTypeCategory::all()->pluck('name', 'id')->toArray();
-                            })
-                    ])
-                    ->query(function ($query, $data) {
-                        if (!empty($data['category_id'])) {
-                            return $query->whereHas('info_types', function ($query) use ($data) {
-                                $query->whereIn('info_types_cat_id', $data['category_id']);
-                            });
-                        }
-                        return $query;
-                    })
-                    ->indicateUsing(function ($data) {
-                        if (isset($data['category_id']) && !empty($data['category_id'])) {
-                            $categoryNames = InfoTypeCategory::whereIn('id', $data['category_id'])->pluck('name')->toArray();
-                            return 'Catégories : ' . implode(', ', $categoryNames);
-                        }
-                        return null;
-                    })
-            ]);
+            ->filters($filters);
     }
 }
