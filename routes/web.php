@@ -66,5 +66,9 @@ Route::get('/privacy-policy', function () {
     return view('privacy');
 });
 
+Route::get('/faq', function () {
+    return view('faq');
+});
+
 
 require __DIR__ . '/auth.php';

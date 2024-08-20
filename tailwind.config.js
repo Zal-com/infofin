@@ -17,7 +17,7 @@ export default {
         './vendor/filament/**/*.blade.php',
         './vendor/awcodes/filament-badgeable-column/resources/**/*.blade.php',
         './vendor/awcodes/filament-tiptap-editor/resources/**/*.blade.php',
-
+        './vendor/lara-zeus/accordion/resources/views/**/*.blade.php',
     ],
 
     theme: {
