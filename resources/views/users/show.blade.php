@@ -6,19 +6,27 @@
          x-init="$watch('tab', value => localStorage.setItem('activeTab', value))">
         <x-filament::tabs class="flex-col max-h-min sticky top-5 row-span-1">
             <x-filament::tabs.item @click="tab = 'infos'"
-                                   :alpine-active="'tab === \'infos\''">
+                                   :alpine-active="'tab === \'infos\''" icon="heroicon-o-user">
                 Informations personnelles
             </x-filament::tabs.item>
-            <x-filament::tabs.item @click="tab = 'drafts'" :alpine-active="'tab === \'drafts\''">
-                Mes brouillons
-            </x-filament::tabs.item>
-            <x-filament::tabs.item @click="tab = 'appels'" :alpine-active="'tab === \'appels\''">
-                Mes appels
-            </x-filament::tabs.item>
-            <x-filament::tabs.item @click="tab = 'interests'" :alpine-active="'tab === \'interests\''">
+            @can('create draft')
+                <x-filament::tabs.item @click="tab = 'drafts'" :alpine-active="'tab === \'drafts\''"
+                                       icon="heroicon-o-pencil">
+                    Mes brouillons
+                </x-filament::tabs.item>
+            @endcan
+            @can('create project')
+                <x-filament::tabs.item @click="tab = 'appels'" :alpine-active="'tab === \'appels\''"
+                                       icon="heroicon-o-document-text">
+                    Mes appels
+                </x-filament::tabs.item>
+            @endcan
+            <x-filament::tabs.item @click="tab = 'interests'" :alpine-active="'tab === \'interests\''"
+                                   icon="heroicon-o-heart">
                 Mes centres d'intérêt
             </x-filament::tabs.item>
-            <x-filament::tabs.item @click="tab = 'favorites'" :alpine-active="'tab === \'favorites\''">
+            <x-filament::tabs.item @click="tab = 'favorites'" :alpine-active="'tab === \'favorites\''"
+                                   icon="heroicon-o-bookmark">
                 Mes favoris
             </x-filament::tabs.item>
         </x-filament::tabs>
@@ -32,30 +40,34 @@
                     @livewire('profile-form')
                 </div>
             </div>
-            <div x-show="tab === 'drafts'" class="m-4">
-                <x-filament::section.heading class="mb-5 flex justify-between items-center">
-                    Mes brouillons
-                    @can('create', \App\Models\Project::class)
-                        <x-filament::button icon="heroicon-o-plus" class="m-0" tag="a"
-                                            href="{{route('projects.create')}}">
-                            Créer un projet
-                        </x-filament::button>
-                    @endcan
-                </x-filament::section.heading>
-                @livewire('user-drafts')
-            </div>
-            <div x-show="tab === 'appels'" class="m-4">
-                <x-filament::section.heading class="mb-5 flex justify-between items-center">
-                    Appels Infofin
-                    @can('create', \App\Models\Project::class)
-                        <x-filament::button icon="heroicon-o-plus" class="m-0" tag="a"
-                                            href="{{route('projects.create')}}">
-                            Créer un projet
-                        </x-filament::button>
-                    @endcan
-                </x-filament::section.heading>
-                @livewire('user-projects')
-            </div>
+            @can('create draft')
+                <div x-show="tab === 'drafts'" class="m-4">
+                    <x-filament::section.heading class="mb-5 flex justify-between items-center">
+                        Mes brouillons
+                        @can('create', \App\Models\Project::class)
+                            <x-filament::button icon="heroicon-o-plus" class="m-0" tag="a"
+                                                href="{{route('projects.create')}}">
+                                Créer un projet
+                            </x-filament::button>
+                        @endcan
+                    </x-filament::section.heading>
+                    @livewire('user-drafts')
+                </div>
+            @endcan
+            @can('view own project')
+                <div x-show="tab === 'appels'" class="m-4">
+                    <x-filament::section.heading class="mb-5 flex justify-between items-center">
+                        Appels Infofin
+                        @can('create project', \App\Models\Project::class)
+                            <x-filament::button icon="heroicon-o-plus" class="m-0" tag="a"
+                                                href="{{route('projects.create')}}">
+                                Créer un projet
+                            </x-filament::button>
+                        @endcan
+                    </x-filament::section.heading>
+                    @livewire('user-projects')
+                </div>
+            @endcan
             <div x-show="tab === 'interests'" class="m-4">
                 <x-filament::section.heading>
                     Centres d'intérêt
