@@ -62,5 +62,9 @@ Route::get('/download', function (Request $request) {
     }
 })->name('download');
 
+Route::get('/privacy-policy', function () {
+    return view('privacy');
+});
+
 
 require __DIR__ . '/auth.php';
