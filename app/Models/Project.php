@@ -12,7 +12,7 @@ class Project extends Model
 {
 
     protected $table = 'projects';
-    protected $fillable = [
+    protected $fillable = ['id',
         'title', 'contact_ulb', 'contact_ext',
         'periodicity', 'admission_requirements', 'funding', 'apply_instructions',
         'poster_id', 'is_view_for_mail', 'date_lessor', 'info_lessor',
