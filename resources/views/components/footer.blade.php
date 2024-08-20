@@ -8,12 +8,12 @@
         <div class="flex flex-col gap-2">
             <div class="flex justify-center align-middle text-center">
                 <a href="{{ route('projects.archive') }}">
-                    <p class="underline hover:text-slate-300">Archives</p>
+                    <p class="hover:text-slate-300">Archives</p>
                 </a>
             </div>
             <div class="flex justify-center align-middle text-center">
                 <a href="{{ route('projects.index') }}">
-                    <p class="underline hover:text-slate-300">Projets</p>
+                    <p class="hover:text-slate-300">Projets</p>
                 </a>
             </div>
         </div>
@@ -22,12 +22,12 @@
         <div class="flex flex-col gap-2">
             <div class="flex justify-center align-middle text-center">
                 <a href="{{ url('/privacy-policy') }}">
-                    <p class="underline hover:text-slate-300">Politique de confidentialité</p>
+                    <p class="hover:text-slate-300">Politique de confidentialité</p>
                 </a>
             </div>
             <div class="flex justify-center align-middle text-center">
                 <a href="{{ url('/faq') }}">
-                    <p class="underline hover:text-slate-300">FAQ</p>
+                    <p class="hover:text-slate-300">Foire aux questions</p>
                 </a>
             </div>
         </div>
@@ -37,17 +37,17 @@
             <div class="flex flex-col gap-2">
                 <div class="flex justify-center align-middle text-center">
                     <a href="{{ route('register') }}">
-                        <p class="underline hover:text-slate-300">Créer un compte</p>
+                        <p class="hover:text-slate-300">Créer un compte</p>
                     </a>
                 </div>
                 <div class="flex justify-center align-middle text-center">
                     <a href="{{ route('login') }}">
-                        <p class="underline hover:text-slate-300">Connexion</p>
+                        <p class="hover:text-slate-300">Connexion</p>
                     </a>
                 </div>
                 <div class="flex justify-center align-middle text-center">
                     <a href="{{ route('password.request') }}">
-                        <p class="underline hover:text-slate-300">Mot de passe oublié</p>
+                        <p class="hover:text-slate-300">Mot de passe oublié</p>
                     </a>
                 </div>
             </div>
@@ -58,13 +58,13 @@
             <div class="flex flex-col gap-2">
                 <div class="flex justify-center align-middle text-center">
                     <a href="{{ route('profile.show') }}">
-                        <p class="underline hover:text-slate-300">Profil</p>
+                        <p class="hover:text-slate-300">Profil</p>
                     </a>
                 </div>
                 <div class="flex justify-center align-middle text-center">
                     <form method="post" action="{{route('logout')}}">
                         @csrf
-                        <button class="underline hover:text-slate-300" type="submit">Déconnexion</button>
+                        <button class="hover:text-slate-300" type="submit">Déconnexion</button>
                     </form>
                 </div>
             </div>
