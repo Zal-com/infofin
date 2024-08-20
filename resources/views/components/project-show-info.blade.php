@@ -25,12 +25,16 @@
             <div class="markdown">
                 <x-filament::section.description class="my-3 text-justify">
                     @php
-                        try {
-                            // Check if it's markdown or HTML content
-                            echo tiptap_converter()->asHTML($project->long_description);
-                        } catch (Exception $e) {
-                            // Fallback to plain text
-                            echo nl2br(e($project->long_description));
+                        $long_description = $project->long_description ?? '';
+
+                        if (!empty($long_description)) {
+                            try {
+                                echo tiptap_converter()->asHTML($long_description);
+                            } catch (Exception $e) {
+                                echo nl2br(e($long_description));
+                            }
+                        } else {
+                            echo '<p>No description provided.</p>';
                         }
                     @endphp
                 </x-filament::section.description>
@@ -46,14 +50,18 @@
                         class="mb-1 text-sm text-gray-500 dark:text-gray-400 text-justify list-inside">
                         <div class="text-sm text-gray-500 dark:text-gray-400 text-justify">
                             @php
-                                try{
-                                    echo tiptap_converter()->asHTML($project->funding);
-                                }
-                                catch (Exception $e){
-                                    echo \Illuminate\Support\Str::of($project->funding)->markdown();
+                                $funding = $project->funding ?? '';
+
+                                if (!empty($funding)) {
+                                    try {
+                                        echo tiptap_converter()->asHTML($funding);
+                                    } catch (Exception $e) {
+                                        echo \Illuminate\Support\Str::of($funding)->markdown();
+                                    }
+                                } else {
+                                    echo '<p>No funding information provided.</p>';
                                 }
                             @endphp
-
                         </div>
                     </x-filament::section.description>
                 </div>
@@ -68,19 +76,23 @@
                         class="mb-1 text-sm text-gray-500 dark:text-gray-400 text-justify list-inside">
                         <div class="text-sm text-gray-500 dark:text-gray-400 text-justify">
                             @php
-                                try{
-                                    echo tiptap_converter()->asHTML($project->apply_instructions);
-                                }
-                                catch (Exception $e){
-                                    echo \Illuminate\Support\Str::of($project->apply_instructions)->markdown();
+                                $apply_instructions = $project->apply_instructions ?? '';
+
+                                if (!empty($apply_instructions)) {
+                                    try {
+                                        echo tiptap_converter()->asHTML($apply_instructions);
+                                    } catch (Exception $e) {
+                                        echo \Illuminate\Support\Str::of($apply_instructions)->markdown();
+                                    }
+                                } else {
+                                    echo '<p>No application instructions provided.</p>';
                                 }
                             @endphp
                         </div>
-
                     </x-filament::section.description>
                 </div>
             @endif
-            @if(!empty($project->apply_instructions))
+            @if(!empty($project->admission_requirements))
                 <hr>
                 <div class="markdown mt-5">
                     <x-filament::section.heading class="text-2xl">
@@ -90,11 +102,16 @@
                         class="mb-1 text-sm text-gray-500 dark:text-gray-400 text-justify list-inside">
                         <div class="text-sm text-gray-500 dark:text-gray-400 text-justify">
                             @php
-                                try{
-                                    echo tiptap_converter()->asHTML($project->admission_requirements);
-                                }
-                                catch (Exception $e){
-                                    echo \Illuminate\Support\Str::of($project->admission_requirements)->markdown();
+                                $admission_requirements = $project->admission_requirements ?? '';
+
+                                if (!empty($admission_requirements)) {
+                                    try {
+                                        echo tiptap_converter()->asHTML($admission_requirements);
+                                    } catch (Exception $e) {
+                                        echo \Illuminate\Support\Str::of($admission_requirements)->markdown();
+                                    }
+                                } else {
+                                    echo '<p>No admission requirements provided.</p>';
                                 }
                             @endphp
                         </div>
@@ -113,8 +130,7 @@
                             <li>
                                 <div class="flex justify-between">
                                     <div class="flex items-center">
-                                        <x-filament::icon icon="heroicon-o-document"
-                                                          class="h-[24px] w-[24px] mr-2"/>
+                                        <x-filament::icon icon="heroicon-o-document" class="h-[24px] w-[24px] mr-2"/>
                                         <a href="{{ route('download', ['name'=> $document->filename ,'file' => $document->path]) }}"
                                            class="text-blue-600 hover:underline">
                                             {{ $document->filename }}
@@ -132,7 +148,6 @@
                                     </div>
                                 </div>
                             </li>
-
                         </x-filament::section>
                     @endforeach
                 </ul>
@@ -148,13 +163,11 @@
             <x-zeus-accordion::accordion>
                 <x-zeus-accordion::accordion.item
                     icon="heroicon-o-calendar-days"
-
                     label="{{explode('|', $project->firstDeadline)[1]}} : {{explode('|',$project->firstDeadline)[0]}}"
                 >
                     <div class="bg-white p-4">
                         @foreach($project->allDeadlinesSorted as $sortedDeadline)
-                            <p @if(\Carbon\Carbon::make($sortedDeadline['date'])->format("d/m/Y") === explode('|',$project->firstDeadline)[0]) style="font-weight: bold" @endif
-                            >
+                            <p @if(\Carbon\Carbon::make($sortedDeadline['date'])->format("d/m/Y") === explode('|',$project->firstDeadline)[0]) style="font-weight: bold" @endif>
                                 {{$sortedDeadline['proof'] != '' ? $sortedDeadline['proof'] . ' :'  : ''}}
                                 {{\Carbon\Carbon::make($sortedDeadline['date'])->format("d/m/Y")}}</p>
                         @endforeach
