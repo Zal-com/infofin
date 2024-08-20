@@ -3,7 +3,6 @@
 namespace App\Livewire;
 
 use App\Models\InfoType;
-use App\Models\ScientificDomain;
 use App\Models\ScientificDomainCategory;
 use App\Models\User;
 use Filament\Forms\Components\Checkbox;
@@ -12,16 +11,15 @@ use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\View;
 use Filament\Forms\Components\Wizard;
 use Filament\Forms\Components\Wizard\Step;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
-use http\Env\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\HtmlString;
 use Illuminate\Validation\Rules\Password;
 use Livewire\Component;
@@ -47,7 +45,7 @@ class RegisterForm extends Component implements HasForms
             $fieldsets[] = Fieldset::make($category->name)
                 ->schema([
                     CheckboxList::make('appel.' . $category->id)
-                    ->options($sortedDomains)
+                        ->options($sortedDomains)
                         ->label(false)
                         ->bulkToggleable()
                         ->columnSpan(2)
@@ -142,6 +140,13 @@ class RegisterForm extends Component implements HasForms
                         Section::make('Disciplines scientifiques')
                             ->schema($this->getFieldsetSchema())
                             ->columns(3),
+                    ]),
+                Step::make("Protection des données")
+                    ->schema([
+                        View::make('components.data-protection')
+                            ->extraAttributes([
+                                'class' => 'overflow-y-auto h-64',
+                            ]),
                     ])
             ])->submitAction(new HtmlString(Blade::render(<<<BLADE
                 <x-filament::button type="submit"><i class="fa fa-solid fa-plus mr-2"></i>Créer mon compte</x-filament::button>
@@ -152,8 +157,6 @@ class RegisterForm extends Component implements HasForms
 
     public function save()
     {
-        //dd($this->data);
-
         $newUser = new User();
         $newUser->fill($this->data);
         if ($newUser->matricule == null && !$this->data['is_internal']) {
@@ -162,7 +165,6 @@ class RegisterForm extends Component implements HasForms
 
         if ($newUser->save()) {
             $newUser->info_types()->sync($this->data['info_types']);
-            //dd($this->data);
             $appels = [];
             array_walk_recursive($this->data['appel'], function ($value) use (&$appels) {
                 $appels[] = $value;
