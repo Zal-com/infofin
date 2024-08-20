@@ -22,6 +22,7 @@
         "filament/tables": "^3.2",
         "firebase/php-jwt": "^6.10",
         "flowframe/laravel-trend": "*",
+        "hydrat/filament-table-layout-toggle": "^2.0",
         "lara-zeus/accordion": "^1.1",
         "laravel/framework": "^11.0",
         "laravel/tinker": "^2.9",

@@ -11,14 +11,22 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
+use Filament\Support\Concerns\CanPersistTab;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables\Actions\Action;
+use Filament\Tables\Columns\Column;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\Layout\Grid;
+use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
+use FilamentTiptapEditor\Extensions\Nodes\GridColumn;
+use Hydrat\TableLayoutToggle\Concerns\HasToggleableTable;
+use Hydrat\TableLayoutToggle\Contracts\LayoutPersister;
+use Hydrat\TableLayoutToggle\Persisters\LocalStoragePersister;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\HtmlString;
 use Illuminate\View\View;
@@ -29,6 +37,7 @@ class ListProjects extends Component implements HasForms, HasTable
 {
     use InteractsWithForms;
     use InteractsWithTable;
+    use HasToggleableTable;
 
     protected $listeners = ['projectDeleted', 'refreshTable'];
 
@@ -227,12 +236,156 @@ class ListProjects extends Component implements HasForms, HasTable
                             $subQuery->where('date', '>', now());
                         });
                 }))
-            ->columns($columns)
-            ->actions($actions)
+            ->columns(
+                $this->isGridLayout()
+                    ? $this->getGridTableColumns()
+                    : $this->getListTableColumns()
+            )
+            ->contentGrid(
+                fn() => $this->isListLayout()
+                    ? null
+                    : [
+                        'md' => 2,
+                        'lg' => 3,
+                        'xl' => 4,
+                    ]
+
+            )
+            ->actions($actions)->actionsAlignment('end')
             ->defaultPaginationPageOption(25)
             ->defaultSort('updated_at', 'desc')
             ->paginationPageOptions([5, 10, 25, 50, 100])
             ->recordUrl(fn($record) => route('projects.show', $record->id))
             ->filters($filters);
     }
+
+    protected function getListTableColumns(): array
+    {
+        return [
+            IconColumn::make('status')
+                ->label(false)
+                ->boolean()
+                ->trueIcon('heroicon-s-check-circle')
+                ->trueColor('success')
+                ->falseIcon('heroicon-s-x-circle')
+                ->falseColor('danger')
+                ->sortable()
+                ->alignCenter(),
+            BadgeableColumn::make('title')
+                ->label('Programme')
+                ->wrap()
+                ->lineClamp(3)
+                ->weight(FontWeight::SemiBold)
+                ->sortable()
+                ->suffixBadges(function (Project $record) {
+                    if ($record->is_big) {
+                        return [
+                            Badge::make('is_big')
+                                ->label('Projet majeur')
+                                ->color('primary')
+                        ];
+                    }
+                    return [];
+                })
+                ->separator(false)
+                ->searchable(),
+            TextColumn::make('firstDeadline')
+                ->label('Prochaine deadline')
+                ->formatStateUsing(function ($record) {
+                    $deadline = explode('|', $record->firstDeadline);
+                    return new HtmlString("
+    <div>
+        <p class='my-0'>{$deadline[0]}</p>
+        <p class='text-gray-500 text-xs'>" . ($deadline[1] ?? '') . "</p>
+    </div>
+");
+
+
+                }),
+            TextColumn::make('organisations.title')
+                ->label('Organisation')
+                ->wrap()
+                ->sortable()
+                ->searchable(),
+            TextColumn::make('short_description')
+                ->label('Description courte')
+                ->formatStateUsing(fn(string $state): HtmlString => new HtmlString($state))
+                ->wrap()
+                ->lineClamp(2)
+                ->limit(100),
+            TextColumn::make('updated_at')
+                ->label('Date de dernière modif.')
+                ->dateTime('d/m/Y')
+                ->sortable()
+                ->alignCenter()
+        ];
+    }
+
+    protected function getGridTableColumns(): array
+    {
+        return [
+            Grid::make()->schema([
+                Stack::make([
+                    BadgeableColumn::make('title')
+                        ->label('Programme')
+                        ->wrap()
+                        ->lineClamp(3)
+                        ->weight(FontWeight::SemiBold)
+                        ->sortable()
+                        ->suffixBadges(function (Project $record) {
+                            if ($record->is_big) {
+                                return [
+                                    Badge::make('is_big')
+                                        ->label('Projet majeur')
+                                        ->color('primary')
+                                ];
+                            }
+                            return [];
+                        })
+                        ->separator(false)
+                        ->searchable()
+                        ->columnSpan(4),
+                    TextColumn::make('organisations.title')
+                        ->label('Organisation')
+                        ->wrap()
+                        ->sortable()
+                        ->searchable()
+                        ->columnSpan(4),
+                ])->columnSpanFull(),
+
+                TextColumn::make('firstDeadline')
+                    ->label(false)
+                    ->formatStateUsing(fn() => 'Prochaine deadline : ')->columnSpan(2),
+                Stack::make([
+                    TextColumn::make('firstDeadline')
+                        ->label(false)
+                        ->formatStateUsing(fn($record) => explode('|', $record->firstDeadline)[0] ?? '')
+                        ->alignEnd(),
+                    TextColumn::make('firstDeadline')
+                        ->label(false)
+                        ->formatStateUsing(function ($record) {
+                            $parts = explode('|', $record->firstDeadline);
+                            if (isset($parts[1]) && !empty($parts[1])) {
+                                return new HtmlString("<p class='text-sm text-gray-400'>" . e($parts[1]) . "</p>");
+                            }
+                            return '';
+                        })->extraAttributes(['style' => 'color: grey; font-size: 10'])
+                        ->alignEnd(),
+                ])->columnSpan(2)->alignEnd(),
+                TextColumn::make('short_description')
+                    ->label('Description courte')
+                    ->formatStateUsing(fn(string $state): HtmlString => new HtmlString($state))
+                    ->wrap()
+                    ->lineClamp(5)
+                    ->columnSpan(4)->extraAttributes(['class' => 'text-justify']),
+                TextColumn::make('updated_at')
+                    ->label('Date de dernière modif.')
+                    ->dateTime('d/m/Y')
+                    ->sortable()
+                    ->alignCenter()
+                    ->hidden()
+            ])->columns(4)
+        ];
+    }
+
 }
