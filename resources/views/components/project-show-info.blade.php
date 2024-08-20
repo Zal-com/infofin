@@ -1,6 +1,7 @@
 @props(['project'])
-<div class="grid grid-cols-5 gap-4 mb-5"
-     x-data="{ tab: localStorage.getItem('activeTab') || 'description' }"
+<div class="grid grid-cols-5 gap-4 mb-5" x-data="{
+    tab: ['description', 'infos', 'documents'].includes(localStorage.getItem('activeTab')) ? localStorage.getItem('activeTab') : 'description'
+}"
      x-init="$watch('tab', value => localStorage.setItem('activeTab', value))">
     <x-filament::section class="col-span-4 row-span-2">
         <x-filament::tabs>
