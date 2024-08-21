@@ -37,6 +37,7 @@ class CreateProjectsTable extends Migration
             $table->string('short_description', 500);
             $table->boolean('is_draft')->default(false);
             $table->string('origin_url')->nullable();
+            $table->boolean('is_in_next_email')->default(true);
             $table->timestamps();
 
             //Relations

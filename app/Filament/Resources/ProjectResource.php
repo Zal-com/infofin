@@ -25,6 +25,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class ProjectResource extends Resource
 {
@@ -167,6 +168,7 @@ class ProjectResource extends Resource
                     ->directory('media')
                     ->acceptedFileTypes(['pdf'])
                     ->maxFiles(10),
+                TextInput::make('poster_id')->label(false)->hidden()->default(Auth::id()),
             ]);
     }
 

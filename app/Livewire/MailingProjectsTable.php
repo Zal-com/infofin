@@ -7,7 +7,9 @@ use Awcodes\FilamentBadgeableColumn\Components\Badge;
 use Awcodes\FilamentBadgeableColumn\Components\BadgeableColumn;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Notifications\Notification;
 use Filament\Support\Enums\FontWeight;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -45,9 +47,41 @@ class MailingProjectsTable extends Component implements HasForms, HasTable
                 ->searchable(),
         ];
 
+        $actions = [
+            Action::make('remove')
+                ->color('danger')
+                ->icon('heroicon-o-trash')
+                ->label('Supprimer')
+                ->action(function ($record) {
+                    try {
+                        $record->update(['is_in_next_email' => 0]);
+                        Notification::make()
+                            ->title('Projet retiré de la liste avec succès.')
+                            ->color('success')
+                            ->seconds(5)
+                            ->icon('heroicon-o-check-circle')
+                            ->iconColor('success')
+                            ->send();
+                    } catch (\Exception $e) {
+                        Notification::make()
+                            ->title('Impossible de retirer le projet de la liste. Veuillez réessayer')
+                            ->color('danger')
+                            ->seconds(5)
+                            ->icon('heroicon-o-x-circle')
+                            ->iconColor('danger')
+                            ->send();
+                    }
+
+                })
+            ,
+        ];
+
 
         return $table->query(
-            Project::where('status', '!=', 2)->where('status', '!=', -1)
+            Project::where('status', '!=', 2)
+                ->where('status', '!=', -1)
+                //->where('created_at', '>=', now()->subWeek()->startOfWeek())
+                ->where('is_in_next_email', 1)
                 ->where(function ($query) {
                     $query->where('updated_at', '>', now()->subYears(2))
                         ->orWhereJsonContains('deadlines->date', function ($subQuery) {
@@ -55,6 +89,7 @@ class MailingProjectsTable extends Component implements HasForms, HasTable
                         });
                 }))
             ->columns($columns)
+            ->actions($actions)
             ->defaultPaginationPageOption(25)
             ->defaultSort('updated_at', 'desc')
             ->paginationPageOptions([5, 10, 25, 50, 100])

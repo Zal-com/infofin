@@ -237,17 +237,18 @@ class ListProjects extends Component implements HasForms, HasTable
                         });
                 }))
             ->columns(
-                $this->isGridLayout()
+                $this->isMobileLayout()
                     ? $this->getGridTableColumns()
-                    : $this->getListTableColumns()
+                    : ($this->isGridLayout() ? $this->getGridTableColumns() : $this->getListTableColumns())
+
             )
             ->contentGrid(
                 fn() => $this->isListLayout()
                     ? null
                     : [
+                        'sm' => 1,
                         'md' => 2,
                         'lg' => 3,
-                        'xl' => 4,
                     ]
 
             )
@@ -331,6 +332,7 @@ class ListProjects extends Component implements HasForms, HasTable
                         ->wrap()
                         ->lineClamp(3)
                         ->weight(FontWeight::SemiBold)
+                        ->extraAttributes(['class' => 'text'], true)
                         ->sortable()
                         ->suffixBadges(function (Project $record) {
                             if ($record->is_big) {
@@ -348,6 +350,7 @@ class ListProjects extends Component implements HasForms, HasTable
                     TextColumn::make('organisations.title')
                         ->label('Organisation')
                         ->wrap()
+                        ->extraAttributes(['class' => 'text-xs text-gray-500'])
                         ->sortable()
                         ->searchable()
                         ->columnSpan(4),
@@ -386,6 +389,11 @@ class ListProjects extends Component implements HasForms, HasTable
                     ->hidden()
             ])->columns(4)
         ];
+    }
+
+    private function isMobileLayout(): bool
+    {
+        return request()->header('User-Agent') && preg_match('/Mobile|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i', request()->header('User-Agent'));
     }
 
 }
