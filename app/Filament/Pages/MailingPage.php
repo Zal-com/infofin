@@ -7,6 +7,8 @@ use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Forms\Components\TimePicker;
+use App\Models\NewsletterSchedule;
 
 class MailingPage extends Page
 {
@@ -73,6 +75,46 @@ class MailingPage extends Page
                         ->required(),
                 ])
                 ->modalHeading('Select Projects')
+                ->modalWidth('lg'),
+            Action::make('set_schedule')
+                ->label('Définir le planning d\'envoi')
+                ->icon('heroicon-s-calendar')
+                ->action(function (array $data) {
+                    try {
+                        $schedule = NewsletterSchedule::first() ?: new NewsletterSchedule();
+                        $schedule->day_of_week = $data['day_of_week'];
+                        $schedule->send_time = $data['send_time'];
+                        $schedule->save();
+
+                        Notification::make()
+                            ->title('Planning mis à jour avec succès.')
+                            ->color('success')
+                            ->send();
+                    } catch (\Exception $e) {
+                        Notification::make()
+                            ->title('Impossible de mettre à jour le planning. Veuillez réessayer.')
+                            ->color('danger')
+                            ->send();
+                    }
+                })
+                ->form([
+                    Select::make('day_of_week')
+                        ->label('Jour de la semaine')
+                        ->options([
+                            '0' => 'Dimanche',
+                            '1' => 'Lundi',
+                            '2' => 'Mardi',
+                            '3' => 'Mercredi',
+                            '4' => 'Jeudi',
+                            '5' => 'Vendredi',
+                            '6' => 'Samedi',
+                        ])
+                        ->required(),
+                    TimePicker::make('send_time')
+                        ->label('Heure d\'envoi')
+                        ->required(),
+                ])
+                ->modalHeading('Définir le planning d\'envoi')
                 ->modalWidth('lg')
         ];
     }
