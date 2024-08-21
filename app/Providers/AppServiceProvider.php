@@ -49,6 +49,7 @@ class AppServiceProvider extends ServiceProvider
         ]);
 
         $schedule->command('newsletter:send')->weeklyOn(1, '15:23'); // 1 = Monday
+        //$schedule->command('schedule:newsletter')->everyMinute();
         Schema::defaultStringLength(191);
 
         Gate::before(function ($user, $ability) {
