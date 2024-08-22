@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\NewsletterSchedule;
 use App\Models\Project;
 use Awcodes\FilamentBadgeableColumn\Components\Badge;
 use Awcodes\FilamentBadgeableColumn\Components\BadgeableColumn;
@@ -15,6 +16,7 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Livewire\Component;
+use Carbon\Carbon;
 
 class MailingProjectsTable extends Component implements HasForms, HasTable
 {
@@ -23,6 +25,27 @@ class MailingProjectsTable extends Component implements HasForms, HasTable
 
     public function table(Table $table): Table
     {
+        $newsletter = NewsletterSchedule::get()->first();
+
+        if ($newsletter && is_numeric($newsletter->day_of_week) && $newsletter->day_of_week >= 0 && $newsletter->day_of_week <= 6) {
+            $currentDayOfWeek = Carbon::now()->dayOfWeek;
+
+            $daysToAdd = ($newsletter->day_of_week - $currentDayOfWeek + 7) % 7;
+            if ($daysToAdd === 0) {
+                $daysToAdd = 7;
+            }
+
+            $nextScheduledDate = Carbon::now()
+                ->addDays($daysToAdd)
+                ->setTimeFromTimeString($newsletter->send_time)
+                ->locale('fr')
+                ->isoFormat('dddd D MMMM YYYY HH:mm');
+
+            $headers = "Prochain envoi prévu " . $nextScheduledDate;
+        } else {
+            $headers = "Prochain envoi prévu : Informations indisponibles";
+        }
+
         $columns = [
             TextColumn::make("id")
                 ->searchable()
@@ -76,11 +99,9 @@ class MailingProjectsTable extends Component implements HasForms, HasTable
             ,
         ];
 
-
         return $table->query(
             Project::where('status', '!=', 2)
                 ->where('status', '!=', -1)
-                //->where('created_at', '>=', now()->subWeek()->startOfWeek())
                 ->where('is_in_next_email', 1)
                 ->where(function ($query) {
                     $query->where('updated_at', '>', now()->subYears(2))
@@ -88,6 +109,7 @@ class MailingProjectsTable extends Component implements HasForms, HasTable
                             $subQuery->where('date', '>', now());
                         });
                 }))
+            ->heading($headers)
             ->columns($columns)
             ->actions($actions)
             ->defaultPaginationPageOption(25)
