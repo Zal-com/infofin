@@ -12,7 +12,6 @@ use App\Models\NewsletterSchedule;
 
 class MailingPage extends Page
 {
-
     protected static ?string $navigationLabel = 'Mailing';
     protected static ?string $navigationGroup = 'Communication';
     protected static ?string $navigationIcon = 'heroicon-o-envelope';
@@ -76,6 +75,7 @@ class MailingPage extends Page
                 ])
                 ->modalHeading('Select Projects')
                 ->modalWidth('lg'),
+
             Action::make('set_schedule')
                 ->label('Définir le planning d\'envoi')
                 ->icon('heroicon-s-calendar')
@@ -97,23 +97,29 @@ class MailingPage extends Page
                             ->send();
                     }
                 })
-                ->form([
-                    Select::make('day_of_week')
-                        ->label('Jour de la semaine')
-                        ->options([
-                            '0' => 'Dimanche',
-                            '1' => 'Lundi',
-                            '2' => 'Mardi',
-                            '3' => 'Mercredi',
-                            '4' => 'Jeudi',
-                            '5' => 'Vendredi',
-                            '6' => 'Samedi',
-                        ])
-                        ->required(),
-                    TimePicker::make('send_time')
-                        ->label('Heure d\'envoi')
-                        ->required(),
-                ])
+                ->form(function () {
+                    $schedule = NewsletterSchedule::first();
+
+                    return [
+                        Select::make('day_of_week')
+                            ->label('Jour de la semaine')
+                            ->options([
+                                '0' => 'Dimanche',
+                                '1' => 'Lundi',
+                                '2' => 'Mardi',
+                                '3' => 'Mercredi',
+                                '4' => 'Jeudi',
+                                '5' => 'Vendredi',
+                                '6' => 'Samedi',
+                            ])
+                            ->default($schedule?->day_of_week)
+                            ->required(),
+                        TimePicker::make('send_time')
+                            ->label('Heure d\'envoi')
+                            ->default($schedule?->send_time)
+                            ->required(),
+                    ];
+                })
                 ->modalHeading('Définir le planning d\'envoi')
                 ->modalWidth('lg')
         ];
