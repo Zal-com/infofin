@@ -27,7 +27,7 @@ class MailingProjectsTable extends Component implements HasForms, HasTable
 
     public function mount()
     {
-        $this->schedule = NewsletterSchedule::all()[0];
+        $this->schedule = NewsletterSchedule::get()->first();
         $this->schedule->day_of_week = Carbon::create()->startOfWeek()->addDays($this->schedule->day_of_week - 1)->getTranslatedDayName();
         $this->schedule->send_time = Carbon::createFromFormat('H:i:s', $this->schedule->send_time)->format('H:i');
     }

@@ -41,21 +41,17 @@ class SendWeeklyNewsletter implements ShouldQueue
 
             //Tous les projets de moins d'une semaine qui ont les memes info_types que les centres d'interet de l'utilisateur + vérifier le domaine scientifique
 
-            $projects = Project::where('created_at', '>=', now()->subWeek())->get();
-
-            // Filtrer par domaines scientifiques de l'utilisateur
-            $userScientificDomains = $subscriber->scientific_domains->pluck('id')->toArray();
-            $projects = $projects->filter(function ($project) use ($userScientificDomains) {
-                $projectScientificDomains = $project->scientific_domains->pluck('id')->toArray();
-                return !empty(array_intersect($projectScientificDomains, $userScientificDomains));
-            });
-
-            // Filtrer par info_types de l'utilisateur
-            $userInfoTypes = $subscriber->info_types->pluck('id')->toArray();
-            $projects = $projects->filter(function ($project) use ($userInfoTypes) {
-                $projectInfoTypes = $project->info_types->pluck('id')->toArray();
-                return !empty(array_intersect($projectInfoTypes, $userInfoTypes));
-            });
+            $projects = Project::where('created_at', '>=', now()->subWeek())
+                ->where('is_in_next_email', 1)
+                ->where(function ($query) use ($subscriber) {
+                    $query->whereHas('scientific_domains', function ($query) use ($subscriber) {
+                        $query->whereIn('scientific_domain_id', $subscriber->scientific_domains->pluck('id'));
+                    })
+                    ->orWhereHas('info_types', function ($query) use ($subscriber) {
+                        $query->whereIn('info_type_id', $subscriber->info_types->pluck('id'));
+                    });
+                })
+                ->get();
 
             if (!$projects->isEmpty()) {
                 $data['projects'] = $projects;
