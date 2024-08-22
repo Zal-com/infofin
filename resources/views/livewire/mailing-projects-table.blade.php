@@ -11,12 +11,12 @@
         <h3 class="text-lg font-semibold mb-2">Prochain mail</h3>
         <div class="flex gap-2">
             <x-filament::icon icon="heroicon-o-calendar" style="max-height: 24px; max-width: 24px;"/>
-            {{$this->schedule['day_of_week']}}
+            {{$this->schedule->day_of_week}}
 
         </div>
         <div class="flex gap-2">
             <x-filament::icon icon="heroicon-o-clock" style="max-height: 24px; max-width: 24px;"/>
-            {{$this->schedule['send_time']}}
+            {{$this->schedule->send_time}}
         </div>
 
     </div>

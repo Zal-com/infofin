@@ -23,13 +23,13 @@ class MailingProjectsTable extends Component implements HasForms, HasTable
     use InteractsWithForms;
     use InteractsWithTable;
 
-    public $schedule;
+    public NewsletterSchedule $schedule;
 
     public function mount()
     {
-        $this->schedule = NewsletterSchedule::all()->toArray()[0];
-        $this->schedule['day_of_week'] = Carbon::create()->startOfWeek()->addDays($this->schedule['day_of_week'] - 1)->getTranslatedDayName();
-        $this->schedule['send_time'] = Carbon::createFromFormat('H:i:s', $this->schedule['send_time'])->format('H:i');
+        $this->schedule = NewsletterSchedule::all()[0];
+        $this->schedule->day_of_week = Carbon::create()->startOfWeek()->addDays($this->schedule->day_of_week - 1)->getTranslatedDayName();
+        $this->schedule->send_time = Carbon::createFromFormat('H:i:s', $this->schedule->send_time)->format('H:i');
     }
 
     public function table(Table $table): Table

@@ -115,6 +115,7 @@ class MailingPage extends Page
                             ->default($schedule?->day_of_week)
                             ->required(),
                         TimePicker::make('send_time')
+                            ->seconds(false)
                             ->label('Heure d\'envoi')
                             ->default($schedule?->send_time)
                             ->required(),
