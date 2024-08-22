@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Console\Scheduling\Schedule;
 use App\Models\NewsletterSchedule;
+use Log;
 
 class ScheduleNewsletter extends Command
 {
