@@ -335,26 +335,31 @@ class ListProjects extends Component implements HasForms, HasTable
                         ->extraAttributes(['class' => 'text'], true)
                         ->sortable()
                         ->suffixBadges(function (Project $record) {
-                            if ($record->is_big) {
-                                return [
-                                    Badge::make('is_big')
-                                        ->label('Projet majeur')
-                                        ->color('primary')
-                                ];
-                            }
-                            return [];
+                            return $record->is_big
+                                ? [Badge::make('is_big')->label('Projet majeur')->color('primary')]
+                                : [];
                         })
                         ->separator(false)
                         ->searchable()
-                        ->columnSpan(4),
+                        ->columnSpanFull(),
                     TextColumn::make('organisations.title')
                         ->label('Organisation')
                         ->wrap()
                         ->extraAttributes(['class' => 'text-xs text-gray-500'])
                         ->sortable()
                         ->searchable()
-                        ->columnSpan(4),
-                ])->columnSpanFull(),
+                        ->columnSpanFull(),
+                ])->columnSpan(5),
+                IconColumn::make('status')
+                    ->label(false)
+                    ->boolean()
+                    ->trueIcon('heroicon-s-check-circle')
+                    ->trueColor('success')
+                    ->falseIcon('heroicon-s-x-circle')
+                    ->falseColor('danger')
+                    ->sortable()
+                    ->alignCenter()
+                    ->columnSpan(1),
 
                 TextColumn::make('firstDeadline')
                     ->label(false)
@@ -368,7 +373,7 @@ class ListProjects extends Component implements HasForms, HasTable
                         ->label(false)
                         ->formatStateUsing(function ($record) {
                             $parts = explode('|', $record->firstDeadline);
-                            if (isset($parts[1]) && !empty($parts[1])) {
+                            if (!empty($parts[1])) {
                                 return new HtmlString("<p class='text-sm text-gray-400'>" . e($parts[1]) . "</p>");
                             }
                             return '';
@@ -387,7 +392,7 @@ class ListProjects extends Component implements HasForms, HasTable
                     ->sortable()
                     ->alignCenter()
                     ->hidden()
-            ])->columns(4)
+            ])->columns(6)
         ];
     }
 
