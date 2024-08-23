@@ -32,8 +32,8 @@
 
             @auth
                 <!-- Avatar as dropdown trigger -->
-                <div @click.away="open = false" class="relative" x-data="{ open: false }">
-                    <button @click="open = !open" class="focus:outline-none">
+                <div class="relative">
+                    <button id="avatarButton" class="focus:outline-none">
                         <img
                             src="https://ui-avatars.com/api/?name={{ Auth::user()->getAvatarInitials() }}&bold=true&color=FFFFFF&background=9845f9"
                             alt="{{ Auth::user()->name }}"
@@ -42,8 +42,8 @@
                     </button>
 
                     <!-- Dropdown menu -->
-                    <div x-show="open"
-                         class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                    <div id="dropdownMenu"
+                         class="hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
                         <a href="{{ route('profile.show') }}"
                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                             Mon Profil
@@ -61,3 +61,20 @@
         </div>
     </nav>
 </header>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const avatarButton = document.getElementById('avatarButton');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+
+        avatarButton.addEventListener('click', function () {
+            dropdownMenu.classList.toggle('hidden');
+        });
+
+        document.addEventListener('click', function (event) {
+            if (!avatarButton.contains(event.target) && !dropdownMenu.contains(event.target)) {
+                dropdownMenu.classList.add('hidden');
+            }
+        });
+    });
+</script>
