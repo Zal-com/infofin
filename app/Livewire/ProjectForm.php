@@ -429,7 +429,6 @@ final class ProjectForm extends Component implements HasForms
             }
         } else {
             $data = $validator->validated();
-            dd($data);
             $converter = new HtmlConverter();
             $markdown = $converter->convert($this->data["short_description"]);
 
