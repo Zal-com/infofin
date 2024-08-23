@@ -25,7 +25,7 @@ class CreateProjectsTable extends Migration
             $table->longText('apply_instructions');
             $table->foreignId('poster_id');
             $table->boolean('is_view_for_mail');
-            $table->dateTime('date_lessor');
+            //$table->dateTime('date_lessor');
             $table->boolean('info_lessor');
             $table->integer('visit_count')->default(0);
             $table->foreignId('last_update_user_id');

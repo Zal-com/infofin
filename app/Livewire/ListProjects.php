@@ -112,7 +112,7 @@ class ListProjects extends Component implements HasForms, HasTable
                         $record->update(['status' => -1]);
                         Notification::make()
                             ->title("Projet supprimé avec succès")
-                            ->icon('heroicon-o-x-circle')
+                            ->icon('heroicon-o-check-circle')
                             ->iconColor('success')
                             ->color('success')
                             ->seconds(5)
