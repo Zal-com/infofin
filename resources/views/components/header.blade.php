@@ -1,5 +1,5 @@
 <header class="mb-10 shadow-sm p-2 w-full">
-    <nav class="flex flex-col md:flex-row justify-between items-center">
+    <nav class="flex flex-col md:flex-row justify-between items-center container m-auto">
         <!-- Section gauche -->
         <a href="{{ route('home') }}" class="flex flex-row gap-4 items-center">
             <img src="{{ asset('img/ulb_logo.png') }}" class="h-14 border-r-2 pr-3 border-blue-900">
