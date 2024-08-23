@@ -177,8 +177,10 @@ final class ProjectForm extends Component implements HasForms
                         ->options(['Sans', 'Annuel', 'Biennal', 'Triennal', 'Quadriennal', 'Quinquennal'])
                         ->selectablePlaceholder(false)
                         ->default(0),
+                    /*
                     DatePicker::make('date_lessor')
                         ->label('Date Bailleur'),
+                    */
                 ]),
                 Tabs\Tab::make('Description')->schema([
                     RichEditor::make('short_description')
@@ -380,7 +382,7 @@ final class ProjectForm extends Component implements HasForms
             'geo_zones' => 'array',
             'deadlines' => 'array',
             'periodicity' => 'nullable|integer',
-            'date_lessor' => 'nullable|date',
+            // 'date_lessor' => 'nullable|date',
             'short_description' => 'nullable|string|max:500',
             'long_description' => 'array',
             'funding' => 'array',
@@ -408,7 +410,7 @@ final class ProjectForm extends Component implements HasForms
             'geo_zones' => 'Zones géographiques',
             'deadlines' => 'Deadlines',
             'periodicity' => 'Périodicité',
-            'date_lessor' => 'Date Bailleur',
+            // 'date_lessor' => 'Date Bailleur',
             'short_description' => 'Description courte',
             'long_description' => 'Description longue',
             'funding' => 'Budget et dépenses',
@@ -453,19 +455,19 @@ final class ProjectForm extends Component implements HasForms
                     $phone = $contact['tel'] ?? '';
                     $address = $contact['address'] ?? '';
 
-                if ($name !== '' || $email !== '' || $phone !== '' || $address !== '') {
-                    $contactsUlB[] = [
-                        'name' => $name,
-                        'email' => $email,
-                        'phone' => $phone,
-                        'address' => $address,
-                    ];
+                    if ($name !== '' || $email !== '' || $phone !== '' || $address !== '') {
+                        $contactsUlB[] = [
+                            'name' => $name,
+                            'email' => $email,
+                            'phone' => $phone,
+                            'address' => $address,
+                        ];
+                    }
                 }
+                $data['contact_ulb'] = !empty($contactsUlB) ? $contactsUlB : [];
+            } else {
+                $data['contact_ulb'] = [];
             }
-            $data['contact_ulb'] = !empty($contactsUlB) ? $contactsUlB : [];
-        } else {
-            $data['contact_ulb'] = [];
-        }
 
 
             $contactsExt = [];
@@ -476,19 +478,19 @@ final class ProjectForm extends Component implements HasForms
                     $phone = $contact['tel'] ?? '';
                     $address = $contact['address'] ?? '';
 
-                if ($name !== '' || $email !== '' || $phone !== '' || $address !== '') {
-                    $contactsExt[] = [
-                        'name' => $name,
-                        'email' => $email,
-                        'phone' => $phone,
-                        'address' => $address,
-                    ];
+                    if ($name !== '' || $email !== '' || $phone !== '' || $address !== '') {
+                        $contactsExt[] = [
+                            'name' => $name,
+                            'email' => $email,
+                            'phone' => $phone,
+                            'address' => $address,
+                        ];
+                    }
                 }
+                $data['contact_ext'] = !empty($contactsExt) ? $contactsExt : [];
+            } else {
+                $data['contact_ext'] = [];
             }
-            $data['contact_ext'] = !empty($contactsExt) ? $contactsExt : [];
-        } else {
-            $data['contact_ext'] = [];
-        }
 
             if ($project = Project::create($data)) {
                 if (!empty($data['organisation'])) {

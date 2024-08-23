@@ -14,7 +14,8 @@ class Project extends Model
     protected $fillable = ['id',
         'title', 'contact_ulb', 'contact_ext',
         'periodicity', 'admission_requirements', 'funding', 'apply_instructions',
-        'poster_id', 'is_view_for_mail', 'date_lessor', 'info_lessor',
+        'poster_id', 'is_view_for_mail', /*'date_lessor',*/
+        'info_lessor',
         'visit_count', 'last_update_user_id', 'country_id', 'continent_id',
         'status', 'is_big', 'long_description', 'short_description', 'is_draft',
         'created_at', 'updated_at', 'origin_url', 'deadlines', 'is_in_next_email'
