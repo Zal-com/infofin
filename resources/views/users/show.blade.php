@@ -2,7 +2,8 @@
 @props(['user'])
 @section('content')
 
-    <div class="grid grid-cols-6 gap-2 mb-10" x-data="{ tab: localStorage.getItem('activeTab') || 'infos' }"
+    <div class="grid grid-cols-6 gap-2 mb-10" x-data="{
+    tab: ['infos', 'drafts', 'appels', 'interests', 'favorites'].includes(localStorage.getItem('activeTab')) ? localStorage.getItem('activeTab') :  'infos' }"
          x-init="$watch('tab', value => localStorage.setItem('activeTab', value))">
         <x-filament::tabs class="flex-col max-h-min sticky top-5 row-span-1">
             <x-filament::tabs.item @click="tab = 'infos'"

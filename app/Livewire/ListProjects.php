@@ -209,24 +209,25 @@ class ListProjects extends Component implements HasForms, HasTable
                         $record->refresh();
                     });
 
-            $filters[] = Filter::make('pour_moi')
-                ->label('Pour moi')
-                ->query(function ($query) {
-                    $user = Auth::user();
-                    if ($user) {
-                        $userInfoTypes = $user->info_types->pluck('id')->toArray();
-                        $userScientificDomains = $user->scientific_domains->pluck('id')->toArray();
+            array_unshift($filters,
+                Filter::make('pour_moi')
+                    ->label('Pour moi')
+                    ->query(function ($query) {
+                        $user = Auth::user();
+                        if ($user) {
+                            $userInfoTypes = $user->info_types->pluck('id')->toArray();
+                            $userScientificDomains = $user->scientific_domains->pluck('id')->toArray();
 
-                        return $query->where(function ($query) use ($userInfoTypes, $userScientificDomains) {
-                            $query->whereHas('info_types', function ($query) use ($userInfoTypes) {
-                                $query->whereIn('info_type_id', $userInfoTypes);
-                            })->orWhereHas('scientific_domains', function ($query) use ($userScientificDomains) {
-                                $query->whereIn('scientific_domain_id', $userScientificDomains);
+                            return $query->where(function ($query) use ($userInfoTypes, $userScientificDomains) {
+                                $query->whereHas('info_types', function ($query) use ($userInfoTypes) {
+                                    $query->whereIn('info_type_id', $userInfoTypes);
+                                })->orWhereHas('scientific_domains', function ($query) use ($userScientificDomains) {
+                                    $query->whereIn('scientific_domain_id', $userScientificDomains);
+                                });
                             });
-                        });
-                    }
-                    return $query;
-                });
+                        }
+                        return $query;
+                    }));
         }
 
 
