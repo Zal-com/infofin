@@ -95,11 +95,11 @@ Route::get('/download', function (Request $request) {
 
 Route::get('/privacy-policy', function () {
     return view('privacy');
-});
+})->name('privacy-policy');
 
 Route::get('/faq', function () {
     return view('faq');
-});
+})->name('faq');
 
 
 require __DIR__ . '/auth.php';
