@@ -74,7 +74,11 @@ final class ProjectForm extends Component implements HasForms
 
         foreach (['organisation', 'scientific_domains', 'info_types', 'geo_zones', 'documents', 'document_filenames'] as $attribute) {
             if (isset($data[$attribute])) {
-                $this->project->{$attribute} = $data[$attribute];
+                if ($attribute == 'organisation') {
+                    $this->project->{$attribute} = $data[$attribute][0];
+                } else {
+                    $this->project->{$attribute} = $data[$attribute];
+                }
             }
         }
     }
@@ -403,9 +407,9 @@ final class ProjectForm extends Component implements HasForms
             'date_lessor' => 'Date Bailleur',
             'short_description' => 'Description courte',
             'long_description' => 'Description longue',
-            'funding' => 'Financement',
-            'admission_requirements' => 'Requis d\'admission',
-            'apply_instructions' => 'Instructions d\'application',
+            'funding' => 'Budget et dépenses',
+            'admission_requirements' => 'Critères d\'admission',
+            'apply_instructions' => 'Pour postuler',
             'contact_ulb.*.first_name' => 'Prénom',
             'contact_ulb.*.last_name' => 'Nom',
             'contact_ulb.*.email' => 'Email',
@@ -420,102 +424,103 @@ final class ProjectForm extends Component implements HasForms
         ]);
 
         if ($validator->fails()) {
-            Notification::make()->title($validator->errors()->all())->icon('heroicon-o-check-circle')->seconds(5)->color('success')->send();
-            return redirect()->back();
+            foreach ($validator->errors()->all() as $error) {
+                Notification::make()->title($error)->icon('heroicon-o-x-circle')->seconds(5)->color('danger')->send();
+            }
         } else {
             $data = $validator->validated();
-        }
+            dd($data);
+            $converter = new HtmlConverter();
+            $markdown = $converter->convert($this->data["short_description"]);
 
+            $data['short_description'] = $markdown;
 
-        $converter = new HtmlConverter();
-        $markdown = $converter->convert($this->data["short_description"]);
+            $data['poster_id'] = $userId;
+            $data['last_update_user_id'] = $userId;
 
-        $data['short_description'] = $markdown;
-
-        $data['poster_id'] = $userId;
-        $data['last_update_user_id'] = $userId;
-
-        if ($data['periodicity'] === null) {
-            $data['periodicity'] = 0;
-        }
-
-        $contactsUlB = [];
-        if (isset($data['contact_ulb'])) {
-            foreach ($data['contact_ulb'] as $contact) {
-                $name = trim(($contact['first_name'] ?? '') . ' ' . ($contact['last_name'] ?? ''));
-                $email = $contact['email'] ?? '';
-                $phone = $contact['tel'] ?? '';
-                $address = $contact['address'] ?? '';
-
-                if ($name !== '' || $email !== '' || $phone !== '' || $address !== '') {
-                    $contactsUlB[] = [
-                        'name' => $name,
-                        'email' => $email,
-                        'phone' => $phone,
-                        'address' => $address,
-                    ];
-                }
-            }
-            $data['contact_ulb'] = !empty($contactsUlB) ? json_encode($contactsUlB) : [];
-        } else {
-            $data['contact_ulb'] = [];
-        }
-
-
-        $contactsExt = [];
-        if (isset($data["contact_ext"])) {
-            foreach ($data['contact_ext'] as $contact) {
-                $name = trim(($contact['first_name'] ?? '') . ' ' . ($contact['last_name'] ?? ''));
-                $email = $contact['email'] ?? '';
-                $phone = $contact['tel'] ?? '';
-                $address = $contact['address'] ?? '';
-
-                if ($name !== '' || $email !== '' || $phone !== '' || $address !== '') {
-                    $contactsExt[] = [
-                        'name' => $name,
-                        'email' => $email,
-                        'phone' => $phone,
-                        'address' => $address,
-                    ];
-                }
-            }
-            $data['contact_ext'] = !empty($contactsExt) ? json_encode($contactsExt) : [];
-        } else {
-            $data['contact_ext'] = [];
-        }
-
-        if ($project = Project::create($data)) {
-            if (!empty($data['organisation'])) {
-                $project->organisations()->sync($data['organisation']);
+            if ($data['periodicity'] === null) {
+                $data['periodicity'] = 0;
             }
 
-            if (!empty($data['info_types'])) {
-                $project->info_types()->sync($data['info_types']);
-            }
+            $contactsUlB = [];
+            if (isset($data['contact_ulb'])) {
+                foreach ($data['contact_ulb'] as $contact) {
+                    $name = trim(($contact['first_name'] ?? '') . ' ' . ($contact['last_name'] ?? ''));
+                    $email = $contact['email'] ?? '';
+                    $phone = $contact['tel'] ?? '';
+                    $address = $contact['address'] ?? '';
 
-            if (!empty($data['scientific_domains'])) {
-                $project->scientific_domains()->sync($data['scientific_domains']);
-            }
-
-            if (isset($data['documents']) && count($data['documents']) > 0) {
-                $this->fileService->moveFiles($data['documents'], $project);
-            }
-
-            if (!empty($data['geo_zones'])) {
-                foreach ($data['geo_zones'] as $zone) {
-                    if (strpos($zone, 'continent_') === 0) {
-                        $continent_id = str_replace('continent_', '', $zone);
-                        $project->continent()->associate($continent_id);
-                    } elseif (strpos($zone, 'pays_') === 0) {
-                        $country_id = str_replace('pays_', '', $zone);
-                        $project->country()->associate($country_id);
+                    if ($name !== '' || $email !== '' || $phone !== '' || $address !== '') {
+                        $contactsUlB[] = [
+                            'name' => $name,
+                            'email' => $email,
+                            'phone' => $phone,
+                            'address' => $address,
+                        ];
                     }
                 }
-
-                $project->save();
+                $data['contact_ulb'] = !empty($contactsUlB) ? json_encode($contactsUlB) : [];
+            } else {
+                $data['contact_ulb'] = [];
             }
-            Notification::make()->title('Votre appel a bien été ajouté.')->icon('heroicon-o-check-circle')->seconds(5)->color('success')->send();
-            return redirect()->route('projects.index');
+
+
+            $contactsExt = [];
+            if (isset($data["contact_ext"])) {
+                foreach ($data['contact_ext'] as $contact) {
+                    $name = trim(($contact['first_name'] ?? '') . ' ' . ($contact['last_name'] ?? ''));
+                    $email = $contact['email'] ?? '';
+                    $phone = $contact['tel'] ?? '';
+                    $address = $contact['address'] ?? '';
+
+                    if ($name !== '' || $email !== '' || $phone !== '' || $address !== '') {
+                        $contactsExt[] = [
+                            'name' => $name,
+                            'email' => $email,
+                            'phone' => $phone,
+                            'address' => $address,
+                        ];
+                    }
+                }
+                $data['contact_ext'] = !empty($contactsExt) ? json_encode($contactsExt) : [];
+            } else {
+                $data['contact_ext'] = [];
+            }
+
+            if ($project = Project::create($data)) {
+                if (!empty($data['organisation'])) {
+                    $project->organisations()->sync($data['organisation']);
+                }
+
+                if (!empty($data['info_types'])) {
+                    $project->info_types()->sync($data['info_types']);
+                }
+
+                if (!empty($data['scientific_domains'])) {
+                    $project->scientific_domains()->sync($data['scientific_domains']);
+                }
+
+                if (isset($data['documents']) && count($data['documents']) > 0) {
+                    $this->fileService->moveFiles($data['documents'], $project);
+                }
+
+                if (!empty($data['geo_zones'])) {
+                    foreach ($data['geo_zones'] as $zone) {
+                        if (strpos($zone, 'continent_') === 0) {
+                            $continent_id = str_replace('continent_', '', $zone);
+                            $project->continent()->associate($continent_id);
+                        } elseif (strpos($zone, 'pays_') === 0) {
+                            $country_id = str_replace('pays_', '', $zone);
+                            $project->country()->associate($country_id);
+                        }
+                    }
+
+                    $project->save();
+                }
+                Notification::make()->title('Votre appel a bien été ajouté.')->icon('heroicon-o-check-circle')->seconds(5)->color('success')->send();
+                return redirect()->route('projects.index');
+            }
+
         }
     }
 
