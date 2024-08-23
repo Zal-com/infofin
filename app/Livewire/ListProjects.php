@@ -11,23 +11,17 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
-use Filament\Support\Concerns\CanPersistTab;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables\Actions\Action;
-use Filament\Tables\Columns\Column;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\Layout\Grid;
 use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
-use FilamentTiptapEditor\Extensions\Nodes\GridColumn;
 use Hydrat\TableLayoutToggle\Concerns\HasToggleableTable;
-use Hydrat\TableLayoutToggle\Contracts\LayoutPersister;
-use Hydrat\TableLayoutToggle\Persisters\LocalStoragePersister;
 use Illuminate\Mail\Markdown;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\HtmlString;
@@ -49,19 +43,6 @@ class ListProjects extends Component implements HasForms, HasTable
         return view('livewire.list-projects');
     }
 
-    #[On('projectDeleted')]
-    public function projectDeleted()
-    {
-        Notification::make()
-            ->title("Projet supprimé avec succès")
-            ->icon('heroicon-o-x-circle')
-            ->iconColor('danger')
-            ->color('danger')
-            ->seconds(5)
-            ->send();
-
-        return redirect()->route('projects.index');
-    }
 
     public function table(Table $table): Table
     {
@@ -129,7 +110,13 @@ class ListProjects extends Component implements HasForms, HasTable
                     ->modalDescription('Voulez-vous vraiment supprimer ce projet ?.')
                     ->action(function ($record) {
                         $record->update(['status' => -1]);
-                        $this->dispatch("projectDeleted");
+                        Notification::make()
+                            ->title("Projet supprimé avec succès")
+                            ->icon('heroicon-o-x-circle')
+                            ->iconColor('success')
+                            ->color('success')
+                            ->seconds(5)
+                            ->send();
                     });
 
             }
