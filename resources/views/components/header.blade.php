@@ -1,4 +1,4 @@
-<header class="mb-5 shadow-sm p-4 w-full">
+<header class="mb-5 shadow-sm p-2 w-full">
     <nav class="flex flex-col md:flex-row justify-between items-center">
         <!-- Section gauche -->
         <a href="{{ route('home') }}" class="flex flex-row gap-4 items-center">
@@ -45,13 +45,23 @@
                     <div id="dropdownMenu"
                          class="hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
                         <a href="{{ route('profile.show') }}"
-                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            Mon Profil
+                           class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex flex-row gap-2 align-center items-center">
+                            <x-filament::icon icon="heroicon-o-user" style="height: 24px; width: 24px;"/>
+                            Mon profil
                         </a>
+                        @hasrole('admin')
+                        <a href="{{ url('/admin') }}"
+                           class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex flex-row gap-2 align-center items-center">
+                            <x-filament::icon icon="heroicon-o-chart-bar-square" style="height: 24px; width: 24px;"/>
+                            Administration
+                        </a>
+                        @endhasrole
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <button type="submit"
-                                    class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    class="flex w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex flex-row gap-2 align-center items-center">
+                                <x-filament::icon icon="heroicon-o-arrow-right-start-on-rectangle"
+                                                  style="height: 24px; width: 24px;"/>
                                 Se déconnecter
                             </button>
                         </form>
