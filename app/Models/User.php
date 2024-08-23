@@ -198,4 +198,9 @@ class User extends Authenticatable implements HasName, CanResetPassword
     {
         return $this->full_name();
     }
+
+    public function getAvatarInitials(): string
+    {
+        return substr($this->first_name, 0, 1) . '+' . substr($this->last_name, 0, 1);
+    }
 }

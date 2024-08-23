@@ -1,3 +1,33 @@
+<header class="mb-5 shadow-sm p-4 w-screen">
+    <nav class="flex flex-row justify-between">
+        <a href="{{route('home')}}">
+            <div class="flex flex-row gap-4 justify-start">
+                <img src="{{asset('img/ulb_logo.png')}}" class="h-14 border-r-2 pr-3 border-blue-900">
+                <h1 class="text-blue-900">Infofin</h1>
+
+            </div>
+        </a>
+        <div class="flex flex-row justify-evenly gap-6">
+            <x-filament::link tag="a" href="{{route('projects.index')}}">Projets</x-filament::link>
+            <x-filament::link tag="a" href="{{url('/agenda')}}">Agenda</x-filament::link>
+        </div>
+        @guest()
+            <div class="flex flex-row justify-end gap-4 p-3">
+                <x-filament::link tag="a" href="{{route('register')}}">S'enregistrer</x-filament::link>
+                <x-filament::button tag="a" href="{{route('login')}}">Se connecter</x-filament::button>
+            </div>
+        @endguest
+        @auth
+            <div class="flex flex-row justify-end gap-4 p-3">
+                <x-filament::avatar
+                    src="https://ui-avatars.com/api/?name={{Auth::user()->getAvatarInitials()}}&bold=true&color=FFFFFF&background=9845f9"
+                />
+            </div>
+        @endauth
+    </nav>
+
+</header>
+{{--
 <header class="mb-8">
     <a href="{{route('home')}}">
         <div class="container flex h-[120px] p-4 w-[75%] m-auto">
@@ -47,3 +77,4 @@
         </div>
     </nav>
 </header>
+--}}

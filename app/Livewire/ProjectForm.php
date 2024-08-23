@@ -453,19 +453,19 @@ final class ProjectForm extends Component implements HasForms
                     $phone = $contact['tel'] ?? '';
                     $address = $contact['address'] ?? '';
 
-                    if ($name !== '' || $email !== '' || $phone !== '' || $address !== '') {
-                        $contactsUlB[] = [
-                            'name' => $name,
-                            'email' => $email,
-                            'phone' => $phone,
-                            'address' => $address,
-                        ];
-                    }
+                if ($name !== '' || $email !== '' || $phone !== '' || $address !== '') {
+                    $contactsUlB[] = [
+                        'name' => $name,
+                        'email' => $email,
+                        'phone' => $phone,
+                        'address' => $address,
+                    ];
                 }
-                $data['contact_ulb'] = !empty($contactsUlB) ? json_encode($contactsUlB) : [];
-            } else {
-                $data['contact_ulb'] = [];
             }
+            $data['contact_ulb'] = !empty($contactsUlB) ? $contactsUlB : [];
+        } else {
+            $data['contact_ulb'] = [];
+        }
 
 
             $contactsExt = [];
@@ -476,19 +476,19 @@ final class ProjectForm extends Component implements HasForms
                     $phone = $contact['tel'] ?? '';
                     $address = $contact['address'] ?? '';
 
-                    if ($name !== '' || $email !== '' || $phone !== '' || $address !== '') {
-                        $contactsExt[] = [
-                            'name' => $name,
-                            'email' => $email,
-                            'phone' => $phone,
-                            'address' => $address,
-                        ];
-                    }
+                if ($name !== '' || $email !== '' || $phone !== '' || $address !== '') {
+                    $contactsExt[] = [
+                        'name' => $name,
+                        'email' => $email,
+                        'phone' => $phone,
+                        'address' => $address,
+                    ];
                 }
-                $data['contact_ext'] = !empty($contactsExt) ? json_encode($contactsExt) : [];
-            } else {
-                $data['contact_ext'] = [];
             }
+            $data['contact_ext'] = !empty($contactsExt) ? $contactsExt : [];
+        } else {
+            $data['contact_ext'] = [];
+        }
 
             if ($project = Project::create($data)) {
                 if (!empty($data['organisation'])) {
