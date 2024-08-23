@@ -20,12 +20,7 @@ trait HandlesPagination
         $offset = is_numeric($offset) ? (int)$offset : 0;
         $sort = strtoupper($sort) === 'DESC' ? 'DESC' : 'ASC';
 
-        $relationships = $this->getModelRelationships($model);
-
-        $relationships = array_filter($relationships, function ($relationship) use ($model) {
-            $relationInstance = $model->$relationship();
-            return get_class($relationInstance->getRelated()) !== \App\Models\User::class;
-        });
+        $relationships = $this->getFilteredModelRelationships($model);
 
         $results = $model->with($relationships)
             ->orderBy('created_at', $sort)
@@ -34,6 +29,16 @@ trait HandlesPagination
             ->get();
 
         return response()->json($results);
+    }
+
+    protected function getFilteredModelRelationships(Model $model): array
+    {
+        $relationships = $this->getModelRelationships($model);
+
+        return array_filter($relationships, function ($relationship) use ($model) {
+            $relationInstance = $model->$relationship();
+            return get_class($relationInstance->getRelated()) !== \App\Models\User::class;
+        });
     }
 
     protected function getModelRelationships(Model $model): array
@@ -56,5 +61,3 @@ trait HandlesPagination
         return $relationships;
     }
 }
-
-

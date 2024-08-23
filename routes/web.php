@@ -13,8 +13,33 @@ use Illuminate\Support\Facades\Storage;
 
 Route::controller(ApiController::class)->group(function () {
     Route::prefix('api')->middleware('enforce.limit')->group(function () {
+        // API information endpoint
         Route::get('', 'index')->name('api.index');
+
+        // Projects endpoint
         Route::get('/projects', 'projects_index')->name('api.projects');
+
+        // Continents endpoint
+        Route::get('/continents', 'continents_index')->name('api.continents');
+
+        // Countries endpoint
+        Route::get('/countries', 'countries_index')->name('api.countries');
+
+        // Info Types endpoint
+        Route::get('/info-types', 'info_types_index')->name('api.info_types');
+
+        // Organisations endpoint
+        Route::get('/organisations', 'organisation_index')->name('api.organisations');
+
+        // Scientific Domains endpoint
+        Route::get('/scientific-domains', 'scientific_domains_index')->name('api.scientific_domains');
+
+        Route::get('/projects/{id}', 'show_project')->name('api.show_project');
+        Route::get('/continents/{id}', 'show_continent')->name('api.show_continent');
+        Route::get('/countries/{id}', 'show_country')->name('api.show_country');
+        Route::get('/info-types/{id}', 'show_info_type')->name('api.show_info_type');
+        Route::get('/organisations/{id}', 'show_organisation')->name('api.show_organisation');
+        Route::get('/scientific-domains/{id}', 'show_scientific_domain')->name('api.show_scientific_domain');
     });
 });
 
