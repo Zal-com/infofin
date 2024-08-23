@@ -2,13 +2,14 @@
 
 namespace App\Filament\Pages;
 
+use App\Models\NewsletterSchedule;
 use App\Models\Project;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TimePicker;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
-use Filament\Forms\Components\TimePicker;
-use App\Models\NewsletterSchedule;
+use Illuminate\Support\Facades\Artisan;
 
 class MailingPage extends Page
 {
@@ -122,6 +123,27 @@ class MailingPage extends Page
                     ];
                 })
                 ->modalHeading('Définir le planning d\'envoi')
+                ->modalWidth('lg'),
+            Action::make('send_newsletter')
+                ->label('Envoyer la newsletter')
+                ->icon('heroicon-s-paper-airplane')
+                ->action(function () {
+                    try {
+                        // Run the Artisan command
+                        Artisan::call('newsletter:send');
+
+                        Notification::make()
+                            ->title('Newsletter envoyée avec succès.')
+                            ->color('success')
+                            ->send();
+                    } catch (\Exception $e) {
+                        Notification::make()
+                            ->title('Échec de l\'envoi de la newsletter. Veuillez réessayer.')
+                            ->color('danger')
+                            ->send();
+                    }
+                })
+                ->modalHeading('Envoyer la newsletter')
                 ->modalWidth('lg')
         ];
     }
