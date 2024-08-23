@@ -51,8 +51,6 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/agenda', [AgendaController::class, 'index'])->name('agenda');
-
 Route::controller(ProjectController::class)->group(function () {
     Route::get('/projects/preview', "preview")->name('projects.preview');
     Route::get('/projects/archive', "archive")->name("projects.archive");
@@ -82,7 +80,7 @@ Route::get('/unsubscribe', [UnsubscribeController::class, 'unsubscribe']);
 
 Route::get('/agenda', function () {
     return view('calendar');
-});
+})->name('agenda');
 
 Route::get('/download', function (Request $request) {
     $filename = $request->query('file');

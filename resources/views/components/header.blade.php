@@ -3,26 +3,24 @@
         <!-- Section gauche -->
         <a href="{{ route('home') }}" class="flex flex-row gap-4 items-center">
             <img src="{{ asset('img/ulb_logo.png') }}" class="h-14 border-r-2 pr-3 border-blue-900">
-            <h1 class="text-blue-900 text-xl">Infofin</h1>
+            <h1 class="text-blue-900">Infofin</h1>
         </a>
 
         <!-- Conteneur central -->
-        <div class="mt-4 md:mt-0 md:absolute md:left-1/2 md:transform md:-translate-x-1/2">
-            <x-filament::tabs>
-                <x-filament::tabs.item
-                    tag="a"
-                    href="{{ route('projects.index') }}"
-                    :active="request()->routeIs('projects.index')">
-                    Projets
-                </x-filament::tabs.item>
+        <div class="mt-4 md:mt-0 md:absolute md:left-1/2 md:transform md:-translate-x-1/2 flex flew-col gap-4">
+            <x-filament::tabs.item
+                tag="a"
+                href="{{ route('projects.index') }}"
+                :active="request()->routeIs('projects.index')">
+                Projets
+            </x-filament::tabs.item>
 
-                <x-filament::tabs.item
-                    tag="a"
-                    href="{{ url('/agenda') }}"
-                    :active="request()->routeIs('agenda')">
-                    Agenda
-                </x-filament::tabs.item>
-            </x-filament::tabs>
+            <x-filament::tabs.item
+                tag="a"
+                href="{{ route('agenda') }}"
+                :active="request()->routeIs('agenda')">
+                Agenda
+            </x-filament::tabs.item>
         </div>
 
         <!-- Section droite avec dropdown pour l'avatar -->
