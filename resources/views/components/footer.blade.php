@@ -100,8 +100,9 @@
                                 </form>
                             </li>
                         </ul>
+                    @endauth
                 </div>
-                @endauth
+
                 <!-- Groupe 3: Contacts -->
                 <div class="flex flex-col gap-2">
                     <h4 class="font-semibold flex flew-row items-center gap-2">
