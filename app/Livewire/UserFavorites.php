@@ -39,10 +39,11 @@ class UserFavorites extends Component implements HasTable, HasForms
 
     public function table(Table $table): Table
     {
-        return $table->query(
-            UserFavorite::where('user_id', Auth::id())
-                ->with(['project', 'user'])
-        )
+        return $table
+            ->query(
+                UserFavorite::where('user_id', Auth::id())
+                    ->with(['project', 'user'])
+            )
             ->columns([
                 BadgeableColumn::make('project.title')
                     ->label('Programme')
@@ -82,6 +83,7 @@ class UserFavorites extends Component implements HasTable, HasForms
                     ->action(fn($record) => Auth::user()->removeFromFavorites($record->project->id))
                     ->extraAttributes(['class' => 'btn btn-danger text-red-400'])
 
-            ]);
+            ])
+            ->recordUrl(fn($record) => route('projects.show', $record->project->id));
     }
 }
