@@ -10,7 +10,6 @@ use Illuminate\Support\Carbon;
 
 class Project extends Model
 {
-
     protected $table = 'projects';
     protected $fillable = ['id',
         'title', 'contact_ulb', 'contact_ext',

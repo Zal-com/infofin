@@ -309,11 +309,16 @@ class ProjectEditForm extends Component implements HasForms
                         ->label('Documents')
                         ->disk('public')
                         ->visibility('public')
-                        ->acceptedFileTypes(['application/pdf'])
+                        ->acceptedFileTypes([
+                            'application/pdf',
+                            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                            'application/vnd.oasis.opendocument.text'
+                        ])
                         ->multiple()
                         ->moveFiles()
-                        ->default(fn() => $this->project->documents->pluck('filename')->toArray())
-                ])
+                        ->default(fn() => $this->project->documents->pluck('path')->toArray()),
+                ]),
+
             ]),
 
             Actions::make([
