@@ -1,4 +1,4 @@
-<header class="mb-5 shadow-sm p-2 w-full">
+<header class="mb-10 shadow-sm p-2 w-full">
     <nav class="flex flex-col md:flex-row justify-between items-center">
         <!-- Section gauche -->
         <a href="{{ route('home') }}" class="flex flex-row gap-4 items-center">
