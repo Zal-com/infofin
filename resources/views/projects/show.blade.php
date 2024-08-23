@@ -7,7 +7,6 @@
 @section('content')
     @livewireStyles
     <div class="flex justify-between items-center mb-4">
-        {{ \Diglactic\Breadcrumbs\Breadcrumbs::render('project', $project) }}
         @can('create', App\Models\Project::class)
             <x-filament::button icon="heroicon-s-pencil" tag="a"
                                 href="{{ url(route('projects.edit', $project->id)) }}">

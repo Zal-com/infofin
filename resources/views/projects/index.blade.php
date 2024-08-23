@@ -1,7 +1,6 @@
 @extends('layout')
 
 @section('content')
-    {{ \Diglactic\Breadcrumbs\Breadcrumbs::render('projects') }}
     <div class="w-100 flex justify-between">
         <h2>Liste des projets</h2>
         @can('create', App\Models\Project::class)
