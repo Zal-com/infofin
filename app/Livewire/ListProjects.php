@@ -21,12 +21,14 @@ use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use FilamentTiptapEditor\Extensions\Nodes\GridColumn;
 use Hydrat\TableLayoutToggle\Concerns\HasToggleableTable;
 use Hydrat\TableLayoutToggle\Contracts\LayoutPersister;
 use Hydrat\TableLayoutToggle\Persisters\LocalStoragePersister;
+use Illuminate\Mail\Markdown;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\HtmlString;
 use Illuminate\View\View;
@@ -252,7 +254,7 @@ class ListProjects extends Component implements HasForms, HasTable
                     ]
 
             )
-            ->actions($actions)->actionsAlignment('end')
+            ->actions($actions)->actionsAlignment('start')
             ->defaultPaginationPageOption(25)
             ->defaultSort('updated_at', 'desc')
             ->paginationPageOptions([5, 10, 25, 50, 100])
@@ -310,7 +312,7 @@ class ListProjects extends Component implements HasForms, HasTable
                 ->searchable(),
             TextColumn::make('short_description')
                 ->label('Description courte')
-                ->formatStateUsing(fn(string $state): HtmlString => new HtmlString($state))
+                ->formatStateUsing(fn(string $state): HtmlString => new HtmlString(Markdown::parse($state)))
                 ->wrap()
                 ->lineClamp(2)
                 ->limit(100),
@@ -363,7 +365,7 @@ class ListProjects extends Component implements HasForms, HasTable
 
                 TextColumn::make('firstDeadline')
                     ->label(false)
-                    ->formatStateUsing(fn() => 'Prochaine deadline : ')->columnSpan(2),
+                    ->formatStateUsing(fn() => 'Prochaine deadline : ')->columnSpan(3),
                 Stack::make([
                     TextColumn::make('firstDeadline')
                         ->label(false)
@@ -379,20 +381,20 @@ class ListProjects extends Component implements HasForms, HasTable
                             return '';
                         })->extraAttributes(['style' => 'color: grey; font-size: 10'])
                         ->alignEnd(),
-                ])->columnSpan(2)->alignEnd(),
+                ])->columnSpan(3)->alignEnd(),
                 TextColumn::make('short_description')
                     ->label('Description courte')
-                    ->formatStateUsing(fn(string $state): HtmlString => new HtmlString($state))
+                    ->formatStateUsing(fn(string $state): HtmlString => new HtmlString(Markdown::parse($state)))
                     ->wrap()
                     ->lineClamp(5)
-                    ->columnSpan(4)->extraAttributes(['class' => 'text-justify']),
+                    ->columnSpanFull()->extraAttributes(['class' => 'text-justify']),
                 TextColumn::make('updated_at')
                     ->label('Date de dernière modif.')
                     ->dateTime('d/m/Y')
                     ->sortable()
                     ->alignCenter()
                     ->hidden()
-            ])->columns(6)
+            ])->columns(6)->extraAttributes(['class' => 'h-max']),
         ];
     }
 

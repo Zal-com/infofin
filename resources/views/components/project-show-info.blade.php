@@ -164,13 +164,15 @@
             <x-zeus-accordion::accordion>
                 <x-zeus-accordion::accordion.item
                     icon="heroicon-o-calendar-days"
-                    label="{{explode('|', $project->firstDeadline)[1]}} : {{explode('|',$project->firstDeadline)[0]}}"
+                    label="{{ $project->firstDeadline === 'Continu' ? 'Continu' : (explode('|', $project->firstDeadline)[1]}} : {{explode('|',$project->firstDeadline)[0])}}"
                 >
                     <div class="bg-white p-4">
                         @foreach($project->allDeadlinesSorted as $sortedDeadline)
-                            <p @if(\Carbon\Carbon::make($sortedDeadline['date'])->format("d/m/Y") === explode('|',$project->firstDeadline)[0]) style="font-weight: bold" @endif>
-                                {{$sortedDeadline['proof'] != '' ? $sortedDeadline['proof'] . ' :'  : ''}}
-                                {{\Carbon\Carbon::make($sortedDeadline['date'])->format("d/m/Y")}}</p>
+                            @if(!$sortedDeadline['continuous'])
+                                <p @if(\Carbon\Carbon::make($sortedDeadline['date'])->format("d/m/Y") === explode('|',$project->firstDeadline)[0]) style="font-weight: bold" @endif>
+                                    {{$sortedDeadline['proof'] != '' ? $sortedDeadline['proof'] . ' :'  : ''}}
+                                    {{\Carbon\Carbon::make($sortedDeadline['date'])->format("d/m/Y")}}</p>
+                            @endif
                         @endforeach
                     </div>
                 </x-zeus-accordion::accordion.item>
