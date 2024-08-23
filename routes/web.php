@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApiController;
 use App\Http\Controllers\DraftController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
@@ -9,6 +10,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 
+
+Route::controller(ApiController::class)->group(function () {
+    Route::prefix('api')->middleware('enforce.limit')->group(function () {
+        Route::get('', 'index')->name('api.index');
+        Route::get('/projects', 'projects_index')->name('api.projects');
+    });
+});
 
 Route::get('/', function () {
     return redirect()->route('projects.index');

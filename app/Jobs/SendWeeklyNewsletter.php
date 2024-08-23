@@ -41,15 +41,14 @@ class SendWeeklyNewsletter implements ShouldQueue
 
             //Tous les projets de moins d'une semaine qui ont les memes info_types que les centres d'interet de l'utilisateur + vérifier le domaine scientifique
 
-            $projects = Project::where('created_at', '>=', now()->subWeek())
-                ->where('is_in_next_email', 1)
-                ->where(function ($query) use ($subscriber) {
+            $projects = Project::where('is_in_next_email', 1)
+                ->orWhere(function ($query) use ($subscriber) {
                     $query->whereHas('scientific_domains', function ($query) use ($subscriber) {
                         $query->whereIn('scientific_domain_id', $subscriber->scientific_domains->pluck('id'));
                     })
-                    ->orWhereHas('info_types', function ($query) use ($subscriber) {
-                        $query->whereIn('info_type_id', $subscriber->info_types->pluck('id'));
-                    });
+                        ->orWhereHas('info_types', function ($query) use ($subscriber) {
+                            $query->whereIn('info_type_id', $subscriber->info_types->pluck('id'));
+                        });
                 })
                 ->get();
 
@@ -58,5 +57,8 @@ class SendWeeklyNewsletter implements ShouldQueue
                 Mail::to($subscriber->email)->send(new WeeklyNewsletter($data));
             }
         }
+
+        Project::where('is_in_next_email', 1)
+            ->update(['is_in_next_email' => 0]);
     }
 }

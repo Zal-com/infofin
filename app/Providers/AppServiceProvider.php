@@ -2,10 +2,12 @@
 
 namespace App\Providers;
 
+use App\Http\Middleware\EnforceLimit;
 use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentColor;
 use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\URL;
@@ -25,7 +27,7 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(Schedule $schedule): void
+    public function boot(Schedule $schedule, Router $router): void
     {
 
         FilamentColor::register([
@@ -49,7 +51,7 @@ class AppServiceProvider extends ServiceProvider
         ]);
 
         $schedule->command('newsletter:send')->weeklyOn(1, '15:23'); // 1 = Monday
-        //$schedule->command('schedule:newsletter')->everyMinute();
+        $schedule->command('schedule:newsletter')->everyMinute();
         Schema::defaultStringLength(191);
 
         Gate::before(function ($user, $ability) {
@@ -63,5 +65,7 @@ class AppServiceProvider extends ServiceProvider
         RedirectIfAuthenticated::redirectUsing(function () {
             return route('projects.index');
         });
+
+        $router->aliasMiddleware('enforce.limit', EnforceLimit::class);
     }
 }
