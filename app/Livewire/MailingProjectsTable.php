@@ -7,12 +7,8 @@ use App\Models\Project;
 use Awcodes\FilamentBadgeableColumn\Components\Badge;
 use Awcodes\FilamentBadgeableColumn\Components\BadgeableColumn;
 use Carbon\Carbon;
-use Filament\Forms\Components\Actions;
-use Filament\Forms\Components\Actions\Action as FormAction;
-use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables\Actions\Action;
@@ -44,29 +40,6 @@ class MailingProjectsTable extends Component implements HasForms, HasTable
             $this->schedule->send_time = Carbon::createFromFormat('H:i:s', $this->schedule->send_time)->format('H:i');
         }
     }
-
-    public function form(Form $form): Form
-    {
-        return $form->schema([
-            RichEditor::make('data.message')
-                ->label('Message informatif')
-                ->toolbarButtons(['bold', 'underline', 'italic'])
-                ->maxLength(255)
-                ->string(),
-            Actions::make([
-                FormAction::make('submit')
-                    ->label('Enregistrer')
-                    ->action('submit')
-
-            ])->alignEnd()
-        ])->model($this->schedule);
-    }
-
-    public function submit()
-    {
-        dd($this->data);
-    }
-
 
     public function table(Table $table): Table
     {

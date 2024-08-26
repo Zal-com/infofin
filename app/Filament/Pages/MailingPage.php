@@ -5,10 +5,8 @@ namespace App\Filament\Pages;
 use App\Models\NewsletterSchedule;
 use App\Models\Project;
 use Filament\Actions\Action;
-use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TimePicker;
-use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Artisan;
@@ -30,6 +28,7 @@ class MailingPage extends Page
     {
         return [
             'livewireComponent' => 'mailing-projects-table',
+            'livewireComponent' => 'begin-mail'
         ];
     }
 
