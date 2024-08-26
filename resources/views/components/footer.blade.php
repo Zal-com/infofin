@@ -112,7 +112,7 @@
                         <li class="flex items-center gap-1">
                             <x-filament::icon icon="heroicon-o-envelope"
                                               style="height: 18px; width: 18px;"/>
-                            <a href="mailto:st.guillaume@outlook.com" class="hover:text-slate-300">Webmaster</a>
+                            <a href="mailto:guillaume.stordeur@ulb.be" class="hover:text-slate-300">Webmaster</a>
                         </li>
                     </ul>
                 </div>
