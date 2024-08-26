@@ -1,6 +1,6 @@
 <!doctype html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml"
-      xmlns:o="urn:schemas-microsoft-com:office:office">
+<html xmlns="http://www.w3.org/1999/xhtml"
+>
 
 <head>
     <title>
@@ -360,7 +360,7 @@
                                                     <div
                                                         style="font-family:Helvetica;font-size:12px;font-weight:400;line-height:18px;text-align:right;color:#9A9EA6;">
                                                         Université libre de Bruxelles, 1050 Bruxelles<br/> Plus envie de
-                                                        recevoir ce mail ? <a href="{{$card['url   ']}}">Se
+                                                        recevoir ce mail ? <a href="{{$card['url']}}">Se
                                                             désabonner.</a>
                                                     </div>
                                                 </td>
