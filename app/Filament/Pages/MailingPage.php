@@ -35,7 +35,7 @@ class MailingPage extends Page
     {
         return [
             Action::make('add')
-                ->label('Ajouter un mail')
+                ->label('Ajouter projet.s')
                 ->icon('heroicon-s-plus')
                 ->action(function (array $data) {
                     try {
@@ -66,7 +66,7 @@ class MailingPage extends Page
                 })
                 ->form([
                     Select::make('projects')
-                        ->label('Select Projects')
+                        ->label('Selectionner un ou plusieurs projets')
                         ->multiple()
                         ->options(Project::all()->where('is_in_next_email', '!=', 1)->sortByDesc('id')->mapWithKeys(function ($project) {
                             return [$project->id => $project->id . ' - ' . $project->title];
@@ -74,7 +74,7 @@ class MailingPage extends Page
                         ->searchable()
                         ->required(),
                 ])
-                ->modalHeading('Select Projects')
+                ->modalHeading('Ajout de projets au mail')
                 ->modalWidth('lg'),
 
             Action::make('set_schedule')
@@ -125,8 +125,9 @@ class MailingPage extends Page
                 ->modalHeading('Définir le planning d\'envoi')
                 ->modalWidth('lg'),
             Action::make('send_newsletter')
-                ->label('Envoyer la newsletter')
+                ->label('Envoyer maintenant')
                 ->icon('heroicon-s-paper-airplane')
+                ->requiresConfirmation()
                 ->action(function () {
                     try {
                         // Run the Artisan command
@@ -143,7 +144,6 @@ class MailingPage extends Page
                             ->send();
                     }
                 })
-                ->modalHeading('Envoyer la newsletter')
                 ->modalWidth('lg')
         ];
     }
