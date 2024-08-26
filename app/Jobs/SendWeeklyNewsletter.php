@@ -27,6 +27,7 @@ class SendWeeklyNewsletter implements ShouldQueue
     public function handle()
     {
         $subscribers = User::where('is_email_subscriber', 1)->get();
+        $is_send = false;
 
         foreach ($subscribers as $subscriber) {
 
@@ -53,9 +54,17 @@ class SendWeeklyNewsletter implements ShouldQueue
             if (!$projects->isEmpty()) {
                 $data['projects'] = $projects;
                 Mail::to($subscriber->email)->send(new WeeklyNewsletter($data));
+                $is_send = true;
             }
         }
 
+        $summaryMessage = $is_send ? 'A mail has been sent.' : 'No mail has been sent.';
+
+        Mail::raw($summaryMessage, function ($message) {
+            $message->to('axel.hoffmann@ulb.be')
+                ->subject('Weekly Newsletter Summary');
+        });
+        
         Project::where('is_in_next_email', 1)
             ->update(['is_in_next_email' => 0]);
 
