@@ -314,7 +314,8 @@ final class ProjectForm extends Component implements HasForms
             $this->fileService = app(FileService::class);
         }
         if (!empty($this->data['documents'])) {
-            $docs = $this->fileService->moveForDraft($this->data['documents'], $this->draft->content["documents"]);
+            $lastdoc = $this->draft ? $this->draft->content['documents'] : [];
+            $docs = $this->fileService->moveForDraft($this->data['documents'], $lastdoc);
             $this->data["documents"] = $docs;
         }
         if ($this->draft) {

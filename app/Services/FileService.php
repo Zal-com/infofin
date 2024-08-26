@@ -82,8 +82,10 @@ class FileService
                     ]);
 
                     Storage::copy($doc->path, $newPath);
+                    $movedFiles[] = $newPath;
+                } else {
+                    $movedFiles[] = $doc->path;
                 }
-                $movedFiles[] = $doc->path;
                 continue;
             }
             $finalPath = 'uploads/docs/' . $file->getFilename();
