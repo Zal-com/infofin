@@ -72,7 +72,7 @@ class MailingPage extends Page
                         ->multiple()
                         ->options(Project::all()->where('is_in_next_email', '!=', 1)->sortByDesc('id')->mapWithKeys(function ($project) {
                             return [$project->id => $project->id . ' - ' . $project->title];
-                        })->toArray())->optionsLimit(0)
+                        })->toArray())
                         ->searchable()
                         ->required(),
                 ])

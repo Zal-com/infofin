@@ -5,8 +5,6 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ScientificDomainResource\Pages;
 use App\Filament\Resources\ScientificDomainResource\RelationManagers;
 use App\Models\ScientificDomain;
-use App\Models\User;
-use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -14,8 +12,6 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ScientificDomainResource extends Resource
 {
@@ -30,14 +26,15 @@ class ScientificDomainResource extends Resource
         return $form
             ->schema([
                 TextInput::make('name')->label('Domaine scientifique')->required(),
-                Select::make('category')
+                Select::make('sci_dom_cat_id')
                     ->relationship('category', 'name')
                     ->createOptionForm([
                         TextInput::make('name')
                             ->label('Catégorie')
                             ->required(),
                     ])
-                    ->required(),
+                    ->required()
+                    ->label('Catégorie'),
             ]);
     }
 
