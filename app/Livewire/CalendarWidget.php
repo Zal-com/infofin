@@ -34,7 +34,7 @@ class CalendarWidget extends FullCalendarWidget
                             'start' => $deadlineDate->format('Y-m-d'),
                             'end' => $deadlineDate->format('Y-m-d'),
                             'url' => route('projects.show', $project->id),
-                            'color' => $project->is_big ? 'red' : null
+                            'color' => $project->is_big ? 'crimson' : null
                         ];
                     }
                 }

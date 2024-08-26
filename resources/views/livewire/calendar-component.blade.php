@@ -1,3 +1,3 @@
 <div>
-    <livewire:calendar-widget/>
+    @livewire('calendar-widget')
 </div>

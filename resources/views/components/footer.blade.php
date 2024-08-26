@@ -30,11 +30,13 @@
                                               style="height: 18px; width: 18px;"/>
                             <a href="{{ route('agenda') }}" class="hover:text-slate-300">Agenda</a>
                         </li>
-                        <li class="flex items-center gap-1">
-                            <x-filament::icon icon="heroicon-o-chevron-right"
-                                              style="height: 18px; width: 18px;"/>
-                            <a href="{{ route('projects.archive') }}" class="hover:text-slate-300">Archives</a>
-                        </li>
+                        @can('view archives')
+                            <li class="flex items-center gap-1">
+                                <x-filament::icon icon="heroicon-o-chevron-right"
+                                                  style="height: 18px; width: 18px;"/>
+                                <a href="{{ route('projects.archive') }}" class="hover:text-slate-300">Archives</a>
+                            </li>
+                        @endcan
                         <li class="flex items-center gap-1">
                             <x-filament::icon icon="heroicon-o-chevron-right"
                                               style="height: 18px; width: 18px;"/>
