@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Mail\WeeklyNewsletter;
+use App\Models\NewsletterSchedule;
 use App\Models\Project;
 use App\Models\User;
 use App\Services\JWTService;
@@ -11,7 +12,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class SendWeeklyNewsletter implements ShouldQueue
@@ -28,11 +28,15 @@ class SendWeeklyNewsletter implements ShouldQueue
     public function handle()
     {
         $subscribers = User::where('is_email_subscriber', 1)->get();
+        $is_send = false;
+
+        $message = NewsletterSchedule::first()->get(['message']);
 
         foreach ($subscribers as $subscriber) {
 
             $data = [
                 'prenom' => $subscriber->first_name,
+                'message' => $message->message,
             ];
 
             $token = $this->jwtService->generateUnsubscribeJWT($subscriber->id);
@@ -54,10 +58,20 @@ class SendWeeklyNewsletter implements ShouldQueue
             if (!$projects->isEmpty()) {
                 $data['projects'] = $projects;
                 Mail::to($subscriber->email)->send(new WeeklyNewsletter($data));
+                $is_send = true;
             }
         }
 
+        $summaryMessage = $is_send ? 'A mail has been sent.' : 'No mail has been sent.';
+
+        Mail::raw($summaryMessage, function ($message) {
+            $message->to('maxime.vanhoren@ulb.be')
+                ->subject('Weekly Newsletter Summary');
+        });
+
         Project::where('is_in_next_email', 1)
             ->update(['is_in_next_email' => 0]);
+
+        NewsletterSchedule::first()->update(["message" => null]);
     }
 }
