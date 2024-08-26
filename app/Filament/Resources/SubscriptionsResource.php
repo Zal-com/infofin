@@ -4,22 +4,15 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\SubscriptionsResource\Pages;
 use App\Filament\Resources\SubscriptionsResource\RelationManagers;
-use App\Models\InfoType;
 use App\Models\Subscriptions;
 use App\Models\User;
-use Faker\Core\Color;
-use Filament\Forms;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Columns\TagsColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class SubscriptionsResource extends Resource
 {
