@@ -6,9 +6,9 @@
     </div>
 
     <!-- Information Box -->
-    <div style="min-width: 200px; height: fit-content"
-         class="justify-end p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
-        <h3 class="text-lg font-semibold mb-2">Prochain mail</h3>
+    <x-filament::section style="min-width: 200px; height: fit-content"
+                         class="justify-end bg-white rounded-lg">
+        <x-filament::section.heading class="text-lg font-semibold mb-2">Prochain mail</x-filament::section.heading>
         <div class="flex gap-2">
             <x-filament::icon icon="heroicon-o-calendar" style="max-height: 24px; max-width: 24px;"/>
             {{$this->schedule->day_of_week}}
@@ -19,5 +19,5 @@
             {{$this->schedule->send_time}}
         </div>
 
-    </div>
+    </x-filament::section>
 </div>
