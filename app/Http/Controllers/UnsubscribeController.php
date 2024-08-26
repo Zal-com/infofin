@@ -28,7 +28,7 @@ class UnsubscribeController extends Controller
         if ($userId) {
             $user = User::find($userId);
             if ($user) {
-                $user->s_email_subscriber = 0;
+                $user->is_email_subscriber = 0;
                 $user->save();
                 return response()->json(['message' => 'Vous êtes désabonné avec succès.']);
             }

@@ -11,6 +11,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class SendWeeklyNewsletter implements ShouldQueue
@@ -38,6 +39,8 @@ class SendWeeklyNewsletter implements ShouldQueue
             $url = url('/unsubscribe') . '?token=' . $token;
 
             $data['url'] = $url;
+
+            Log::alert('url : ' . $url);
 
             $projects = Project::where('is_in_next_email', 1)
                 ->where(function ($query) use ($subscriber) {

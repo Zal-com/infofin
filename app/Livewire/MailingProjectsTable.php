@@ -96,9 +96,8 @@ class MailingProjectsTable extends Component implements HasForms, HasTable
         ];
 
         return $table->query(
-            Project::where('status', '!=', 2)
-                ->where('status', '!=', -1)
-                ->where('is_in_next_email', 1)
+            Project::where('is_in_next_email', 1)
+                //Ne pas prendre les projets archivés
                 ->where(function ($query) {
                     $query->where('updated_at', '>', now()->subYears(2))
                         ->orWhereJsonContains('deadlines->date', function ($subQuery) {

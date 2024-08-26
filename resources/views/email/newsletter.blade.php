@@ -1,6 +1,6 @@
 <!doctype html>
-<html xmlns="http://www.w3.org/1999/xhtml"
->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml"
+      xmlns:o="urn:schemas-microsoft-com:office:office">
 
 <head>
     <title>
@@ -249,7 +249,7 @@
                     <!-- START CARD -->
                     @foreach($data['projects'] as $card)
                     <!--[if mso | IE]>
-                    <td class="" style="vertical-align:top;width:282px;"><![endif]-->
+                    <td class="" style="vertical-align:top;width:282px;height:100%;"><![endif]-->
                     <div class="mj-column-per-47 mj-outlook-group-fix"
                          style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
                         <table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%">
@@ -360,7 +360,7 @@
                                                     <div
                                                         style="font-family:Helvetica;font-size:12px;font-weight:400;line-height:18px;text-align:right;color:#9A9EA6;">
                                                         Université libre de Bruxelles, 1050 Bruxelles<br/> Plus envie de
-                                                        recevoir ce mail ? <a href="{{$card['url']}}">Se
+                                                        recevoir ce mail ? <a href="{{$data['url']}}">Se
                                                             désabonner.</a>
                                                     </div>
                                                 </td>
