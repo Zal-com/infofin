@@ -75,7 +75,7 @@ class ProjectEditForm extends Component implements HasForms
 
         $geo_zones = [];
         if ($this->project->country_id) {
-            $geo_zones[] = 'country_' . $this->project->country_id;
+            $geo_zones[] = 'pays_' . $this->project->country_id;
         }
         if ($this->project->continent_id) {
             $geo_zones[] = 'continent_' . $this->project->continent_id;
@@ -208,7 +208,7 @@ class ProjectEditForm extends Component implements HasForms
                             }
 
                             foreach ($countries as $id => $name) {
-                                $options["country_$id"] = $name;
+                                $options["pays_$id"] = $name;
                             }
 
                             return $options;
