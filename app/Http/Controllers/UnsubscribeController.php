@@ -20,7 +20,11 @@ class UnsubscribeController extends Controller
         $token = $request->query('token');
 
         if (!$token) {
-            return response()->json(['message' => 'Token de désabonnement non fourni.'], 400);
+            return view('unsubscribe')->with([
+                'message' => "Le token n'a pas été fourni",
+                'icon' => "heroicon-o-x-mark",
+                "color" => "red"
+            ]);
         }
 
         $userId = $this->jwtService->verifyUnsubscribeJWT($token);
@@ -30,10 +34,22 @@ class UnsubscribeController extends Controller
             if ($user) {
                 $user->is_email_subscriber = 0;
                 $user->save();
-                return response()->json(['message' => 'Vous êtes désabonné avec succès.']);
+                return view('unsubscribe')->with([
+                    'message' => "Vous avez été désabonné avec succès.",
+                    'icon' => "heroicon-o-check",
+                    "color" => "green"
+                ]);
             }
-            return response()->json(['message' => 'User inexistant.'], 400);
+            return view('unsubscribe')->with([
+                'message' => "Utilisateur inexistant",
+                'icon' => "heroicon-o-x-mark",
+                "color" => "red"
+            ]);
         }
-        return response()->json(['message' => 'Lien de désabonnement invalide ou expiré.'], 400);
+        return view('unsubscribe')->with([
+            'message' => "Lien de désabonnement invalide ou inexistant",
+            'icon' => "heroicon-o-x-mark",
+            "color" => "red"
+        ]);
     }
 }
