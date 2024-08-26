@@ -40,8 +40,6 @@ class SendWeeklyNewsletter implements ShouldQueue
 
             $data['url'] = $url;
 
-            Log::alert('url : ' . $url);
-
             $projects = Project::where('is_in_next_email', 1)
                 ->where(function ($query) use ($subscriber) {
                     $query->whereHas('scientific_domains', function ($query) use ($subscriber) {
