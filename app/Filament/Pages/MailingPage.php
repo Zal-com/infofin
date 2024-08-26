@@ -35,7 +35,7 @@ class MailingPage extends Page
     {
         return [
             Action::make('add')
-                ->label('Ajouter projet.s')
+                ->label('Ajouter projets')
                 ->icon('heroicon-s-plus')
                 ->action(function (array $data) {
                     try {
@@ -140,6 +140,27 @@ class MailingPage extends Page
                     } catch (\Exception $e) {
                         Notification::make()
                             ->title('Échec de l\'envoi de la newsletter. Veuillez réessayer.')
+                            ->color('danger')
+                            ->send();
+                    }
+                })
+                ->modalWidth('lg'),
+            Action::make('send_previsu')
+                ->label('Prévisualisation')
+                ->icon('heroicon-o-paper-airplane')
+                ->requiresConfirmation()
+                ->action(function () {
+                    try {
+                        // Run the Artisan command
+                        Artisan::call('newsletter:previsu');
+
+                        Notification::make()
+                            ->title('Prévisualisation envoyée avec succès.')
+                            ->color('success')
+                            ->send();
+                    } catch (\Exception $e) {
+                        Notification::make()
+                            ->title('Échec de l\'envoi de la prévisualisation. Veuillez réessayer.')
                             ->color('danger')
                             ->send();
                     }
