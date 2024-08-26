@@ -3,9 +3,9 @@
 namespace App\Livewire;
 
 use App\Models\Project;
-use Saade\FilamentFullCalendar\Widgets\FullCalendarWidget;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
+use Saade\FilamentFullCalendar\Widgets\FullCalendarWidget;
 
 class CalendarWidget extends FullCalendarWidget
 {
@@ -21,7 +21,7 @@ class CalendarWidget extends FullCalendarWidget
         $events = Cache::remember($cacheKey, 60, function () use ($start, $end, $fetchInfo) {
             $projects = Project::whereRaw("
                 JSON_CONTAINS_PATH(deadlines, 'one', '$[*].date')
-            ")->get(['id', 'title', 'deadlines']);
+            ")->get(['id', 'title', 'deadlines', 'is_big']);
 
             $events = [];
 
@@ -34,6 +34,7 @@ class CalendarWidget extends FullCalendarWidget
                             'start' => $deadlineDate->format('Y-m-d'),
                             'end' => $deadlineDate->format('Y-m-d'),
                             'url' => route('projects.show', $project->id),
+                            'color' => $project->is_big ? 'red' : null
                         ];
                     }
                 }
@@ -49,6 +50,7 @@ class CalendarWidget extends FullCalendarWidget
     {
         $today = Carbon::today();
         $sixMonthsLater = $today->copy()->addMonths(6);
+
         return [
             'selectable' => false,
             'editable' => false,
