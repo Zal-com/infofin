@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Artisan;
 
 class MailingPage extends Page
 {
-    protected static ?string $navigationLabel = 'Mailing';
+    protected static ?string $navigationLabel = 'Newsletter';
     protected static ?string $navigationGroup = 'Communication';
     protected static ?string $navigationIcon = 'heroicon-o-envelope';
     protected static ?string $activeNavigationIcon = 'heroicon-s-envelope';
@@ -21,7 +21,7 @@ class MailingPage extends Page
 
     public function getHeading(): string
     {
-        return 'Mailing Management';
+        return 'Gestion de la newsletter';
     }
 
     protected function getViewData(): array
