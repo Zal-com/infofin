@@ -11,7 +11,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class SendWeeklyNewsletter implements ShouldQueue
@@ -59,5 +58,8 @@ class SendWeeklyNewsletter implements ShouldQueue
 
         Project::where('is_in_next_email', 1)
             ->update(['is_in_next_email' => 0]);
+
+        Project::where('is_in_next_email', -1)
+            ->update(['is_in_next_email' => 1]);
     }
 }

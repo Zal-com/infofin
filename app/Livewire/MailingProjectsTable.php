@@ -73,7 +73,7 @@ class MailingProjectsTable extends Component implements HasForms, HasTable
                 ->label('Supprimer')
                 ->action(function ($record) {
                     try {
-                        $record->update(['is_in_next_email' => 0]);
+                        $record->update(['is_in_next_email' => -1]);
                         Notification::make()
                             ->title('Projet retiré de la liste avec succès.')
                             ->color('success')
