@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Mail\WeeklyNewsletter;
 use App\Models\Project;
 use App\Models\User;
 use App\Services\JWTService;
@@ -10,6 +11,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Mail;
 
 class SendWeeklyNewsletter implements ShouldQueue
 {
@@ -37,10 +39,8 @@ class SendWeeklyNewsletter implements ShouldQueue
 
             $data['url'] = $url;
 
-            //Tous les projets de moins d'une semaine qui ont les memes info_types que les centres d'interet de l'utilisateur + vérifier le domaine scientifique
-
             $projects = Project::where('is_in_next_email', 1)
-                ->andWhere(function ($query) use ($subscriber) {
+                ->where(function ($query) use ($subscriber) {
                     $query->whereHas('scientific_domains', function ($query) use ($subscriber) {
                         $query->whereIn('scientific_domain_id', $subscriber->scientific_domains->pluck('id'));
                     })
@@ -49,6 +49,7 @@ class SendWeeklyNewsletter implements ShouldQueue
                         });
                 })
                 ->get();
+
             if (!$projects->isEmpty()) {
                 $data['projects'] = $projects;
                 Mail::to($subscriber->email)->send(new WeeklyNewsletter($data));

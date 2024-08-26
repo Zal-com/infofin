@@ -12,8 +12,9 @@ class JWTService
 
     public function __construct()
     {
-        $this->secretKey = env('JWT_SECRET');
+        $this->secretKey = config('jwt.secret');
     }
+
 
     public function generateUnsubscribeJWT($userId)
     {
