@@ -154,6 +154,11 @@ class User extends Authenticatable implements HasName, CanResetPassword
         return $this->hasMany(Project::class, "poster_id");
     }
 
+    public function last_update_projects() : HasMany
+    {
+        return $this->hasMany(Project::class, "last_update_user_id");
+    }
+
     public function favorites(): BelongsToMany
     {
         return $this->belongsToMany(Project::class, 'users_favorite_projects', "user_id", "project_id");
@@ -162,6 +167,11 @@ class User extends Authenticatable implements HasName, CanResetPassword
     public function rate_mail(): BelongsToMany
     {
         return $this->belongsToMany(Project::class, "visits_rate_mail", "user_id", "project_id")->withPivot('date_consult');
+    }
+
+    public function drafts(): HasMany
+    {
+        return $this->hasMany(Draft::class, 'poster_id');
     }
 
     public function full_name(): string
@@ -202,5 +212,28 @@ class User extends Authenticatable implements HasName, CanResetPassword
     public function getAvatarInitials(): string
     {
         return substr($this->first_name, 0, 1) . '+' . substr($this->last_name, 0, 1);
+    }
+
+    public function reassignAndDelete($newUserId = 1)
+    {
+
+        $this->projects()->update(['poster_id' => $newUserId]);
+        $this->last_update_projects()->update(['last_update_user_id' => $newUserId]);
+
+        $this->drafts()->update(['poster_id' => $newUserId]);
+
+        $this->searches()->update(['user_id' => $newUserId]);
+
+        $this->scientific_domains()->detach($this->id);
+        $this->info_types()->detach($this->id);
+        $this->favorites()->detach($this->id);
+        $this->rate_mail()->detach($this->id);
+
+        \DB::table('users_scientific_domains')->where('user_id', $this->id)->delete();
+        \DB::table('users_favorite_projects')->where('user_id', $this->id)->delete();
+        \DB::table('users_info_types')->where('user_id', $this->id)->delete();
+        \DB::table('visits_rate_mail')->where('user_id', $this->id)->delete();
+
+        $this->delete();
     }
 }

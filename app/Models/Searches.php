@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Searches extends Model
 {
-    protected $table = 'recherche';
+    protected $table = 'searches';
     public $timestamps = true;
 
     protected $fillable = ['user_id', 'input'];
