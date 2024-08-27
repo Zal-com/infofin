@@ -3,10 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
-use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
-use Closure;
-use Filament\Actions\Action;
 use Filament\Forms;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Select;
@@ -17,11 +14,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rules\Password;
 use Spatie\Permission\Models\Permission;
 
 class UserResource extends Resource
@@ -58,13 +51,18 @@ class UserResource extends Resource
                 TextInput::make('matricule')
                     ->required()
                     ->disabled(fn(Get $get): bool => !$get('is_internal')),
-                TextInput::make('email')->email()->unique('users')->required(),
+                TextInput::make('email')
+                    ->email()
+                    ->required()
+                    ->unique(User::class, 'email', ignorable: fn ($record) => $record)
+                    ->rules('required|email'),
                 TextInput::make('password')
                     ->label('Mot de passe')
-                    ->required()
-                    ->disabled()
+                    ->required(fn($livewire) => $livewire instanceof \Filament\Resources\Pages\CreateRecord)
+                    ->disabled(fn($livewire) => $livewire instanceof \Filament\Resources\Pages\EditRecord)
                     ->password()
-                    ->default(Str::password(8)),
+                    ->default(fn($livewire) => $livewire instanceof \Filament\Resources\Pages\CreateRecord ? Str::password(8) : null)
+                    ->dehydrated(fn($state) => filled($state)),
                 Checkbox::make('is_email_subscriber')
                     ->label('Abonnement à la newsletter')
                     ->default(false)
