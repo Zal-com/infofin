@@ -332,6 +332,11 @@ class ProjectEditForm extends Component implements HasForms
                     ->label('Garder en brouillon')
                     ->color('info')
                     ->action('saveAsDraft'),
+                Action::make('copy')
+                    ->icon('heroicon-o-document-duplicate')
+                    ->label('Copier')
+                    ->color('info')
+                    ->action('copyProject'),
                 Action::make('archive')
                     ->label('Supprimer')
                     ->icon('heroicon-o-trash')
@@ -497,6 +502,40 @@ class ProjectEditForm extends Component implements HasForms
 
             redirect()->route('projects.index');
         }
+    }
+
+    public function replicateModelWithRelations($model)
+    {
+        $model->load('organisations', 'scientific_domains', 'info_types', 'country', 'continent', 'documents');
+
+        $newModel = $model->replicate();
+        $newModel->save();
+
+        $newModel->organisations()->sync($model->organisations->pluck('id')->toArray());
+        $newModel->scientific_domains()->sync($model->scientific_domains->pluck('id')->toArray());
+        $newModel->info_types()->sync($model->info_types->pluck('id')->toArray());
+
+        foreach ($model->documents as $document) {
+            $newDocument = $document->replicate();
+            $newDocument->project_id = $newModel->id;
+            $newDocument->save();
+        }
+
+        $newModel->country()->associate($model->country);
+        $newModel->continent()->associate($model->continent);
+        $newModel->save();
+
+        return $newModel;
+    }
+
+
+    public function copyProject()
+    {
+        $project = $this->replicateModelWithRelations($this->project);
+
+        Notification::make()->title('Le projet a été copié avec succès.')->icon('heroicon-o-check-circle')->seconds(5)->color('success')->send();
+
+        return redirect()->route('projects.show', $project->id);
     }
 
     public function saveAsDraft()
