@@ -13,6 +13,10 @@ class EditUser extends EditRecord
 
     protected function getHeaderActions(): array
     {
+        if ($this->record->id === 1) {
+            return [];
+        }
+
         return [
             Actions\DeleteAction::make(),
         ];
