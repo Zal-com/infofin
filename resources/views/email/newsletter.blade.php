@@ -233,11 +233,6 @@
                                                 </div>
                                             </td>
                                         </tr>
-                                        <tr>
-                                            <td style="font-size:0px;word-break:break-word;">
-                                                <div style="height:20px;line-height:20px;">&#8202;</div>
-                                            </td>
-                                        </tr>
                                         </tbody>
                                     </table>
                                 </td>
@@ -246,6 +241,45 @@
                         </table>
                     </div>
                     <!--[if mso | IE]></td><![endif]-->
+                    @if(!empty($data['message']))
+                        <!-- Informational Text --><!--[if mso | IE]>
+                        <td class="" style="vertical-align:top;width:600px;"><![endif]-->
+                        <div class="mj-column-per-100 mj-outlook-group-fix"
+                             style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+                            <table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%">
+                                <tbody>
+                                <tr>
+                                    <td style="vertical-align:top;padding:0px;">
+                                        <table border="0" cellpadding="0" cellspacing="0" role="presentation"
+                                               width="100%">
+                                            <tbody>
+                                            <tr>
+                                                <td align="left"
+                                                    style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                                                    <table cellpadding="0" cellspacing="0" width="100%" border="0"
+                                                           style="color:#000000;font-family:Fira Sans;font-size:13px;line-height:22px;table-layout:auto;width:100%;border:none;">
+                                                        <tbody>
+                                                        <tr style="background-color: lightskyblue;">
+                                                            <td style="width: 40px; padding: 8px; text-align:center; font-size: 20px">
+                                                                ℹ️
+                                                            </td>
+                                                            <td style="padding: Opx 16px 0px 0px;">
+                                                                {!! $data['message'] !!}
+                                                            </td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!--[if mso | IE]></td><![endif]-->
+                    @endif
                     <!-- START CARD -->
                     @foreach($data['projects'] as $card)
                     <!--[if mso | IE]>
