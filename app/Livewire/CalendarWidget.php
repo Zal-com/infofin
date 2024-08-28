@@ -34,7 +34,8 @@ class CalendarWidget extends FullCalendarWidget
                             'start' => $deadlineDate->format('Y-m-d'),
                             'end' => $deadlineDate->format('Y-m-d'),
                             'url' => route('projects.show', $project->id),
-                            'color' => $project->is_big ? 'crimson' : null
+                            'color' => $project->is_big ? 'crimson' : null,
+                            'height' => 'auto',
                         ];
                     }
                 }
@@ -48,8 +49,9 @@ class CalendarWidget extends FullCalendarWidget
 
     public function config(): array
     {
-        $today = Carbon::today();
-        $sixMonthsLater = $today->copy()->addMonths(6);
+        $thisMonth = Carbon::today()->startOfMonth();
+        $sixMonthsLater = $thisMonth->copy()->startOfMonth(6);
+        $nineMonthsLater = $thisMonth->copy()->addMonths(9);
 
         return [
             'selectable' => false,
@@ -59,16 +61,16 @@ class CalendarWidget extends FullCalendarWidget
             'headerToolbar' => [
                 'left' => 'prev,next today',
                 'center' => 'title',
-                'right' => 'multiMonthThreeMonth,dayGridMonth,timeGridWeek,timeGridDay',
+                'right' => 'multiMonthThreeMonth,dayGridMonth',
             ],
             'initialView' => 'multiMonthThreeMonth',
             'views' => [
                 'multiMonthThreeMonth' => ['type' => 'multiMonth', 'duration' => ['months' => 3], 'buttonText' => '3 mois'],
             ],
-            'multiMonthMaxColumns' => 2, // force a single column
+            'multiMonthMaxColumns' => 2, // force 2 columns
             'validRange' => [
-                'start' => $today->format('Y-m-d'),
-                'end' => $sixMonthsLater->format('Y-m-d'),
+                'start' => $thisMonth->format('Y-m-d'),
+                'end' => $nineMonthsLater->format('Y-m-d'),
             ],
         ];
     }
