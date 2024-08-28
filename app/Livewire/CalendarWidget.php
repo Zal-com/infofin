@@ -53,7 +53,6 @@ class CalendarWidget extends FullCalendarWidget
 
         return [
             'selectable' => false,
-            'plugins' => ['multiMonth'], // Breaking the whole component
             'editable' => false,
             'timeZone' => config('app.timezone'),
             'locale' => config('app.locale'),
