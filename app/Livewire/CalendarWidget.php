@@ -59,12 +59,13 @@ class CalendarWidget extends FullCalendarWidget
             'headerToolbar' => [
                 'left' => 'prev,next today',
                 'center' => 'title',
-                'right' => 'Trimestre,dayGridMonth,timeGridWeek,timeGridDay',
+                'right' => 'multiMonthThreeMonth,dayGridMonth,timeGridWeek,timeGridDay',
             ],
-            'initialView' => 'Trimestre',
+            'initialView' => 'multiMonthThreeMonth',
             'views' => [
-                'Trimestre' => ['type' => 'multiMonth', 'duration' => ['months' => 3]],
+                'multiMonthThreeMonth' => ['type' => 'multiMonth', 'duration' => ['months' => 3], 'buttonText' => '3 mois'],
             ],
+            'multiMonthMaxColumns' => 2, // force a single column
             'validRange' => [
                 'start' => $today->format('Y-m-d'),
                 'end' => $sixMonthsLater->format('Y-m-d'),
