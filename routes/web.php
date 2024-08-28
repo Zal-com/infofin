@@ -86,8 +86,8 @@ Route::get('/download', function (Request $request) {
     $filename = $request->query('file');
     $name = $request->query('name');
 
-    if (Storage::exists($filename)) {
-        return Storage::download($filename, $name);
+    if (Storage::disk('public')->exists($filename)) {
+        return Storage::disk('public')->download($filename);
     } else {
         return abort(404, 'File not found');
     }

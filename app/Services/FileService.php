@@ -5,27 +5,36 @@ namespace App\Services;
 use App\Models\Document;
 use App\Models\Project;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class FileService
 {
     public function moveFiles(array $files, Project $project): void
     {
         foreach ($files as $file) {
+            // Si le fichier est déjà un chemin (donc une chaîne de caractères)
             if (is_string($file)) {
                 $doc = Document::where("path", $file)->where("is_draft", 1)->first();
-                $doc->project_id = $project->id;
-                $doc->is_draft = 0;
-                $doc->save();
+                if ($doc) {
+                    $doc->project_id = $project->id;
+                    $doc->is_draft = 0;
+                    $doc->save();
+                }
                 continue;
             }
-            $finalPath = 'uploads/docs/' . $file->getFilename();
 
+            // Générer une chaîne aléatoire pour le sous-dossier
+            $randomDir = Str::random(10);
+            $finalPath = "uploads/docs/{$randomDir}/" . $file->getClientOriginalName();
+
+            // Enregistrer le fichier
             Storage::disk('public')->putFileAs(
-                'uploads/docs',
+                "uploads/docs/{$randomDir}",
                 $file,
-                $file->getFilename()
+                $file->getClientOriginalName()
             );
 
+            // Créer l'enregistrement du document
             Document::create([
                 'project_id' => $project->id,
                 'filename' => $file->getClientOriginalName(),
@@ -33,37 +42,52 @@ class FileService
                 'download_count' => 0,
             ]);
 
+            // Supprimer le fichier temporaire
             if (file_exists($file->getPathname())) {
                 unlink($file->getPathname());
             }
         }
-
-        return;
     }
 
-    private function handleDocumentUpdates(array $newDocuments, Project $project): void
+    public function handleDocumentUpdates(array $newDocuments, Project $project): void
     {
-        $existingDocuments = $project->documents->pluck('filename')->toArray();
+        $existingDocuments = $project->documents->pluck('path')->toArray();
 
         $deletedDocuments = array_diff($existingDocuments, $newDocuments);
 
         foreach ($deletedDocuments as $deletedDocument) {
             Storage::disk('public')->delete($deletedDocument);
-            Document::where('filename', $deletedDocument)->where('project_id', $project->id)->delete();
+            Document::where('path', $deletedDocument)->where('project_id', $project->id)->delete();
+            $directory = dirname($deletedDocument);
+            if (Storage::disk('public')->exists($directory)) {
+                $filesInDirectory = Storage::disk('public')->files($directory);
+                if (empty($filesInDirectory)) {
+                    Storage::disk('public')->deleteDirectory($directory);
+                }
+            }
         }
 
         $this->moveFiles($newDocuments, $project);
     }
 
-
     public function moveForDraft(array $files, array $old_docs): array
     {
         if ($old_docs != null) {
             $deletedDocuments = array_diff($old_docs, $files);
-
+        
             foreach ($deletedDocuments as $deletedDocument) {
                 Storage::disk('public')->delete($deletedDocument);
                 Document::where('filename', $deletedDocument)->delete();
+        
+                $directory = dirname($deletedDocument);
+        
+                if (Storage::disk('public')->exists($directory)) {
+                    $filesInDirectory = Storage::disk('public')->files($directory);
+        
+                    if (empty($filesInDirectory)) {
+                        Storage::disk('public')->deleteDirectory($directory);
+                    }
+                }
             }
         }
 
@@ -88,12 +112,16 @@ class FileService
                 }
                 continue;
             }
-            $finalPath = 'uploads/docs/' . $file->getFilename();
 
+            // Générer une chaîne aléatoire pour le sous-dossier
+            $randomDir = Str::random(10);
+            $finalPath = "uploads/docs/{$randomDir}/" . $file->getClientOriginalName();
+
+            // Enregistrer le fichier
             Storage::disk('public')->putFileAs(
-                'uploads/docs',
+                "uploads/docs/{$randomDir}",
                 $file,
-                $file->getFilename()
+                $file->getClientOriginalName()
             );
 
             Document::create([
@@ -106,6 +134,7 @@ class FileService
 
             $movedFiles[] = $finalPath;
 
+            // Supprimer le fichier temporaire
             if (file_exists($file->getPathname())) {
                 unlink($file->getPathname());
             }
@@ -117,7 +146,7 @@ class FileService
     private function generateNewPath($originalPath)
     {
         $pathInfo = pathinfo($originalPath);
-        return $pathInfo['dirname'] . '/' . $pathInfo['filename'] . '_duplicate_' . time() . '.' . $pathInfo['extension'];
+        $randomDir = Str::random(10); // Générer un nouveau dossier aléatoire
+        return $pathInfo['dirname'] . '/' . $randomDir . '/' . $pathInfo['basename'];
     }
-
 }

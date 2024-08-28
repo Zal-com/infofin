@@ -127,7 +127,7 @@
                 </x-filament::section.heading>
                 <ul>
                     @foreach($project->documents as $document)
-                        <x-filament::section class="w-1/3">
+                        <x-filament::section class="w-1/2">
                             <li>
                                 <div class="flex justify-between">
                                     <div class="flex items-center">
@@ -140,11 +140,8 @@
                                     <div class="flex items-center">
                                         <a href="{{ route('download', ['name'=> $document->filename ,'file' => $document->path]) }}"
                                            class="inline-block">
-                                            <x-filament::button color="tertiary"
-                                                                style="border-radius: 50%; padding: 0.5rem; display: inline-flex; justify-content: center; align-items: center; background:transparent; border:1px solid #42484e">
                                                 <x-filament::icon icon="heroicon-o-arrow-down-tray"
-                                                                  class="min-h-[16px] min-w-[16px] text-gray-900"/>
-                                            </x-filament::button>
+                                                                  class="min-h-[28px] min-w-[28px] text-gray-900 hover:text-gray-600"/>
                                         </a>
                                     </div>
                                 </div>
@@ -164,8 +161,7 @@
             <x-zeus-accordion::accordion>
                 <x-zeus-accordion::accordion.item
                     icon="heroicon-o-calendar-days"
-                    label="{{ $project->firstDeadline === 'Continu' ? 'Continu' : (explode('|', $project->firstDeadline)[1]}} : {{explode('|',$project->firstDeadline)[0])}}"
-                >
+                    label="{{ $project->firstDeadline === 'Continu' ? 'Continu' : (explode('|', $project->firstDeadline)[1]}} : {{explode('|',$project->firstDeadline)[0])}}">
                     <div class="bg-white p-4">
                         @foreach($project->allDeadlinesSorted as $sortedDeadline)
                             @if(!$sortedDeadline['continuous'])
