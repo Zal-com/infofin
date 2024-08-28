@@ -54,7 +54,8 @@ class AdminPanelProvider extends PanelProvider
                     FilamentJobsMonitorPlugin::make(),
                     FilamentExceptionsPlugin::make(),
                     FilamentRouteStatisticsPlugin::make(),
-                    FilamentFullCalendarPlugin::make(),
+                    FilamentFullCalendarPlugin::make()
+                        ->plugins(['multiMonth']),
                 ]
             )
             ->resources([
