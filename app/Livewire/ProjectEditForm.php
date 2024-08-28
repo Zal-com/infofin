@@ -54,6 +54,11 @@ class ProjectEditForm extends Component implements HasForms
         return view('livewire.project-edit-form');
     }
 
+    public function __construct()
+    {
+        $this->fileService = new FileService();
+    }
+
     public function archiveProject()
     {
         $this->project->update(['status' => -1]);
@@ -426,89 +431,93 @@ class ProjectEditForm extends Component implements HasForms
             }
         } else {
             $data = $validator->validated();
-        }
-
-        try {
-
-            $data['last_update_user_id'] = $userId;
-
-            $converter = new HtmlConverter();
-            $markdown = $converter->convert($this->data["short_description"]);
-
-            $data['short_description'] = $markdown;
-
-            if ($data['periodicity'] === null) {
-                $data['periodicity'] = 0;
-            }
-
-            if (isset($data['contact_ulb'])) {
-                $contactsUlB = [];
-                foreach ($data['contact_ulb'] as $contact) {
-                    $name = trim(($contact['first_name'] ?? '') . ' ' . ($contact['last_name'] ?? ''));
-                    $email = $contact['email'] ?? '';
-                    $phone = $contact['tel'] ?? '';
-                    $address = $contact['address'] ?? '';
-
-                    if ($name !== '' || $email !== '' || $phone !== '' || $address !== '') {
-                        $contactsUlB[] = [
-                            'name' => $name,
-                            'email' => $email,
-                            'phone' => $phone,
-                            'address' => $address,
-                        ];
+            try {
+                $data['last_update_user_id'] = $userId;
+    
+                $converter = new HtmlConverter();
+                $markdown = $converter->convert($this->data["short_description"]);
+    
+                $data['short_description'] = $markdown;
+    
+                if (!array_key_exists('periodicity', $data) || $data['periodicity'] === null) {
+                    $data['periodicity'] = 0;
+                }
+    
+                if (isset($data['contact_ulb'])) {
+                    $contactsUlB = [];
+                    foreach ($data['contact_ulb'] as $contact) {
+                        $name = trim(($contact['first_name'] ?? '') . ' ' . ($contact['last_name'] ?? ''));
+                        $email = $contact['email'] ?? '';
+                        $phone = $contact['tel'] ?? '';
+                        $address = $contact['address'] ?? '';
+    
+                        if ($name !== '' || $email !== '' || $phone !== '' || $address !== '') {
+                            $contactsUlB[] = [
+                                'name' => $name,
+                                'email' => $email,
+                                'phone' => $phone,
+                                'address' => $address,
+                            ];
+                        }
+                    }
+                    $data['contact_ulb'] = $contactsUlB;
+                }else{
+                    $data['contact_ulb'] = [];
+                }
+    
+                if (isset($data['contact_ext'])) {
+                    $contactsExt = [];
+                    foreach ($data['contact_ext'] as $contact) {
+                        $name = trim(($contact['first_name'] ?? '') . ' ' . ($contact['last_name'] ?? ''));
+                        $email = $contact['email'] ?? '';
+                        $phone = $contact['tel'] ?? '';
+                        $address = $contact['address'] ?? '';
+    
+                        if ($name !== '' || $email !== '' || $phone !== '' || $address !== '') {
+                            $contactsExt[] = [
+                                'name' => $name,
+                                'email' => $email,
+                                'phone' => $phone,
+                                'address' => $address,
+                            ];
+                        }
+                    }
+                    $data['contact_ext'] = $contactsExt;
+                }else{
+                    $data['contact_ext'] = [];
+                }
+                
+                $this->project->update($data);
+    
+                $this->project->organisations()->sync($data['organisation'] ?? null);
+                $this->project->info_types()->sync($data['info_types'] ?? []);
+                $this->project->scientific_domains()->sync($data['scientific_domains'] ?? []);
+    
+                if (!empty($data['documents'])) {
+                    $this->fileService->handleDocumentUpdates($data['documents'], $this->project);
+                }
+    
+                if (!empty($data['geo_zones'])) {
+                    foreach ($data['geo_zones'] as $zone) {
+                        if (strpos($zone, 'continent_') === 0) {
+                            $continent_id = str_replace('continent_', '', $zone);
+                            $this->project->continent()->associate($continent_id);
+                        } elseif (strpos($zone, 'pays_') === 0) {
+                            $country_id = str_replace('pays_', '', $zone);
+                            $this->project->country()->associate($country_id);
+                        }
                     }
                 }
-                $data['contact_ulb'] = $contactsUlB;
+    
+                $this->project->save();
+                Notification::make()->title('Le projet a été modifié avec success.')->icon('heroicon-o-check-circle')->seconds(5)->color('success')->send();
+                redirect()->route('projects.index');
+            } catch (\Exception $e) {
+                dd($e);
+                Notification::make()->title("Le projet n'a pas pu être modifié.")->icon('heroicon-o-x-circle')->seconds(5)->color('danger')->send();
+    
+                redirect()->route('projects.index');
             }
-
-            if (isset($data['contact_ext'])) {
-                $contactsExt = [];
-                foreach ($data['contact_ext'] as $contact) {
-                    $name = trim(($contact['first_name'] ?? '') . ' ' . ($contact['last_name'] ?? ''));
-                    $email = $contact['email'] ?? '';
-                    $phone = $contact['tel'] ?? '';
-                    $address = $contact['address'] ?? '';
-
-                    if ($name !== '' || $email !== '' || $phone !== '' || $address !== '') {
-                        $contactsExt[] = [
-                            'name' => $name,
-                            'email' => $email,
-                            'phone' => $phone,
-                            'address' => $address,
-                        ];
-                    }
-                }
-                $data['contact_ext'] = $contactsExt;
-            }
-            $this->project->update($data);
-
-            $this->project->organisations()->sync($data['organisation'] ?? null);
-            $this->project->info_types()->sync($data['info_types'] ?? []);
-            $this->project->scientific_domains()->sync($data['scientific_domains'] ?? []);
-
-            if (isset($data['documents'])) {
-                $this->fileService->handleDocumentUpdates($data['documents'], $this->project);
-            }
-
-            if (!empty($data['geo_zones'])) {
-                foreach ($data['geo_zones'] as $zone) {
-                    if (strpos($zone, 'continent_') === 0) {
-                        $continent_id = str_replace('continent_', '', $zone);
-                        $this->project->continent()->associate($continent_id);
-                    } elseif (strpos($zone, 'pays_') === 0) {
-                        $country_id = str_replace('pays_', '', $zone);
-                        $this->project->country()->associate($country_id);
-                    }
-                }
-            }
-
-            $this->project->save();
-            Notification::make()->title('Le projet a été modifié avec success.')->icon('heroicon-o-check-circle')->seconds(5)->color('success')->send();
-            redirect()->route('projects.index');
-        } catch (\Exception $e) {
-            Notification::make()->title("Le projet n'a pas pu être modifié.")->icon('heroicon-o-x-circle')->seconds(5)->color('danger')->send();
-
-            redirect()->route('projects.index');
         }
     }
 
