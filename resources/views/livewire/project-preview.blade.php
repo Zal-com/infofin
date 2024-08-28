@@ -94,15 +94,29 @@
                 <x-filament::section.heading class="text-2xl">
                     Documents
                 </x-filament::section.heading>
-                @if(isset($data['docs']) && is_array($data['docs']) && !empty($data['docs']))
+                @if(isset($data['documents']) && is_array($data['documents']) && !empty($data['documents']))
                     <ul>
-                        @foreach($data['docs'] as $doc)
-                            <li>
-                                <a href="{{ Storage::disk('public')->url($doc) }}" target="_blank"
-                                   class="text-blue-500">
-                                    {{ basename($doc) }}
-                                </a>
-                            </li>
+                        @foreach($data['documents'] as $document)
+                            <x-filament::section class="w-1/2">
+                                <li>
+                                    <div class="flex justify-between">
+                                        <div class="flex items-center">
+                                            <x-filament::icon icon="heroicon-o-document" class="h-[24px] w-[24px] mr-2"/>
+                                            <a href="{{ route('download', ['name'=> $document['filename'] ,'file' => $document['path']]) }}"
+                                            class="text-blue-600 hover:underline">
+                                                {{ $document['filename'] }}
+                                            </a>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <a href="{{ route('download', ['name'=> $document['filename'] ,'file' => $document['path']]) }}"
+                                            class="inline-block">
+                                                    <x-filament::icon icon="heroicon-o-arrow-down-tray"
+                                                                    class="min-h-[28px] min-w-[28px] text-gray-900 hover:text-gray-600"/>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </li>
+                            </x-filament::section>
                         @endforeach
                     </ul>
                 @else

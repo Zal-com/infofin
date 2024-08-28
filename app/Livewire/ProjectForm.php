@@ -67,8 +67,13 @@ final class ProjectForm extends Component implements HasForms
 
         if (!empty($data['documents'])) {
             $data['document_filenames'] = array_map(function ($docPath) {
-                $document = Document::where('path', $docPath)->first();
-                return $document ? $document->filename : basename($docPath);
+                if(is_array($docPath)){
+                    $document = Document::where('path', $docPath['path'])->first();
+                    return $document ? $document->filename : basename($docPath['path']);
+                }else{
+                    $document = Document::where('path', $docPath)->first();
+                    return $document ? $document->filename : basename($docPath);
+                }
             }, $data['documents']);
         }
 
@@ -362,6 +367,10 @@ final class ProjectForm extends Component implements HasForms
 
     public function preview()
     {
+        if (!$this->fileService) {
+            $this->fileService = app(FileService::class);
+        }
+        $this->data['documents'] = $this->fileService->previewFile($this->data['documents']);
         session()->flash('previewData', $this->data);
         return redirect()->route('projects.preview');
     }
