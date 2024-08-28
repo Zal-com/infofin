@@ -143,6 +143,70 @@ class FileService
         return $movedFiles;
     }
 
+    public function previewFile(array $files): array
+    {
+        $movedFiles = [];
+        foreach ($files as $file) {
+            if (is_string($file)) {
+                $doc = Document::where("path", $file)->first();
+                if ($doc->is_draft == 0) {
+                    $newPath = $this->generateNewPath($doc->path);
+                    Document::create([
+                        'project_id' => null,
+                        'filename' => $doc->filename,
+                        'download_count' => 0,
+                        'is_draft' => 1,
+                        'path' => $newPath,
+                    ]);
+
+                    Storage::copy($doc->path, $newPath);
+                    $movedFiles[] = [
+                        'filename' => $doc->filename,
+                        'path' => $newPath
+                    ];
+                } else {
+                    $movedFiles[] = [
+                        'filename' => $doc->filename,
+                        'path' => $doc->path
+                    ];
+                }
+                continue;
+            }
+
+            // Generate a random string for the subfolder
+            $randomDir = Str::random(10);
+            $finalPath = "uploads/docs/{$randomDir}/" . $file->getClientOriginalName();
+
+            // Save the file
+            Storage::disk('public')->putFileAs(
+                "uploads/docs/{$randomDir}",
+                $file,
+                $file->getClientOriginalName()
+            );
+
+            Document::create([
+                'project_id' => null,
+                'filename' => $file->getClientOriginalName(),
+                'path' => $finalPath,
+                'download_count' => 0,
+                'is_draft' => 1
+            ]);
+
+            $movedFiles[] = [
+                'filename' => $file->getClientOriginalName(),
+                'path' => $finalPath
+            ];
+
+            // Delete the temporary file
+            if (file_exists($file->getPathname())) {
+                unlink($file->getPathname());
+            }
+        }
+
+        return $movedFiles;
+    }
+
+
     private function generateNewPath($originalPath)
     {
         $pathInfo = pathinfo($originalPath);
