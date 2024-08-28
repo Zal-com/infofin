@@ -32,6 +32,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use League\HTMLToMarkdown\HtmlConverter;
 use Livewire\Component;
+use App\Services\FileService;
 
 class ProjectEditForm extends Component implements HasForms
 {
@@ -45,6 +46,8 @@ class ProjectEditForm extends Component implements HasForms
     public array $originalDocuments = [];
 
     public $id;
+    
+    protected FileService $fileService;
 
     public function render()
     {
@@ -61,8 +64,10 @@ class ProjectEditForm extends Component implements HasForms
     }
 
 
-    public function mount(Project $project)
+    public function mount(Project $project, FileService $fileService)
     {
+        $this->fileService = $fileService;
+
         $this->project = $project->load('organisations', 'scientific_domains', 'info_types', 'country', 'continent', 'documents');
 
         $this->project->contact_ulb = $this->transformContacts($this->project->contact_ulb);
@@ -352,6 +357,9 @@ class ProjectEditForm extends Component implements HasForms
 
     public function submit(): void
     {
+        if (!$this->fileService) {
+            $this->fileService = app(FileService::class);
+        }
         $userId = Auth::id();
 
         $rules = [
@@ -479,7 +487,7 @@ class ProjectEditForm extends Component implements HasForms
             $this->project->scientific_domains()->sync($data['scientific_domains'] ?? []);
 
             if (isset($data['documents'])) {
-                $this->handleDocumentUpdates($data['documents'], $this->project);
+                $this->fileService->handleDocumentUpdates($data['documents'], $this->project);
             }
 
             if (!empty($data['geo_zones'])) {

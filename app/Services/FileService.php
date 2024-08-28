@@ -13,9 +13,11 @@ class FileService
         foreach ($files as $file) {
             if (is_string($file)) {
                 $doc = Document::where("path", $file)->where("is_draft", 1)->first();
-                $doc->project_id = $project->id;
-                $doc->is_draft = 0;
-                $doc->save();
+                if ($doc) {
+                    $doc->project_id = $project->id;
+                    $doc->is_draft = 0;
+                    $doc->save();
+                }
                 continue;
             }
             $finalPath = 'uploads/docs/' . $file->getFilename();
@@ -37,24 +39,21 @@ class FileService
                 unlink($file->getPathname());
             }
         }
-
-        return;
     }
 
-    private function handleDocumentUpdates(array $newDocuments, Project $project): void
+    public function handleDocumentUpdates(array $newDocuments, Project $project): void
     {
-        $existingDocuments = $project->documents->pluck('filename')->toArray();
+        $existingDocuments = $project->documents->pluck('path')->toArray();
 
         $deletedDocuments = array_diff($existingDocuments, $newDocuments);
 
         foreach ($deletedDocuments as $deletedDocument) {
             Storage::disk('public')->delete($deletedDocument);
-            Document::where('filename', $deletedDocument)->where('project_id', $project->id)->delete();
+            Document::where('path', $deletedDocument)->where('project_id', $project->id)->delete();
         }
 
         $this->moveFiles($newDocuments, $project);
     }
-
 
     public function moveForDraft(array $files, array $old_docs): array
     {
@@ -119,5 +118,4 @@ class FileService
         $pathInfo = pathinfo($originalPath);
         return $pathInfo['dirname'] . '/' . $pathInfo['filename'] . '_duplicate_' . time() . '.' . $pathInfo['extension'];
     }
-
 }
