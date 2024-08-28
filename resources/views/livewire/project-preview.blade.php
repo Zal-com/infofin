@@ -1,5 +1,5 @@
 @php
-    $deadlines = $data['deadlines'];
+    $deadlines = $data['deadlines'] ?? [];
 @endphp
 <div class="flex flex-col">
     <div class="flex-grow grid grid-cols-5 gap-4 mb-5" x-data="{ tab: 'description' }">
@@ -17,7 +17,7 @@
             </x-filament::tabs>
             <div x-show="tab === 'description'" class="m-4">
                 <h1>{{ $data['title'] ?? 'Aucun titre entré' }}</h1>
-                <p>{{ $organisations[0]['title'] ?? 'Aucune organisation entrée' }}</p>
+                <p>{{ $organisations['title'] ?? 'Aucune organisation entrée' }}</p>
                 <div class="tiptap">
                     @empty($data['long_description'])
                         Pas de description fournie.

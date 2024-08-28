@@ -20,7 +20,7 @@ class ProjectPreview extends Component
     public $contactUlbs = [];
     public $contactExts = [];
 
-    public $organisations = [];
+    public $organisations;
 
     public $scientificDomains = [];
 
@@ -35,6 +35,7 @@ class ProjectPreview extends Component
             $this->info_types = InfoType::find($this->data["info_types"]);
             $this->transformGeoZones();
             $this->transformContacts();
+
         }
     }
 
