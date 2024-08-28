@@ -1,3 +1,6 @@
+@php
+    $deadlines = $data['deadlines'] ?? [];
+@endphp
 <div class="flex flex-col">
     <div class="flex-grow grid grid-cols-5 gap-4 mb-5" x-data="{ tab: 'description' }">
         <x-filament::section class="col-span-4 row-span-2">
@@ -12,15 +15,16 @@
                     Documents
                 </x-filament::tabs.item>
             </x-filament::tabs>
-            @dump($data['long_description'])
             <div x-show="tab === 'description'" class="m-4">
                 <h1>{{ $data['title'] ?? 'Aucun titre entré' }}</h1>
-                <p>{{ $organisations[0]['title'] ?? 'Aucune organisation entrée' }}</p>
+                <p>{{ $organisations['title'] ?? 'Aucune organisation entrée' }}</p>
                 <div class="tiptap">
-                    @if(!empty($data['long_description']))
+                    @empty($data['long_description'])
+                        Pas de description fournie.
+                    @else
                         {!! tiptap_converter()->asHTML($data['long_description']) !!}
                         {{--!! \Illuminate\Support\Str::of($data['long_description'] ?? 'Aucune description entrée')->markdown() !!--}}
-                    @endif
+                    @endempty
                 </div>
             </div>
 
@@ -44,7 +48,11 @@
                     <x-filament::section.description
                         class="mb-1 text-sm text-gray-500 dark:text-gray-400 text-justify list-inside">
                         <div class="text-sm text-gray-500 dark:text-gray-400 text-justify">
-                            {!! \Illuminate\Support\Str::of($data['funding'] ?? "Pas de financement entré")->markdown() !!}
+                            @empty($data['funding'])
+                                Pas de financement fourni.
+                            @else
+                                {!! tiptap_converter()->asHTML($data['funding']) !!}
+                            @endempty
                         </div>
                     </x-filament::section.description>
                 </div>
@@ -56,7 +64,11 @@
                     <x-filament::section.description
                         class="mb-1 text-sm text-gray-500 dark:text-gray-400 text-justify list-inside">
                         <div class="text-sm text-gray-500 dark:text-gray-400 text-justify">
-                            {!! \Illuminate\Support\Str::of($data['apply_instructions'] ?? "Pas d'instructions entré")->markdown() !!}
+                            @empty($data['apply_instructions'])
+                                Pas d'instructions d'application fournies.
+                            @else
+                                {!! tiptap_converter()->asHTML($data['apply_instructions']) !!}}
+                            @endempty
                         </div>
                     </x-filament::section.description>
                 </div>
@@ -68,7 +80,11 @@
                     <x-filament::section.description
                         class="mb-1 text-sm text-gray-500 dark:text-gray-400 text-justify list-inside">
                         <div class="text-sm text-gray-500 dark:text-gray-400 text-justify">
-                            {!! \Illuminate\Support\Str::of($data['admission_requirements'] ?? "Pas de requis d'admission")->markdown() !!}
+                            @empty($data['admission_requirements'])
+                                Pas de requis d'admission fournis.
+                            @else
+                                {!! tiptap_converter()->asHTML($data['admission_requirements']) !!}
+                            @endempty
                         </div>
                     </x-filament::section.description>
                 </div>
@@ -94,23 +110,22 @@
                 @endif
             </div>
         </x-filament::section>
-        @php
-            $deadlines = $data['deadlines']
-        @endphp
+
 
         <div class="flex flex-col gap-4 sticky top-5">
-            @if(!empty($deadlines))
+            @if($deadlines)
                 <x-zeus-accordion::accordion>
                     <x-zeus-accordion::accordion.item
                         icon="heroicon-o-calendar-days"
-
-                        label="{{ $deadlines[array_key_first($deadlines)]['continuous'] ? ' Projet continu' : $deadlines[array_key_first($deadlines)]['proof'] . ' : ' . \Carbon\Carbon::make($deadline[array_key_first($deadlines)]['date'])->format('d/m/Y')}}"
+                        label="{{ $deadlines[array_key_first($deadlines)]['continuous'] ? 'Continu' : $deadlines[array_key_first($deadlines)]['proof']}} : {{\Carbon\Carbon::make($deadlines[array_key_first($deadlines)]['date'])->format('d/m/Y')}}"
                     >
                         <div class="bg-white p-4">
                             @foreach($deadlines as $deadline)
-                                <p>
-                                    {{$deadline['proof'] != '' ? $deadline['proof'] . ' :'  : ''}}
-                                    {{\Carbon\Carbon::make($deadline['date'])->format("d/m/Y")}}</p>
+                                @if(! $deadline['continuous'])
+                                    <p>
+                                        {{$deadline['proof'] != '' ? $deadline['proof'] . ' :'  : ''}}
+                                        {{\Carbon\Carbon::make($deadline['date'])->format("d/m/Y")}}</p>
+                                @endif
                             @endforeach
                         </div>
                     </x-zeus-accordion::accordion.item>
@@ -119,15 +134,8 @@
                 <x-zeus-accordion::accordion>
                     <x-zeus-accordion::accordion.item
                         icon="heroicon-o-calendar-days"
-                        label="Projet terminé"
+                        label="Pas de deadlines fournies"
                     >
-                        <div class="bg-white p-4">
-                            @foreach($deadlines as $deadline)
-                                <p>
-                                    {{$deadline['proof']}}
-                                    : {{\Carbon\Carbon::make($deadline['date'])->format("d/m/Y - H:i")}}</p>
-                            @endforeach
-                        </div>
                     </x-zeus-accordion::accordion.item>
                 </x-zeus-accordion::accordion>
             @endif
