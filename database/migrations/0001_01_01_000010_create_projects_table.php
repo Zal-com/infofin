@@ -11,12 +11,6 @@ class CreateProjectsTable extends Migration
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
             $table->string('title', 255);
-            $table->dateTime('deadline');
-            $table->dateTime('deadline_2')->nullable();
-            $table->boolean('continuous');
-            $table->boolean('continuous_2');
-            $table->string('proof', 50);
-            $table->string('proof_2', 50);
             $table->json('contact_ulb');
             $table->json('contact_ext');
             $table->integer('periodicity');
