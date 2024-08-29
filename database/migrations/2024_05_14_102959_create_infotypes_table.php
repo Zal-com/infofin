@@ -13,9 +13,6 @@ class CreateInfoTypesTable extends Migration
             $table->string('title', 255);
             $table->foreignId('info_types_cat_id')->constrained('info_types_categories');
 
-            //Relations
-            $table->foreign('info_types_cat_id')->references('id')->on('info_types_categories');
-
         });
     }
 
