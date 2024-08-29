@@ -16,8 +16,6 @@ class CreateDraftsTable extends Migration
             $table->json('content');
             $table->foreignId('poster_id')->constrained('users');
             $table->timestamps();
-
-            $table->foreign('poster_id')->references('id')->on('users');
         });
     }
 
