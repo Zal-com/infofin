@@ -13,6 +13,7 @@ class CreateProjectsTable extends Migration
             $table->string('title', 255);
             $table->json('contact_ulb');
             $table->json('contact_ext');
+            $table->json("deadlines");
             $table->integer('periodicity');
             $table->longText('admission_requirements');
             $table->longText('funding');
