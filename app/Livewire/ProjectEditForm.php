@@ -7,7 +7,6 @@ use App\Models\Countries;
 use App\Models\Document;
 use App\Models\Draft;
 use App\Models\InfoType;
-use App\Models\Organisation;
 use App\Models\Project;
 use App\Models\ScientificDomainCategory;
 use App\Services\FileService;
@@ -148,7 +147,13 @@ class ProjectEditForm extends Component implements HasForms
                     Select::make('organisation_id')
                         ->label('Organisation')
                         ->searchable()
-                        ->options(Organisation::all()->pluck('title', 'id')->toArray())
+                        ->relationship('organisation', 'title')
+                        ->preload()
+                        ->createOptionForm([
+                            TextInput::make('title')
+                                ->label('Organisation Title')
+                                ->required(),
+                        ])
                         ->required(),
                     Checkbox::make('is_big')
                         ->label('Projet majeur')
@@ -294,6 +299,7 @@ class ProjectEditForm extends Component implements HasForms
                         ->label('Documents')
                         ->disk('public')
                         ->visibility('public')
+                        ->maxSize(20)
                         ->acceptedFileTypes([
                             'application/pdf',
                             'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
