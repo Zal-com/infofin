@@ -67,10 +67,10 @@ final class ProjectForm extends Component implements HasForms
 
         if (!empty($data['documents'])) {
             $data['document_filenames'] = array_map(function ($docPath) {
-                if(is_array($docPath)){
+                if (is_array($docPath)) {
                     $document = Document::where('path', $docPath['path'])->first();
                     return $document ? $document->filename : basename($docPath['path']);
-                }else{
+                } else {
                     $document = Document::where('path', $docPath)->first();
                     return $document ? $document->filename : basename($docPath);
                 }
@@ -354,15 +354,15 @@ final class ProjectForm extends Component implements HasForms
                 ->iconColor('success')
                 ->send();
             redirect()->route('profile.show');
+        } else {
+            // Gérer le cas où la sauvegarde du nouveau brouillon échoue
+            Notification::make()
+                ->title("La sauvegarde du brouillon a échoué")
+                ->color('danger')
+                ->seconds(5)
+                ->send();
+            return redirect()->back();
         }
-
-        // Gérer le cas où la sauvegarde du nouveau brouillon échoue
-        Notification::make()
-            ->title("La sauvegarde du brouillon a échoué")
-            ->color('danger')
-            ->seconds(5)
-            ->send();
-        return redirect()->back();
     }
 
     public function preview()
