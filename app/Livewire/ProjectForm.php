@@ -64,7 +64,6 @@ final class ProjectForm extends Component implements HasForms
         $this->fromPrev = $data;
         $this->project = new Project($data);
 
-
         if (!empty($data['documents'])) {
             $data['document_filenames'] = array_map(function ($docPath) {
                 if (is_array($docPath)) {
@@ -99,16 +98,11 @@ final class ProjectForm extends Component implements HasForms
                         ->maxLength(255)
                         ->required()
                         ->autofocus(),
-                    Select::make('organisation')
-                        ->searchable()
-                        ->createOptionForm([
-                            TextInput::make('title')
-                                ->required()
-                        ])
+                    Select::make('organisation_id')
                         ->label('Organisation')
-                        ->required()
-                        ->relationship(name: 'organisations', titleAttribute: 'title')
-                        ->options(Organisation::all()->pluck('title', 'id')->toArray()),
+                        ->searchable()
+                        ->options(Organisation::all()->pluck('title', 'id')->toArray())
+                        ->required(),
                     Checkbox::make('is_big')
                         ->label('Projet majeur')
                         ->default(false),
@@ -385,7 +379,7 @@ final class ProjectForm extends Component implements HasForms
         $rules = [
             'title' => 'required|string|max:255',
             'is_big' => 'boolean',
-            'organisation' => 'string',
+            'organisation_id' => 'required|exists:organisations,id',
             'info_types' => 'array',
             'documents' => 'array',
             'scientific_domains' => 'array',
@@ -414,7 +408,7 @@ final class ProjectForm extends Component implements HasForms
         $validator = Validator::make($this->data, $rules, [], [
             'title' => 'Titre',
             'is_big' => 'Projet Majeur',
-            'organisation' => 'Organisation',
+            'organisation_id' => 'Organisation',
             'info_types' => 'Types de programme',
             'scientific_domains' => 'Disciplines scientifiques',
             'geo_zones' => 'Zones géographiques',
@@ -503,10 +497,6 @@ final class ProjectForm extends Component implements HasForms
             }
 
             if ($project = Project::create($data)) {
-                if (!empty($data['organisation'])) {
-                    $project->organisations()->sync($data['organisation']);
-                }
-
                 if (!empty($data['info_types'])) {
                     $project->info_types()->sync($data['info_types']);
                 }
@@ -538,6 +528,4 @@ final class ProjectForm extends Component implements HasForms
 
         }
     }
-
-
 }

@@ -22,7 +22,7 @@
                 @endforeach
             </x-filament::section.description>
             <h1 class="font-bold text-4xl my-1">{{$project->title ?? ''}}</h1>
-            <p class="text-md italic">{{$project->organisations->first()->title ?? $project->Organisation}}</p>
+            <p class="text-md italic">{{$project->organisation->title ?? $project->Organisation}}</p>
             <div class="markdown">
                 <x-filament::section.description class="my-3 text-justify">
                     @php
@@ -140,8 +140,8 @@
                                     <div class="flex items-center">
                                         <a href="{{ route('download', ['name'=> $document->filename ,'file' => $document->path]) }}"
                                            class="inline-block">
-                                                <x-filament::icon icon="heroicon-o-arrow-down-tray"
-                                                                  class="min-h-[28px] min-w-[28px] text-gray-900 hover:text-gray-600"/>
+                                            <x-filament::icon icon="heroicon-o-arrow-down-tray"
+                                                              class="min-h-[28px] min-w-[28px] text-gray-900 hover:text-gray-600"/>
                                         </a>
                                     </div>
                                 </div>

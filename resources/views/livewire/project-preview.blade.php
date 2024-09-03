@@ -17,7 +17,7 @@
             </x-filament::tabs>
             <div x-show="tab === 'description'" class="m-4">
                 <h1>{{ $data['title'] ?? 'Aucun titre entré' }}</h1>
-                <p>{{ $organisations['title'] ?? 'Aucune organisation entrée' }}</p>
+                <p>{{ $organisation['title'] ?? 'Aucune organisation entrée' }}</p>
                 <div class="tiptap">
                     @empty($data['long_description'])
                         Pas de description fournie.
@@ -101,17 +101,18 @@
                                 <li>
                                     <div class="flex justify-between">
                                         <div class="flex items-center">
-                                            <x-filament::icon icon="heroicon-o-document" class="h-[24px] w-[24px] mr-2"/>
+                                            <x-filament::icon icon="heroicon-o-document"
+                                                              class="h-[24px] w-[24px] mr-2"/>
                                             <a href="{{ route('download', ['name'=> $document['filename'] ,'file' => $document['path']]) }}"
-                                            class="text-blue-600 hover:underline">
+                                               class="text-blue-600 hover:underline">
                                                 {{ $document['filename'] }}
                                             </a>
                                         </div>
                                         <div class="flex items-center">
                                             <a href="{{ route('download', ['name'=> $document['filename'] ,'file' => $document['path']]) }}"
-                                            class="inline-block">
-                                                    <x-filament::icon icon="heroicon-o-arrow-down-tray"
-                                                                    class="min-h-[28px] min-w-[28px] text-gray-900 hover:text-gray-600"/>
+                                               class="inline-block">
+                                                <x-filament::icon icon="heroicon-o-arrow-down-tray"
+                                                                  class="min-h-[28px] min-w-[28px] text-gray-900 hover:text-gray-600"/>
                                             </a>
                                         </div>
                                     </div>

@@ -43,7 +43,6 @@ class ListProjects extends Component implements HasForms, HasTable
         return view('livewire.list-projects');
     }
 
-
     public function table(Table $table): Table
     {
         $actions = [];
@@ -60,9 +59,7 @@ class ListProjects extends Component implements HasForms, HasTable
             ])
                 ->query(function ($query, $data) {
                     return $query->when($data['organisation_id'], function ($query, $organisationId) {
-                        return $query->whereHas('organisations', function ($query) use ($organisationId) {
-                            $query->where('organisation_id', $organisationId);
-                        });
+                        return $query->where('organisation_id', $organisationId);
                     });
                 })
                 ->indicateUsing(fn($data) => isset($data['organisation_id']) ? 'Organisation : ' . Organisation::find($data['organisation_id'])->title : null),
@@ -158,7 +155,6 @@ class ListProjects extends Component implements HasForms, HasTable
                     }));
         }
 
-
         return $table->query(
             Project::where('status', '!=', 2)->where('status', '!=', -1)
                 ->where(function ($query) {
@@ -171,7 +167,6 @@ class ListProjects extends Component implements HasForms, HasTable
                 $this->isMobileLayout()
                     ? $this->getGridTableColumns()
                     : ($this->isGridLayout() ? $this->getGridTableColumns() : $this->getListTableColumns())
-
             )
             ->contentGrid(
                 fn() => $this->isListLayout()
@@ -181,7 +176,6 @@ class ListProjects extends Component implements HasForms, HasTable
                         'md' => 2,
                         'lg' => 3,
                     ]
-
             )
             ->actions($actions)->actionsAlignment('start')
             ->defaultPaginationPageOption(25)
@@ -231,10 +225,8 @@ class ListProjects extends Component implements HasForms, HasTable
         <p class='text-gray-500 text-xs'>" . ($deadline[1] ?? '') . "</p>
     </div>
 ");
-
-
                 }),
-            TextColumn::make('organisations.title')
+            TextColumn::make('organisation.title')
                 ->label('Organisation')
                 ->wrap()
                 ->sortable()
@@ -273,7 +265,7 @@ class ListProjects extends Component implements HasForms, HasTable
                         ->separator(false)
                         ->searchable()
                         ->columnSpanFull(),
-                    TextColumn::make('organisations.title')
+                    TextColumn::make('organisation.title')
                         ->label('Organisation')
                         ->wrap()
                         ->extraAttributes(['class' => 'text-xs text-gray-500'])
@@ -331,5 +323,4 @@ class ListProjects extends Component implements HasForms, HasTable
     {
         return request()->header('User-Agent') && preg_match('/Mobile|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i', request()->header('User-Agent'));
     }
-
 }

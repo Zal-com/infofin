@@ -19,23 +19,19 @@ class ProjectPreview extends Component
     public $geoZones = [];
     public $contactUlbs = [];
     public $contactExts = [];
-
-    public $organisations;
-
+    public $organisation;
     public $scientificDomains = [];
-
     public $info_types = [];
 
     public function mount()
     {
         if (session()->has('previewData')) {
             $this->data = session('previewData');
-            $this->organisations = Organisation::find($this->data["organisation"]);
+            $this->organisation = Organisation::find($this->data["organisation_id"]);
             $this->scientificDomains = ScientificDomain::find($this->data["scientific_domains"]);
             $this->info_types = InfoType::find($this->data["info_types"]);
             $this->transformGeoZones();
             $this->transformContacts();
-
         }
     }
 
@@ -79,7 +75,7 @@ class ProjectPreview extends Component
         $rules = [
             'title' => 'required|string|max:255',
             'is_big' => 'boolean',
-            'organisation' => 'array',
+            'organisation_id' => 'required|exists:organisations,id',
             'info_types' => 'array',
             'docs' => 'array',
             'scientific_domains' => 'array',
@@ -113,7 +109,7 @@ class ProjectPreview extends Component
         $validator = Validator::make($this->data, $rules, [], [
             'title' => 'Titre',
             'is_big' => 'Projet Majeur',
-            'organisation' => 'Organisation',
+            'organisation_id' => 'Organisation',
             'info_types' => 'Types de programme',
             'scientific_domains' => 'Disciplines scientifiques',
             'geo_zones' => 'Zones géographiques',
@@ -144,7 +140,7 @@ class ProjectPreview extends Component
         ]);
 
         if ($validator->fails()) {
-            Notification::make()->title($validator->errors()->all())->icon('heroicon-o-check-circle')->seconds(5)->color('success')->send();
+            Notification::make()->title($validator->errors()->all())->icon('heroicon-o-x-circle')->seconds(5)->color('danger')->send();
             return redirect()->back();
         } else {
             $data = $validator->validated();
@@ -156,7 +152,6 @@ class ProjectPreview extends Component
         if ($data['periodicity'] === null) {
             $data['periodicity'] = 0;
         }
-
 
         $contactsUlB = [];
         if (isset($data['contact_ulb'])) {
@@ -179,7 +174,6 @@ class ProjectPreview extends Component
         } else {
             $data['contact_ulb'] = '[]';
         }
-
 
         $contactsExt = [];
         if (isset($data["contact_ext"])) {
@@ -204,10 +198,6 @@ class ProjectPreview extends Component
         }
 
         if ($project = Project::create($data)) {
-            if (!empty($data['organisation'])) {
-                $project->organisations()->sync($data['organisation']);
-            }
-
             if (!empty($data['info_types'])) {
                 $project->info_types()->sync($data['info_types']);
             }
@@ -251,5 +241,3 @@ class ProjectPreview extends Component
         return view('livewire.project-preview');
     }
 }
-
-

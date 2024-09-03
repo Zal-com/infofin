@@ -10,6 +10,7 @@ use App\Models\InfoType;
 use App\Models\Organisation;
 use App\Models\Project;
 use App\Models\ScientificDomainCategory;
+use App\Services\FileService;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Checkbox;
@@ -32,7 +33,6 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use League\HTMLToMarkdown\HtmlConverter;
 use Livewire\Component;
-use App\Services\FileService;
 
 class ProjectEditForm extends Component implements HasForms
 {
@@ -46,7 +46,7 @@ class ProjectEditForm extends Component implements HasForms
     public array $originalDocuments = [];
 
     public $id;
-    
+
     protected FileService $fileService;
 
     public function render()
@@ -63,7 +63,7 @@ class ProjectEditForm extends Component implements HasForms
     {
         $this->project->update(['status' => -1]);
 
-        Notification::make()->title('Le projet a été supprimé avec success.')->icon('heroicon-o-check-circle')->seconds(5)->color('success')->send();
+        Notification::make()->title('Le projet a été supprimé avec succès.')->icon('heroicon-o-check-circle')->seconds(5)->color('success')->send();
 
         return redirect()->route('projects.index');
     }
@@ -73,12 +73,10 @@ class ProjectEditForm extends Component implements HasForms
     {
         $this->fileService = $fileService;
 
-        $this->project = $project->load('organisations', 'scientific_domains', 'info_types', 'country', 'continent', 'documents');
+        $this->project = $project->load('scientific_domains', 'info_types', 'country', 'continent', 'documents');
 
         $this->project->contact_ulb = $this->transformContacts($this->project->contact_ulb);
         $this->project->contact_ext = $this->transformContacts($this->project->contact_ext);
-
-        $this->checkAndAddOrganisation($this->project->Organisation);
 
         $this->countries = Countries::all()->pluck('nomPays', 'id')->toArray();
         $this->continents = Continent::all()->pluck('name', 'id')->toArray();
@@ -91,12 +89,7 @@ class ProjectEditForm extends Component implements HasForms
             $geo_zones[] = 'continent_' . $this->project->continent_id;
         }
 
-        if ($this->project->SeanceFin == 1) {
-            $this->project->info = "Financement";
-        }
-
         $documents = $this->project->documents->pluck('path')->toArray();
-
         $this->originalDocuments = $documents;
 
         $data = array_merge(
@@ -104,26 +97,13 @@ class ProjectEditForm extends Component implements HasForms
             [
                 'scientific_domains' => $this->project->scientific_domains->pluck('id')->toArray(),
                 'geo_zones' => $geo_zones,
-                'documents' => $documents
+                'documents' => $documents,
+                'organisation_id' => $this->project->organisation_id,
             ]
         );
 
         $this->id = $data["id"];
-
         $this->form->fill($data);
-    }
-
-    private function checkAndAddOrganisation($organisationName)
-    {
-        if (!$organisationName) {
-            return;
-        }
-
-        $organisation = Organisation::firstOrCreate(['title' => $organisationName]);
-
-        if (!$this->project->organisations->contains($organisation->id)) {
-            $this->project->organisations()->attach($organisation->id);
-        }
     }
 
     private function transformContacts($contacts)
@@ -165,16 +145,11 @@ class ProjectEditForm extends Component implements HasForms
                         ->maxLength(255)
                         ->required()
                         ->autofocus(),
-                    Select::make('organisation')
-                        ->searchable()
-                        ->createOptionForm([
-                            TextInput::make('title')
-                                ->required()
-                        ])
+                    Select::make('organisation_id')
                         ->label('Organisation')
-                        ->required()
-                        ->relationship('organisations', 'title')
-                        ->options(Organisation::all()->pluck('title', 'id')->toArray()),
+                        ->searchable()
+                        ->options(Organisation::all()->pluck('title', 'id')->toArray())
+                        ->required(),
                     Checkbox::make('is_big')
                         ->label('Projet majeur')
                         ->default(false),
@@ -370,7 +345,7 @@ class ProjectEditForm extends Component implements HasForms
         $rules = [
             'title' => 'required|string|max:255',
             'is_big' => 'boolean',
-            'organisation' => 'array',
+            'organisation_id' => 'required|exists:organisations,id',
             'info_types' => 'array',
             'documents' => 'array',
             'scientific_domains' => 'array',
@@ -399,7 +374,7 @@ class ProjectEditForm extends Component implements HasForms
         $validator = Validator::make($this->data, $rules, [], [
             'title' => 'Titre',
             'is_big' => 'Projet Majeur',
-            'organisation' => 'Organisation',
+            'organisation_id' => 'Organisation',
             'info_types' => 'Types de programme',
             'scientific_domains' => 'Disciplines scientifiques',
             'geo_zones' => 'Zones géographiques',
@@ -424,7 +399,6 @@ class ProjectEditForm extends Component implements HasForms
             'is_draft' => 'Brouillon',
         ]);
 
-
         if ($validator->fails()) {
             foreach ($validator->errors()->all() as $error) {
                 Notification::make()->color('danger')->icon('heroicon-o-x-circle')->seconds(5)->send()->title($error);
@@ -433,16 +407,16 @@ class ProjectEditForm extends Component implements HasForms
             $data = $validator->validated();
             try {
                 $data['last_update_user_id'] = $userId;
-    
+
                 $converter = new HtmlConverter();
                 $markdown = $converter->convert($this->data["short_description"]);
-    
+
                 $data['short_description'] = $markdown;
-    
+
                 if (!array_key_exists('periodicity', $data) || $data['periodicity'] === null) {
                     $data['periodicity'] = 0;
                 }
-    
+
                 if (isset($data['contact_ulb'])) {
                     $contactsUlB = [];
                     foreach ($data['contact_ulb'] as $contact) {
@@ -450,7 +424,7 @@ class ProjectEditForm extends Component implements HasForms
                         $email = $contact['email'] ?? '';
                         $phone = $contact['tel'] ?? '';
                         $address = $contact['address'] ?? '';
-    
+
                         if ($name !== '' || $email !== '' || $phone !== '' || $address !== '') {
                             $contactsUlB[] = [
                                 'name' => $name,
@@ -461,10 +435,10 @@ class ProjectEditForm extends Component implements HasForms
                         }
                     }
                     $data['contact_ulb'] = $contactsUlB;
-                }else{
+                } else {
                     $data['contact_ulb'] = [];
                 }
-    
+
                 if (isset($data['contact_ext'])) {
                     $contactsExt = [];
                     foreach ($data['contact_ext'] as $contact) {
@@ -472,7 +446,7 @@ class ProjectEditForm extends Component implements HasForms
                         $email = $contact['email'] ?? '';
                         $phone = $contact['tel'] ?? '';
                         $address = $contact['address'] ?? '';
-    
+
                         if ($name !== '' || $email !== '' || $phone !== '' || $address !== '') {
                             $contactsExt[] = [
                                 'name' => $name,
@@ -483,20 +457,19 @@ class ProjectEditForm extends Component implements HasForms
                         }
                     }
                     $data['contact_ext'] = $contactsExt;
-                }else{
+                } else {
                     $data['contact_ext'] = [];
                 }
-                
+
                 $this->project->update($data);
-    
-                $this->project->organisations()->sync($data['organisation'] ?? null);
+
                 $this->project->info_types()->sync($data['info_types'] ?? []);
                 $this->project->scientific_domains()->sync($data['scientific_domains'] ?? []);
-    
+
                 if (!empty($data['documents'])) {
                     $this->fileService->handleDocumentUpdates($data['documents'], $this->project);
                 }
-    
+
                 if (!empty($data['geo_zones'])) {
                     foreach ($data['geo_zones'] as $zone) {
                         if (strpos($zone, 'continent_') === 0) {
@@ -508,14 +481,13 @@ class ProjectEditForm extends Component implements HasForms
                         }
                     }
                 }
-    
+
                 $this->project->save();
-                Notification::make()->title('Le projet a été modifié avec success.')->icon('heroicon-o-check-circle')->seconds(5)->color('success')->send();
+                Notification::make()->title('Le projet a été modifié avec succès.')->icon('heroicon-o-check-circle')->seconds(5)->color('success')->send();
                 redirect()->route('projects.index');
             } catch (\Exception $e) {
-                dd($e);
                 Notification::make()->title("Le projet n'a pas pu être modifié.")->icon('heroicon-o-x-circle')->seconds(5)->color('danger')->send();
-    
+
                 redirect()->route('projects.index');
             }
         }
@@ -523,12 +495,11 @@ class ProjectEditForm extends Component implements HasForms
 
     public function replicateModelWithRelations($model)
     {
-        $model->load('organisations', 'scientific_domains', 'info_types', 'country', 'continent', 'documents');
+        $model->load('scientific_domains', 'info_types', 'country', 'continent', 'documents');
 
         $newModel = $model->replicate();
         $newModel->save();
 
-        $newModel->organisations()->sync($model->organisations->pluck('id')->toArray());
         $newModel->scientific_domains()->sync($model->scientific_domains->pluck('id')->toArray());
         $newModel->info_types()->sync($model->info_types->pluck('id')->toArray());
 
@@ -544,7 +515,6 @@ class ProjectEditForm extends Component implements HasForms
 
         return $newModel;
     }
-
 
     public function copyProject()
     {
@@ -584,15 +554,15 @@ class ProjectEditForm extends Component implements HasForms
                 ->seconds(5)
                 ->color('success');
             redirect()->route('profile.show');
+        } else {
+            // Gérer le cas où la sauvegarde du nouveau brouillon échoue
+            Notification::make()
+                ->title('La sauvegarde du brouillon a échoué.')
+                ->send()
+                ->seconds(5)
+                ->color('danger');
+            redirect()->back();
         }
-
-        // Gérer le cas où la sauvegarde du nouveau brouillon échoue
-        Notification::make()
-            ->title('La sauvegarde du brouillon a échoué.')
-            ->send()
-            ->seconds(5)
-            ->color('danger');
-        redirect()->back();
     }
 
     private function handleDocumentUpdates(array $newDocuments, Project $project)
@@ -642,6 +612,4 @@ class ProjectEditForm extends Component implements HasForms
 
         return $movedFiles;
     }
-
-
 }
