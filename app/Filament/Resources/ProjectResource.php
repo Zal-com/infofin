@@ -181,6 +181,7 @@ class ProjectResource extends Resource
                 TextColumn::make('short_description')->limit(50)->label('Desc. courte'),
                 TextColumn::make('poster.full_name')->limit(50)->label('Créateur'),
             ])
+            ->paginationPageOptions([5, 10, 25, 50, 100])
             ->filters([
                 //
             ])

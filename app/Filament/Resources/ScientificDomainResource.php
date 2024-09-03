@@ -46,6 +46,7 @@ class ScientificDomainResource extends Resource
                 TextColumn::make('name'),
                 TextColumn::make('category.name')->sortable(),
             ])
+            ->paginationPageOptions([5, 10, 25, 50, 100])
             ->filters([
                 //
             ])

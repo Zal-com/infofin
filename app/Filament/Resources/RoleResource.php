@@ -57,6 +57,7 @@ class RoleResource extends Resource
                         return $record->permissions->pluck('name')->toArray();
                     })->badge(),
             ])
+            ->paginationPageOptions([5, 10, 25, 50, 100])
             ->filters([
                 //
             ])

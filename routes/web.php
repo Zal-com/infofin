@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\DraftController;
+use App\Http\Controllers\InfoSessionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\UnsubscribeController;
@@ -77,6 +78,10 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/unsubscribe', [UnsubscribeController::class, 'unsubscribe']);
+
+Route::controller(InfoSessionController::class)->group(function () {
+    Route::get('/info_session/create', 'create')->name('info_session.create');
+});
 
 Route::get('/agenda', function () {
     return view('calendar');
