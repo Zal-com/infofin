@@ -16,8 +16,8 @@
         <form wire:submit.prevent="submit" wire:model="project">
             @csrf
             {{ $this->form }}
-            <x-filament-actions::modals/>
         </form>
+        <x-filament-actions::modals/>
         <script>
             document.addEventListener('DOMContentLoaded', function () {
                 const trixEditor = document.querySelector('trix-editor');
