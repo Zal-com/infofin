@@ -18,7 +18,7 @@ class Project extends Model
         'info_lessor',
         'visit_count', 'last_update_user_id', 'country_id', 'continent_id',
         'status', 'is_big', 'long_description', 'short_description', 'is_draft',
-        'created_at', 'updated_at', 'origin_url', 'deadlines', 'is_in_next_email'
+        'created_at', 'updated_at', 'origin_url', 'deadlines', 'is_in_next_email', 'organisation_id'
     ];
 
     public $timestamps = true;
@@ -55,9 +55,9 @@ class Project extends Model
         return $this->belongsTo(Continent::class, 'continent_id');
     }
 
-    public function organisations(): BelongsToMany
+    public function organisation(): BelongsTo
     {
-        return $this->belongsToMany(Organisation::class, 'projects_organisations', 'project_id', 'organisation_id');
+        return $this->belongsTo(Organisation::class);
     }
 
     public function documents(): HasMany

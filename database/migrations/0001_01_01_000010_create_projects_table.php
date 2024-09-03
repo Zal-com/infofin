@@ -33,6 +33,7 @@ class CreateProjectsTable extends Migration
             $table->boolean('is_draft')->default(false);
             $table->string('origin_url')->nullable();
             $table->boolean('is_in_next_email')->default(true);
+            $table->foreignId('organisation_id')->constrained()->onDelete('cascade'); // Add this line
             $table->timestamps();
 
             //Relations
@@ -48,4 +49,3 @@ class CreateProjectsTable extends Migration
         Schema::dropIfExists('projects');
     }
 }
-

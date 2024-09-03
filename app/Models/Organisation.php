@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Organisation extends Model
@@ -12,8 +11,8 @@ class Organisation extends Model
     public $timestamps = false; // Spécifier car pas de colonnes timestamp
     protected $fillable = ['title'];
 
-    public function projects() : BelongsToMany
+    public function projects(): HasMany
     {
-        return $this->belongsToMany(Project::class, 'projects_organisations', 'organisation_id', 'project_id');
+        return $this->hasMany(Project::class);
     }
 }
