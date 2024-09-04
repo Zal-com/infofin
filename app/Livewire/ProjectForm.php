@@ -77,7 +77,7 @@ final class ProjectForm extends Component implements HasForms
             }, $data['documents']);
         }
 
-        foreach (['organisation', 'scientific_domains', 'info_types', 'geo_zones', 'documents', 'document_filenames'] as $attribute) {
+        foreach (['organisation', 'scientific_domains', 'info_types', 'geo_zones', 'documents', 'document_filenames', 'info_sessions'] as $attribute) {
             if (isset($data[$attribute])) {
                 if ($attribute == 'organisation') {
                     $this->project->{$attribute} = $data[$attribute][0];
