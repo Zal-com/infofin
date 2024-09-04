@@ -291,7 +291,7 @@ final class ProjectForm extends Component implements HasForms
                 Tabs\Tab::make('info_sessions')
                     ->label("Séances d'information")
                     ->schema([
-                        Select::make('info_session')
+                        Select::make('info_sessions')
                             ->label('Séances d\'info')
                             ->relationship('info_sessions', 'title')
                             ->multiple()
@@ -454,7 +454,6 @@ final class ProjectForm extends Component implements HasForms
             'geo_zones' => 'array',
             'deadlines' => 'array',
             'periodicity' => 'nullable|integer',
-            // 'date_lessor' => 'nullable|date',
             'short_description' => 'nullable|string|max:500',
             'long_description' => 'array',
             'funding' => 'array',
@@ -471,6 +470,7 @@ final class ProjectForm extends Component implements HasForms
             'contact_ext.*.tel' => 'nullable|phone:BE',
             'status' => 'integer',
             'is_draft' => 'boolean',
+            'info_sessions' => 'nullable|array'
         ];
 
         $validator = Validator::make($this->data, $rules, [], [
@@ -499,6 +499,7 @@ final class ProjectForm extends Component implements HasForms
             'contact_ext.*.tel' => 'Téléphone',
             'status' => 'Status',
             'is_draft' => 'Brouillon',
+            'info_sessions' => 'Séance d\'informations'
         ]);
 
         if ($validator->fails()) {
@@ -571,6 +572,10 @@ final class ProjectForm extends Component implements HasForms
 
                 if (!empty($data['scientific_domains'])) {
                     $project->scientific_domains()->sync($data['scientific_domains']);
+                }
+
+                if (!empty($data['info_sessions'])) {
+                    $project->info_sessions()->sync($data['info_sessions']);
                 }
 
                 if (isset($data['documents']) && count($data['documents']) > 0) {

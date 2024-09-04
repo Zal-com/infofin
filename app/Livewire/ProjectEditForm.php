@@ -9,6 +9,7 @@ use App\Models\Draft;
 use App\Models\InfoType;
 use App\Models\Project;
 use App\Models\ScientificDomainCategory;
+use App\Models\InfoSession;
 use App\Services\FileService;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
@@ -22,6 +23,7 @@ use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
@@ -309,7 +311,48 @@ class ProjectEditForm extends Component implements HasForms
                         ->moveFiles()
                         ->default(fn() => $this->project->documents->pluck('path')->toArray()),
                 ]),
-
+                Tabs\Tab::make('Séances d\'information')->schema([
+                    Select::make('info_sessions')
+                        ->label('Séances d\'info')
+                        ->relationship('info_sessions', 'title')
+                        ->multiple()
+                        ->searchable()
+                        ->options(InfoSession::all()->pluck('title', 'id')->toArray())
+                        ->createOptionForm([
+                            TextInput::make('title')
+                                ->label('Titre')
+                                ->required(),
+                            RichEditor::make('description')
+                                ->toolbarButtons(['underline', 'italic', 'bold'])
+                                ->label('Description')
+                                ->required()
+                                ->extraAttributes(['style' => 'max-height: 200px']),
+                            DateTimePicker::make('session_datetime')
+                                ->label('Date et heure')
+                                ->required(),
+                            TextInput::make('speaker')
+                                ->label('Présentateur·ice'),
+                            Select::make('session_type')
+                                ->label('Type de session')
+                                ->options([
+                                    'Hybride' => 'Hybride',
+                                    'Présentiel uniquement' => 'Présentiel uniquement',
+                                    'Distanciel uniquement' => 'Distanciel uniquement',
+                                ])
+                                ->reactive(),
+                            TextInput::make('url')
+                                ->label('URL de la réunion')
+                                ->visible(fn($get) => in_array($get('session_type'), ['Hybride', 'Distanciel uniquement'])),
+                            TextInput::make('location')
+                                ->label('Adresse')
+                                ->visible(fn($get) => in_array($get('session_type'), ['Hybride', 'Présentiel uniquement'])),
+                            Select::make('organisation_id')
+                                ->relationship('organisation', 'title')
+                                ->label('Organisation')
+                                ->searchable()
+                                ->preload()
+                        ])
+                    ]),
             ]),
 
             Actions::make([
@@ -375,6 +418,7 @@ class ProjectEditForm extends Component implements HasForms
             'contact_ext.*.tel' => 'nullable|phone:BE',
             'status' => 'integer',
             'is_draft' => 'boolean',
+            'info_sessions' => 'nullable|array'
         ];
 
         $validator = Validator::make($this->data, $rules, [], [
@@ -403,6 +447,7 @@ class ProjectEditForm extends Component implements HasForms
             'contact_ext.*.tel' => 'Téléphone',
             'status' => 'Status',
             'is_draft' => 'Brouillon',
+            'info_sessions' => 'Séances d\'information',
         ]);
 
         if ($validator->fails()) {
@@ -471,7 +516,8 @@ class ProjectEditForm extends Component implements HasForms
 
                 $this->project->info_types()->sync($data['info_types'] ?? []);
                 $this->project->scientific_domains()->sync($data['scientific_domains'] ?? []);
-
+                $this->project->info_sessions()->sync($data['info_sessions'] ?? []);
+                
                 if (!empty($data['documents'])) {
                     $this->fileService->handleDocumentUpdates($data['documents'], $this->project);
                 }
