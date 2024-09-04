@@ -6,6 +6,7 @@ use App\Models\Continent;
 use App\Models\Countries;
 use App\Models\Document;
 use App\Models\Draft;
+use App\Models\InfoSession;
 use App\Models\InfoType;
 use App\Models\Project;
 use App\Models\ScientificDomainCategory;
@@ -15,6 +16,7 @@ use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
@@ -286,6 +288,67 @@ final class ProjectForm extends Component implements HasForms
                         ->multiple()
                         ->moveFiles(),
                 ]),
+                Tabs\Tab::make('info_sessions')
+                    ->label("Séances d'information")
+                    ->schema([
+                        Select::make('info_session')
+                            ->label('Séances d\'info')
+                            ->relationship('info_sessions', 'title')
+                            ->multiple()
+                            ->searchable()
+                            ->options(InfoSession::all()->pluck('title', 'id')->toArray())
+                            ->createOptionForm([
+                                TextInput::make('title')
+                                    ->label('Titre')
+                                    ->required()
+                                    ->string()
+                                    ->columnSpanFull()
+                                ,
+                                RichEditor::make('description')
+                                    ->toolbarButtons(['underline', 'italic', 'bold'])
+                                    ->label('Description')
+                                    ->required()
+                                    ->string()
+                                    ->extraAttributes(['style' => 'max-height: 200px'])
+                                    ->columnSpanFull(),
+                                DateTimePicker::make('session_datetime')
+                                    ->seconds(false)
+                                    ->label('Date et heure')
+                                    ->columnSpan(1)
+                                    ->required(),
+                                TextInput::make('speaker')
+                                    ->label('Présentateur·ice')
+                                    ->string()
+                                    ->columnSpan(1),
+                                Select::make('session_type')
+                                    ->label('Type de session')
+                                    ->options([
+                                        'Hybride' => 'Hybride',
+                                        'Présentiel uniquement' => 'Présentiel uniquement',
+                                        'Distanciel uniquement' => 'Distanciel uniquement',
+                                    ])
+                                    ->reactive(),
+                                TextInput::make('url')
+                                    ->required()
+                                    ->label('URL de la réunion')
+                                    ->visible(fn($get) => in_array($get('session_type'), ['Hybride', 'Distanciel uniquement']))
+                                    ->reactive(),
+                                TextInput::make('location')
+                                    ->required()
+                                    ->label('Adresse')
+                                    ->visible(fn($get) => in_array($get('session_type'), ['Hybride', 'Présentiel uniquement'])),
+                                Select::make('organisation_id')
+                                    ->required()
+                                    ->relationship('organisation', 'title')
+                                    ->label('Organisation')
+                                    ->searchable()
+                                    ->preload()
+                                    ->createOptionForm([
+                                        TextInput::make('title')
+                                            ->required(),
+                                    ])
+                            ])
+                    ])
             ]),
             Actions::make([
                 Action::make('submit')
