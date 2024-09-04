@@ -352,7 +352,7 @@ class ProjectEditForm extends Component implements HasForms
                                 ->searchable()
                                 ->preload()
                         ])
-                    ]),
+                ]),
             ]),
 
             Actions::make([
@@ -517,7 +517,7 @@ class ProjectEditForm extends Component implements HasForms
                 $this->project->info_types()->sync($data['info_types'] ?? []);
                 $this->project->scientific_domains()->sync($data['scientific_domains'] ?? []);
                 $this->project->info_sessions()->sync($data['info_sessions'] ?? []);
-                
+
                 if (!empty($data['documents'])) {
                     $this->fileService->handleDocumentUpdates($data['documents'], $this->project);
                 }

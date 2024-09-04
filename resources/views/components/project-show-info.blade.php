@@ -270,6 +270,26 @@
                         @endif
                     </div>
                 @endforeach
+
+            </x-filament::section>
+        @endif
+        @if(!empty($project->info_sessions))
+            <x-filament::section class="col-span-1 row-span-1">
+                <x-filament::section.heading>
+                    Prochaine session d'information
+                </x-filament::section.heading>
+                <div class="mt-3">
+                    <p class="flex flex-row gap-2 items-center">
+                        <x-filament::icon
+                            icon="heroicon-o-calendar-days"
+                            class="max-h-6 max-w-6"/> {{\Carbon\Carbon::make($project->info_sessions[0]->session_datetime)->format('d/m/Y')}}
+                    </p>
+                    <p class="flex flex-row gap-2 items-center">
+                        <x-filament::icon
+                            icon="heroicon-o-clock"
+                            class="max-h-6 max-w-6"/> {{\Carbon\Carbon::make($project->info_sessions[0]->session_datetime)->format('H:i')}}
+                    </p>
+                </div>
             </x-filament::section>
         @endif
     </div>
