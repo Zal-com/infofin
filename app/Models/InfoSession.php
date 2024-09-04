@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class InfoSession extends Model
 {
@@ -14,9 +16,9 @@ class InfoSession extends Model
 
     public $timestamps = true;
 
-    public function project(): BelongsTo
+    public function project(): BelongsToMany
     {
-        return $this->belongsTo(Project::class);
+        return $this->belongsToMany(Project::class, 'projects_info_sessions', 'info_session_id', 'project_id');
     }
 
     public function organisation(): BelongsTo

@@ -13,6 +13,8 @@ return new class extends Migration {
         Schema::create('info_sessions', function (Blueprint $table) {
             $table->id();
             $table->dateTime('session_datetime');
+            $table->string("title");
+            $table->text('description');
             $table->string('location');
             $table->string('url');
             $table->string('speaker');

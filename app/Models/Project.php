@@ -60,9 +60,9 @@ class Project extends Model
         return $this->belongsTo(Organisation::class);
     }
 
-    public function info_session(): BelongsTo
+    public function info_sessions(): BelongsToMany
     {
-        $this->belongsToMany(InfoSession::class, 'projects_info_sessions', 'project_id', 'info_session_id');
+        return $this->belongsToMany(InfoSession::class, 'projects_info_sessions', 'project_id', 'info_session_id');
     }
 
     public function documents(): HasMany

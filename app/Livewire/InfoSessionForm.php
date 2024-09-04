@@ -57,16 +57,13 @@ class InfoSessionForm extends Component implements HasForms
                 ->send();
         } catch (\Exception $e) {
             Notification::make()
-                ->title('Session d\'information ajoutée avec succès')
+                ->title("Erreur lors de l'ajout d'une session d'information")
                 ->color('danger')
                 ->seconds(5)
                 ->icon('heroicon-o-x-circle')
                 ->iconColor('danger')
                 ->send();
         }
-
-
-        // Vous pouvez ajouter un message de confirmation ou une redirection ici
     }
 
     public function form(Form $form): Form
