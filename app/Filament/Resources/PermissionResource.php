@@ -38,6 +38,7 @@ class PermissionResource extends Resource
             ->columns([
                 TextColumn::make('name')->sortable()
             ])
+            ->paginationPageOptions([5, 10, 25, 50, 100])
             ->filters([
                 //
             ])

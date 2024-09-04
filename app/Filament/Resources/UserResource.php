@@ -54,7 +54,7 @@ class UserResource extends Resource
                 TextInput::make('email')
                     ->email()
                     ->required()
-                    ->unique(User::class, 'email', ignorable: fn ($record) => $record)
+                    ->unique(User::class, 'email', ignorable: fn($record) => $record)
                     ->rules('required|email'),
                 TextInput::make('password')
                     ->label('Mot de passe')
@@ -86,11 +86,12 @@ class UserResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')->sortable(),
-                TextColumn::make('email'),
-                TextColumn::make('first_name'),
-                TextColumn::make('last_name'),
-                TextColumn::make('role'),
+                TextColumn::make('email')->searchable(isIndividual: true, isGlobal: true),
+                TextColumn::make('first_name')->searchable(isIndividual: true, isGlobal: true),
+                TextColumn::make('last_name')->searchable(isIndividual: true, isGlobal: true),
+                TextColumn::make('role')->sortable(),
             ])
+            ->paginationPageOptions([5, 10, 25, 50, 100])
             ->filters([
                 //
             ])

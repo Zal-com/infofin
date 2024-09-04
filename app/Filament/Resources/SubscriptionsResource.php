@@ -55,6 +55,7 @@ class SubscriptionsResource extends Resource
                 TextColumn::make('info_type')->label('Types d\'informations')->badge(),
                 TextColumn::make('scientific_domain')->label('Domaines scientifiques')->badge(),
             ])
+            ->paginationPageOptions([5, 10, 25, 50, 100])
             ->actionsPosition(Tables\Enums\ActionsPosition::BeforeColumns)
             ->filters([
                 //

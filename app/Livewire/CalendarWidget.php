@@ -61,11 +61,11 @@ class CalendarWidget extends FullCalendarWidget
             'headerToolbar' => [
                 'left' => 'prev,next today',
                 'center' => 'title',
-                'right' => 'multiMonthThreeMonth,dayGridMonth',
+                'right' => 'multiMonthTwoMonth,dayGridMonth',
             ],
-            'initialView' => 'multiMonthThreeMonth',
+            'initialView' => 'multiMonthTwoMonth',
             'views' => [
-                'multiMonthThreeMonth' => ['type' => 'multiMonth', 'duration' => ['months' => 3], 'buttonText' => '3 mois'],
+                'multiMonthTwoMonth' => ['type' => 'multiMonth', 'duration' => ['months' => 2], 'buttonText' => '2 mois'],
             ],
             'multiMonthMaxColumns' => 2, // force 2 columns
             'validRange' => [

@@ -40,6 +40,7 @@ class OrganisationResource extends Resource
                 TextColumn::make('id'),
                 TextColumn::make('title'),
             ])
+            ->paginationPageOptions([5, 10, 25, 50, 100])
             ->filters([
                 //
             ])
