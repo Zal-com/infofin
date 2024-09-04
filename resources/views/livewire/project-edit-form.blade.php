@@ -15,8 +15,7 @@
         @endif
         <form wire:submit.prevent="submit" wire:model="project">
             {{ $this->form }}
-            <x-filament-actions::modals/>
         </form>
-
+        <x-filament-actions::modals/>
     </div>
 </div>
