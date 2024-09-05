@@ -169,9 +169,9 @@ class User extends Authenticatable implements HasName, CanResetPassword
         return $this->belongsToMany(Project::class, "visits_rate_mail", "user_id", "project_id")->withPivot('date_consult');
     }
 
-    public function drafts(): HasMany
+    public function drafts(): BelongsToMany
     {
-        return $this->hasMany(Draft::class, 'poster_id');
+        return $this->belongsToMany(Draft::class, 'users_drafts');
     }
 
     public function full_name(): string
@@ -220,10 +220,9 @@ class User extends Authenticatable implements HasName, CanResetPassword
         $this->projects()->update(['poster_id' => $newUserId]);
         $this->last_update_projects()->update(['last_update_user_id' => $newUserId]);
 
-        $this->drafts()->update(['poster_id' => $newUserId]);
-
         $this->searches()->update(['user_id' => $newUserId]);
 
+        $this->drafts()->detach($this->id);
         $this->scientific_domains()->detach($this->id);
         $this->info_types()->detach($this->id);
         $this->favorites()->detach($this->id);
@@ -233,6 +232,7 @@ class User extends Authenticatable implements HasName, CanResetPassword
         \DB::table('users_favorite_projects')->where('user_id', $this->id)->delete();
         \DB::table('users_info_types')->where('user_id', $this->id)->delete();
         \DB::table('visits_rate_mail')->where('user_id', $this->id)->delete();
+        \DB::table('users_drafts')->where('user_id', $this->id)->delete();
 
         $this->delete();
     }

@@ -3,13 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Draft extends Model
 {
 
-    protected $fillable = ['content', 'poster_id'];
+    protected $fillable = ['content'];
     public $timestamps = true;
 
     protected $casts = [
@@ -17,9 +17,9 @@ class Draft extends Model
     ];
 
 
-    public function poster(): BelongsTo
+    public function users(): BelongsToMany
     {
-        return $this->belongsTo(User::class, 'id');
+        return $this->belongsToMany(User::class, 'users_drafts');
     }
 
     public function getFirstDeadlineAttribute(): string

@@ -377,55 +377,63 @@ final class ProjectForm extends Component implements HasForms
 
     public function saveAsDraft()
     {
+        $userId = Auth::id();
+
         if (!$this->fileService) {
             $this->fileService = app(FileService::class);
         }
+
         if (!empty($this->data['documents'])) {
             $lastdoc = $this->draft ? $this->draft->content['documents'] : [];
             $docs = $this->fileService->moveForDraft($this->data['documents'], $lastdoc);
             $this->data["documents"] = $docs;
         }
+
         if ($this->draft) {
             $updatedDraft = Draft::find($this->draft->id);
 
             if ($updatedDraft) {
-                $updateSuccessful = $updatedDraft->update([
+                $updatedDraft->update([
                     'content' => $this->data,
-                    'poster_id' => Auth::id()
                 ]);
 
-                if ($updateSuccessful) {
-                    Notification::make()
-                        ->title("Brouillon enregistré")
-                        ->color('success')
-                        ->seconds(5)
-                        ->send();
-                    return redirect()->route('profile.show');
-                }
+                $updatedDraft->users()->syncWithoutDetaching($userId);
+
+                Notification::make()
+                    ->title("Brouillon mis à jour")
+                    ->color('success')
+                    ->seconds(5)
+                    ->send();
+
+                return redirect()->route('profile.show');
             }
         }
 
         $draft = new Draft([
             'content' => $this->data,
-            'poster_id' => Auth::id()
         ]);
 
         if ($draft->save()) {
-            Notification::make()->title('Brouillon enregistré.')
+            $draft->users()->attach($userId);
+
+            Notification::make()
+                ->title('Brouillon enregistré.')
                 ->icon('heroicon-o-check-circle')
                 ->iconColor('success')
                 ->send();
-            redirect()->route('profile.show');
+
+            return redirect()->route('profile.show');
         } else {
-            // Gérer le cas où la sauvegarde du nouveau brouillon échoue
             Notification::make()
                 ->title("La sauvegarde du brouillon a échoué")
                 ->color('danger')
                 ->seconds(5)
                 ->send();
+
             return redirect()->back();
         }
     }
+
 
     public function preview()
     {

@@ -1,19 +1,19 @@
 <?php
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDraftsTable extends Migration
+class CreateDraftUserTable extends Migration
 {
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        Schema::create('drafts', function (Blueprint $table) {
+        Schema::create('users_drafts', function (Blueprint $table) {
             $table->id();
-            $table->json('content');
+            $table->foreignId('draft_id')->constrained('drafts')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -23,8 +23,6 @@ class CreateDraftsTable extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('drafts');
+        Schema::dropIfExists('draft_user');
     }
 }
-
-;

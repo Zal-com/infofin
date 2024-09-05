@@ -24,7 +24,9 @@ class UserDrafts extends Component implements HasTable, HasForms
 
     public function table(Table $table): Table
     {
-        return $table->query(Draft::where('poster_id', Auth::id()))
+        return $table->query(Draft::whereHas('users', function ($query) {
+            $query->where('user_id', Auth::id());
+        }))
             ->columns([
                 TextColumn::make('content.title')
                     ->label('Titre'),
