@@ -15,6 +15,7 @@ use Filament\Tables\Enums\ActionsPosition;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
+use Illuminate\Support\HtmlString;
 
 class UserDrafts extends Component implements HasTable, HasForms
 {
@@ -28,7 +29,8 @@ class UserDrafts extends Component implements HasTable, HasForms
                 TextColumn::make('content.title')
                     ->label('Titre'),
                 TextColumn::make('content.short_description')
-                    ->label('Description'),
+                    ->label('Description')
+                    ->formatStateUsing(fn(string $state): HtmlString => new HtmlString($state)),
                 TextColumn::make('updated_at')
                     ->dateTime('d/m/Y H:i')
                     ->label('Date de modif.')
