@@ -6,7 +6,6 @@ use App\Models\Draft;
 use App\Models\Project;
 use App\Models\VisitsRate;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class ProjectController extends Controller
@@ -46,7 +45,7 @@ class ProjectController extends Controller
     {
         if ($request->query('record')) {
             $draft = Draft::find($request->query('record'));
-            if ($draft === null || $draft->poster_id != Auth::id()) {
+            if ($draft === null) {
                 session()->flash('error-layout', "Vous n'êtes pas autorisé à effectuer cette action.");
                 return redirect()->route('profile.show');
             };
