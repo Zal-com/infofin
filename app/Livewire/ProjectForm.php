@@ -9,6 +9,7 @@ use App\Models\Draft;
 use App\Models\InfoSession;
 use App\Models\InfoType;
 use App\Models\Project;
+use App\Models\ScientificDomain;
 use App\Models\ScientificDomainCategory;
 use App\Services\FileService;
 use Filament\Forms\Components\Actions;
@@ -88,6 +89,33 @@ final class ProjectForm extends Component implements HasForms
         }
     }
 
+    protected function getFieldsetSchema(): array
+    {
+        $categories = ScientificDomainCategory::with('domains')->get();
+        $fieldsets = [];
+
+        foreach ($categories as $category) {
+            $sortedDomains = $category->domains->sortBy('name')->pluck('name', 'id')->toArray();
+            $fieldsets[] = Fieldset::make($category->name)
+                ->schema([
+                    CheckboxList::make('scientific_domains')
+                        ->label(false)
+                        ->options($sortedDomains)
+                        ->bulkToggleable()
+                        ->columnSpan(2)
+                        ->extraAttributes([
+                            'class' => 'w-full'
+                        ])->columns(3)
+                ])
+                ->columnSpan(3)
+                ->extraAttributes([
+                    'class' => 'w-full'
+                ]);
+        }
+
+        return $fieldsets;
+    }
+
     public function form(Form $form): Form
     {
         return $form->schema([
@@ -116,20 +144,21 @@ final class ProjectForm extends Component implements HasForms
                     TextInput::make('origin_url')
                         ->label('Lien vers l\'appel original')
                         ->url(),
-                    Select::make('info')
-                        ->label("Type d'information")
-                        ->options([
-                            'Financement',
-                            "Séance d'information organisée par l'ULB",
-                            "Séance d'information organisée par un organisme externe"
-                        ])
-                        ->selectablePlaceholder()
-                        ->required(),
                     CheckboxList::make('info_types')
                         ->label('Types de programmes')
                         ->options(InfoType::all()->sortBy('title')->pluck('title', 'id')->toArray())
                         ->columns(3)
                         ->required(),
+                    \LaraZeus\Accordion\Forms\Accordions::make('Disciplines scientifiques')
+                        ->activeAccordion(2)
+                        ->isolated()
+                        ->accordions([
+                            \LaraZeus\Accordion\Forms\Accordion::make('main-data')
+                                ->columns()
+                                ->label('Disciplines scientifiques')
+                                ->schema($this->getFieldsetSchema()),
+                        ]),
+                    /*
                     Select::make('scientific_domains')
                         ->label("Disciplines scientifiques de l'appel")
                         ->multiple()
@@ -146,6 +175,7 @@ final class ProjectForm extends Component implements HasForms
                             }
                             return $options;
                         }),
+                    */
                     Select::make('geo_zones')
                         ->label("Zones géographiques")
                         ->multiple()

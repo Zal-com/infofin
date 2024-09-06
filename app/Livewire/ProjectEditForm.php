@@ -136,6 +136,33 @@ class ProjectEditForm extends Component implements HasForms
         return $transformedContacts;
     }
 
+    protected function getFieldsetSchema(): array
+    {
+        $categories = ScientificDomainCategory::with('domains')->get();
+        $fieldsets = [];
+
+        foreach ($categories as $category) {
+            $sortedDomains = $category->domains->sortBy('name')->pluck('name', 'id')->toArray();
+            $fieldsets[] = Fieldset::make($category->name)
+                ->schema([
+                    CheckboxList::make('scientific_domains')
+                        ->label(false)
+                        ->options($sortedDomains)
+                        ->bulkToggleable()
+                        ->columnSpan(2)
+                        ->extraAttributes([
+                            'class' => 'w-full'
+                        ])->columns(3)
+                ])
+                ->columnSpan(3)
+                ->extraAttributes([
+                    'class' => 'w-full'
+                ]);
+        }
+
+        return $fieldsets;
+    }
+
     public function form(Form $form): Form
     {
         return $form->schema([
@@ -166,6 +193,16 @@ class ProjectEditForm extends Component implements HasForms
                         ->columns(3)
                         ->required()
                         ->relationship('info_types', 'title'),
+                    \LaraZeus\Accordion\Forms\Accordions::make('Disciplines scientifiques')
+                        ->activeAccordion(2)
+                        ->isolated()
+                        ->accordions([
+                            \LaraZeus\Accordion\Forms\Accordion::make('main-data')
+                                ->columns()
+                                ->label('Disciplines scientifiques')
+                                ->schema($this->getFieldsetSchema()),
+                        ]),
+                    /*
                     Select::make('scientific_domains')
                         ->label("Disciplines scientifiques de l'appel")
                         ->multiple()
@@ -183,6 +220,7 @@ class ProjectEditForm extends Component implements HasForms
                             }
                             return $options;
                         }),
+                    */
                     Select::make('geo_zones')
                         ->label("Zones géographiques")
                         ->multiple()
