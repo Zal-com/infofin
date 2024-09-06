@@ -15,9 +15,9 @@ return new class extends Migration {
             $table->dateTime('session_datetime');
             $table->string("title");
             $table->text('description');
-            $table->string('location');
-            $table->string('url');
-            $table->string('speaker');
+            $table->string('location')->nullable();
+            $table->string('url')->nullable();
+            $table->string('speaker')->nullable();
             $table->foreignId('organisation_id')->constrained('organisations');
             $table->timestamps();
 

@@ -12,7 +12,7 @@ class InfoSessionController extends Controller
      */
     public function index()
     {
-        //
+        return view('info_session.index');
     }
 
     /**
