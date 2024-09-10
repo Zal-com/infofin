@@ -1,5 +1,4 @@
 <?php
-//TODO Lancement pipeline
 namespace App\Livewire;
 
 use App\Models\Continent;
