@@ -82,6 +82,7 @@ Route::get('/unsubscribe', [UnsubscribeController::class, 'unsubscribe']);
 Route::controller(InfoSessionController::class)->group(function () {
     Route::get('/info_session/create', 'create')->name('info_session.create');
     Route::get('/info_session', "index")->name('info_session.index');
+    Route::get('/info_session/{id}', 'show')->name('info_session.show');
 });
 
 Route::get('/agenda', function () {
