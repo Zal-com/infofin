@@ -25,6 +25,7 @@ Route::middleware('guest')->group(function () {
     //CAS routes
     Route::get('login/cas', [CASController::class, 'redirectToCas'])->name('login.cas');
     Route::get('login/cas/callback', [CASController::class, 'handleCasCallback']);
+    Route::get("login/first", [CASController::class, 'policy_create_user'])->name("login.first");
 
     //End of CAS routes
 

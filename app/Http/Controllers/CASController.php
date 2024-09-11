@@ -15,7 +15,7 @@ class CASController extends Controller
         return Cas::authenticate();
     }
 
-    public function handleCasCallback()
+    public function handleCasCallback(Request $request)
     {
         /*
          * Authentification CAS :
@@ -43,30 +43,25 @@ class CASController extends Controller
          */
         if (Cas::isAuthenticated()) {
             $attributes = Cas::getAttributes();
-            $matricule = null;
-            if (isset($attributes['ulbEmployeeNumber'])) {
-                $matricule = Cas::getAttribute('ulbEmployeeNumber');
-            } elseif (isset($attributes['ulbStudentNumber'])) {
-                $matricule = Cas::getAttribute('ulbStudentNumber');
-            }
 
-            $redirectUrl = session()->pull('url.intended', '/');
+            $uid = $attributes["uid"];
 
-            $ifUser = User::where('matricule', $matricule)->first();
+            //TODO
+            $user = User::where("id", $uid);
 
-            if ($ifUser) {
-                Auth::login($ifUser);
-                return redirect()->intended($redirectUrl);
-            } else {
-                $user = new User([
-                    'matricule' => $matricule,
-                    'first_name' => $attributes['givenName'],
-                    'last_name' => $attributes['sn'],
-                    'password' => '',
-                    'email' => $attributes['mail']]);
-                $user->save();
-                Auth::login($user);
-                return redirect()->intended($redirectUrl);
+            if(!$user){
+                $userDetails = [
+                    "email" => $attributes["mail"],
+                    "first_name" => $attributes["givenName"],
+                    "last_name" => $attributes["sn"],
+                    "uid" => $attributes["uid"],
+                ];
+    
+                $request->session()->flash("userDetails", $userDetails);
+                
+                return redirect()->route("login.first");
+            }else{
+                //TODO connexion
             }
         }
         return redirect()->route('login');
@@ -85,5 +80,11 @@ class CASController extends Controller
         }
 
         return redirect()->route('login');
+    }
+
+    public function policy_create_user(Request $request){
+        $usersDetails = session("userDetails");
+        dd($usersDetails);
+        return view();
     }
 }
