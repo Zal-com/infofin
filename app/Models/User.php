@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Filament\Models\Contracts\HasName;
 use Filament\Notifications\Notification;
-use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -14,11 +13,11 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements HasName, CanResetPassword
+class User extends Authenticatable implements HasName
 {
 
 
-    use HasFactory, Notifiable, HasRoles, \Illuminate\Auth\Passwords\CanResetPassword;
+    use HasFactory, Notifiable, HasRoles;
 
     protected $table = 'users';
 
@@ -30,8 +29,7 @@ class User extends Authenticatable implements HasName, CanResetPassword
     protected $fillable = [
         'id',
         'email',
-        'password',
-        'matricule',
+        'uid',
         'first_name',
         'last_name',
         'is_email_subscriber'
@@ -50,7 +48,6 @@ class User extends Authenticatable implements HasName, CanResetPassword
      * @var array<int, string>
      */
     protected $hidden = [
-        'password',
         'remember_token',
     ];
 
@@ -109,7 +106,6 @@ class User extends Authenticatable implements HasName, CanResetPassword
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
         ];
     }
 

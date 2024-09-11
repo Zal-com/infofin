@@ -16,6 +16,7 @@ use App\Models\ScientificDomainCategory;
 use Filament\Forms\Components\Fieldset;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Facades\Blade;
+use App\Models\User;
 
 class AcceptPrivacyPolicy extends Component implements HasForms
 {
@@ -44,7 +45,7 @@ class AcceptPrivacyPolicy extends Component implements HasForms
             $sortedDomains = $category->domains->sortBy('name')->pluck('name', 'id')->toArray();
             $fieldsets[] = Fieldset::make($category->name)
                 ->schema([
-                    CheckboxList::make('appel.' . $category->id)
+                    CheckboxList::make('scientific_domains.' . $category->id)
                         ->options($sortedDomains)
                         ->label(false)
                         ->bulkToggleable()
@@ -100,7 +101,20 @@ class AcceptPrivacyPolicy extends Component implements HasForms
         ])->statePath('data');
     }
 
-    public function submit(){
+    public function submit()
+    {
+        if($user = User::create($this->userDetails)) {
+            if (isset($this->data['info_types'])) {
+                $user->info_types()->sync($this->data['info_types']);
+            }
+
+            if (isset($this->data['scientific_domains'])) {
+                $scientificDomains = collect($this->data['scientific_domains'])->flatten()->filter()->all();
+                $user->scientific_domains()->sync($scientificDomains);
+            }
+        }
+        
         dd($this->data, $this->userDetails);
     }
+
 }
