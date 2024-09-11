@@ -50,6 +50,6 @@
             protection des données (<a href="https://www.autoriteprotectiondonnees.be" class="text-blue-500 underline">Introduire
                 une plainte | Autorité de protection des données</a>).</p>
     </div>
-    <p class="text-sm mt-4">En vous inscrivant, vous prenez conscience que vous acceptez nos conditions générales et la
+    <p class="text-sm mt-4">En continuant, vous prenez conscience que vous acceptez nos conditions générales et la
         politique de protection des données.</p>
 </div>
