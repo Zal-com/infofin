@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use Auth;
 use Livewire\Component;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -112,9 +113,12 @@ class AcceptPrivacyPolicy extends Component implements HasForms
                 $scientificDomains = collect($this->data['scientific_domains'])->flatten()->filter()->all();
                 $user->scientific_domains()->sync($scientificDomains);
             }
+
+            Auth::login($user);
+            return redirect()->route('projects.index');
         }
         
-        dd($this->data, $this->userDetails);
+        return redirect()->route('login');
     }
 
 }
