@@ -19,6 +19,7 @@ return new class extends Migration {
             $table->string('url')->nullable();
             $table->string('speaker')->nullable();
             $table->foreignId('organisation_id')->constrained('organisations');
+            $table->smallInteger('info_type'); // 0 = Distanciel, 1 = Présentiel, 2 = Hybride
             $table->timestamps();
 
             $table->foreign('organisation_id')->references('id')->on('organisations');

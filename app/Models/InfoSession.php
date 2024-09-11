@@ -12,7 +12,7 @@ class InfoSession extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['session_datetime', 'location', 'url', 'speaker', 'title', 'organisation_id', 'description'];
+    protected $fillable = ['session_datetime', 'location', 'url', 'speaker', 'title', 'organisation_id', 'description', 'session_type'];
 
     public $timestamps = true;
 

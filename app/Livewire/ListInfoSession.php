@@ -3,12 +3,16 @@
 namespace App\Livewire;
 
 use App\Models\InfoSession;
+use App\Models\Organisation;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\HtmlString;
 use Livewire\Component;
 
@@ -25,6 +29,23 @@ class ListInfoSession extends Component implements HasForms, HasTable
     public function table(Table $table): Table
     {
         $actions = [];
+
+        $filters = [
+            SelectFilter::make('session_type')
+                ->label('Type.s de session')
+                ->multiple()
+                ->options([
+                    2 => 'Hybride',
+                    1 => 'Présentiel',
+                    0 => 'Distanciel',
+                ])
+                ->attribute('session_type'),
+            SelectFilter::make('organisation_id')
+                ->label('Organisation.s')
+                ->relationship('organisation', 'title')
+                ->preload()
+                ->multiple()
+        ];
 
         $columns = [
             TextColumn::make('title')
@@ -46,21 +67,20 @@ class ListInfoSession extends Component implements HasForms, HasTable
                 ->sortable()
                 ->searchable()
                 ->dateTime('d/m/Y H:i'),
-            TextColumn::make('created_at')
+            TextColumn::make('session_type')
                 ->label('Type')
                 ->formatStateUsing(function ($record) {
-                    $location = $record['location'] ?? null;
-                    $url = $record['url'] ?? null;
-
-                    if ($location && $url) {
-                        return "Hybride";
-                    } elseif ($location) {
-                        return "Présentiel";
-                    } elseif ($url) {
-                        return "Distanciel";
+                    switch ($record->session_type) {
+                        case 0 :
+                            return 'Distanciel';
+                            break;
+                        case 1 :
+                            return 'Présentiel';
+                            break;
+                        case 2 :
+                            return 'Hybride';
+                            break;
                     }
-
-                    return 'Non spécifié';
                 })
                 ->wrap()
                 ->sortable()
@@ -73,6 +93,6 @@ class ListInfoSession extends Component implements HasForms, HasTable
         ];
 
 
-        return $table->query(InfoSession::query())->columns($columns)->actions($actions);
+        return $table->query(InfoSession::query())->columns($columns)->actions($actions)->filters($filters);
     }
 }
