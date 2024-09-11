@@ -182,7 +182,7 @@ class ListProjects extends Component implements HasForms, HasTable
             ->defaultSort('updated_at', 'desc')
             ->paginationPageOptions([5, 10, 25, 50, 100])
             ->recordUrl(fn($record) => route('projects.show', $record->id))
-            ->filters($filters);
+            ->filters($filters)->persistFiltersInSession(true);
     }
 
     protected function getListTableColumns(): array
