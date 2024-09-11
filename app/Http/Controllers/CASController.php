@@ -58,9 +58,11 @@ class CASController extends Controller
         return redirect()->route('login');
     }
 
-    public function policy_create_user(Request $request){
-        $usersDetails = session("userDetails");
-        dd($usersDetails);
-        return view();
+    public function policy_create_user(){
+        $userDetails = session("userDetails");
+        if (!$userDetails) {
+            return redirect()->route('login'); // redirect to login if no details found
+        }
+        return view('auth.policy-create-user', ['userDetails' => $userDetails]);
     }
 }
