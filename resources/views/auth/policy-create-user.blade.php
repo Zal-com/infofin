@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layout')
 
 @section('content')
     <div class="w-100 flex justify-between">
