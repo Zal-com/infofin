@@ -14,6 +14,8 @@ use Filament\Forms\Components\View;
 use App\Models\InfoType;
 use App\Models\ScientificDomainCategory;
 use Filament\Forms\Components\Fieldset;
+use Illuminate\Support\HtmlString;
+use Illuminate\Support\Facades\Blade;
 
 class AcceptPrivacyPolicy extends Component implements HasForms
 {
@@ -91,7 +93,10 @@ class AcceptPrivacyPolicy extends Component implements HasForms
                                 'class' => 'overflow-y-auto h-64',
                             ]),
                     ])
-            ])
+            ])->submitAction(new HtmlString(Blade::render(<<<BLADE
+            <x-filament::button type="submit"><i class="fa fa-solid fa-plus mr-2"></i>Me connecter</x-filament::button>
+            BLADE
+        ))),
         ])->statePath('data');
     }
 
