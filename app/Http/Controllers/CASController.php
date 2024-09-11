@@ -21,7 +21,7 @@ class CASController extends Controller
             $attributes = Cas::getAttributes();
             $uid = $attributes["uid"];
 
-            $user = User::where("uid", $uid)->first();
+            $user = User::where("id", $uid)->first();
 
             if (!$user) {
                 $userDetails = [
