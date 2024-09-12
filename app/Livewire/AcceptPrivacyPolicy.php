@@ -103,21 +103,39 @@ class AcceptPrivacyPolicy extends Component implements HasForms
     }
 
     public function submit()
-    {
-        if($user = User::create($this->userDetails)) {
+{
+    $oldUser = User::where("email", "=", $this->userDetails['email'])->first();
+
+    if (!$oldUser) {
+        if ($user = User::create($this->userDetails)) {
+                if (isset($this->data['info_types'])) {
+                    $user->info_types()->sync($this->data['info_types']);
+                }
+
+                if (isset($this->data['scientific_domains'])) {
+                    $scientificDomains = collect($this->data['scientific_domains'])->flatten()->filter()->all();
+                    $user->scientific_domains()->sync($scientificDomains);
+                }
+
+                Auth::login($user);
+                return redirect()->route('projects.index');
+            }
+        } else {
+            $oldUser->update($this->userDetails);
+
             if (isset($this->data['info_types'])) {
-                $user->info_types()->sync($this->data['info_types']);
+                $oldUser->info_types()->sync($this->data['info_types']);
             }
 
             if (isset($this->data['scientific_domains'])) {
                 $scientificDomains = collect($this->data['scientific_domains'])->flatten()->filter()->all();
-                $user->scientific_domains()->sync($scientificDomains);
+                $oldUser->scientific_domains()->sync($scientificDomains);
             }
 
-            Auth::login($user);
+            Auth::login($oldUser);
             return redirect()->route('projects.index');
         }
-        
+
         return redirect()->route('login');
     }
 
