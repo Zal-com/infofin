@@ -34,9 +34,11 @@ class InfoSessionController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(InfoSession $infoSession)
+    public function show(int $id)
     {
-        //
+        $info_session = InfoSession::find($id);
+
+        return view('info_session.show', compact('info_session'));
     }
 
     /**

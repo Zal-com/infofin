@@ -93,6 +93,6 @@ class ListInfoSession extends Component implements HasForms, HasTable
         ];
 
 
-        return $table->query(InfoSession::query())->columns($columns)->actions($actions)->filters($filters);
+        return $table->query(InfoSession::query())->columns($columns)->actions($actions)->filters($filters)->recordUrl(fn($record) => route('info_session.show', $record->id));
     }
 }
