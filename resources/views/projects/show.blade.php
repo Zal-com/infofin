@@ -6,7 +6,7 @@
 @section('og:type', $og_type)
 @section('content')
     @livewireStyles
-    <div class="flex justify-between items-center mb-4">
+    <div class="flex justify-end items-center mb-4">
         @can('create', App\Models\Project::class)
             <x-filament::button icon="heroicon-s-pencil" tag="a"
                                 href="{{ url(route('projects.edit', $project->id)) }}">
