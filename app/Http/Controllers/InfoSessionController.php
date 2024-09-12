@@ -44,9 +44,10 @@ class InfoSessionController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(InfoSession $infoSession)
+    public function edit(int $id)
     {
-        //
+        $info_session = InfoSession::find($id);
+        return view('info_session.edit', compact('info_session'));
     }
 
     /**

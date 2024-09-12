@@ -6,6 +6,8 @@ use App\Models\InfoSession;
 use App\Models\Organisation;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -28,7 +30,12 @@ class ListInfoSession extends Component implements HasForms, HasTable
 
     public function table(Table $table): Table
     {
-        $actions = [];
+        $actions = [
+            Action::make('edit')
+                ->label('Modifier')
+                ->icon('heroicon-o-pencil')
+                ->action(fn($record) => redirect()->route('info_session.edit', $record->id))
+        ];
 
         $filters = [
             SelectFilter::make('session_type')

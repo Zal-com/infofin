@@ -83,6 +83,7 @@ Route::controller(InfoSessionController::class)->group(function () {
     Route::get('/info_session/create', 'create')->name('info_session.create');
     Route::get('/info_session', "index")->name('info_session.index');
     Route::get('/info_session/{id}', 'show')->name('info_session.show');
+    Route::get('/info_session/{id}/edit', 'edit')->name('info_session.edit');
 });
 
 Route::get('/agenda', function () {
