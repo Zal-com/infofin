@@ -32,8 +32,9 @@
         <!-- Section droite avec dropdown pour l'avatar -->
         <div class="flex flex-row justify-end gap-4 p-3 mt-4 md:mt-0 relative">
             @guest
-                <x-filament::link tag="a" href="https://monulb.ulb.be/fr/web/monulb/sign-up/">S'enregistrer</x-filament::link>
-                <x-filament::button tag="a" href="{{ route('login.cas') }}">Se connecter</x-filament::button>
+                <x-filament::link tag="a" href="https://monulb.ulb.be/fr/web/monulb/sign-up/">S'enregistrer
+                </x-filament::link>
+                <x-filament::button tag="a" href="{{ route('login') }}">Se connecter</x-filament::button>
             @endguest
 
             @auth
