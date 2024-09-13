@@ -353,20 +353,20 @@ final class ProjectForm extends Component implements HasForms
                                 Select::make('session_type')
                                     ->label('Type de session')
                                     ->options([
-                                        'Hybride' => 'Hybride',
-                                        'Présentiel uniquement' => 'Présentiel uniquement',
-                                        'Distanciel uniquement' => 'Distanciel uniquement',
+                                        2 => 'Hybride',
+                                        1 => 'Présentiel',
+                                        0 => 'Distanciel',
                                     ])
                                     ->reactive(),
                                 TextInput::make('url')
                                     ->required()
                                     ->label('URL de la réunion')
-                                    ->visible(fn($get) => in_array($get('session_type'), ['Hybride', 'Distanciel uniquement']))
+                                    ->visible(fn($get) => in_array($get('session_type'), [0, 2]))
                                     ->reactive(),
                                 TextInput::make('location')
                                     ->required()
                                     ->label('Adresse')
-                                    ->visible(fn($get) => in_array($get('session_type'), ['Hybride', 'Présentiel uniquement'])),
+                                    ->visible(fn($get) => in_array($get('session_type'), [1, 2])),
                                 Select::make('organisation_id')
                                     ->required()
                                     ->relationship('organisation', 'title')
