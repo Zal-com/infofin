@@ -25,4 +25,19 @@ class InfoSession extends Model
     {
         return $this->belongsTo(Organisation::class);
     }
+
+    public function getSessionTypeStringAttribute(): string
+    {
+        switch ($this->session_type) {
+            case 0 :
+                return 'Distanciel';
+                break;
+            case 1 :
+                return 'Présentiel';
+                break;
+            case 2 :
+                return 'Hybride';
+                break;
+        }
+    }
 }

@@ -273,22 +273,34 @@
 
             </x-filament::section>
         @endif
-        @if(!empty($project->info_sessions))
+        @if($project->info_sessions && $project->info_sessions->count() > 0)
             <x-filament::section class="col-span-1 row-span-1">
                 <x-filament::section.heading>
                     Prochaine session d'information
                 </x-filament::section.heading>
                 <div class="mt-3">
-                    <p class="flex flex-row gap-2 items-center">
+                    <p class="flex flex-row gap-2 items-center my-1">
+                        <x-filament::icon
+                            icon="heroicon-o-map-pin"
+                            class="max-h-6 max-w-6"/> {{$project->info_sessions[0]->sessionTypeString}}
+                    </p>
+                    <p class="flex flex-row gap-2 items-center my-1">
                         <x-filament::icon
                             icon="heroicon-o-calendar-days"
                             class="max-h-6 max-w-6"/> {{\Carbon\Carbon::make($project->info_sessions[0]->session_datetime)->format('d/m/Y')}}
                     </p>
-                    <p class="flex flex-row gap-2 items-center">
+                    <p class="flex flex-row gap-2 items-center my-1">
                         <x-filament::icon
                             icon="heroicon-o-clock"
                             class="max-h-6 max-w-6"/> {{\Carbon\Carbon::make($project->info_sessions[0]->session_datetime)->format('H:i')}}
                     </p>
+                    <div class="flex justify-end">
+                        <x-filament::button color="secondary" tag="a"
+                                            href="{{route('info_session.show', $project->info_sessions[0]->id)}}"
+                                            icon="heroicon-o-arrow-right" iconPosition="after"
+                                            class="mt-2 justify-end">Plus d'infos
+                        </x-filament::button>
+                    </div>
                 </div>
             </x-filament::section>
         @endif
