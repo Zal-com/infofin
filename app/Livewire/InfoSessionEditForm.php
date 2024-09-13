@@ -50,6 +50,7 @@ class InfoSessionEditForm extends Component implements HasForms
                 ->icon('heroicon-o-check-circle')
                 ->iconColor('success')
                 ->send();
+            $this->redirect(route('info_session.index'));
         } catch (\Exception $e) {
             Notification::make()
                 ->title("Erreur lors de la modification.")
@@ -120,7 +121,7 @@ class InfoSessionEditForm extends Component implements HasForms
                     ->action('submit')
                     ->color('primary')
                     ->icon('heroicon-o-check')
-                    ->label('Ajouter'),
+                    ->label('Modifier'),
             ])->alignEnd()
         ])->model($this->info_session)->statePath('data');
 

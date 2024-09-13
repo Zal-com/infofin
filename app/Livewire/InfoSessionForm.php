@@ -54,15 +54,19 @@ class InfoSessionForm extends Component implements HasForms
                 ->seconds(5)
                 ->icon('heroicon-o-check-circle')
                 ->iconColor('success')
+                ->title('Session créée avec succès.')
                 ->send();
-        } catch (\Exception $e) {
-            Notification::make()
-                ->title("Erreur lors de l'ajout d'une session d'information")
-                ->color('danger')
-                ->seconds(5)
-                ->icon('heroicon-o-x-circle')
-                ->iconColor('danger')
-                ->send();
+            $this->redirect(route('info_session.index'));
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            foreach ($e->errors() as $error) {
+                Notification::make()
+                    ->title($error[0])
+                    ->color('danger')
+                    ->seconds(5)
+                    ->icon('heroicon-o-x-circle')
+                    ->iconColor('danger')
+                    ->send();
+            }
         }
     }
 
@@ -99,10 +103,12 @@ class InfoSessionForm extends Component implements HasForms
                         1 => 'Présentiel',
                         0 => 'Distanciel',
                     ])
+                    ->required()
                     ->reactive(),
                 TextInput::make('url')
                     ->required()
                     ->label('URL de la réunion')
+                    ->url()
                     ->visible(fn($get) => in_array($get('session_type'), [2, 0]))
                     ->reactive(),
                 TextInput::make('location')
