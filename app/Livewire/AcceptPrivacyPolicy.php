@@ -36,7 +36,7 @@ class AcceptPrivacyPolicy extends Component implements HasForms
     {
         return view('livewire.accept-privacy-policy');
     }
-    
+
     protected function getFieldsetSchema(): array
     {
         $categories = ScientificDomainCategory::with('domains')->get();
@@ -64,10 +64,17 @@ class AcceptPrivacyPolicy extends Component implements HasForms
         return $fieldsets;
     }
 
-    public function form(Form $form) : Form
+    public function form(Form $form): Form
     {
         return $form->schema([
             Wizard::make([
+                Step::make("Protection des données")
+                    ->schema([
+                        View::make('components.data-protection')
+                            ->extraAttributes([
+                                'class' => 'overflow-y-auto h-64',
+                            ]),
+                    ]),
                 Step::make("Centres d'intérêt - Programmes")
                     ->schema([
                         Section::make("Types d'appels")
@@ -87,27 +94,20 @@ class AcceptPrivacyPolicy extends Component implements HasForms
                         Section::make('Disciplines scientifiques')
                             ->schema($this->getFieldsetSchema())
                             ->columns(3),
-                    ]),
-                Step::make("Protection des données")
-                    ->schema([
-                        View::make('components.data-protection')
-                            ->extraAttributes([
-                                'class' => 'overflow-y-auto h-64',
-                            ]),
                     ])
             ])->submitAction(new HtmlString(Blade::render(<<<BLADE
             <x-filament::button type="submit"><i class="fa fa-solid fa-plus mr-2"></i>Me connecter</x-filament::button>
             BLADE
-        ))),
+            ))),
         ])->statePath('data');
     }
 
     public function submit()
-{
-    $oldUser = User::where("email", "=", $this->userDetails['email'])->first();
+    {
+        $oldUser = User::where("email", "=", $this->userDetails['email'])->first();
 
-    if (!$oldUser) {
-        if ($user = User::create($this->userDetails)) {
+        if (!$oldUser) {
+            if ($user = User::create($this->userDetails)) {
                 if (isset($this->data['info_types'])) {
                     $user->info_types()->sync($this->data['info_types']);
                 }
