@@ -37,8 +37,11 @@ class OrganisationResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id'),
-                TextColumn::make('title'),
+                TextColumn::make('id')
+                    ->sortable(),
+                TextColumn::make('title')
+                    ->sortable()
+                    ->searchable(),
             ])
             ->paginationPageOptions([5, 10, 25, 50, 100])
             ->filters([
