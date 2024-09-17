@@ -53,6 +53,12 @@
                                               style="height: 18px; width: 18px;"/>
                             <a href="{{ route('projects.index') }}" class="hover:text-slate-300">Projets</a>
                         </li>
+                        <li class="flex items-center gap-1">
+                            <x-filament::icon icon="heroicon-o-chevron-right"
+                                              style="height: 18px; width: 18px;"/>
+                            <a href="{{ route('info_session.index') }}" class="hover:text-slate-300">Sessions
+                                d'information</a>
+                        </li>
                     </ul>
                 </div>
                 <!-- Groupe 2: Profil -->
