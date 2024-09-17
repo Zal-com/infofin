@@ -9,4 +9,5 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateInfoSession extends CreateRecord
 {
     protected static string $resource = InfoSessionResource::class;
+    protected static ?string $title = 'Nouvelle session d\'information';
 }
