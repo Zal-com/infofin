@@ -20,8 +20,10 @@ class CalendarWidget extends FullCalendarWidget
         // Check if the events are already cached
         $events = Cache::remember($cacheKey, 60, function () use ($start, $end, $fetchInfo) {
             $projects = Project::whereRaw("
-                JSON_CONTAINS_PATH(deadlines, 'one', '$[*].date')
+                JSON_EXTRACT(deadlines, '$') LIKE '%\"date\":%'
             ")->get(['id', 'title', 'deadlines', 'is_big']);
+
+            //dd($projects);
 
             $events = [];
 
