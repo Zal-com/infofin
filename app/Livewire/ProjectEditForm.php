@@ -250,7 +250,7 @@ class ProjectEditForm extends Component implements HasForms
                         Repeater::make('deadlines')->schema([
                             DatePicker::make('date')->label('Date'),
                             TextInput::make('proof')->label('Justificatif'),
-                            Checkbox::make('continuous')->default(false),
+                            Checkbox::make('continuous')->default(false)->label('Continu'),
                         ])->label(false)->addActionLabel('+ Ajouter une deadline')->minItems(1)->required()->defaultItems(1),
                     ]),
                     Select::make('periodicity')

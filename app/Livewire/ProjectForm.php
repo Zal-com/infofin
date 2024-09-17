@@ -205,7 +205,7 @@ final class ProjectForm extends Component implements HasForms
                         Repeater::make('deadlines')->schema([
                             DatePicker::make('date')->label('Date'),
                             TextInput::make('proof')->label('Justificatif'),
-                            Checkbox::make('continuous')->default(false),
+                            Checkbox::make('continuous')->default(false)->label('Continu'),
                         ])->label(false)->addActionLabel('+ Ajouter une deadline')->minItems(1)->required()->defaultItems(1),
                     ]),
                     Select::make('periodicity')
@@ -511,7 +511,43 @@ final class ProjectForm extends Component implements HasForms
             'info_sessions' => 'nullable|array'
         ];
 
-        $validator = Validator::make($this->data, $rules, [], [
+        $messages = [
+            'title.required' => 'Le titre est requis.',
+            'title.string' => 'Le titre doit être une chaîne de caractères.',
+            'title.max' => 'Le titre ne peut pas dépasser :max caractères.',
+            'is_big.boolean' => 'Le champ "Projet Majeur" doit être vrai ou faux.',
+            'organisation_id.required' => 'Le champ Organisation est requis.',
+            'organisation_id.exists' => 'L\'organisation sélectionnée n\'existe pas.',
+            'info_types.array' => 'Les types de programme doivent être remplis.',
+            'documents.array' => 'Les documents doivent être remplis.',
+            'scientific_domains.array' => 'Les disciplines scientifiques doivent être remplies.',
+            'geo_zones.array' => 'Les zones géographiques doivent être remplies.',
+            'deadlines.array' => 'Les deadlines doivent être remplies.',
+            'periodicity.integer' => 'La périodicité doit être un nombre entier.',
+            'short_description.string' => 'La description courte doit être une chaîne de caractères.',
+            'short_description.max' => 'La description courte ne peut pas dépasser :max caractères.',
+            'long_description.array' => 'La description longue doit être remplie.',
+            'funding.array' => 'Le champs "Budget & dépenses" doit être rempli.',
+            'admission_requirements.array' => 'Les critères d\'admission doivent être remplis.',
+            'apply_instructions.array' => 'Les instructions pour postuler doivent être remplis.',
+            'contact_ulb.*.first_name.string' => 'Le prénom du contact interne doit être une chaîne de caractères.',
+            'contact_ulb.*.last_name.string' => 'Le nom du contact interne doit être une chaîne de caractères.',
+            'contact_ulb.*.email.email' => 'L\'email du contact interne doit être une adresse email valide.',
+            'contact_ulb.*.tel.phone' => 'Le téléphone du contact interne doit être un numéro valide en Belgique.',
+            'contact_ulb.*.address.string' => 'L\'adresse du contact interne doit être une chaîne de caractères.',
+            'contact_ext.*.first_name.string' => 'Le prénom du contact externe doit être une chaîne de caractères.',
+            'contact_ext.*.first_name.max' => 'Le prénom du contact externe ne peut pas dépasser :max caractères.',
+            'contact_ext.*.last_name.string' => 'Le nom du contact externe doit être une chaîne de caractères.',
+            'contact_ext.*.last_name.max' => 'Le nom du contact externe ne peut pas dépasser :max caractères.',
+            'contact_ext.*.email.email' => 'L\'email du contact externe doit être une adresse email valide.',
+            'contact_ext.*.email.max' => 'L\'email du contact externe ne peut pas dépasser :max caractères.',
+            'contact_ext.*.tel.phone' => 'Le téléphone du contact externe doit être un numéro valide en Belgique.',
+            'status.integer' => 'Le statut doit être un nombre entier.',
+            'is_draft.boolean' => 'Le champ "Brouillon" doit être vrai ou faux.',
+            'info_sessions.array' => 'Les séances d\'informations doivent être remplies.'
+        ];
+
+        $validator = Validator::make($this->data, $rules, $messages, [
             'title' => 'Titre',
             'is_big' => 'Projet Majeur',
             'organisation_id' => 'Organisation',

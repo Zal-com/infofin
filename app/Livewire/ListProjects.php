@@ -93,14 +93,14 @@ class ListProjects extends Component implements HasForms, HasTable
         if (Auth::check()) {
             if (Auth::user()->can('create projects')) {
                 $actions[] = Action::make('edit')
-                    ->label('Edit')
+                    ->label('Modifier')
                     ->url(fn($record) => route('projects.edit', $record->id))
                     ->icon('heroicon-s-pencil')
                     ->color('primary');
 
                 $actions[] = Action::make('archive')
-                    ->label('Supprimer')
-                    ->icon('heroicon-s-trash')
+                    ->label('Archiver')
+                    ->icon('heroicon-o-archive-box')
                     ->color('danger')
                     ->requiresConfirmation()
                     ->modalHeading('Supprimer le projet.')
@@ -108,7 +108,7 @@ class ListProjects extends Component implements HasForms, HasTable
                     ->action(function ($record) {
                         $record->update(['status' => -1]);
                         Notification::make()
-                            ->title("Projet supprimé avec succès")
+                            ->title("Projet archivé avec succès")
                             ->icon('heroicon-o-check-circle')
                             ->iconColor('success')
                             ->color('success')
@@ -120,7 +120,7 @@ class ListProjects extends Component implements HasForms, HasTable
 
             $actions[] =
                 Action::make('toggle_favorite')
-                    ->label(false)
+                    ->label('Ajouter aux favoris')
                     ->icon(fn($record) => Auth::user()->favorites->contains($record->id) ? 'heroicon-s-bookmark' : 'heroicon-o-bookmark')
                     ->iconButton()
                     ->color('black')
