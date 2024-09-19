@@ -23,6 +23,50 @@
             </x-filament::section.description>
             <h1 class="font-bold text-4xl my-1">{{$project->title ?? ''}}</h1>
             <p class="text-md italic">{{$project->organisation->title ?? $project->Organisation}}</p>
+            <!-- Ajout des badges pour les disciplines scientifiques -->
+            <hr>
+            <div class="mt-3 inline-flex gap-2">
+                @php
+                    // Récupérer tous les domaines associés au projet
+                    $linkedDomains = $project->scientific_domains;
+
+                    // Grouper tous les domaines disponibles par catégorie
+                    $domainsByCategory = \App\Models\ScientificDomain::all()->groupBy('category.name');
+                @endphp
+
+                @foreach($domainsByCategory as $categoryName => $domains)
+                    @php
+                        // Filtrer les domaines qui sont liés au projet dans cette catégorie
+                        $linkedDomainsInCategory = $linkedDomains->whereIn('id', $domains->pluck('id'));
+
+                        $totalDomainsInCategory = $domains->count(); // Nombre total de domaines dans la catégorie
+                        $totalDomainsLinked = $linkedDomainsInCategory->count(); // Nombre de domaines liés dans la catégorie
+
+                        // Créer la liste des noms des domaines sélectionnés pour le tooltip sous forme de HTML
+                        $selectedDomainsListHtml = '<ul>' . $linkedDomainsInCategory->map(fn($domain) => '<li>' . e($domain->name) . '</li>')->implode('') . '</ul>';
+                    @endphp
+
+                        <!-- Utilisation d'Alpine.js pour afficher un tooltip personnalisé avec uniquement les domaines sélectionnés -->
+                    <div class="relative group" x-data="{ showTooltip: false }" @mouseenter="showTooltip = true"
+                         @mouseleave="showTooltip = false">
+                        @if($totalDomainsLinked === $totalDomainsInCategory)
+                            <x-filament::badge color="success" class="w-fit">{{ $categoryName }}</x-filament::badge>
+                        @else
+                            <x-filament::badge color="success" class="w-fit">{{ $categoryName }}
+                                ({{ $totalDomainsLinked }})
+                            </x-filament::badge>
+                        @endif
+
+                        <!-- Tooltip personnalisé qui s'affiche au survol avec uniquement les domaines sélectionnés -->
+                        <div x-show="showTooltip"
+                             class="absolute left-0 bg-gray-800 text-white text-sm rounded-lg p-2 z-10 w-max mt-2 shadow-lg"
+                             style="display: none;" x-cloak>
+                            {!! $selectedDomainsListHtml !!}
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+            <hr>
             <div class="markdown">
                 <x-filament::section.description class="my-3 text-justify">
                     @php
