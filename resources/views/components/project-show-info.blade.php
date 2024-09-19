@@ -22,51 +22,60 @@
                 @endforeach
             </x-filament::section.description>
             <h1 class="font-bold text-4xl my-1">{{$project->title ?? ''}}</h1>
-            <p class="text-md italic">{{$project->organisation->title ?? $project->Organisation}}</p>
-            <!-- Ajout des badges pour les disciplines scientifiques -->
-            <hr>
-            <div class="mt-3 inline-flex gap-2">
-                @php
-                    // Récupérer tous les domaines associés au projet
-                    $linkedDomains = $project->scientific_domains;
+            <div class="inline-flex justify-between gap-2 mt-3 w-full">
+                <div>
+                    <p class="text-md italic">{{$project->organisation->title ?? $project->Organisation}}</p>
+                </div>
+                <div class="inline-flex gap-2">
+                    <!-- Ajout des badges pour les disciplines scientifiques -->
 
-                    // Grouper tous les domaines disponibles par catégorie
-                    $domainsByCategory = \App\Models\ScientificDomain::all()->groupBy('category.name');
-                @endphp
-
-                @foreach($domainsByCategory as $categoryName => $domains)
                     @php
-                        // Filtrer les domaines qui sont liés au projet dans cette catégorie
-                        $linkedDomainsInCategory = $linkedDomains->whereIn('id', $domains->pluck('id'));
+                        // Récupérer tous les domaines associés au projet
+                        $linkedDomains = $project->scientific_domains;
 
-                        $totalDomainsInCategory = $domains->count(); // Nombre total de domaines dans la catégorie
-                        $totalDomainsLinked = $linkedDomainsInCategory->count(); // Nombre de domaines liés dans la catégorie
-
-                        // Créer la liste des noms des domaines sélectionnés pour le tooltip sous forme de HTML
-                        $selectedDomainsListHtml = '<ul>' . $linkedDomainsInCategory->map(fn($domain) => '<li>' . e($domain->name) . '</li>')->implode('') . '</ul>';
+                        // Grouper tous les domaines disponibles par catégorie
+                        $domainsByCategory = \App\Models\ScientificDomain::all()->groupBy('category.name');
                     @endphp
 
-                        <!-- Utilisation d'Alpine.js pour afficher un tooltip personnalisé avec uniquement les domaines sélectionnés -->
-                    <div class="relative group" x-data="{ showTooltip: false }" @mouseenter="showTooltip = true"
-                         @mouseleave="showTooltip = false">
-                        @if($totalDomainsLinked === $totalDomainsInCategory)
-                            <x-filament::badge color="success" class="w-fit">{{ $categoryName }}</x-filament::badge>
-                        @else
-                            <x-filament::badge color="success" class="w-fit">{{ $categoryName }}
-                                ({{ $totalDomainsLinked }})
-                            </x-filament::badge>
-                        @endif
+                    @foreach($domainsByCategory as $categoryName => $domains)
+                        @php
+                            // Filtrer les domaines qui sont liés au projet dans cette catégorie
+                            $linkedDomainsInCategory = $linkedDomains->whereIn('id', $domains->pluck('id'));
 
-                        <!-- Tooltip personnalisé qui s'affiche au survol avec uniquement les domaines sélectionnés -->
-                        <div x-show="showTooltip"
-                             class="absolute left-0 bg-gray-800 text-white text-sm rounded-lg p-2 z-10 w-max mt-2 shadow-lg"
-                             style="display: none;" x-cloak>
-                            {!! $selectedDomainsListHtml !!}
-                        </div>
-                    </div>
-                @endforeach
+                            $totalDomainsLinked = $linkedDomainsInCategory->count(); // Nombre de domaines liés dans la catégorie
+                        @endphp
+
+                            <!-- Condition pour n'afficher la catégorie que si au moins un domaine est sélectionné -->
+                        @if($totalDomainsLinked > 0)
+                            <div class="relative group" x-data="{ showTooltip: false }" @mouseenter="showTooltip = true"
+                                 @mouseleave="showTooltip = false">
+                                @if($totalDomainsLinked === $domains->count())
+                                    <!-- Si tous les domaines sont cochés, afficher uniquement le nom de la catégorie -->
+                                    <x-filament::badge color="success"
+                                                       class="w-fit">{{ $categoryName }}</x-filament::badge>
+                                @else
+                                    <!-- Sinon, afficher la catégorie et le nombre de domaines cochés -->
+                                    <x-filament::badge color="success" class="w-fit">{{ $categoryName }}
+                                        ({{ $totalDomainsLinked }})
+                                    </x-filament::badge>
+                                @endif
+
+                                <!-- Tooltip personnalisé qui s'affiche au survol avec uniquement les domaines sélectionnés -->
+                                @php
+                                    // Créer la liste des noms des domaines sélectionnés pour le tooltip sous forme de HTML
+                                    $selectedDomainsListHtml = '<ul>' . $linkedDomainsInCategory->map(fn($domain) => '<li>' . e($domain->name) . '</li>')->implode('') . '</ul>';
+                                @endphp
+                                <div x-show="showTooltip"
+                                     class="absolute left-0 bg-gray-800 text-white text-sm rounded-lg p-2 z-10 w-max mt-2 shadow-lg"
+                                     style="display: none;" x-cloak>
+                                    {!! $selectedDomainsListHtml !!}
+                                </div>
+                            </div>
+                        @endif
+                    @endforeach
+                </div>
+                <!-- Ajout des zones géographiques -->
             </div>
-            <hr>
             <div class="markdown">
                 <x-filament::section.description class="my-3 text-justify">
                     @php
