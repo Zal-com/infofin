@@ -15,6 +15,7 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\HtmlString;
 use Livewire\Component;
 
@@ -35,6 +36,9 @@ class ListInfoSession extends Component implements HasForms, HasTable
                 ->label('Modifier')
                 ->icon('heroicon-o-pencil')
                 ->action(fn($record) => redirect()->route('info_session.edit', $record->id))
+                ->visible(fn($record) => auth()->check() && (
+                        auth()->user()->can('edit others info_session') ||
+                        auth()->user()->can('edit own info_session', $record)))
         ];
 
         $filters = [

@@ -53,7 +53,7 @@ class CalendarWidget extends FullCalendarWidget
     {
         $thisMonth = Carbon::today()->startOfMonth();
         $sixMonthsLater = $thisMonth->copy()->startOfMonth(6);
-        $nineMonthsLater = $thisMonth->copy()->addMonths(9);
+        $twelveMonthsLater = $thisMonth->copy()->addMonths(12);
 
         return [
             'selectable' => false,
@@ -63,16 +63,18 @@ class CalendarWidget extends FullCalendarWidget
             'headerToolbar' => [
                 'left' => 'prev,next today',
                 'center' => 'title',
-                'right' => 'multiMonthTwoMonth,dayGridMonth',
+                'right' => 'multiMonthYear,multiMonthSixMonth,multiMonthTwoMonth,dayGridMonth',
             ],
             'initialView' => 'multiMonthTwoMonth',
             'views' => [
                 'multiMonthTwoMonth' => ['type' => 'multiMonth', 'duration' => ['months' => 2], 'buttonText' => '2 mois'],
+                'multiMonthSixMonth' => ['type' => 'multiMonth', 'duration' => ['months' => 6], 'buttonText' => '6 mois'],
+                'multiMonthYear' => ['type' => 'multiMonth', 'duration' => ['months' => 12], 'buttonText' => '1 an'],
             ],
             'multiMonthMaxColumns' => 2, // force 2 columns
             'validRange' => [
                 'start' => $thisMonth->format('Y-m-d'),
-                'end' => $nineMonthsLater->format('Y-m-d'),
+                'end' => $twelveMonthsLater->format('Y-m-d'),
             ],
         ];
     }

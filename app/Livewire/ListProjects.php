@@ -63,11 +63,69 @@ class ListProjects extends Component implements HasForms, HasTable
                     });
                 })
                 ->indicateUsing(fn($data) => isset($data['organisation_id']) ? 'Organisation : ' . Organisation::find($data['organisation_id'])->title : null),
+            Filter::make('scientific_domain')
+                ->label('Disciplines scientifiques')
+                ->form([
+                    Select::make('scientific_domains') // "scientific_domains" doit être le nom du champ
+                    ->label('Disciplines scientifiques')
+                        ->relationship('scientific_domains', 'name') // On garde la relation
+                        ->multiple()
+                        ->preload()
+                ])
+                ->query(function ($query, $data) {
+                    if (!empty($data['scientific_domains'])) {
+                        return $query->whereHas('scientific_domains', function ($query) use ($data) {
+                            // On vérifie les IDs retournés par la sélection multiple
+                            $query->whereIn('scientific_domains.id', $data['scientific_domains']);
+                        });
+                    }
+                })
+                ->indicateUsing(function ($data) {
+                    // Indiquer le filtre uniquement si des disciplines sont sélectionnées
+                    if (!empty($data['scientific_domains'])) {
+                        $selectedDomains = \App\Models\ScientificDomain::whereIn('id', $data['scientific_domains'])->pluck('name')->toArray();
+                        return
+                            'Disciplines scientifiques : ' . implode(', ', $selectedDomains);
+                    }
+                    return null;
+                }),
+            Filter::make('periodicity')
+                ->label('Pédiodicité')
+                ->form([
+                    Select::make('periodicity')
+                        ->label('Périodicité')
+                        ->multiple()
+                        ->options(['Sans', "Annuel", 'Biennal', 'Triennal', 'Quadriennal', 'Quinquennal'])
+                ])
+                ->query(function ($query, $data) {
+                    if (!empty($data['periodicity'])) {
+                        return $query->whereIn('periodicity', $data['periodicity']);
+                    }
+                })
+                ->indicateUsing(function ($data) {
+                    if (!empty($data['periodicity'])) {
+                        // Mapper les valeurs numériques vers les termes textuels
+                        $periodicityLabels = [
+                            '0' => 'Sans',
+                            '1' => 'Annuel',
+                            '2' => 'Biennal',
+                            '3' => 'Triennal',
+                            '4' => 'Quadriennal',
+                            '5' => 'Quinquennal',
+                        ];
+
+                        // Récupérer les labels correspondant aux valeurs sélectionnées
+                        $selectedLabels = array_map(fn($value) => $periodicityLabels[$value], $data['periodicity']);
+
+                        return 'Périodicité : ' . implode(', ', $selectedLabels);
+                    }
+                    return null;
+                }),
             Filter::make('info_type_category')
                 ->label('Catégories')
                 ->form([
                     Select::make('category_id')
-                        ->label('Categorie')
+                        ->label('Catégorie')
                         ->multiple()
                         ->options(function () {
                             return InfoTypeCategory::all()->pluck('name', 'id')->toArray();

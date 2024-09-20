@@ -109,7 +109,7 @@ final class ProjectForm extends Component implements HasForms
                 ])
                 ->columnSpan(3)
                 ->extraAttributes([
-                    'class' => 'w-full'
+                    'class' => 'w-full disciplines-fieldset',
                 ]);
         }
 
@@ -142,7 +142,7 @@ final class ProjectForm extends Component implements HasForms
                         ->label('Projet majeur')
                         ->default(false),
                     TextInput::make('origin_url')
-                        ->label('Lien vers l\'appel original')
+                        ->label('URL vers l\'appel original')
                         ->url(),
                     CheckboxList::make('info_types')
                         ->label('Types de programmes')
