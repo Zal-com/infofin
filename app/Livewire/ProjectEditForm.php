@@ -319,7 +319,6 @@ class ProjectEditForm extends Component implements HasForms
                             TextInput::make('first_name')->label('Prénom'),
                             TextInput::make('last_name')->label('Nom'),
                             TextInput::make('email')->label('E-mail')->email(),
-                            TextInput::make('tel')->label('Numéro de téléphone')->tel(),
                             TextInput::make('address')->label('Adresse')->columnSpan(2)
                         ])->columns(2)->addActionLabel('+ Nouveau contact')->label('')
                     ]),
@@ -328,7 +327,6 @@ class ProjectEditForm extends Component implements HasForms
                             TextInput::make('first_name')->label('Prénom'),
                             TextInput::make('last_name')->label('Nom'),
                             TextInput::make('email')->label('E-mail')->email(),
-                            TextInput::make('tel')->label('Numéro de téléphone')->tel(),
                             TextInput::make('address')->label('Adresse')->columnSpan(2)
                         ])->columns(2)->addActionLabel('+ Nouveau contact')
                     ]),
@@ -447,12 +445,10 @@ class ProjectEditForm extends Component implements HasForms
             'contact_ulb.*.first_name' => 'nullable|string',
             'contact_ulb.*.last_name' => 'nullable|string',
             'contact_ulb.*.email' => 'nullable|email',
-            'contact_ulb.*.tel' => 'nullable|phone:BE',
             'contact_ulb.*.address' => 'nullable|string',
             'contact_ext.*.first_name' => 'nullable|string|max:50',
             'contact_ext.*.last_name' => 'nullable|string|max:50',
             'contact_ext.*.email' => 'nullable|email|max:255',
-            'contact_ext.*.tel' => 'nullable|phone:BE',
             'status' => 'integer',
             'is_draft' => 'boolean',
             'info_sessions' => 'nullable|array'
@@ -476,12 +472,10 @@ class ProjectEditForm extends Component implements HasForms
             'contact_ulb.*.first_name' => 'Prénom',
             'contact_ulb.*.last_name' => 'Nom',
             'contact_ulb.*.email' => 'Email',
-            'contact_ulb.*.tel' => 'Téléphone',
             'contact_ulb.*.address' => 'Addresse',
             'contact_ext.*.first_name' => 'Prénom',
             'contact_ext.*.last_name' => 'Nom',
             'contact_ext.*.email' => 'Email',
-            'contact_ext.*.tel' => 'Téléphone',
             'status' => 'Status',
             'is_draft' => 'Brouillon',
             'info_sessions' => 'Séances d\'information',
@@ -510,14 +504,12 @@ class ProjectEditForm extends Component implements HasForms
                     foreach ($data['contact_ulb'] as $contact) {
                         $name = trim(($contact['first_name'] ?? '') . ' ' . ($contact['last_name'] ?? ''));
                         $email = $contact['email'] ?? '';
-                        $phone = $contact['tel'] ?? '';
                         $address = $contact['address'] ?? '';
 
-                        if ($name !== '' || $email !== '' || $phone !== '' || $address !== '') {
+                        if ($name !== '' || $email !== '' || $address !== '') {
                             $contactsUlB[] = [
                                 'name' => $name,
                                 'email' => $email,
-                                'phone' => $phone,
                                 'address' => $address,
                             ];
                         }
@@ -535,11 +527,10 @@ class ProjectEditForm extends Component implements HasForms
                         $phone = $contact['tel'] ?? '';
                         $address = $contact['address'] ?? '';
 
-                        if ($name !== '' || $email !== '' || $phone !== '' || $address !== '') {
+                        if ($name !== '' || $email !== '' || $address !== '') {
                             $contactsExt[] = [
                                 'name' => $name,
                                 'email' => $email,
-                                'phone' => $phone,
                                 'address' => $address,
                             ];
                         }
