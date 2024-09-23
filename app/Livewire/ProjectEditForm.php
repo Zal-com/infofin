@@ -251,8 +251,6 @@ class ProjectEditForm extends Component implements HasForms
                             Checkbox::make('continuous')->default(false)->label('Continu'),
                         ])->label(false)->addActionLabel('+ Ajouter une deadline')->minItems(1)->required()->defaultItems(1),
                     ]),
-                    DatePicker::make('date_lessor')
-                        ->label('Date Bailleur'),
                 ]),
                 Tabs\Tab::make('Description')->schema([
                     RichEditor::make('short_description')
