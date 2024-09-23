@@ -102,6 +102,7 @@ final class ProjectForm extends Component implements HasForms
                         ->options($sortedDomains)
                         ->bulkToggleable()
                         ->columnSpan(2)
+                        ->required()
                         ->extraAttributes([
                             'class' => 'w-full'
                         ])->columns(3)
@@ -478,7 +479,8 @@ final class ProjectForm extends Component implements HasForms
             'organisation_id' => 'required|exists:organisations,id',
             'info_types' => 'array',
             'documents' => 'array',
-            'scientific_domains' => 'array',
+            'scientific_domains' => 'required|array|min:1',
+            'scientific_domains.*' => 'integer|exists:scientific_domains,id',
             'geo_zones' => 'array',
             'deadlines' => 'array',
             'short_description' => 'nullable|string|max:500',
@@ -507,6 +509,10 @@ final class ProjectForm extends Component implements HasForms
             'info_types.array' => 'Les types de programme doivent être remplis.',
             'documents.array' => 'Les documents doivent être remplis.',
             'scientific_domains.array' => 'Les disciplines scientifiques doivent être remplies.',
+            'scientific_domains.required' => 'Veuillez sélectionner au moins une discipline scientifique.',
+            'scientific_domains.min' => 'Veuillez sélectionner au moins une discipline scientifique.',
+            'scientific_domains.*.integer' => 'Chaque discipline scientifique sélectionnée doit être valide.',
+            'scientific_domains.*.exists' => 'La discipline scientifique sélectionnée est invalide.',
             'geo_zones.array' => 'Les zones géographiques doivent être remplies.',
             'deadlines.array' => 'Les deadlines doivent être remplies.',
             'short_description.string' => 'La description courte doit être une chaîne de caractères.',

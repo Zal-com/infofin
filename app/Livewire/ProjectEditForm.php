@@ -147,6 +147,7 @@ class ProjectEditForm extends Component implements HasForms
                         ->options($sortedDomains)
                         ->bulkToggleable()
                         ->columnSpan(2)
+                        ->required()
                         ->extraAttributes([
                             'class' => 'w-full'
                         ])->columns(3)
@@ -423,7 +424,8 @@ class ProjectEditForm extends Component implements HasForms
             'organisation_id' => 'required|exists:organisations,id',
             'info_types' => 'array',
             'documents' => 'array',
-            'scientific_domains' => 'array',
+            'scientific_domains' => 'required|array|min:1',
+            'scientific_domains.*' => 'integer|exists:scientific_domains,id',
             'geo_zones' => 'array',
             'deadlines' => 'array',
             'date_lessor' => 'nullable|date',
@@ -449,6 +451,10 @@ class ProjectEditForm extends Component implements HasForms
             'organisation_id' => 'Organisation',
             'info_types' => 'Types de programme',
             'scientific_domains' => 'Disciplines scientifiques',
+            'scientific_domains.required' => 'Veuillez sélectionner au moins une discipline scientifique.',
+            'scientific_domains.min' => 'Veuillez sélectionner au moins une discipline scientifique.',
+            'scientific_domains.*.integer' => 'Chaque discipline scientifique sélectionnée doit être valide.',
+            'scientific_domains.*.exists' => 'La discipline scientifique sélectionnée est invalide.',
             'geo_zones' => 'Zones géographiques',
             'deadlines' => 'Deadlines',
             'date_lessor' => 'Date Bailleur',
