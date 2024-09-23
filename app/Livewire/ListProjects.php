@@ -262,7 +262,7 @@ class ListProjects extends Component implements HasForms, HasTable
                 ->weight(FontWeight::SemiBold)
                 ->sortable()
                 ->suffixBadges(function (Project $record) {
-                    if ($record->is_big) {
+                    if ($record->is_big && Auth::check() && Auth::user()->hasRole('contributor')) {
                         return [
                             Badge::make('is_big')
                                 ->label('Projet majeur')
