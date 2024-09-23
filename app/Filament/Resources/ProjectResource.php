@@ -115,11 +115,6 @@ class ProjectResource extends Resource
                         Checkbox::make('continuous')->default(false),
                     ])->label(false)->addActionLabel('+ Ajouter une deadline')->minItems(1)->required()->defaultItems(1),
                 ]),
-                Select::make('periodicity')
-                    ->label('Periodicité')
-                    ->options(['Sans', 'Annuel', 'Biennal', 'Triennal', 'Quadriennal', 'Quinquennal'])
-                    ->selectablePlaceholder(false)
-                    ->default(0),
                 DatePicker::make('date_lessor')
                     ->label('Date Bailleur'),
                 Textarea::make('short_description')
@@ -150,15 +145,11 @@ class ProjectResource extends Resource
                     TextInput::make('first_name')->label('Prénom'),
                     TextInput::make('last_name')->label('Nom'),
                     TextInput::make('email')->label('E-mail')->email(),
-                    TextInput::make('tel')->label('Numéro de téléphone')->tel(),
-                    TextInput::make('address')->label('Adresse')->columnSpan(2)
                 ])->columns(2)->addActionLabel('+ Nouveau contact')->label('Contact ULB'),
                 Repeater::make('contact_ext')->schema([
                     TextInput::make('first_name')->label('Prénom'),
                     TextInput::make('last_name')->label('Nom'),
                     TextInput::make('email')->label('E-mail')->email(),
-                    TextInput::make('tel')->label('Numéro de téléphone')->tel(),
-                    TextInput::make('address')->label('Adresse')->columnSpan(2)
                 ])->columns(2)->addActionLabel('+ Nouveau contact')->label('Contact EXTERNE'),
                 FileUpload::make('docs')
                     ->label('Documents')

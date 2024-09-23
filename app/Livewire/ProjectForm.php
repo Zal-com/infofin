@@ -9,7 +9,6 @@ use App\Models\Draft;
 use App\Models\InfoSession;
 use App\Models\InfoType;
 use App\Models\Project;
-use App\Models\ScientificDomain;
 use App\Models\ScientificDomainCategory;
 use App\Services\FileService;
 use Filament\Forms\Components\Actions;
@@ -134,7 +133,7 @@ final class ProjectForm extends Component implements HasForms
                         ->preload()
                         ->createOptionForm([
                             TextInput::make('title')
-                                ->label('Organisation Title')
+                                ->label("Nom de l'organisation")
                                 ->required(),
                         ])
                         ->required(),
@@ -208,11 +207,6 @@ final class ProjectForm extends Component implements HasForms
                             Checkbox::make('continuous')->default(false)->label('Continu'),
                         ])->label(false)->addActionLabel('+ Ajouter une deadline')->minItems(1)->required()->defaultItems(1),
                     ]),
-                    Select::make('periodicity')
-                        ->label('Periodicité')
-                        ->options(['Sans', 'Annuel', 'Biennal', 'Triennal', 'Quadriennal', 'Quinquennal'])
-                        ->selectablePlaceholder(false)
-                        ->default(0),
                     /*
                     DatePicker::make('date_lessor')
                         ->label('Date Bailleur'),
@@ -291,8 +285,6 @@ final class ProjectForm extends Component implements HasForms
                             TextInput::make('first_name')->label('Prénom'),
                             TextInput::make('last_name')->label('Nom'),
                             TextInput::make('email')->label('E-mail')->email(),
-                            TextInput::make('tel')->label('Numéro de téléphone')->tel(),
-                            TextInput::make('address')->label('Adresse')->columnSpan(2)
                         ])->columns(2)->addActionLabel('+ Nouveau contact')->label(false)->maxItems(3)
                     ]),
                     Fieldset::make('Externes')->schema([
@@ -300,8 +292,6 @@ final class ProjectForm extends Component implements HasForms
                             TextInput::make('first_name')->label('Prénom'),
                             TextInput::make('last_name')->label('Nom'),
                             TextInput::make('email')->label('E-mail')->email(),
-                            TextInput::make('tel')->label('Numéro de téléphone')->tel(),
-                            TextInput::make('address')->label('Adresse')->columnSpan(2)
                         ])->columns(2)->addActionLabel('+ Nouveau contact')->label(false)->maxItems(3)
                     ]),
                 ]),
@@ -491,7 +481,6 @@ final class ProjectForm extends Component implements HasForms
             'scientific_domains' => 'array',
             'geo_zones' => 'array',
             'deadlines' => 'array',
-            'periodicity' => 'nullable|integer',
             'short_description' => 'nullable|string|max:500',
             'long_description' => 'array',
             'funding' => 'array',
@@ -500,12 +489,9 @@ final class ProjectForm extends Component implements HasForms
             'contact_ulb.*.first_name' => 'nullable|string',
             'contact_ulb.*.last_name' => 'nullable|string',
             'contact_ulb.*.email' => 'nullable|email',
-            'contact_ulb.*.tel' => 'nullable|phone:BE',
-            'contact_ulb.*.address' => 'nullable|string',
             'contact_ext.*.first_name' => 'nullable|string|max:50',
             'contact_ext.*.last_name' => 'nullable|string|max:50',
             'contact_ext.*.email' => 'nullable|email|max:255',
-            'contact_ext.*.tel' => 'nullable|phone:BE',
             'status' => 'integer',
             'is_draft' => 'boolean',
             'info_sessions' => 'nullable|array'
@@ -523,7 +509,6 @@ final class ProjectForm extends Component implements HasForms
             'scientific_domains.array' => 'Les disciplines scientifiques doivent être remplies.',
             'geo_zones.array' => 'Les zones géographiques doivent être remplies.',
             'deadlines.array' => 'Les deadlines doivent être remplies.',
-            'periodicity.integer' => 'La périodicité doit être un nombre entier.',
             'short_description.string' => 'La description courte doit être une chaîne de caractères.',
             'short_description.max' => 'La description courte ne peut pas dépasser :max caractères.',
             'long_description.array' => 'La description longue doit être remplie.',
@@ -533,15 +518,12 @@ final class ProjectForm extends Component implements HasForms
             'contact_ulb.*.first_name.string' => 'Le prénom du contact interne doit être une chaîne de caractères.',
             'contact_ulb.*.last_name.string' => 'Le nom du contact interne doit être une chaîne de caractères.',
             'contact_ulb.*.email.email' => 'L\'email du contact interne doit être une adresse email valide.',
-            'contact_ulb.*.tel.phone' => 'Le téléphone du contact interne doit être un numéro valide en Belgique.',
-            'contact_ulb.*.address.string' => 'L\'adresse du contact interne doit être une chaîne de caractères.',
             'contact_ext.*.first_name.string' => 'Le prénom du contact externe doit être une chaîne de caractères.',
             'contact_ext.*.first_name.max' => 'Le prénom du contact externe ne peut pas dépasser :max caractères.',
             'contact_ext.*.last_name.string' => 'Le nom du contact externe doit être une chaîne de caractères.',
             'contact_ext.*.last_name.max' => 'Le nom du contact externe ne peut pas dépasser :max caractères.',
             'contact_ext.*.email.email' => 'L\'email du contact externe doit être une adresse email valide.',
             'contact_ext.*.email.max' => 'L\'email du contact externe ne peut pas dépasser :max caractères.',
-            'contact_ext.*.tel.phone' => 'Le téléphone du contact externe doit être un numéro valide en Belgique.',
             'status.integer' => 'Le statut doit être un nombre entier.',
             'is_draft.boolean' => 'Le champ "Brouillon" doit être vrai ou faux.',
             'info_sessions.array' => 'Les séances d\'informations doivent être remplies.'
@@ -555,7 +537,6 @@ final class ProjectForm extends Component implements HasForms
             'scientific_domains' => 'Disciplines scientifiques',
             'geo_zones' => 'Zones géographiques',
             'deadlines' => 'Deadlines',
-            'periodicity' => 'Périodicité',
             // 'date_lessor' => 'Date Bailleur',
             'short_description' => 'Description courte',
             'long_description' => 'Description longue',
@@ -565,12 +546,9 @@ final class ProjectForm extends Component implements HasForms
             'contact_ulb.*.first_name' => 'Prénom',
             'contact_ulb.*.last_name' => 'Nom',
             'contact_ulb.*.email' => 'Email',
-            'contact_ulb.*.tel' => 'Téléphone',
-            'contact_ulb.*.address' => 'Addresse',
             'contact_ext.*.first_name' => 'Prénom',
             'contact_ext.*.last_name' => 'Nom',
             'contact_ext.*.email' => 'Email',
-            'contact_ext.*.tel' => 'Téléphone',
             'status' => 'Status',
             'is_draft' => 'Brouillon',
             'info_sessions' => 'Séance d\'informations'
@@ -590,24 +568,16 @@ final class ProjectForm extends Component implements HasForms
             $data['poster_id'] = $userId;
             $data['last_update_user_id'] = $userId;
 
-            if ($data['periodicity'] === null) {
-                $data['periodicity'] = 0;
-            }
-
             $contactsUlB = [];
             if (isset($data['contact_ulb'])) {
                 foreach ($data['contact_ulb'] as $contact) {
                     $name = trim(($contact['first_name'] ?? '') . ' ' . ($contact['last_name'] ?? ''));
                     $email = $contact['email'] ?? '';
-                    $phone = $contact['tel'] ?? '';
-                    $address = $contact['address'] ?? '';
 
-                    if ($name !== '' || $email !== '' || $phone !== '' || $address !== '') {
+                    if ($name !== '' || $email !== '') {
                         $contactsUlB[] = [
                             'name' => $name,
                             'email' => $email,
-                            'phone' => $phone,
-                            'address' => $address,
                         ];
                     }
                 }
@@ -622,15 +592,11 @@ final class ProjectForm extends Component implements HasForms
                 foreach ($data['contact_ext'] as $contact) {
                     $name = trim(($contact['first_name'] ?? '') . ' ' . ($contact['last_name'] ?? ''));
                     $email = $contact['email'] ?? '';
-                    $phone = $contact['tel'] ?? '';
-                    $address = $contact['address'] ?? '';
 
-                    if ($name !== '' || $email !== '' || $phone !== '' || $address !== '') {
+                    if ($name !== '' || $email !== '') {
                         $contactsExt[] = [
                             'name' => $name,
                             'email' => $email,
-                            'phone' => $phone,
-                            'address' => $address,
                         ];
                     }
                 }

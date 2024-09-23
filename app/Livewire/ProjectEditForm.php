@@ -6,16 +6,17 @@ use App\Models\Continent;
 use App\Models\Countries;
 use App\Models\Document;
 use App\Models\Draft;
+use App\Models\InfoSession;
 use App\Models\InfoType;
 use App\Models\Project;
 use App\Models\ScientificDomainCategory;
-use App\Models\InfoSession;
 use App\Services\FileService;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
@@ -23,7 +24,6 @@ use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
@@ -32,7 +32,6 @@ use FilamentTiptapEditor\TiptapEditor;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use League\HTMLToMarkdown\HtmlConverter;
 use Livewire\Component;
 
 class ProjectEditForm extends Component implements HasForms
@@ -128,8 +127,6 @@ class ProjectEditForm extends Component implements HasForms
                 'first_name' => $firstName,
                 'last_name' => $lastName,
                 'email' => $contact['email'] ?? '',
-                'tel' => $contact['phone'] ?? '',
-                'address' => $contact['address'] ?? '',
             ];
         }
 
@@ -180,7 +177,7 @@ class ProjectEditForm extends Component implements HasForms
                         ->preload()
                         ->createOptionForm([
                             TextInput::make('title')
-                                ->label('Organisation Title')
+                                ->label("Nom de l'organisation")
                                 ->required(),
                         ])
                         ->required(),
@@ -253,11 +250,6 @@ class ProjectEditForm extends Component implements HasForms
                             Checkbox::make('continuous')->default(false)->label('Continu'),
                         ])->label(false)->addActionLabel('+ Ajouter une deadline')->minItems(1)->required()->defaultItems(1),
                     ]),
-                    Select::make('periodicity')
-                        ->label('Periodicité')
-                        ->options(['Sans', 'Annuel', 'Biennal', 'Triennal', 'Quadriennal', 'Quinquennal'])
-                        ->selectablePlaceholder(false)
-                        ->default(0),
                     DatePicker::make('date_lessor')
                         ->label('Date Bailleur'),
                 ]),
@@ -320,8 +312,6 @@ class ProjectEditForm extends Component implements HasForms
                             TextInput::make('first_name')->label('Prénom'),
                             TextInput::make('last_name')->label('Nom'),
                             TextInput::make('email')->label('E-mail')->email(),
-                            TextInput::make('tel')->label('Numéro de téléphone')->tel(),
-                            TextInput::make('address')->label('Adresse')->columnSpan(2)
                         ])->columns(2)->addActionLabel('+ Nouveau contact')->label('')
                     ]),
                     Fieldset::make('Externes')->schema([
@@ -329,8 +319,6 @@ class ProjectEditForm extends Component implements HasForms
                             TextInput::make('first_name')->label('Prénom'),
                             TextInput::make('last_name')->label('Nom'),
                             TextInput::make('email')->label('E-mail')->email(),
-                            TextInput::make('tel')->label('Numéro de téléphone')->tel(),
-                            TextInput::make('address')->label('Adresse')->columnSpan(2)
                         ])->columns(2)->addActionLabel('+ Nouveau contact')
                     ]),
                 ]),
@@ -438,7 +426,6 @@ class ProjectEditForm extends Component implements HasForms
             'scientific_domains' => 'array',
             'geo_zones' => 'array',
             'deadlines' => 'array',
-            'periodicity' => 'nullable|integer',
             'date_lessor' => 'nullable|date',
             'short_description' => 'nullable|string|max:500',
             'long_description' => 'nullable|array',
@@ -448,12 +435,9 @@ class ProjectEditForm extends Component implements HasForms
             'contact_ulb.*.first_name' => 'nullable|string',
             'contact_ulb.*.last_name' => 'nullable|string',
             'contact_ulb.*.email' => 'nullable|email',
-            'contact_ulb.*.tel' => 'nullable|phone:BE',
-            'contact_ulb.*.address' => 'nullable|string',
             'contact_ext.*.first_name' => 'nullable|string|max:50',
             'contact_ext.*.last_name' => 'nullable|string|max:50',
             'contact_ext.*.email' => 'nullable|email|max:255',
-            'contact_ext.*.tel' => 'nullable|phone:BE',
             'status' => 'integer',
             'is_draft' => 'boolean',
             'info_sessions' => 'nullable|array'
@@ -467,7 +451,6 @@ class ProjectEditForm extends Component implements HasForms
             'scientific_domains' => 'Disciplines scientifiques',
             'geo_zones' => 'Zones géographiques',
             'deadlines' => 'Deadlines',
-            'periodicity' => 'Périodicité',
             'date_lessor' => 'Date Bailleur',
             'short_description' => 'Description courte',
             'long_description' => 'Description longue',
@@ -477,12 +460,9 @@ class ProjectEditForm extends Component implements HasForms
             'contact_ulb.*.first_name' => 'Prénom',
             'contact_ulb.*.last_name' => 'Nom',
             'contact_ulb.*.email' => 'Email',
-            'contact_ulb.*.tel' => 'Téléphone',
-            'contact_ulb.*.address' => 'Addresse',
             'contact_ext.*.first_name' => 'Prénom',
             'contact_ext.*.last_name' => 'Nom',
             'contact_ext.*.email' => 'Email',
-            'contact_ext.*.tel' => 'Téléphone',
             'status' => 'Status',
             'is_draft' => 'Brouillon',
             'info_sessions' => 'Séances d\'information',
@@ -502,24 +482,17 @@ class ProjectEditForm extends Component implements HasForms
 
                 $data['short_description'] = $markdown;
                 */
-                if (!array_key_exists('periodicity', $data) || $data['periodicity'] === null) {
-                    $data['periodicity'] = 0;
-                }
 
                 if (isset($data['contact_ulb'])) {
                     $contactsUlB = [];
                     foreach ($data['contact_ulb'] as $contact) {
                         $name = trim(($contact['first_name'] ?? '') . ' ' . ($contact['last_name'] ?? ''));
                         $email = $contact['email'] ?? '';
-                        $phone = $contact['tel'] ?? '';
-                        $address = $contact['address'] ?? '';
 
-                        if ($name !== '' || $email !== '' || $phone !== '' || $address !== '') {
+                        if ($name !== '' || $email !== '') {
                             $contactsUlB[] = [
                                 'name' => $name,
                                 'email' => $email,
-                                'phone' => $phone,
-                                'address' => $address,
                             ];
                         }
                     }
@@ -534,14 +507,11 @@ class ProjectEditForm extends Component implements HasForms
                         $name = trim(($contact['first_name'] ?? '') . ' ' . ($contact['last_name'] ?? ''));
                         $email = $contact['email'] ?? '';
                         $phone = $contact['tel'] ?? '';
-                        $address = $contact['address'] ?? '';
 
-                        if ($name !== '' || $email !== '' || $phone !== '' || $address !== '') {
+                        if ($name !== '' || $email !== '') {
                             $contactsExt[] = [
                                 'name' => $name,
                                 'email' => $email,
-                                'phone' => $phone,
-                                'address' => $address,
                             ];
                         }
                     }
