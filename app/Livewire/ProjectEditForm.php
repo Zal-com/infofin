@@ -6,16 +6,17 @@ use App\Models\Continent;
 use App\Models\Countries;
 use App\Models\Document;
 use App\Models\Draft;
+use App\Models\InfoSession;
 use App\Models\InfoType;
 use App\Models\Project;
 use App\Models\ScientificDomainCategory;
-use App\Models\InfoSession;
 use App\Services\FileService;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
@@ -23,7 +24,6 @@ use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
@@ -32,7 +32,6 @@ use FilamentTiptapEditor\TiptapEditor;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use League\HTMLToMarkdown\HtmlConverter;
 use Livewire\Component;
 
 class ProjectEditForm extends Component implements HasForms
@@ -180,7 +179,7 @@ class ProjectEditForm extends Component implements HasForms
                         ->preload()
                         ->createOptionForm([
                             TextInput::make('title')
-                                ->label('Organisation Title')
+                                ->label("Nom de l'organisation")
                                 ->required(),
                         ])
                         ->required(),

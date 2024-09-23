@@ -9,7 +9,6 @@ use App\Models\Draft;
 use App\Models\InfoSession;
 use App\Models\InfoType;
 use App\Models\Project;
-use App\Models\ScientificDomain;
 use App\Models\ScientificDomainCategory;
 use App\Services\FileService;
 use Filament\Forms\Components\Actions;
@@ -134,7 +133,7 @@ final class ProjectForm extends Component implements HasForms
                         ->preload()
                         ->createOptionForm([
                             TextInput::make('title')
-                                ->label('Organisation Title')
+                                ->label("Nom de l'organisation")
                                 ->required(),
                         ])
                         ->required(),
