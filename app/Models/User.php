@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements HasName
@@ -150,7 +149,7 @@ class User extends Authenticatable implements HasName
         return $this->hasMany(Project::class, "poster_id");
     }
 
-    public function last_update_projects() : HasMany
+    public function last_update_projects(): HasMany
     {
         return $this->hasMany(Project::class, "last_update_user_id");
     }
@@ -168,6 +167,11 @@ class User extends Authenticatable implements HasName
     public function drafts(): BelongsToMany
     {
         return $this->belongsToMany(Draft::class, 'users_drafts');
+    }
+
+    public function projectEditHistories(): HasMany
+    {
+        return $this->hasMany(ProjectEditHistory::class, 'id_user', 'id');
     }
 
     public function full_name(): string

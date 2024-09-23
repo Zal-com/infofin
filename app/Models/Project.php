@@ -79,6 +79,16 @@ class Project extends Model
         return $this->belongsToMany(User::class, "visits_rate_mail", "project_id", "user_id")->withPivot('date_consult');
     }
 
+    public function editHistories(): HasMany
+    {
+        return $this->hasMany(ProjectEditHistory::class, 'id_project', 'id');
+    }
+
+    public function collections(): BelongsToMany
+    {
+        return $this->belongsToMany(Collection::class, 'projects_collections', 'project_id', 'collection_uid');
+    }
+
     public function getFirstDeadlineAttribute(): string
     {
         $deadlines = $this->attributes['deadlines'] ? json_decode($this->attributes['deadlines'], true) : [];
