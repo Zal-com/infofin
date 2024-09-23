@@ -488,9 +488,11 @@ final class ProjectForm extends Component implements HasForms
             'funding' => 'array',
             'admission_requirements' => 'array',
             'apply_instructions' => 'array',
+            'contact_ulb' => 'array',
             'contact_ulb.*.first_name' => 'nullable|string',
             'contact_ulb.*.last_name' => 'nullable|string',
             'contact_ulb.*.email' => 'nullable|email',
+            'contact_ext' => 'array',
             'contact_ext.*.first_name' => 'nullable|string|max:50',
             'contact_ext.*.last_name' => 'nullable|string|max:50',
             'contact_ext.*.email' => 'nullable|email|max:255',
@@ -530,6 +532,7 @@ final class ProjectForm extends Component implements HasForms
             'contact_ext.*.last_name.max' => 'Le nom du contact externe ne peut pas dépasser :max caractères.',
             'contact_ext.*.email.email' => 'L\'email du contact externe doit être une adresse email valide.',
             'contact_ext.*.email.max' => 'L\'email du contact externe ne peut pas dépasser :max caractères.',
+            'at_least_one_contact' => 'Veuillez fournir au moins un contact interne ou externe.',
             'status.integer' => 'Le statut doit être un nombre entier.',
             'is_draft.boolean' => 'Le champ "Brouillon" doit être vrai ou faux.',
             'info_sessions.array' => 'Les séances d\'informations doivent être remplies.'
@@ -559,6 +562,26 @@ final class ProjectForm extends Component implements HasForms
             'is_draft' => 'Brouillon',
             'info_sessions' => 'Séance d\'informations'
         ]);
+        $validator->after(function ($validator) {
+            $contact_ulb = $this->data['contact_ulb'] ?? [];
+            $contact_ext = $this->data['contact_ext'] ?? [];
+
+            // Filtrer les contacts vides
+            $contact_ulb = array_filter($contact_ulb, function ($contact) {
+                return !empty($contact['first_name']) || !empty($contact['last_name']) || !empty($contact['email']);
+            });
+
+            $contact_ext = array_filter($contact_ext, function ($contact) {
+                return !empty($contact['first_name']) || !empty($contact['last_name']) || !empty($contact['email']);
+            });
+
+            $ulb_has_contact = !empty($contact_ulb);
+            $ext_has_contact = !empty($contact_ext);
+
+            if (!$ulb_has_contact && !$ext_has_contact) {
+                $validator->errors()->add('contact_ulb', 'Veuillez fournir au moins un contact interne ou externe.');
+            }
+        });
 
         if ($validator->fails()) {
             foreach ($validator->errors()->all() as $error) {

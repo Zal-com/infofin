@@ -434,9 +434,11 @@ class ProjectEditForm extends Component implements HasForms
             'funding' => 'nullable|array',
             'admission_requirements' => 'nullable|array',
             'apply_instructions' => 'nullable|array',
+            'contact_ulb' => 'array',
             'contact_ulb.*.first_name' => 'nullable|string',
             'contact_ulb.*.last_name' => 'nullable|string',
             'contact_ulb.*.email' => 'nullable|email',
+            'contact_ext' => 'array',
             'contact_ext.*.first_name' => 'nullable|string|max:50',
             'contact_ext.*.last_name' => 'nullable|string|max:50',
             'contact_ext.*.email' => 'nullable|email|max:255',
@@ -469,10 +471,31 @@ class ProjectEditForm extends Component implements HasForms
             'contact_ext.*.first_name' => 'Prénom',
             'contact_ext.*.last_name' => 'Nom',
             'contact_ext.*.email' => 'Email',
+            'at_least_one_contact' => 'Veuillez fournir au moins un contact interne ou externe.',
             'status' => 'Status',
             'is_draft' => 'Brouillon',
             'info_sessions' => 'Séances d\'information',
         ]);
+        $validator->after(function ($validator) {
+            $contact_ulb = $this->data['contact_ulb'] ?? [];
+            $contact_ext = $this->data['contact_ext'] ?? [];
+
+            // Filtrer les contacts vides
+            $contact_ulb = array_filter($contact_ulb, function ($contact) {
+                return !empty($contact['first_name']) || !empty($contact['last_name']) || !empty($contact['email']);
+            });
+
+            $contact_ext = array_filter($contact_ext, function ($contact) {
+                return !empty($contact['first_name']) || !empty($contact['last_name']) || !empty($contact['email']);
+            });
+
+            $ulb_has_contact = !empty($contact_ulb);
+            $ext_has_contact = !empty($contact_ext);
+
+            if (!$ulb_has_contact && !$ext_has_contact) {
+                $validator->errors()->add('contact_ulb', 'Veuillez fournir au moins un contact interne ou externe.');
+            }
+        });
 
         if ($validator->fails()) {
             foreach ($validator->errors()->all() as $error) {
