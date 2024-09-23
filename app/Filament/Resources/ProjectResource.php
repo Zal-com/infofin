@@ -115,11 +115,6 @@ class ProjectResource extends Resource
                         Checkbox::make('continuous')->default(false),
                     ])->label(false)->addActionLabel('+ Ajouter une deadline')->minItems(1)->required()->defaultItems(1),
                 ]),
-                Select::make('periodicity')
-                    ->label('Periodicité')
-                    ->options(['Sans', 'Annuel', 'Biennal', 'Triennal', 'Quadriennal', 'Quinquennal'])
-                    ->selectablePlaceholder(false)
-                    ->default(0),
                 DatePicker::make('date_lessor')
                     ->label('Date Bailleur'),
                 Textarea::make('short_description')

@@ -207,11 +207,6 @@ final class ProjectForm extends Component implements HasForms
                             Checkbox::make('continuous')->default(false)->label('Continu'),
                         ])->label(false)->addActionLabel('+ Ajouter une deadline')->minItems(1)->required()->defaultItems(1),
                     ]),
-                    Select::make('periodicity')
-                        ->label('Periodicité')
-                        ->options(['Sans', 'Annuel', 'Biennal', 'Triennal', 'Quadriennal', 'Quinquennal'])
-                        ->selectablePlaceholder(false)
-                        ->default(0),
                     /*
                     DatePicker::make('date_lessor')
                         ->label('Date Bailleur'),
@@ -486,7 +481,6 @@ final class ProjectForm extends Component implements HasForms
             'scientific_domains' => 'array',
             'geo_zones' => 'array',
             'deadlines' => 'array',
-            'periodicity' => 'nullable|integer',
             'short_description' => 'nullable|string|max:500',
             'long_description' => 'array',
             'funding' => 'array',
@@ -515,7 +509,6 @@ final class ProjectForm extends Component implements HasForms
             'scientific_domains.array' => 'Les disciplines scientifiques doivent être remplies.',
             'geo_zones.array' => 'Les zones géographiques doivent être remplies.',
             'deadlines.array' => 'Les deadlines doivent être remplies.',
-            'periodicity.integer' => 'La périodicité doit être un nombre entier.',
             'short_description.string' => 'La description courte doit être une chaîne de caractères.',
             'short_description.max' => 'La description courte ne peut pas dépasser :max caractères.',
             'long_description.array' => 'La description longue doit être remplie.',
@@ -544,7 +537,6 @@ final class ProjectForm extends Component implements HasForms
             'scientific_domains' => 'Disciplines scientifiques',
             'geo_zones' => 'Zones géographiques',
             'deadlines' => 'Deadlines',
-            'periodicity' => 'Périodicité',
             // 'date_lessor' => 'Date Bailleur',
             'short_description' => 'Description courte',
             'long_description' => 'Description longue',
@@ -575,10 +567,6 @@ final class ProjectForm extends Component implements HasForms
 
             $data['poster_id'] = $userId;
             $data['last_update_user_id'] = $userId;
-
-            if ($data['periodicity'] === null) {
-                $data['periodicity'] = 0;
-            }
 
             $contactsUlB = [];
             if (isset($data['contact_ulb'])) {

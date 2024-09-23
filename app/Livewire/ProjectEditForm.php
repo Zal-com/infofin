@@ -250,11 +250,6 @@ class ProjectEditForm extends Component implements HasForms
                             Checkbox::make('continuous')->default(false)->label('Continu'),
                         ])->label(false)->addActionLabel('+ Ajouter une deadline')->minItems(1)->required()->defaultItems(1),
                     ]),
-                    Select::make('periodicity')
-                        ->label('Periodicité')
-                        ->options(['Sans', 'Annuel', 'Biennal', 'Triennal', 'Quadriennal', 'Quinquennal'])
-                        ->selectablePlaceholder(false)
-                        ->default(0),
                     DatePicker::make('date_lessor')
                         ->label('Date Bailleur'),
                 ]),
@@ -431,7 +426,6 @@ class ProjectEditForm extends Component implements HasForms
             'scientific_domains' => 'array',
             'geo_zones' => 'array',
             'deadlines' => 'array',
-            'periodicity' => 'nullable|integer',
             'date_lessor' => 'nullable|date',
             'short_description' => 'nullable|string|max:500',
             'long_description' => 'nullable|array',
@@ -457,7 +451,6 @@ class ProjectEditForm extends Component implements HasForms
             'scientific_domains' => 'Disciplines scientifiques',
             'geo_zones' => 'Zones géographiques',
             'deadlines' => 'Deadlines',
-            'periodicity' => 'Périodicité',
             'date_lessor' => 'Date Bailleur',
             'short_description' => 'Description courte',
             'long_description' => 'Description longue',
@@ -489,9 +482,6 @@ class ProjectEditForm extends Component implements HasForms
 
                 $data['short_description'] = $markdown;
                 */
-                if (!array_key_exists('periodicity', $data) || $data['periodicity'] === null) {
-                    $data['periodicity'] = 0;
-                }
 
                 if (isset($data['contact_ulb'])) {
                     $contactsUlB = [];

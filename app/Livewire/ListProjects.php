@@ -89,38 +89,6 @@ class ListProjects extends Component implements HasForms, HasTable
                     }
                     return null;
                 }),
-            Filter::make('periodicity')
-                ->label('Pédiodicité')
-                ->form([
-                    Select::make('periodicity')
-                        ->label('Périodicité')
-                        ->multiple()
-                        ->options(['Sans', "Annuel", 'Biennal', 'Triennal', 'Quadriennal', 'Quinquennal'])
-                ])
-                ->query(function ($query, $data) {
-                    if (!empty($data['periodicity'])) {
-                        return $query->whereIn('periodicity', $data['periodicity']);
-                    }
-                })
-                ->indicateUsing(function ($data) {
-                    if (!empty($data['periodicity'])) {
-                        // Mapper les valeurs numériques vers les termes textuels
-                        $periodicityLabels = [
-                            '0' => 'Sans',
-                            '1' => 'Annuel',
-                            '2' => 'Biennal',
-                            '3' => 'Triennal',
-                            '4' => 'Quadriennal',
-                            '5' => 'Quinquennal',
-                        ];
-
-                        // Récupérer les labels correspondant aux valeurs sélectionnées
-                        $selectedLabels = array_map(fn($value) => $periodicityLabels[$value], $data['periodicity']);
-
-                        return 'Périodicité : ' . implode(', ', $selectedLabels);
-                    }
-                    return null;
-                }),
             Filter::make('info_type_category')
                 ->label('Catégories')
                 ->form([

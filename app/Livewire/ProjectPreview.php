@@ -86,7 +86,6 @@ class ProjectPreview extends Component
             'deadline_2' => 'nullable|date|required_if:continuous_2,false',
             'proof_2' => 'nullable|string|max:50',
             'continuous_2' => 'boolean',
-            'periodicity' => 'nullable|integer',
             'date_lessor' => 'nullable|date',
             'short_description' => 'nullable|string|max:500',
             'long_description' => 'nullable|string',
@@ -119,7 +118,6 @@ class ProjectPreview extends Component
             'deadline_2' => 'Deadline 2',
             'proof_2' => 'Justificatif de la 2nde deadline',
             'continuous_2' => 'Continu',
-            'periodicity' => 'Périodicité',
             'date_lessor' => 'Date Bailleur',
             'short_description' => 'Description courte',
             'long_description' => 'Description longue',
@@ -148,10 +146,6 @@ class ProjectPreview extends Component
 
         $data['poster_id'] = $userId;
         $data['last_update_user_id'] = $userId;
-
-        if ($data['periodicity'] === null) {
-            $data['periodicity'] = 0;
-        }
 
         $contactsUlB = [];
         if (isset($data['contact_ulb'])) {
