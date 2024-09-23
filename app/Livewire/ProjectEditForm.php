@@ -228,14 +228,14 @@ class ProjectEditForm extends Component implements HasForms
                                 'Monde entier' => 'Monde entier',
                             ];
 
-                            $continents = $this->continents;
-                            $countries = $this->countries;
+                            $continents = Continent::all()->pluck('name', 'id')->toArray();
+                            $pays = Countries::all()->pluck('name', 'id')->toArray();
 
                             foreach ($continents as $id => $name) {
                                 $options["continent_$id"] = $name;
                             }
 
-                            foreach ($countries as $id => $name) {
+                            foreach ($pays as $id => $name) {
                                 $options["pays_$id"] = $name;
                             }
 
