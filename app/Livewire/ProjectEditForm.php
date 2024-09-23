@@ -127,8 +127,6 @@ class ProjectEditForm extends Component implements HasForms
                 'first_name' => $firstName,
                 'last_name' => $lastName,
                 'email' => $contact['email'] ?? '',
-                'tel' => $contact['phone'] ?? '',
-                'address' => $contact['address'] ?? '',
             ];
         }
 
@@ -319,7 +317,6 @@ class ProjectEditForm extends Component implements HasForms
                             TextInput::make('first_name')->label('Prénom'),
                             TextInput::make('last_name')->label('Nom'),
                             TextInput::make('email')->label('E-mail')->email(),
-                            TextInput::make('address')->label('Adresse')->columnSpan(2)
                         ])->columns(2)->addActionLabel('+ Nouveau contact')->label('')
                     ]),
                     Fieldset::make('Externes')->schema([
@@ -327,7 +324,6 @@ class ProjectEditForm extends Component implements HasForms
                             TextInput::make('first_name')->label('Prénom'),
                             TextInput::make('last_name')->label('Nom'),
                             TextInput::make('email')->label('E-mail')->email(),
-                            TextInput::make('address')->label('Adresse')->columnSpan(2)
                         ])->columns(2)->addActionLabel('+ Nouveau contact')
                     ]),
                 ]),
@@ -445,7 +441,6 @@ class ProjectEditForm extends Component implements HasForms
             'contact_ulb.*.first_name' => 'nullable|string',
             'contact_ulb.*.last_name' => 'nullable|string',
             'contact_ulb.*.email' => 'nullable|email',
-            'contact_ulb.*.address' => 'nullable|string',
             'contact_ext.*.first_name' => 'nullable|string|max:50',
             'contact_ext.*.last_name' => 'nullable|string|max:50',
             'contact_ext.*.email' => 'nullable|email|max:255',
@@ -472,7 +467,6 @@ class ProjectEditForm extends Component implements HasForms
             'contact_ulb.*.first_name' => 'Prénom',
             'contact_ulb.*.last_name' => 'Nom',
             'contact_ulb.*.email' => 'Email',
-            'contact_ulb.*.address' => 'Addresse',
             'contact_ext.*.first_name' => 'Prénom',
             'contact_ext.*.last_name' => 'Nom',
             'contact_ext.*.email' => 'Email',
@@ -504,13 +498,11 @@ class ProjectEditForm extends Component implements HasForms
                     foreach ($data['contact_ulb'] as $contact) {
                         $name = trim(($contact['first_name'] ?? '') . ' ' . ($contact['last_name'] ?? ''));
                         $email = $contact['email'] ?? '';
-                        $address = $contact['address'] ?? '';
 
-                        if ($name !== '' || $email !== '' || $address !== '') {
+                        if ($name !== '' || $email !== '') {
                             $contactsUlB[] = [
                                 'name' => $name,
                                 'email' => $email,
-                                'address' => $address,
                             ];
                         }
                     }
@@ -525,13 +517,11 @@ class ProjectEditForm extends Component implements HasForms
                         $name = trim(($contact['first_name'] ?? '') . ' ' . ($contact['last_name'] ?? ''));
                         $email = $contact['email'] ?? '';
                         $phone = $contact['tel'] ?? '';
-                        $address = $contact['address'] ?? '';
 
-                        if ($name !== '' || $email !== '' || $address !== '') {
+                        if ($name !== '' || $email !== '') {
                             $contactsExt[] = [
                                 'name' => $name,
                                 'email' => $email,
-                                'address' => $address,
                             ];
                         }
                     }

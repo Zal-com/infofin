@@ -290,7 +290,6 @@ final class ProjectForm extends Component implements HasForms
                             TextInput::make('first_name')->label('Prénom'),
                             TextInput::make('last_name')->label('Nom'),
                             TextInput::make('email')->label('E-mail')->email(),
-                            TextInput::make('address')->label('Adresse')->columnSpan(2)
                         ])->columns(2)->addActionLabel('+ Nouveau contact')->label(false)->maxItems(3)
                     ]),
                     Fieldset::make('Externes')->schema([
@@ -298,7 +297,6 @@ final class ProjectForm extends Component implements HasForms
                             TextInput::make('first_name')->label('Prénom'),
                             TextInput::make('last_name')->label('Nom'),
                             TextInput::make('email')->label('E-mail')->email(),
-                            TextInput::make('address')->label('Adresse')->columnSpan(2)
                         ])->columns(2)->addActionLabel('+ Nouveau contact')->label(false)->maxItems(3)
                     ]),
                 ]),
@@ -497,7 +495,6 @@ final class ProjectForm extends Component implements HasForms
             'contact_ulb.*.first_name' => 'nullable|string',
             'contact_ulb.*.last_name' => 'nullable|string',
             'contact_ulb.*.email' => 'nullable|email',
-            'contact_ulb.*.address' => 'nullable|string',
             'contact_ext.*.first_name' => 'nullable|string|max:50',
             'contact_ext.*.last_name' => 'nullable|string|max:50',
             'contact_ext.*.email' => 'nullable|email|max:255',
@@ -528,7 +525,6 @@ final class ProjectForm extends Component implements HasForms
             'contact_ulb.*.first_name.string' => 'Le prénom du contact interne doit être une chaîne de caractères.',
             'contact_ulb.*.last_name.string' => 'Le nom du contact interne doit être une chaîne de caractères.',
             'contact_ulb.*.email.email' => 'L\'email du contact interne doit être une adresse email valide.',
-            'contact_ulb.*.address.string' => 'L\'adresse du contact interne doit être une chaîne de caractères.',
             'contact_ext.*.first_name.string' => 'Le prénom du contact externe doit être une chaîne de caractères.',
             'contact_ext.*.first_name.max' => 'Le prénom du contact externe ne peut pas dépasser :max caractères.',
             'contact_ext.*.last_name.string' => 'Le nom du contact externe doit être une chaîne de caractères.',
@@ -558,7 +554,6 @@ final class ProjectForm extends Component implements HasForms
             'contact_ulb.*.first_name' => 'Prénom',
             'contact_ulb.*.last_name' => 'Nom',
             'contact_ulb.*.email' => 'Email',
-            'contact_ulb.*.address' => 'Addresse',
             'contact_ext.*.first_name' => 'Prénom',
             'contact_ext.*.last_name' => 'Nom',
             'contact_ext.*.email' => 'Email',
@@ -590,13 +585,11 @@ final class ProjectForm extends Component implements HasForms
                 foreach ($data['contact_ulb'] as $contact) {
                     $name = trim(($contact['first_name'] ?? '') . ' ' . ($contact['last_name'] ?? ''));
                     $email = $contact['email'] ?? '';
-                    $address = $contact['address'] ?? '';
 
-                    if ($name !== '' || $email !== '' || $address !== '') {
+                    if ($name !== '' || $email !== '') {
                         $contactsUlB[] = [
                             'name' => $name,
                             'email' => $email,
-                            'address' => $address,
                         ];
                     }
                 }
@@ -611,13 +604,11 @@ final class ProjectForm extends Component implements HasForms
                 foreach ($data['contact_ext'] as $contact) {
                     $name = trim(($contact['first_name'] ?? '') . ' ' . ($contact['last_name'] ?? ''));
                     $email = $contact['email'] ?? '';
-                    $address = $contact['address'] ?? '';
 
-                    if ($name !== '' || $email !== '' || $address !== '') {
+                    if ($name !== '' || $email !== '') {
                         $contactsExt[] = [
                             'name' => $name,
                             'email' => $email,
-                            'address' => $address,
                         ];
                     }
                 }

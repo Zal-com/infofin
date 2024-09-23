@@ -264,12 +264,6 @@
                                 </p>
                             </div>
                         @endif
-                        @if(!empty($contact_ulb['address']))
-                            <div class="flex items-center">
-                                <x-filament::icon icon="heroicon-s-envelope" class="h-[24px] w-[24px] mr-2"/>
-                                {{$contact_ulb['address']}}
-                            </div>
-                        @endif
                     </div>
                 @endforeach
             </x-filament::section>
@@ -293,15 +287,6 @@
                                     <a href="mailto:{{trim($contact_ext['email'])}}">
                                         {{$contact_ext['email']}}
                                     </a>
-                                </p>
-                            </div>
-                        @endif
-                        @if($contact_ext['address'] != "")
-                            <div class="flex items-center">
-                                <x-filament::icon icon="heroicon-s-envelope"
-                                                  class="h-[24px] w-[24px] mr-2"/>
-                                <p class="flex-1 flex-wrap overflow-ellipsis line-clamp-1">
-                                    {{$contact_ext['address']}}
                                 </p>
                             </div>
                         @endif

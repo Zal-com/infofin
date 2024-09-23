@@ -150,13 +150,11 @@ class ProjectResource extends Resource
                     TextInput::make('first_name')->label('Prénom'),
                     TextInput::make('last_name')->label('Nom'),
                     TextInput::make('email')->label('E-mail')->email(),
-                    TextInput::make('address')->label('Adresse')->columnSpan(2)
                 ])->columns(2)->addActionLabel('+ Nouveau contact')->label('Contact ULB'),
                 Repeater::make('contact_ext')->schema([
                     TextInput::make('first_name')->label('Prénom'),
                     TextInput::make('last_name')->label('Nom'),
                     TextInput::make('email')->label('E-mail')->email(),
-                    TextInput::make('address')->label('Adresse')->columnSpan(2)
                 ])->columns(2)->addActionLabel('+ Nouveau contact')->label('Contact EXTERNE'),
                 FileUpload::make('docs')
                     ->label('Documents')
