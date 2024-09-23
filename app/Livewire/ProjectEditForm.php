@@ -344,7 +344,12 @@ class ProjectEditForm extends Component implements HasForms
                         ->relationship('info_sessions', 'title')
                         ->multiple()
                         ->searchable()
-                        ->options(InfoSession::all()->pluck('title', 'id')->toArray())
+                        ->options(InfoSession::where('session_datetime', '>', now())
+                            ->get()
+                            ->mapWithKeys(function ($item) {
+                                return [$item->id => $item->id . ' - ' . $item->title];
+                            })
+                            ->toArray())
                         ->createOptionForm([
                             TextInput::make('title')
                                 ->label('Titre')

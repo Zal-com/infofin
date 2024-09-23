@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\InfoSession;
 use App\Models\Project;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -19,13 +20,12 @@ class CalendarWidget extends FullCalendarWidget
 
         // Check if the events are already cached
         $events = Cache::remember($cacheKey, 60, function () use ($start, $end, $fetchInfo) {
-            $projects = Project::whereRaw("
-                JSON_EXTRACT(deadlines, '$') LIKE '%\"date\":%'
-            ")->get(['id', 'title', 'deadlines', 'is_big']);
-
-            //dd($projects);
-
             $events = [];
+
+            // Récupérer les projets avec deadlines dans l'intervalle
+            $projects = Project::whereRaw("
+            JSON_EXTRACT(deadlines, '$') LIKE '%\"date\":%'
+        ")->get(['id', 'title', 'deadlines', 'is_big']);
 
             foreach ($projects as $project) {
                 foreach ($project->deadlines as $deadline) {
@@ -43,11 +43,29 @@ class CalendarWidget extends FullCalendarWidget
                 }
             }
 
+            // Récupérer les info sessions dans l'intervalle
+            $infoSessions = InfoSession::whereBetween('session_datetime', [$fetchInfo['start'], $fetchInfo['end']])
+                ->get(['id', 'title', 'session_datetime']);
+
+            foreach ($infoSessions as $session) {
+                $sessionDate = Carbon::parse($session->session_datetime);
+
+                $events[] = [
+                    'title' => $session->title,
+                    'start' => $sessionDate->format('Y-m-d'),
+                    'end' => $sessionDate->format('Y-m-d'),
+                    'url' => route('info_session.show', $session->id),
+                    'color' => 'green',
+                    'height' => 'auto',
+                ];
+            }
+
             return $events;
         });
 
         return $events;
     }
+
 
     public function config(): array
     {
