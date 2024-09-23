@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateProjectsCollectionsTable extends Migration
-{
+return new class extends Migration {
     /**
      * Exécute les migrations.
      */
@@ -31,4 +30,4 @@ class CreateProjectsCollectionsTable extends Migration
     {
         Schema::dropIfExists('projects_collections');
     }
-}
+};
