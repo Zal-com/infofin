@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\InfoSession;
 use App\Models\Project;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Saade\FilamentFullCalendar\Widgets\FullCalendarWidget;
 
@@ -16,11 +17,14 @@ class CalendarWidget extends FullCalendarWidget
     {
         $start = Carbon::parse($fetchInfo['start'])->toDateString();
         $end = Carbon::parse($fetchInfo['end'])->toDateString();
-        $cacheKey = "events_{$start}_{$end}";
+        $cacheKey = "events_{$start}_{$end}_" . Auth::id(); // Include user ID in cache key
 
         // Check if the events are already cached
         $events = Cache::remember($cacheKey, 60, function () use ($start, $end, $fetchInfo) {
             $events = [];
+
+            // Check if the user has the 'contributor' or 'admin' role
+            $hasRequiredRole = Auth::check() && Auth::user()->hasAnyRole(['contributor', 'admin']);
 
             // Récupérer les projets avec deadlines dans l'intervalle
             $projects = Project::whereRaw("
@@ -36,7 +40,7 @@ class CalendarWidget extends FullCalendarWidget
                             'start' => $deadlineDate->format('Y-m-d'),
                             'end' => $deadlineDate->format('Y-m-d'),
                             'url' => route('projects.show', $project->id),
-                            'color' => $project->is_big ? 'crimson' : null,
+                            'color' => ($project->is_big && $hasRequiredRole) ? 'crimson' : null,
                             'height' => 'auto',
                         ];
                     }
