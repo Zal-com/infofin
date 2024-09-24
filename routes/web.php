@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ApiController;
+use App\Http\Controllers\CollectionController;
 use App\Http\Controllers\DraftController;
 use App\Http\Controllers\InfoSessionController;
 use App\Http\Controllers\ProfileController;
@@ -60,6 +61,8 @@ Route::controller(ProjectController::class)->group(function () {
     Route::get('/projects/{id}', "show")->name('projects.show');
     Route::get('/projects/{id}/edit', "edit")->name('projects.edit');
 });
+
+Route::get('/collection/create', [CollectionController::class, 'create'])->name('collection.create');
 
 Route::controller(UserController::class)->group(function () {
     Route::get('users', 'index')->name('users.index');
