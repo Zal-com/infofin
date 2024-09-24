@@ -17,9 +17,11 @@
             </x-filament::tabs>
             <div x-show="tab === 'description'" class="m-4">
                 <x-filament::section.description class="flex flex-wrap gap-1">
-                    @foreach($info_types as $info_type)
-                        <x-filament::badge>{{$info_type->title ?? ''}}</x-filament::badge>
-                    @endforeach
+                    @if($info_types->isNotEmpty())
+                        @foreach($info_types as $info_type)
+                            <x-filament::badge>{{$info_type->title ?? ''}}</x-filament::badge>
+                        @endforeach
+                    @endif
                 </x-filament::section.description>
                 <h1 class="font-bold text-4xl my-1">{{$data['title'] ?? ''}}</h1>
                 <div class="inline-flex justify-between gap-2 mt-3 w-full">
