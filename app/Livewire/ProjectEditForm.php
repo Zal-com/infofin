@@ -231,7 +231,7 @@ class ProjectEditForm extends Component implements HasForms
                             ];
 
                             $continents = Continent::all()->pluck('name', 'id')->toArray();
-                            $pays = Countries::all()->pluck('name', 'id')->toArray();
+                            $pays = Countries::all()->pluck('nomPays', 'id')->toArray(); //FIXME
 
                             foreach ($continents as $id => $name) {
                                 $options["continent_$id"] = $name;
