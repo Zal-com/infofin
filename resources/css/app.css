@@ -133,3 +133,8 @@
 .disciplines-fieldset legend {
     font-weight: bold;
 }
+
+.custom-section-wrapper > * > * {
+    padding-top: 10px !important; /* Ajustez selon vos besoins */
+    padding-bottom: 10px !important; /* Ajustez selon vos besoins */
+}

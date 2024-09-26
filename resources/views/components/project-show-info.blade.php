@@ -47,7 +47,8 @@
 
                             <!-- Condition pour n'afficher la catégorie que si au moins un domaine est sélectionné -->
                         @if($totalDomainsLinked > 0)
-                            <div class="relative group" x-data="{ showTooltip: false }" @mouseenter="showTooltip = true"
+                            <div class="relative group" x-data="{ showTooltip: false }"
+                                 @mouseenter="showTooltip = true"
                                  @mouseleave="showTooltip = false">
                                 @if($totalDomainsLinked === $domains->count())
                                     <!-- Si tous les domaines sont cochés, afficher uniquement le nom de la catégorie -->
@@ -184,7 +185,8 @@
                             <li>
                                 <div class="flex justify-between">
                                     <div class="flex items-center">
-                                        <x-filament::icon icon="heroicon-o-document" class="h-[24px] w-[24px] mr-2"/>
+                                        <x-filament::icon icon="heroicon-o-document"
+                                                          class="h-[24px] w-[24px] mr-2"/>
                                         <a href="{{ route('download', ['name'=> $document->filename ,'file' => $document->path]) }}"
                                            class="text-blue-600 hover:underline">
                                             {{ $document->filename }}
@@ -242,6 +244,7 @@
                 </x-zeus-accordion::accordion.item>
             </x-zeus-accordion::accordion>
         @endif
+        {{--
         @if(!empty($project->contact_ulb))
             <x-filament::section class="col-span-1 row-span-1">
                 <x-filament::section.heading class="text-xl mb-4">
@@ -268,6 +271,7 @@
                 @endforeach
             </x-filament::section>
         @endif
+        --}}
         @if(!empty($project->contact_ext))
             <x-filament::section class="col-span-1 row-span-1 sticky top-5">
                 <x-filament::section.heading class="text-xl mb-4">
@@ -292,9 +296,22 @@
                         @endif
                     </div>
                 @endforeach
-
             </x-filament::section>
         @endif
+        <x-filament::section class="bg-primary-100 mt-2" style="background: #2A9D8F60">
+            <div class="flex flex-row items-start text-xs gap-5">
+                <div class="w-fit">
+                    <x-filament::icon icon="heroicon-o-information-circle" class="h-5"/>
+                </div>
+                <p>
+                    Cet appel ne nécessite pas de suivi particulier par le Département
+                    Recherche. Merci de suivre directement la procédure indiquée. Si toutefois vous souhaitez contacter
+                    le
+                    Département Recherche, écrivez à ulbkto@ulb.be (propriété intellectuelle) ou fonds.recherche@ulb.be
+                    (pour
+                    toute autre question).
+                </p></div>
+        </x-filament::section>
         @if($project->info_sessions && $project->info_sessions->count() > 0)
             <x-filament::section class="col-span-1 row-span-1">
                 <x-filament::section.heading>
