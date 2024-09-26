@@ -25,7 +25,7 @@ class CreateProjectsTable extends Migration
             $table->foreignId('last_update_user_id');
             $table->foreignId('country_id');
             $table->foreignId('continent_id');
-            $table->smallInteger('status')->default(1);
+            $table->smallInteger('status')->default(1)->comment("-1 = Archive, 0 = Inactif, 1 = Actif, 2 = ?");
             $table->boolean('is_big')->default(false);
             $table->text('long_description');
             $table->string('short_description', 500);

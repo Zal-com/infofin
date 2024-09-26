@@ -12,7 +12,7 @@
 .markdown ul,
 .markdown ol {
     list-style: revert !important;
-    list-style-position: inside !important;
+    list-style-position: outside !important;
 }
 
 #or {
