@@ -8,10 +8,12 @@
          x-init="$watch('tab', value => localStorage.setItem('activeTab', value))">
         <div class="sticky top-5"> <!-- Sticky avec hauteur et overflow -->
             <x-filament::tabs class="flex-col max-h-min">
+
                 <x-filament::tabs.item @click="tab = 'infos'" :alpine-active="'tab === \'infos\''"
                                        icon="heroicon-o-user">
                     Informations personnelles
                 </x-filament::tabs.item>
+
                 @can('create draft')
                     <x-filament::tabs.item @click="tab = 'drafts'" :alpine-active="'tab === \'drafts\''"
                                            icon="heroicon-o-pencil">
