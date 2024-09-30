@@ -523,7 +523,6 @@ final class ProjectForm extends Component implements HasForms
             'short_description.max' => 'La description courte ne peut pas dépasser :max caractères.',
             'long_description.array' => 'La description longue doit être remplie.',
             'funding.array' => 'Le champs "Budget & dépenses" doit être rempli.',
-            'admission_requirements.array' => 'Les critères d\'admission doivent être remplis.',
             'apply_instructions.array' => 'Les instructions pour postuler doivent être remplis.',
             'contact_ulb.*.first_name.string' => 'Le prénom du contact interne doit être une chaîne de caractères.',
             'contact_ulb.*.last_name.string' => 'Le nom du contact interne doit être une chaîne de caractères.',
