@@ -18,7 +18,8 @@ class DraftResource extends Resource
 {
     protected static ?string $model = Draft::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-pencil';
+    protected static ?string $activeNavigationIcon = 'heroicon-s-pencil';
 
     protected static ?string $label = "Brouillons";
 
@@ -41,11 +42,14 @@ class DraftResource extends Resource
                     ->label('Desc. courte')
                     ->limit(50)
             ])
+            ->recordUrl(null)
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\Action::make('edit')
+                    ->label('Modifier')
+                    ->icon('heroicon-o-pencil')
                     ->action(fn($record) => redirect(route('projects.create', ['record' => $record->id]))
                     ),
             ])

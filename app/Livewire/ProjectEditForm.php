@@ -9,6 +9,7 @@ use App\Models\Draft;
 use App\Models\InfoSession;
 use App\Models\InfoType;
 use App\Models\Project;
+use App\Models\ProjectEditHistory;
 use App\Models\ScientificDomainCategory;
 use App\Services\FileService;
 use Filament\Forms\Components\Actions;
@@ -30,6 +31,7 @@ use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use FilamentTiptapEditor\TiptapEditor;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
@@ -78,7 +80,7 @@ class ProjectEditForm extends Component implements HasForms
         $this->project->contact_ulb = $this->transformContacts($this->project->contact_ulb);
         $this->project->contact_ext = $this->transformContacts($this->project->contact_ext);
 
-        $this->countries = Countries::all()->pluck('nomPays', 'id')->toArray();
+        $this->countries = Countries::all()->pluck('name', 'id')->toArray();
         $this->continents = Continent::all()->pluck('name', 'id')->toArray();
 
         $geo_zones = [];
@@ -229,7 +231,7 @@ class ProjectEditForm extends Component implements HasForms
                             ];
 
                             $continents = Continent::all()->pluck('name', 'id')->toArray();
-                            $pays = Countries::all()->pluck('name', 'id')->toArray();
+                            $pays = Countries::all()->pluck('name', 'id')->toArray(); //FIXME
 
                             foreach ($continents as $id => $name) {
                                 $options["continent_$id"] = $name;
@@ -572,6 +574,12 @@ class ProjectEditForm extends Component implements HasForms
                     }
                 }
 
+                $id = $this->project->id;
+                ProjectEditHistory::create([
+                    'date' => Date::now(),
+                    'id_project' => $id,
+                    'id_user' => $userId
+                ]);
                 $this->project->save();
                 Notification::make()->title('Le projet a été modifié avec succès.')->icon('heroicon-o-check-circle')->seconds(5)->color('success')->send();
                 redirect()->route('projects.index');

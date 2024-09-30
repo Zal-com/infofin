@@ -16,8 +16,72 @@
                 </x-filament::tabs.item>
             </x-filament::tabs>
             <div x-show="tab === 'description'" class="m-4">
-                <h1>{{ $data['title'] ?? 'Aucun titre entré' }}</h1>
-                <p>{{ $organisation['title'] ?? 'Aucune organisation entrée' }}</p>
+                <x-filament::section.description class="flex flex-wrap gap-1">
+                    @if($info_types->isNotEmpty())
+                        @foreach($info_types as $info_type)
+                            <x-filament::badge>{{$info_type->title ?? ''}}</x-filament::badge>
+                        @endforeach
+                    @endif
+                </x-filament::section.description>
+                <h1 class="font-bold text-4xl my-1">{{$data['title'] ?? ''}}</h1>
+                <div class="inline-flex justify-between gap-2 mt-3 w-full">
+                    <div>
+                        <p class="text-md italic">{{ $organisation['title'] ?? 'Aucune organisation entrée' }}</p>
+                    </div>
+                    @if($scientificDomains->isNotEmpty())
+                        <div class="inline-flex gap-2">
+                            <!-- Ajout des badges pour les disciplines scientifiques -->
+
+                            @php
+                                // Récupérer tous les domaines associés au projet
+                                $linkedDomains = $scientificDomains;
+
+                                // Grouper tous les domaines disponibles par catégorie
+                                $domainsByCategory = \App\Models\ScientificDomain::all()->groupBy('category.name');
+                            @endphp
+
+                            @foreach($domainsByCategory as $categoryName => $domains)
+                                @php
+                                    // Filtrer les domaines qui sont liés au projet dans cette catégorie
+                                    $linkedDomainsInCategory = $linkedDomains->whereIn('id', $domains->pluck('id'));
+
+                                    $totalDomainsLinked = $linkedDomainsInCategory->count(); // Nombre de domaines liés dans la catégorie
+                                @endphp
+
+                                    <!-- Condition pour n'afficher la catégorie que si au moins un domaine est sélectionné -->
+                                @if($totalDomainsLinked > 0)
+                                    <div class="relative group" x-data="{ showTooltip: false }"
+                                         @mouseenter="showTooltip = true"
+                                         @mouseleave="showTooltip = false">
+                                        @if($totalDomainsLinked === $domains->count())
+                                            <!-- Si tous les domaines sont cochés, afficher uniquement le nom de la catégorie -->
+                                            <x-filament::badge color="success"
+                                                               class="w-fit">{{ $categoryName }}</x-filament::badge>
+                                        @else
+                                            <!-- Sinon, afficher la catégorie et le nombre de domaines cochés -->
+                                            <x-filament::badge color="success" class="w-fit">{{ $categoryName }}
+                                                ({{ $totalDomainsLinked }})
+                                            </x-filament::badge>
+                                        @endif
+
+                                        <!-- Tooltip personnalisé qui s'affiche au survol avec uniquement les domaines sélectionnés -->
+                                        @php
+                                            // Créer la liste des noms des domaines sélectionnés pour le tooltip sous forme de HTML
+                                            $selectedDomainsListHtml = '<ul>' . $linkedDomainsInCategory->map(fn($domain) => '<li>' . e($domain->name) . '</li>')->implode('') . '</ul>';
+                                        @endphp
+                                        <div x-show="showTooltip"
+                                             class="absolute left-0 bg-gray-800 text-white text-sm rounded-lg p-2 z-10 w-max mt-2 shadow-lg"
+                                             style="display: none;" x-cloak>
+                                            {!! $selectedDomainsListHtml !!}
+                                        </div>
+                                    </div>
+                                @endif
+                            @endforeach
+                        </div>
+                    @else
+                        <p>No scientific domains selected.</p>
+                    @endif
+                </div>
                 <div class="tiptap">
                     @empty($data['long_description'])
                         Pas de description fournie.

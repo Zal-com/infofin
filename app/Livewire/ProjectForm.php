@@ -80,7 +80,7 @@ final class ProjectForm extends Component implements HasForms
         foreach (['organisation', 'scientific_domains', 'info_types', 'geo_zones', 'documents', 'document_filenames', 'info_sessions'] as $attribute) {
             if (isset($data[$attribute])) {
                 if ($attribute == 'organisation') {
-                    $this->project->{$attribute} = $data[$attribute][0];
+                    $this->project->{$attribute} = $data[$attribute];
                 } else {
                     $this->project->{$attribute} = $data[$attribute];
                 }
@@ -186,7 +186,7 @@ final class ProjectForm extends Component implements HasForms
                             ];
 
                             $continents = Continent::all()->pluck('name', 'id')->toArray();
-                            $pays = Countries::all()->pluck('name', 'id')->toArray();
+                            $pays = Countries::all()->pluck('name', 'id')->toArray(); //FIXME
 
                             foreach ($continents as $id => $name) {
                                 $options["continent_$id"] = $name;
@@ -259,7 +259,6 @@ final class ProjectForm extends Component implements HasForms
                         ->output(TiptapOutput::Json)
                         ->maxContentWidth('full')
                         ->disableFloatingMenus()
-                        ->required()
                         ->placeholder('Informations sur le montant du financement, sa durée, etc.'),
                 ]),
                 Tabs\Tab::make("Critères d'admission")->schema([
@@ -268,16 +267,14 @@ final class ProjectForm extends Component implements HasForms
                         ->output(TiptapOutput::Json)
                         ->extraInputAttributes(['style' => 'min-height: 12rem;'])
                         ->maxContentWidth('full')
-                        ->disableFloatingMenus()
-                        ->required(),
+                        ->disableFloatingMenus(),
                 ]),
                 Tabs\Tab::make("Pour postuler")->schema([
                     TiptapEditor::make('apply_instructions')
                         ->extraInputAttributes(['style' => 'min-height: 12rem;'])
                         ->maxContentWidth('full')
                         ->disableFloatingMenus()
-                        ->label(false)
-                        ->required(),
+                        ->label(false),
 
                 ]),
                 Tabs\Tab::make("Contacts")->schema([
@@ -490,9 +487,9 @@ final class ProjectForm extends Component implements HasForms
             'deadlines' => 'array',
             'short_description' => 'nullable|string|max:500',
             'long_description' => 'array',
-            'funding' => 'array',
-            'admission_requirements' => 'array',
-            'apply_instructions' => 'array',
+            'funding' => 'array|nullable',
+            'admission_requirements' => 'array|nullable',
+            'apply_instructions' => 'array|nullable',
             'contact_ulb' => 'array',
             'contact_ulb.*.first_name' => 'nullable|string',
             'contact_ulb.*.last_name' => 'nullable|string',
@@ -526,7 +523,6 @@ final class ProjectForm extends Component implements HasForms
             'short_description.max' => 'La description courte ne peut pas dépasser :max caractères.',
             'long_description.array' => 'La description longue doit être remplie.',
             'funding.array' => 'Le champs "Budget & dépenses" doit être rempli.',
-            'admission_requirements.array' => 'Les critères d\'admission doivent être remplis.',
             'apply_instructions.array' => 'Les instructions pour postuler doivent être remplis.',
             'contact_ulb.*.first_name.string' => 'Le prénom du contact interne doit être une chaîne de caractères.',
             'contact_ulb.*.last_name.string' => 'Le nom du contact interne doit être une chaîne de caractères.',

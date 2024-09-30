@@ -12,7 +12,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class SendWeeklyNewsletter implements ShouldQueue
@@ -54,7 +53,12 @@ class SendWeeklyNewsletter implements ShouldQueue
                             $query->whereIn('info_type_id', $subscriber->info_types->pluck('id'));
                         });
                 })
+                ->where("is_big", 0)
                 ->get();
+
+            $projects = $projects->merge(
+                Project::where('is_big', 1)->where('is_in_next_email', 1)->get()
+            );
 
             if (!$projects->isEmpty()) {
                 $data['projects'] = $projects;
