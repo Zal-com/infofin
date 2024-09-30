@@ -21,7 +21,6 @@ return new class extends Migration {
             $table->primary(['project_id', 'collection_id']);
 
             // Définitions des clés étrangères
-            $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
             $table->foreign('collection_id')->references('id')->on('collections')->onDelete('cascade');
         });
     }
