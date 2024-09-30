@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->uuid('id')->primary(); // Clé primaire de type string
             $table->string('name');
             $table->string('description')->nullable();
+            $table->foreignId("user_id")->constrained("users")->onDelete("cascade");
             $table->timestamps(); // Ajoute les colonnes created_at et updated_at
         });
     }

@@ -13,12 +13,12 @@ return new class extends Migration {
         Schema::create('projects_edit_history', function (Blueprint $table) {
             $table->id();// Clé primaire auto-incrémentée nommée 'uid'
             $table->dateTime('date'); // Colonne date et heure de l'édition
-            $table->unsignedBigInteger('id_project'); // Référence à projects.id
-            $table->unsignedBigInteger('id_user'); // Référence à users.id
+            $table->unsignedBigInteger('project_id'); // Référence à projects.id
+            $table->unsignedBigInteger('user_id'); // Référence à users.id
 
             // Définition des clés étrangères
-            $table->foreign('id_project')->references('id')->on('projects')->onDelete('cascade');
-            $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

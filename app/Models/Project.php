@@ -39,20 +39,21 @@ class Project extends Model
         return $this->belongsToMany(InfoType::class, 'projects_info_types', 'project_id', 'info_type_id');
     }
 
-    public function country(): BelongsTo
-    {
-        return $this->belongsTo(Countries::class, 'country_id', "codePays");
-    }
-
     public function poster(): BelongsTo
     {
         return $this->belongsTo(User::class, 'poster_id');
     }
 
-    public function continent(): BelongsTo
+    public function continents(): BelongsToMany
     {
-        return $this->belongsTo(Continent::class, 'continent_id');
+        return $this->belongsToMany(Continent::class, 'projects_continents', 'project_id', 'continent_code');
     }
+
+    public function countries(): BelongsToMany
+    {
+        return $this->belongsToMany(Country::class, 'projects_countries', 'project_id', 'country_id');
+    }
+
 
     public function organisation(): BelongsTo
     {
@@ -81,7 +82,7 @@ class Project extends Model
 
     public function editHistories(): HasMany
     {
-        return $this->hasMany(ProjectEditHistory::class, 'id_project', 'id');
+        return $this->hasMany(ProjectEditHistory::class, 'project_id', 'id');
     }
 
     public function collections(): BelongsToMany

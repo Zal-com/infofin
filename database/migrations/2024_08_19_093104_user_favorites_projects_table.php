@@ -11,13 +11,9 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('users_favorite_projects', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('project_id');
-            $table->foreignId('user_id');
-
-
-            $table->foreign('project_id')->references('id')->on('projects');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->id(); // Clé primaire
+            $table->foreignId('project_id')->constrained('projects')->onDelete('cascade'); // Clé étrangère vers projects avec suppression en cascade
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // Clé étrangère vers users avec suppression en cascade
         });
     }
 
@@ -26,6 +22,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('users_favorite_projects');
+        Schema::dropIfExists('users_favorite_projects'); // Suppression de la table
     }
 };

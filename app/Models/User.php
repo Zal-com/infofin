@@ -171,7 +171,7 @@ class User extends Authenticatable implements HasName
 
     public function projectEditHistories(): HasMany
     {
-        return $this->hasMany(ProjectEditHistory::class, 'id_user', 'id');
+        return $this->hasMany(ProjectEditHistory::class, 'user_id', 'id');
     }
 
     public function full_name(): string

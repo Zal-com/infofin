@@ -9,13 +9,9 @@ class CreateProjectScientificDomainsTable extends Migration
     public function up()
     {
         Schema::create('projects_scientific_domains', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('project_id');
-            $table->foreignId('scientific_domain_id');
-
-            //Relations
-            $table->foreign('project_id')->references('id')->on('projects');
-            $table->foreign('scientific_domain_id')->references('id')->on('scientific_domains');
+            $table->id(); // Clé primaire
+            $table->foreignId('project_id')->constrained('projects')->onDelete('cascade'); // Clé étrangère vers projects avec suppression en cascade
+            $table->foreignId('scientific_domain_id')->constrained('scientific_domains')->onDelete('cascade'); // Clé étrangère vers scientific_domains avec suppression en cascade
         });
     }
 
@@ -24,4 +20,3 @@ class CreateProjectScientificDomainsTable extends Migration
         Schema::dropIfExists('projects_scientific_domains');
     }
 }
-
