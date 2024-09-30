@@ -19,7 +19,7 @@ class Collection extends Model
     public $incrementing = false; // Désactive l'auto-incrémentation
     protected $keyType = 'string'; // Spécifie que la clé primaire est de type string
 
-    protected $fillable = ['id', 'name', 'description'];
+    protected $fillable = ['id', 'name', 'description', 'user_id'];
 
     /**
      * Relation avec les projets (Many-to-Many).
