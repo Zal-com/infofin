@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Continent extends Model
 {
@@ -18,5 +19,10 @@ class Continent extends Model
     public function projects(): BelongsToMany
     {
         return $this->belongsToMany(Project::class, 'project_continent', 'continent_code', 'project_id');
+    }
+
+    public function countries(): HasMany
+    {
+        return $this->hasMany(Country::class, 'continent_code', 'code');
     }
 }
