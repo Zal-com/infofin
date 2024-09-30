@@ -80,7 +80,7 @@ final class ProjectForm extends Component implements HasForms
         foreach (['organisation', 'scientific_domains', 'info_types', 'geo_zones', 'documents', 'document_filenames', 'info_sessions'] as $attribute) {
             if (isset($data[$attribute])) {
                 if ($attribute == 'organisation') {
-                    $this->project->{$attribute} = $data[$attribute][0];
+                    $this->project->{$attribute} = $data[$attribute];
                 } else {
                     $this->project->{$attribute} = $data[$attribute];
                 }
@@ -186,7 +186,7 @@ final class ProjectForm extends Component implements HasForms
                             ];
 
                             $continents = Continent::all()->pluck('name', 'id')->toArray();
-                            $pays = Countries::all()->pluck('nomPays', 'id')->toArray(); //FIXME
+                            $pays = Countries::all()->pluck('name', 'id')->toArray(); //FIXME
 
                             foreach ($continents as $id => $name) {
                                 $options["continent_$id"] = $name;
