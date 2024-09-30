@@ -13,7 +13,6 @@ class CreateCollection extends CreateRecord
     {
         $data['id'] = \Illuminate\Support\Str::uuid();
         $data["user_id"] = auth()->id();
-        dd($data);
         return static::getModel()::create($data);
     }
 }

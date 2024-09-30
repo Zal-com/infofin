@@ -16,6 +16,7 @@ use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Psy\Util\Str;
 
@@ -25,14 +26,6 @@ class CollectionResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-folder';
     protected static ?string $activeNavigationIcon = 'heroicon-s-folder-open';
-
-    public static function create(array $data): Model
-    {
-        $data['id'] = \Illuminate\Support\Str::uuid();
-        $data['user_id'] = auth()->id();
-        return static::getModel()::create($data);
-    }
-
 
     public static function form(Form $form): Form
     {
