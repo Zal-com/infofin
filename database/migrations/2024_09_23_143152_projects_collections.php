@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->foreignId('project_id')->constrained('projects')->onDelete('cascade');
 
             // Utilisation de string pour collection_uid car ce n'est pas un id numérique
-            $table->string('collection_uid'); // Clé étrangère vers collections.uid
+            $table->string('collection_id'); // Clé étrangère vers collections.uid
 
             // Clés primaires composites pour éviter les doublons
             $table->primary(['project_id', 'collection_id']);
