@@ -29,6 +29,7 @@ class CollectionResource extends Resource
     public static function create(array $data): Model
     {
         $data['id'] = \Illuminate\Support\Str::uuid();
+        $data['user_id'] = auth()->id();
         return static::getModel()::create($data);
     }
 
