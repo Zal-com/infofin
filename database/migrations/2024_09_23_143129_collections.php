@@ -11,7 +11,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('collections', function (Blueprint $table) {
-            $table->string('uid')->primary(); // Clé primaire de type string
+            $table->uuid('id')->primary(); // Clé primaire de type string
             $table->string('name');
             $table->string('description')->nullable();
             $table->timestamps(); // Ajoute les colonnes created_at et updated_at

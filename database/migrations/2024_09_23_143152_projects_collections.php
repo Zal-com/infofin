@@ -12,14 +12,14 @@ return new class extends Migration {
     {
         Schema::create('projects_collections', function (Blueprint $table) {
             $table->unsignedBigInteger('project_id'); // Clé étrangère vers projects.id
-            $table->string('collection_uid');         // Clé étrangère vers collections.uid
+            $table->string('collection_id');         // Clé étrangère vers collections.uid
 
             // Clés primaires composites pour éviter les doublons
-            $table->primary(['project_id', 'collection_uid']);
+            $table->primary(['project_id', 'collection_id']);
 
             // Définitions des clés étrangères
             $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
-            $table->foreign('collection_uid')->references('uid')->on('collections')->onDelete('cascade');
+            $table->foreign('collection_id')->references('id')->on('collections')->onDelete('cascade');
         });
     }
 
