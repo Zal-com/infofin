@@ -86,7 +86,7 @@ class Project extends Model
 
     public function collections(): BelongsToMany
     {
-        return $this->belongsToMany(Collection::class, 'projects_collections', 'project_id', 'collection_uid');
+        return $this->belongsToMany(Collection::class, 'projects_collections', 'project_id', 'collection_id');
     }
 
     public function getFirstDeadlineAttribute(): string

@@ -62,7 +62,7 @@ Route::controller(ProjectController::class)->group(function () {
     Route::get('/projects/{id}/edit', "edit")->name('projects.edit');
 });
 
-Route::get('/collection/create', [CollectionController::class, 'create'])->name('collection.create');
+Route::get('/collection/{id}', [CollectionController::class, 'show'])->name('collection.show');
 
 Route::controller(UserController::class)->group(function () {
     Route::get('users', 'index')->name('users.index');

@@ -65,7 +65,18 @@ class CollectionResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('name')
+                    ->label('Nom')
+                    ->searchable()
+                    ->wrap(),
+                TextColumn::make('description')
+                    ->label('Description')
+                    ->searchable()
+                    ->wrap(),
+                TextColumn::make('projects_count')
+                    ->label('Appels')
+                    ->sortable()
+                    ->wrap()
             ])
             ->filters([
                 //
@@ -77,7 +88,9 @@ class CollectionResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->modifyQueryUsing(fn(Builder $query) => $query->withCount('projects'))
+            ->recordUrl(fn($record) => route('collection.show', $record->id));
     }
 
     public static function getRelations(): array
