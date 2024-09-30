@@ -11,6 +11,7 @@ use App\Models\ScientificDomain;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use League\HTMLToMarkdown\HtmlConverter;
 use Livewire\Component;
 
 class ProjectPreview extends Component
@@ -77,32 +78,27 @@ class ProjectPreview extends Component
             'is_big' => 'boolean',
             'organisation_id' => 'required|exists:organisations,id',
             'info_types' => 'array',
-            'docs' => 'array',
-            'scientific_domains' => 'array',
+            'documents' => 'array',
+            'scientific_domains' => 'required|array|min:1',
+            'scientific_domains.*' => 'integer|exists:scientific_domains,id',
             'geo_zones' => 'array',
-            'deadline' => 'nullable|date|required_if:continuous,false',
-            'proof' => 'nullable|string|max:50',
-            'continuous' => 'boolean',
-            'deadline_2' => 'nullable|date|required_if:continuous_2,false',
-            'proof_2' => 'nullable|string|max:50',
-            'continuous_2' => 'boolean',
-            'date_lessor' => 'nullable|date',
+            'deadlines' => 'array',
             'short_description' => 'nullable|string|max:500',
-            'long_description' => 'nullable|string',
-            'funding' => 'nullable|string',
-            'admission_requirements' => 'nullable|string',
-            'apply_instructions' => 'nullable|string',
+            'long_description' => 'array',
+            'funding' => 'array|nullable',
+            'admission_requirements' => 'array|nullable',
+            'apply_instructions' => 'array|nullable',
+            'contact_ulb' => 'array',
             'contact_ulb.*.first_name' => 'nullable|string',
             'contact_ulb.*.last_name' => 'nullable|string',
             'contact_ulb.*.email' => 'nullable|email',
-            'contact_ulb.*.tel' => 'nullable|phone:BE',
-            'contact_ulb.*.address' => 'nullable|string',
+            'contact_ext' => 'array',
             'contact_ext.*.first_name' => 'nullable|string|max:50',
             'contact_ext.*.last_name' => 'nullable|string|max:50',
             'contact_ext.*.email' => 'nullable|email|max:255',
-            'contact_ext.*.tel' => 'nullable|phone:BE',
             'status' => 'integer',
             'is_draft' => 'boolean',
+            'info_sessions' => 'nullable|array'
         ];
 
         $validator = Validator::make($this->data, $rules, [], [
@@ -137,91 +133,185 @@ class ProjectPreview extends Component
             'is_draft' => 'Brouillon',
         ]);
 
+        $messages = [
+            'title.required' => 'Le titre est requis.',
+            'title.string' => 'Le titre doit être une chaîne de caractères.',
+            'title.max' => 'Le titre ne peut pas dépasser :max caractères.',
+            'is_big.boolean' => 'Le champ "Projet Majeur" doit être vrai ou faux.',
+            'organisation_id.required' => 'Le champ Organisation est requis.',
+            'organisation_id.exists' => 'L\'organisation sélectionnée n\'existe pas.',
+            'info_types.array' => 'Les types de programme doivent être remplis.',
+            'documents.array' => 'Les documents doivent être remplis.',
+            'scientific_domains.array' => 'Les disciplines scientifiques doivent être remplies.',
+            'scientific_domains.required' => 'Veuillez sélectionner au moins une discipline scientifique.',
+            'scientific_domains.min' => 'Veuillez sélectionner au moins une discipline scientifique.',
+            'scientific_domains.*.integer' => 'Chaque discipline scientifique sélectionnée doit être valide.',
+            'scientific_domains.*.exists' => 'La discipline scientifique sélectionnée est invalide.',
+            'geo_zones.array' => 'Les zones géographiques doivent être remplies.',
+            'deadlines.array' => 'Les deadlines doivent être remplies.',
+            'short_description.string' => 'La description courte doit être une chaîne de caractères.',
+            'short_description.max' => 'La description courte ne peut pas dépasser :max caractères.',
+            'long_description.array' => 'La description longue doit être remplie.',
+            'funding.array' => 'Le champs "Budget & dépenses" doit être rempli.',
+            'apply_instructions.array' => 'Les instructions pour postuler doivent être remplis.',
+            'contact_ulb.*.first_name.string' => 'Le prénom du contact interne doit être une chaîne de caractères.',
+            'contact_ulb.*.last_name.string' => 'Le nom du contact interne doit être une chaîne de caractères.',
+            'contact_ulb.*.email.email' => 'L\'email du contact interne doit être une adresse email valide.',
+            'contact_ext.*.first_name.string' => 'Le prénom du contact externe doit être une chaîne de caractères.',
+            'contact_ext.*.first_name.max' => 'Le prénom du contact externe ne peut pas dépasser :max caractères.',
+            'contact_ext.*.last_name.string' => 'Le nom du contact externe doit être une chaîne de caractères.',
+            'contact_ext.*.last_name.max' => 'Le nom du contact externe ne peut pas dépasser :max caractères.',
+            'contact_ext.*.email.email' => 'L\'email du contact externe doit être une adresse email valide.',
+            'contact_ext.*.email.max' => 'L\'email du contact externe ne peut pas dépasser :max caractères.',
+            'at_least_one_contact' => 'Veuillez fournir au moins un contact interne ou externe.',
+            'status.integer' => 'Le statut doit être un nombre entier.',
+            'is_draft.boolean' => 'Le champ "Brouillon" doit être vrai ou faux.',
+            'info_sessions.array' => 'Les séances d\'informations doivent être remplies.'
+        ];
+        $validator = Validator::make($this->data, $rules, $messages, [
+            'title' => 'Titre',
+            'is_big' => 'Projet Majeur',
+            'organisation_id' => 'Organisation',
+            'info_types' => 'Types de programme',
+            'scientific_domains' => 'Disciplines scientifiques',
+            'geo_zones' => 'Zones géographiques',
+            'deadlines' => 'Deadlines',
+            // 'date_lessor' => 'Date Bailleur',
+            'short_description' => 'Description courte',
+            'long_description' => 'Description longue',
+            'funding' => 'Budget et dépenses',
+            'admission_requirements' => 'Critères d\'admission',
+            'apply_instructions' => 'Pour postuler',
+            'contact_ulb.*.first_name' => 'Prénom',
+            'contact_ulb.*.last_name' => 'Nom',
+            'contact_ulb.*.email' => 'Email',
+            'contact_ext.*.first_name' => 'Prénom',
+            'contact_ext.*.last_name' => 'Nom',
+            'contact_ext.*.email' => 'Email',
+            'status' => 'Status',
+            'is_draft' => 'Brouillon',
+            'info_sessions' => 'Séance d\'informations'
+        ]);
+        $validator->after(function ($validator) {
+            $contact_ulb = $this->data['contact_ulb'] ?? [];
+            $contact_ext = $this->data['contact_ext'] ?? [];
+
+            // Filtrer les contacts vides
+            $contact_ulb = array_filter($contact_ulb, function ($contact) {
+                return !empty($contact['first_name']) || !empty($contact['last_name']) || !empty($contact['email']);
+            });
+
+            $contact_ext = array_filter($contact_ext, function ($contact) {
+                return !empty($contact['first_name']) || !empty($contact['last_name']) || !empty($contact['email']);
+            });
+
+            $ulb_has_contact = !empty($contact_ulb);
+            $ext_has_contact = !empty($contact_ext);
+
+            if (!$ulb_has_contact && !$ext_has_contact) {
+                $validator->errors()->add('contact_ulb', 'Veuillez fournir au moins un contact interne ou externe.');
+            }
+        });
+
         if ($validator->fails()) {
-            Notification::make()->title($validator->errors()->all())->icon('heroicon-o-x-circle')->seconds(5)->color('danger')->send();
-            return redirect()->back();
+            foreach ($validator->errors()->all() as $error) {
+                Notification::make()->title($error)->icon('heroicon-o-x-circle')->seconds(5)->color('danger')->send();
+            }
         } else {
             $data = $validator->validated();
-        }
+            $converter = new HtmlConverter();
+            $markdown = $converter->convert($this->data["short_description"]);
 
-        $data['poster_id'] = $userId;
-        $data['last_update_user_id'] = $userId;
+            $data['short_description'] = $markdown;
 
-        $contactsUlB = [];
-        if (isset($data['contact_ulb'])) {
-            foreach ($data['contact_ulb'] as $contact) {
-                $name = trim(($contact['first_name'] ?? '') . ' ' . ($contact['last_name'] ?? ''));
-                $email = $contact['email'] ?? '';
-                $phone = $contact['tel'] ?? '';
-                $address = $contact['address'] ?? '';
+            $data['poster_id'] = $userId;
+            $data['last_update_user_id'] = $userId;
 
-                if ($name !== '' || $email !== '' || $phone !== '' || $address !== '') {
-                    $contactsUlB[] = [
-                        'name' => $name,
-                        'email' => $email,
-                        'phone' => $phone,
-                        'address' => $address,
-                    ];
+            $contactsUlB = [];
+            if (isset($data['contact_ulb'])) {
+                foreach ($data['contact_ulb'] as $contact) {
+                    $name = trim(($contact['first_name'] ?? '') . ' ' . ($contact['last_name'] ?? ''));
+                    $email = $contact['email'] ?? '';
+
+                    if ($name !== '' || $email !== '') {
+                        $contactsUlB[] = [
+                            'name' => $name,
+                            'email' => $email,
+                        ];
+                    }
                 }
+                $data['contact_ulb'] = !empty($contactsUlB) ? $contactsUlB : [];
+            } else {
+                $data['contact_ulb'] = [];
             }
-            $data['contact_ulb'] = !empty($contactsUlB) ? json_encode($contactsUlB) : '[]';
-        } else {
-            $data['contact_ulb'] = '[]';
-        }
 
-        $contactsExt = [];
-        if (isset($data["contact_ext"])) {
-            foreach ($data['contact_ext'] as $contact) {
-                $name = trim(($contact['first_name'] ?? '') . ' ' . ($contact['last_name'] ?? ''));
-                $email = $contact['email'] ?? '';
-                $phone = $contact['tel'] ?? '';
-                $address = $contact['address'] ?? '';
 
-                if ($name !== '' || $email !== '' || $phone !== '' || $address !== '') {
-                    $contactsExt[] = [
-                        'name' => $name,
-                        'email' => $email,
-                        'phone' => $phone,
-                        'address' => $address,
-                    ];
+            $contactsExt = [];
+            if (isset($data["contact_ext"])) {
+                foreach ($data['contact_ext'] as $contact) {
+                    $name = trim(($contact['first_name'] ?? '') . ' ' . ($contact['last_name'] ?? ''));
+                    $email = $contact['email'] ?? '';
+
+                    if ($name !== '' || $email !== '') {
+                        $contactsExt[] = [
+                            'name' => $name,
+                            'email' => $email,
+                        ];
+                    }
                 }
-            }
-            $data['contact_ext'] = !empty($contactsExt) ? json_encode($contactsExt) : '[]';
-        } else {
-            $data['contact_ext'] = '[]';
-        }
-
-        if ($project = Project::create($data)) {
-            if (!empty($data['info_types'])) {
-                $project->info_types()->sync($data['info_types']);
+                $data['contact_ext'] = !empty($contactsExt) ? $contactsExt : [];
+            } else {
+                $data['contact_ext'] = [];
             }
 
-            if (!empty($data['scientific_domains'])) {
-                $project->scientific_domains()->sync($data['scientific_domains']);
-            }
+            if ($project = Project::create($data)) {
+                if (!empty($data['info_types'])) {
+                    $project->info_types()->sync($data['info_types']);
+                }
 
-            if (isset($data['docs']) && count($data['docs']) > 0) {
-                $data['docs'] = $this->moveFiles($data['docs']);
-            }
+                if (!empty($data['scientific_domains'])) {
+                    $project->scientific_domains()->sync($data['scientific_domains']);
+                }
 
-            if (!empty($data['geo_zones'])) {
-                foreach ($data['geo_zones'] as $zone) {
-                    if (strpos($zone, 'continent_') === 0) {
-                        $continent_id = str_replace('continent_', '', $zone);
-                        $project->continent()->associate($continent_id);
-                    } elseif (strpos($zone, 'pays_') === 0) {
-                        $country_id = str_replace('pays_', '', $zone);
-                        $project->country()->associate($country_id);
+                if (!empty($data['info_sessions'])) {
+                    $project->info_sessions()->sync($data['info_sessions']);
+                }
+
+                if (isset($data['documents']) && count($data['documents']) > 0) {
+                    $this->fileService->moveFiles($data['documents'], $project);
+                }
+
+                if (!empty($data['geo_zones'])) {
+                    $continentIds = [];
+                    $countryIds = [];
+
+                    foreach ($data['geo_zones'] as $zone) {
+                        if (strpos($zone, 'continent_') === 0) {
+                            $continent_code = str_replace('continent_', '', $zone); // Extraire le code du continent
+                            $continentIds[] = $continent_code; // Ajouter à la liste des continents
+                        } elseif (strpos($zone, 'pays_') === 0) {
+                            $country_id = str_replace('pays_', '', $zone); // Extraire l'ID du pays
+                            $countryIds[] = $country_id; // Ajouter à la liste des pays
+                        }
+                    }
+
+                    // Synchroniser les continents associés au projet (Many-to-Many)
+                    if (!empty($continentIds)) {
+                        $project->continents()->sync($continentIds); // Synchroniser les continents du projet
+                    }
+
+                    // Synchroniser les pays associés au projet (Many-to-Many)
+                    if (!empty($countryIds)) {
+                        $project->countries()->sync($countryIds); // Synchroniser les pays du projet
                     }
                 }
 
                 $project->save();
+                Notification::make()->title('Votre appel a bien été ajouté.')->icon('heroicon-o-check-circle')->seconds(5)->color('success')->send();
+                return redirect()->route('projects.index');
             }
-
-            Notification::make()->title('Votre appel a bien été ajouté')->icon('heroicon-o-check-circle')->seconds(5)->color('success')->send();
-
-            return redirect()->route('projects.index');
         }
+
     }
 
     public function return()

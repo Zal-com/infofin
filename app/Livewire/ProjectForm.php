@@ -80,7 +80,7 @@ final class ProjectForm extends Component implements HasForms
         foreach (['organisation', 'scientific_domains', 'info_types', 'geo_zones', 'documents', 'document_filenames', 'info_sessions'] as $attribute) {
             if (isset($data[$attribute])) {
                 if ($attribute == 'organisation') {
-                    $this->project->{$attribute} = $data[$attribute][0];
+                    $this->project->{$attribute} = $data[$attribute];
                 } else {
                     $this->project->{$attribute} = $data[$attribute];
                 }
@@ -158,47 +158,35 @@ final class ProjectForm extends Component implements HasForms
                                 ->label('Disciplines scientifiques')
                                 ->schema($this->getFieldsetSchema()),
                         ]),
-                    /*
-                    Select::make('scientific_domains')
-                        ->label("Disciplines scientifiques de l'appel")
-                        ->multiple()
-                        ->required()
-                        ->options(function () {
-                            $categories = ScientificDomainCategory::with('domains')->get();
-
-                            $options = [];
-
-                            foreach ($categories as $category) {
-                                foreach ($category->domains as $domain) {
-                                    $options[$category->name][$domain->id] = $domain->name;
-                                }
-                            }
-                            return $options;
-                        }),
-                    */
                     Select::make('geo_zones')
                         ->label("Zones géographiques")
                         ->multiple()
                         ->maxItems(3)
                         ->options(function () {
+                            // Initialisation des options avec l'option "Monde entier"
                             $options = [
                                 'Monde entier' => 'Monde entier',
                             ];
 
-                            $continents = Continent::all()->pluck('name', 'id')->toArray();
-                            $pays = Country::all()->pluck('nomPays', 'id')->toArray(); //FIXME
+                            // Récupérer tous les continents en utilisant 'code' comme clé
+                            $continents = Continent::all()->pluck('name', 'code')->toArray();
 
-                            foreach ($continents as $id => $name) {
-                                $options["continent_$id"] = $name;
+                            // Récupérer tous les pays en utilisant 'id' comme clé
+                            $pays = Country::all()->pluck('name', 'id')->toArray();
+
+                            // Ajouter les continents au tableau des options
+                            foreach ($continents as $code => $name) {
+                                $options["continent_$code"] = $name;
                             }
 
+                            // Ajouter les pays au tableau des options
                             foreach ($pays as $id => $name) {
                                 $options["pays_$id"] = $name;
                             }
 
+                            // Retourner les options
                             return $options;
-                        }),
-
+                        })
                 ]),
                 Tabs\Tab::make('Dates importantes')->schema([
                     Fieldset::make('Deadlines')->schema([
@@ -653,18 +641,31 @@ final class ProjectForm extends Component implements HasForms
                 }
 
                 if (!empty($data['geo_zones'])) {
+                    $continentIds = [];
+                    $countryIds = [];
+
                     foreach ($data['geo_zones'] as $zone) {
                         if (strpos($zone, 'continent_') === 0) {
-                            $continent_id = str_replace('continent_', '', $zone);
-                            $project->continent()->associate($continent_id);
+                            $continent_code = str_replace('continent_', '', $zone); // Extraire le code du continent
+                            $continentIds[] = $continent_code; // Ajouter à la liste des continents
                         } elseif (strpos($zone, 'pays_') === 0) {
-                            $country_id = str_replace('pays_', '', $zone);
-                            $project->country()->associate($country_id);
+                            $country_id = str_replace('pays_', '', $zone); // Extraire l'ID du pays
+                            $countryIds[] = $country_id; // Ajouter à la liste des pays
                         }
                     }
 
-                    $project->save();
+                    // Synchroniser les continents associés au projet (Many-to-Many)
+                    if (!empty($continentIds)) {
+                        $project->continents()->sync($continentIds); // Synchroniser les continents du projet
+                    }
+
+                    // Synchroniser les pays associés au projet (Many-to-Many)
+                    if (!empty($countryIds)) {
+                        $project->countries()->sync($countryIds); // Synchroniser les pays du projet
+                    }
                 }
+
+                $project->save();
                 Notification::make()->title('Votre appel a bien été ajouté.')->icon('heroicon-o-check-circle')->seconds(5)->color('success')->send();
                 return redirect()->route('projects.index');
             }

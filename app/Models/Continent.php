@@ -18,7 +18,7 @@ class Continent extends Model
 
     public function projects(): BelongsToMany
     {
-        return $this->belongsToMany(Project::class, 'project_continent', 'continent_code', 'project_id');
+        return $this->belongsToMany(Project::class, 'projects_continents', 'continent_code', 'project_id');
     }
 
     public function countries(): HasMany

@@ -75,20 +75,26 @@ class ProjectEditForm extends Component implements HasForms
     {
         $this->fileService = $fileService;
 
-        $this->project = $project->load('scientific_domains', 'info_types', 'country', 'continent', 'documents');
+        $this->project = $project->load('scientific_domains', 'info_types', 'countries', 'continents', 'documents');
 
         $this->project->contact_ulb = $this->transformContacts($this->project->contact_ulb);
         $this->project->contact_ext = $this->transformContacts($this->project->contact_ext);
 
         $this->countries = Country::all()->pluck('name', 'id')->toArray();
-        $this->continents = Continent::all()->pluck('name', 'id')->toArray();
+        $this->continents = Continent::all()->pluck('name', 'code')->toArray();
 
         $geo_zones = [];
-        if ($this->project->country_id) {
-            $geo_zones[] = 'pays_' . $this->project->country_id;
+
+        if ($this->project->countries->isNotEmpty()) {
+            foreach ($this->project->countries as $country) {
+                $geo_zones[] = 'pays_' . $country->id; // Utiliser l'ID du pays
+            }
         }
-        if ($this->project->continent_id) {
-            $geo_zones[] = 'continent_' . $this->project->continent_id;
+
+        if ($this->project->continents->isNotEmpty()) {
+            foreach ($this->project->continents as $continent) {
+                $geo_zones[] = 'continent_' . $continent->code; // Utiliser le code du continent
+            }
         }
 
         $documents = $this->project->documents->pluck('path')->toArray();
@@ -173,7 +179,7 @@ class ProjectEditForm extends Component implements HasForms
                         ->maxLength(255)
                         ->required()
                         ->autofocus(),
-                    Select::make('organisation_id')
+                    /*Select::make('organisation_id')
                         ->label('Organisation')
                         ->searchable()
                         ->relationship('organisation', 'title')
@@ -183,7 +189,7 @@ class ProjectEditForm extends Component implements HasForms
                                 ->label("Nom de l'organisation")
                                 ->required(),
                         ])
-                        ->required(),
+                        ->required(),*/
                     Checkbox::make('is_big')
                         ->label('Projet majeur')
                         ->default(false),
@@ -202,47 +208,36 @@ class ProjectEditForm extends Component implements HasForms
                                 ->label('Disciplines scientifiques')
                                 ->schema($this->getFieldsetSchema()),
                         ]),
-                    /*
-                    Select::make('scientific_domains')
-                        ->label("Disciplines scientifiques de l'appel")
-                        ->multiple()
-                        ->required()
-                        ->relationship('scientific_domains', 'name')
-                        ->options(function () {
-                            $categories = ScientificDomainCategory::with('domains')->get();
-
-                            $options = [];
-
-                            foreach ($categories as $category) {
-                                foreach ($category->domains as $domain) {
-                                    $options[$category->name][$domain->id] = $domain->name;
-                                }
-                            }
-                            return $options;
-                        }),
-                    */
                     Select::make('geo_zones')
                         ->label("Zones géographiques")
                         ->multiple()
                         ->maxItems(3)
                         ->options(function () {
+                            // Initialisation des options avec l'option "Monde entier"
                             $options = [
                                 'Monde entier' => 'Monde entier',
                             ];
 
-                            $continents = Continent::all()->pluck('name', 'id')->toArray();
-                            $pays = Country::all()->pluck('nomPays', 'id')->toArray(); //FIXME
+                            // Récupérer tous les continents en utilisant 'code' comme clé
+                            $continents = Continent::all()->pluck('name', 'code')->toArray();
 
-                            foreach ($continents as $id => $name) {
-                                $options["continent_$id"] = $name;
+                            // Récupérer tous les pays en utilisant 'id' comme clé
+                            $pays = Country::all()->pluck('name', 'id')->toArray();
+
+                            // Ajouter les continents au tableau des options
+                            foreach ($continents as $code => $name) {
+                                $options["continent_$code"] = $name;
                             }
 
+                            // Ajouter les pays au tableau des options
                             foreach ($pays as $id => $name) {
                                 $options["pays_$id"] = $name;
                             }
 
+                            // Retourner les options
                             return $options;
-                        }),
+                        })
+
                 ]),
 
                 Tabs\Tab::make('Dates importantes')->schema([
@@ -563,16 +558,30 @@ class ProjectEditForm extends Component implements HasForms
                 }
 
                 if (!empty($data['geo_zones'])) {
+                    $continentIds = [];
+                    $countryIds = [];
+
                     foreach ($data['geo_zones'] as $zone) {
                         if (strpos($zone, 'continent_') === 0) {
-                            $continent_id = str_replace('continent_', '', $zone);
-                            $this->project->continent()->associate($continent_id);
+                            $continent_code = str_replace('continent_', '', $zone); // Extraire le code du continent
+                            $continentIds[] = $continent_code; // Ajouter à la liste des continents
                         } elseif (strpos($zone, 'pays_') === 0) {
-                            $country_id = str_replace('pays_', '', $zone);
-                            $this->project->country()->associate($country_id);
+                            $country_id = str_replace('pays_', '', $zone); // Extraire l'ID du pays
+                            $countryIds[] = $country_id; // Ajouter à la liste des pays
                         }
                     }
+
+                    // Synchroniser les continents associés au projet (Many-to-Many)
+                    if (!empty($continentIds)) {
+                        $this->project->continents()->sync($continentIds); // Synchroniser les continents du projet
+                    }
+
+                    // Synchroniser les pays associés au projet (Many-to-Many)
+                    if (!empty($countryIds)) {
+                        $this->project->countries()->sync($countryIds); // Synchroniser les pays du projet
+                    }
                 }
+
 
                 $id = $this->project->id;
                 ProjectEditHistory::create([
@@ -631,8 +640,9 @@ class ProjectEditForm extends Component implements HasForms
             if ($updatedDraft) {
                 $updateSuccessful = $updatedDraft->update([
                     'content' => $this->data,
-                    'poster_id' => Auth::id()
                 ]);
+
+                $updatedDraft->users()->syncWithoutDetaching($userId);
 
                 if ($updateSuccessful) {
                     redirect()->route('profile.show')->with('success', 'Le brouillon a bien été enregistré.');
@@ -642,10 +652,11 @@ class ProjectEditForm extends Component implements HasForms
 
         $draft = new Draft([
             'content' => $this->data,
-            'poster_id' => Auth::id()
         ]);
 
         if ($draft->save()) {
+            $draft->users()->attach($userId);
+            
             Notification::make()
                 ->title('Brouillon enregistré.')
                 ->send()

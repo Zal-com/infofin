@@ -46,12 +46,12 @@ class Project extends Model
 
     public function continents(): BelongsToMany
     {
-        return $this->belongsToMany(Continent::class, 'project_continent', 'project_id', 'continent_code');
+        return $this->belongsToMany(Continent::class, 'projects_continents', 'project_id', 'continent_code');
     }
 
     public function countries(): BelongsToMany
     {
-        return $this->belongsToMany(Country::class, 'project_country', 'project_id', 'country_id');
+        return $this->belongsToMany(Country::class, 'projects_countries', 'project_id', 'country_id');
     }
 
 

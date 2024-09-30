@@ -10,9 +10,7 @@ class Country extends Model
 {
     protected $table = 'countries';
     public $timestamps = false;
-    protected $primaryKey = 'code';
-    public $incrementing = false;
-    protected $keyType = 'string';
+    protected $primaryKey = 'id';
 
     protected $fillable = [
         'code', 'name', 'full_name', 'iso3', 'numero', 'continent_code', 'show_order'
@@ -20,7 +18,7 @@ class Country extends Model
 
     public function projects(): BelongsToMany
     {
-        return $this->belongsToMany(Project::class, 'project_country', 'country_id', 'project_id');
+        return $this->belongsToMany(Project::class, 'projects_countries', 'country_id', 'project_id');
     }
 
     public function continent(): BelongsTo
