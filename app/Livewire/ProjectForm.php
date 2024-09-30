@@ -3,7 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Continent;
-use App\Models\Countries;
+use App\Models\Country;
 use App\Models\Document;
 use App\Models\Draft;
 use App\Models\InfoSession;
@@ -186,7 +186,7 @@ final class ProjectForm extends Component implements HasForms
                             ];
 
                             $continents = Continent::all()->pluck('name', 'id')->toArray();
-                            $pays = Countries::all()->pluck('nomPays', 'id')->toArray(); //FIXME
+                            $pays = Country::all()->pluck('nomPays', 'id')->toArray(); //FIXME
 
                             foreach ($continents as $id => $name) {
                                 $options["continent_$id"] = $name;

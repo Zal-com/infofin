@@ -3,7 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Continent;
-use App\Models\Countries;
+use App\Models\Country;
 use App\Models\InfoType;
 use App\Models\Organisation;
 use App\Models\Project;
@@ -44,7 +44,7 @@ class ProjectPreview extends Component
                 $this->geoZones[] = Continent::find($continent_id)->name ?? $zone;
             } elseif (strpos($zone, 'pays_') === 0) {
                 $country_id = str_replace('pays_', '', $zone);
-                $this->geoZones[] = Countries::find($country_id)->nomPays ?? $zone;
+                $this->geoZones[] = Country::find($country_id)->nomPays ?? $zone;
             }
         }
     }

@@ -3,7 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Continent;
-use App\Models\Countries;
+use App\Models\Country;
 use App\Models\Document;
 use App\Models\Draft;
 use App\Models\InfoSession;
@@ -80,7 +80,7 @@ class ProjectEditForm extends Component implements HasForms
         $this->project->contact_ulb = $this->transformContacts($this->project->contact_ulb);
         $this->project->contact_ext = $this->transformContacts($this->project->contact_ext);
 
-        $this->countries = Countries::all()->pluck('name', 'id')->toArray();
+        $this->countries = Country::all()->pluck('name', 'id')->toArray();
         $this->continents = Continent::all()->pluck('name', 'id')->toArray();
 
         $geo_zones = [];
@@ -231,7 +231,7 @@ class ProjectEditForm extends Component implements HasForms
                             ];
 
                             $continents = Continent::all()->pluck('name', 'id')->toArray();
-                            $pays = Countries::all()->pluck('nomPays', 'id')->toArray(); //FIXME
+                            $pays = Country::all()->pluck('nomPays', 'id')->toArray(); //FIXME
 
                             foreach ($continents as $id => $name) {
                                 $options["continent_$id"] = $name;

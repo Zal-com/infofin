@@ -5,7 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ProjectResource\Pages;
 use App\Filament\Resources\ProjectResource\RelationManagers;
 use App\Models\Continent;
-use App\Models\Countries;
+use App\Models\Country;
 use App\Models\InfoType;
 use App\Models\Organisation;
 use App\Models\Project;
@@ -96,7 +96,7 @@ class ProjectResource extends Resource
                         ];
 
                         $continents = Continent::all()->pluck('name', 'id')->toArray();
-                        $pays = Countries::all()->pluck('nomPays', 'id')->toArray();
+                        $pays = Country::all()->pluck('nomPays', 'id')->toArray();
 
                         foreach ($continents as $id => $name) {
                             $options["continent_$id"] = $name;

@@ -41,7 +41,7 @@ class Project extends Model
 
     public function country(): BelongsTo
     {
-        return $this->belongsTo(Countries::class, 'country_id', "codePays");
+        return $this->belongsTo(Country::class, 'country_id', "codePays");
     }
 
     public function poster(): BelongsTo

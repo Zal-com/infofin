@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Traits\HandlesPagination;
 use App\Models\Continent;
-use App\Models\Countries;
+use App\Models\Country;
 use App\Models\InfoType;
 use App\Models\Organisation;
 use App\Models\Project;
@@ -45,7 +45,7 @@ class ApiController extends Controller
 
     public function countries_index(Request $request): JsonResponse
     {
-        return $this->paginateModel($request, new Countries());
+        return $this->paginateModel($request, new Country());
     }
 
     public function info_types_index(Request $request): JsonResponse
@@ -79,7 +79,7 @@ class ApiController extends Controller
 
     public function show_country($id): JsonResponse
     {
-        $country = Countries::with($this->getFilteredModelRelationships(new Countries()))
+        $country = Country::with($this->getFilteredModelRelationships(new Country()))
             ->findOrFail($id);
         return response()->json($country);
     }
