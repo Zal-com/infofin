@@ -11,7 +11,7 @@ class CreateInfoTypesTable extends Migration
         Schema::create('info_types', function (Blueprint $table) {
             $table->id();
             $table->string('title', 255);
-            $table->foreignId('info_types_cat_id')->constrained('info_types_categories');
+            $table->foreignId('info_types_cat_id')->constrained('info_types_categories')->onDelete('cascade');
 
         });
     }

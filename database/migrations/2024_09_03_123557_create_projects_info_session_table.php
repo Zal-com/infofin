@@ -11,12 +11,9 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('projects_info_sessions', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('project_id')->constrained();
-            $table->foreignId('info_session_id')->constrained();
-
-            $table->foreign('project_id')->references('id')->on('projects');
-            $table->foreign('info_session_id')->references('id')->on('info_sessions');
+            $table->id(); // Clé primaire
+            $table->foreignId('project_id')->constrained('projects')->onDelete('cascade'); // Clé étrangère vers projects avec cascade
+            $table->foreignId('info_session_id')->constrained('info_sessions')->onDelete('cascade'); // Clé étrangère vers info_sessions avec cascade
         });
     }
 
@@ -25,6 +22,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('projects_info_session');
+        Schema::dropIfExists('projects_info_sessions'); // Correction du nom de la table
     }
 };

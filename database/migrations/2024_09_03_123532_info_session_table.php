@@ -11,18 +11,16 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('info_sessions', function (Blueprint $table) {
-            $table->id();
-            $table->dateTime('session_datetime');
-            $table->string("title");
-            $table->text('description');
-            $table->string('location')->nullable();
-            $table->string('url')->nullable();
-            $table->string('speaker')->nullable();
-            $table->foreignId('organisation_id')->constrained('organisations');
+            $table->id(); // Clé primaire
+            $table->dateTime('session_datetime'); // Date et heure de la session
+            $table->string('title'); // Titre de la session
+            $table->text('description'); // Description de la session
+            $table->string('location')->nullable(); // Lieu, peut être nul
+            $table->string('url')->nullable(); // URL, peut être nul
+            $table->string('speaker')->nullable(); // Nom du speaker, peut être nul
+            $table->foreignId('organisation_id')->constrained('organisations')->onDelete('cascade'); // Clé étrangère vers organisations avec cascade
             $table->smallInteger('session_type'); // 0 = Distanciel, 1 = Présentiel, 2 = Hybride
-            $table->timestamps();
-
-            $table->foreign('organisation_id')->references('id')->on('organisations');
+            $table->timestamps(); // created_at et updated_at
         });
     }
 
@@ -31,6 +29,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('info_session');
+        Schema::dropIfExists('info_sessions'); // Correction du nom de la table
     }
 };

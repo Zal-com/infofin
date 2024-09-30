@@ -577,8 +577,8 @@ class ProjectEditForm extends Component implements HasForms
                 $id = $this->project->id;
                 ProjectEditHistory::create([
                     'date' => Date::now(),
-                    'id_project' => $id,
-                    'id_user' => $userId
+                    'project_id' => $id,
+                    'user_id' => $userId
                 ]);
                 $this->project->save();
                 Notification::make()->title('Le projet a été modifié avec succès.')->icon('heroicon-o-check-circle')->seconds(5)->color('success')->send();

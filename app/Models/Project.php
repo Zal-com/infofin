@@ -81,7 +81,7 @@ class Project extends Model
 
     public function editHistories(): HasMany
     {
-        return $this->hasMany(ProjectEditHistory::class, 'id_project', 'id');
+        return $this->hasMany(ProjectEditHistory::class, 'project_id', 'id');
     }
 
     public function collections(): BelongsToMany
