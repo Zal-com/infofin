@@ -10,7 +10,7 @@ class ProjectEditHistory extends Model
     protected $table = 'projects_edit_history';
 
     // Définissez les attributs assignables en masse
-    protected $fillable = ['date', 'id_project', 'id_user'];
+    protected $fillable = ['date', 'project_id', 'user_id'];
 
     // Désactivez les timestamps si vous n'utilisez pas les colonnes created_at et updated_at
     public $timestamps = false;

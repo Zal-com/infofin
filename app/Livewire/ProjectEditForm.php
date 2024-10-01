@@ -584,6 +584,7 @@ class ProjectEditForm extends Component implements HasForms
 
 
                 $id = $this->project->id;
+
                 ProjectEditHistory::create([
                     'date' => Date::now(),
                     'project_id' => $id,
@@ -656,7 +657,7 @@ class ProjectEditForm extends Component implements HasForms
 
         if ($draft->save()) {
             $draft->users()->attach($userId);
-            
+
             Notification::make()
                 ->title('Brouillon enregistré.')
                 ->send()
