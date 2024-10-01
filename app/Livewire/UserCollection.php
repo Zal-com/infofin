@@ -27,17 +27,28 @@ class UserCollection extends Component implements HasTable, HasForms
 
     public function copyLink($id)
     {
-        // Envoyer une notification lorsque le lien est copié
-        Notification::make()
-            ->title('Lien copié dans le presse-papier.')
-            ->icon('heroicon-o-check')
-            ->color('success')
-            ->iconColor('success')
-            ->send();
 
-        // Émettre un événement pour copier le lien côté client
-        $link = url(route('collection.show', $id));
-        $this->dispatch('copy-link', ['link' => $link]);
+        try {
+            // Émettre un événement pour copier le lien côté client
+            $link = url(route('collection.show', $id));
+            $this->dispatch('copy-link', ['link' => $link]);
+
+            // Envoyer une notification lorsque le lien est copié
+            Notification::make()
+                ->title('Lien copié dans le presse-papier.')
+                ->icon('heroicon-o-check-circle')
+                ->color('success')
+                ->iconColor('success')
+                ->send();
+        } catch (\Exception $e) {
+            Notification::make()
+                ->title('Quelque chose ne s\'est pas passé comme prévu. Veuillez réessayer.')
+                ->icon('heroicon-o-x-circle')
+                ->color('danger')
+                ->iconColor('danger')
+                ->send();
+        }
+
     }
 
 
@@ -58,9 +69,16 @@ class UserCollection extends Component implements HasTable, HasForms
                 Action::make('copy_link')
                     ->icon('heroicon-s-link')
                     ->iconButton()
+                    ->color('danger')
                     ->label(false)
-                    ->action(fn($record) => $this->copyLink($record->id))
+                    ->action(fn($record) => $this->copyLink($record->id)),
+                Action::make('edit')
+                    ->label('Modifier')
+                    ->icon('heroicon-s-pencil')
+                    ->disabled(true)
+                //->action() //Redirect vers le furmulaire de modification
             ])
+            ->recordUrl(fn($record) => route('collection.show', $record->id))
             ->modifyQueryUsing(fn(Builder $query) => $query->withCount('projects'));
     }
 }
