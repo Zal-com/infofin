@@ -222,7 +222,7 @@
             <x-zeus-accordion::accordion>
                 <x-zeus-accordion::accordion.item
                     icon="heroicon-o-calendar-days"
-                    label="{{ $project->firstDeadline === 'Continu' ? 'Continu' : (explode('|', $project->firstDeadline)[1]}} : {{explode('|',$project->firstDeadline)[0])}}">
+                    label="{!! $project->firstDeadline === 'Continu' ? 'Continu' : (explode('|', $project->firstDeadline)[1]!!} : {{explode('|',$project->firstDeadline)[0])}}">
                     <div class="bg-white p-4">
                         @foreach($project->allDeadlinesSorted as $sortedDeadline)
                             @if(!$sortedDeadline['continuous'])
