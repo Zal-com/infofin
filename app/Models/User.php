@@ -236,4 +236,6 @@ class User extends Authenticatable implements HasName
 
         $this->delete();
     }
+
+    
 }

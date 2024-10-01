@@ -2,17 +2,21 @@
 
 namespace App\Livewire;
 
+use App\Models\Collection;
 use App\Models\InfoTypeCategory;
 use App\Models\Organisation;
 use App\Models\Project;
 use Awcodes\FilamentBadgeableColumn\Components\Badge;
 use Awcodes\FilamentBadgeableColumn\Components\BadgeableColumn;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Filament\Support\Enums\FontWeight;
+use Filament\Support\Enums\IconPosition;
 use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\Layout\Grid;
 use Filament\Tables\Columns\Layout\Stack;
@@ -116,70 +120,26 @@ class ListProjects extends Component implements HasForms, HasTable
                 })
         ];
 
-        if (Auth::check()) {
-            if (Auth::user()->can('create projects')) {
-                $actions[] = Action::make('edit')
-                    ->label('Modifier')
-                    ->url(fn($record) => route('projects.edit', $record->id))
-                    ->icon('heroicon-s-pencil')
-                    ->color('primary');
+        array_unshift($filters,
+            Filter::make('pour_moi')
+                ->label('Pour moi')
+                ->query(function ($query) {
+                    $user = Auth::user();
+                    if ($user) {
+                        $userInfoTypes = $user->info_types->pluck('id')->toArray();
+                        $userScientificDomains = $user->scientific_domains->pluck('id')->toArray();
 
-                $actions[] = Action::make('archive')
-                    ->label('Archiver')
-                    ->icon('heroicon-o-archive-box')
-                    ->color('danger')
-                    ->requiresConfirmation()
-                    ->modalHeading('Supprimer le projet.')
-                    ->modalDescription('Voulez-vous vraiment supprimer ce projet ?.')
-                    ->action(function ($record) {
-                        $record->update(['status' => -1]);
-                        Notification::make()
-                            ->title("Projet archivé avec succès")
-                            ->icon('heroicon-o-check-circle')
-                            ->iconColor('success')
-                            ->color('success')
-                            ->seconds(5)
-                            ->send();
-                    });
-
-            }
-
-            $actions[] =
-                Action::make('toggle_favorite')
-                    ->label('Ajouter aux favoris')
-                    ->icon(fn($record) => Auth::user()->favorites->contains($record->id) ? 'heroicon-s-bookmark' : 'heroicon-o-bookmark')
-                    ->iconButton()
-                    ->color('black')
-                    ->action(function ($record) {
-                        $user = Auth::user();
-                        $user->favorites->contains($record->id)
-                            ? $user->removeFromFavorites($record->id)
-                            : $user->addToFavorites($record->id);
-
-                        $user->load('favorites');
-                        $record->refresh();
-                    });
-
-            array_unshift($filters,
-                Filter::make('pour_moi')
-                    ->label('Pour moi')
-                    ->query(function ($query) {
-                        $user = Auth::user();
-                        if ($user) {
-                            $userInfoTypes = $user->info_types->pluck('id')->toArray();
-                            $userScientificDomains = $user->scientific_domains->pluck('id')->toArray();
-
-                            return $query->where(function ($query) use ($userInfoTypes, $userScientificDomains) {
-                                $query->whereHas('info_types', function ($query) use ($userInfoTypes) {
-                                    $query->whereIn('info_type_id', $userInfoTypes);
-                                })->orWhereHas('scientific_domains', function ($query) use ($userScientificDomains) {
-                                    $query->whereIn('scientific_domain_id', $userScientificDomains);
-                                });
+                        return $query->where(function ($query) use ($userInfoTypes, $userScientificDomains) {
+                            $query->whereHas('info_types', function ($query) use ($userInfoTypes) {
+                                $query->whereIn('info_type_id', $userInfoTypes);
+                            })->orWhereHas('scientific_domains', function ($query) use ($userScientificDomains) {
+                                $query->whereIn('scientific_domain_id', $userScientificDomains);
                             });
-                        }
-                        return $query;
-                    }));
-        }
+                        });
+                    }
+                    return $query;
+                }));
+
 
         return $table->query(
             Project::where('status', '!=', 2)->where('status', '!=', -1)
@@ -203,7 +163,90 @@ class ListProjects extends Component implements HasForms, HasTable
                         'lg' => 3,
                     ]
             )
-            ->actions($actions)->actionsAlignment('start')
+            ->actions([
+                Action::make('toggle_favorite')
+                    ->label('Ajouter aux favoris')
+                    ->icon(fn($record) => Auth::user()->favorites->contains($record->id) ? 'heroicon-s-bookmark' : 'heroicon-o-bookmark')
+                    ->iconButton()
+                    ->color('black')
+                    ->action(function ($record) {
+                        $user = Auth::user();
+                        $user->favorites->contains($record->id)
+                            ? $user->removeFromFavorites($record->id)
+                            : $user->addToFavorites($record->id);
+
+                        $user->load('favorites');
+                        $record->refresh();
+                    })
+                    ->visible(Auth::check()),
+                Action::make('edit')
+                    ->label('Modifier')
+                    ->iconButton()
+                    ->url(fn($record) => route('projects.edit', $record->id))
+                    ->icon('heroicon-s-pencil')
+                    ->color('primary')
+                    ->visible(Auth::check() && Auth::user()->can('create projects')),
+                ActionGroup::make([
+                    Action::make('add_to_collection')
+                        ->label('Collection')
+                        ->icon('heroicon-o-plus')
+                        ->iconPosition('after')
+                        ->modalHeading('Ajouter à une collection')
+                        ->modalDescription('Choisissez une collection pour y ajouter ce projet.')
+                        ->form([
+                            Select::make('collection')
+                                ->label('Collection')
+                                ->options(Collection::where('user_id', Auth::id())->pluck('name', 'id')->toArray())
+                                ->required()
+                                ->createOptionForm([
+                                    TextInput::make('name')->label('Titre')->required(),
+                                    TextInput::make('description')->label('Description')->maxLength(500),
+                                ])
+                                ->createOptionUsing(function ($data) {
+                                    // Save the new collection to the database
+                                    $collection = Collection::create([
+                                        'name' => $data['name'],
+                                        'description' => $data['description'],
+                                        'user_id' => Auth::id(), // Assuming each collection belongs to a user
+                                    ]);
+
+                                    return $collection->id; // Return the ID of the newly created collection
+                                }),
+                        ])
+                        ->action(function (array $data, $record) {
+                            // Add the project to the selected collection
+                            $record->collections()->attach($data['collection']);
+
+                            Notification::make()
+                                ->title("Projet ajouté à la collection avec succès")
+                                ->icon('heroicon-o-check-circle')
+                                ->iconColor('success')
+                                ->send();
+                        }),
+                    Action::make('archive')
+                        ->label('Archiver')
+                        ->icon('heroicon-o-archive-box')
+                        ->iconPosition('after')
+                        ->color('danger')
+                        ->requiresConfirmation()
+                        ->modalHeading('Supprimer le projet.')
+                        ->modalDescription('Voulez-vous vraiment supprimer ce projet ?.')
+                        ->action(function ($record) {
+                            $record->update(['status' => -1]);
+                            Notification::make()
+                                ->title("Projet archivé avec succès")
+                                ->icon('heroicon-o-check-circle')
+                                ->iconColor('success')
+                                ->color('success')
+                                ->seconds(5)
+                                ->send();
+                        }),
+
+                ])
+                    ->iconButton()
+                    ->size('lg')
+                    ->color('secondary')
+                    ->visible(Auth::check() && Auth::user()->can('create projects'))])
             ->defaultPaginationPageOption(25)
             ->defaultSort('updated_at', 'desc')
             ->paginationPageOptions([5, 10, 25, 50, 100])

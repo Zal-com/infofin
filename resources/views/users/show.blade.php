@@ -4,7 +4,7 @@
 
     <div class="grid grid-cols-6 gap-2 mb-10"
          x-data="{
-            tab: ['infos', 'drafts', 'appels', 'interests', 'favorites'].includes(localStorage.getItem('activeTab')) ? localStorage.getItem('activeTab') :  'interests' }"
+            tab: ['infos', 'drafts', 'appels', 'interests', 'favorites', 'collections'].includes(localStorage.getItem('activeTab')) ? localStorage.getItem('activeTab') :  'interests' }"
          x-init="$watch('tab', value => localStorage.setItem('activeTab', value))">
         <div class="sticky top-5"> <!-- Sticky avec hauteur et overflow -->
             <x-filament::tabs class="flex-col max-h-min">
@@ -14,6 +14,12 @@
                     Informations personnelles
                 </x-filament::tabs.item>
                 --}}
+                @can('create collection')
+                    <x-filament::tabs.item @click="tab = 'collections'" :alpine-active="'tab === \'collections\''"
+                                           icon="heroicon-o-folder">
+                        Mes collections
+                    </x-filament::tabs.item>
+                @endcan
                 @can('create draft')
                     <x-filament::tabs.item @click="tab = 'drafts'" :alpine-active="'tab === \'drafts\''"
                                            icon="heroicon-o-pencil">
@@ -46,6 +52,14 @@
                     @livewire('profile-form')
                 </div>
             </div>
+            @can('create collection')
+                <div x-show="tab === 'collections'" class="m-4">
+                    <x-filament::section.heading class="mb-5 flex justify-between items-center">
+                        Mes collections
+                    </x-filament::section.heading>
+                    @livewire('user-collection')
+                </div>
+            @endcan
             @can('create draft')
                 <div x-show="tab === 'drafts'" class="m-4">
                     <x-filament::section.heading class="mb-5 flex justify-between items-center">
