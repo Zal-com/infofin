@@ -22,13 +22,13 @@ class CollectionEdit extends Component implements HasForms, HasTable
     use InteractsWithForms;
 
     public ?array $data = [];
-    public array $selectedProjects = [];
+    public array $selectedTableRecords = [];
     public Collection $collection;
 
     public function mount(Collection $collection = null): void
     {
         $this->collection = $collection ?? new Collection();
-        $this->selectedProjects = $this->collection->projects->pluck('id')->toArray();
+        $this->selectedTableRecords = $this->collection->projects->pluck('id')->toArray();
         $this->form->fill($this->collection->toArray());
     }
 
@@ -50,16 +50,13 @@ class CollectionEdit extends Component implements HasForms, HasTable
                     ->label('Mettre à jour la collection')
                     ->icon('heroicon-o-arrow-path')
                     ->action(function (Collection $records) {
-                        $this->selectedProjects = $records->pluck('id')->toArray();
+                        $this->selectedTableRecords = $records->projects()->pluck('id')->toArray();
                         $this->collection->projects()->sync($this->selectedProjects);
                         $this->dispatch('collection-updated');
                     })
-                    ->deselectRecordsAfterCompletion()
                     ->requiresConfirmation()
             ])
-            ->defaultPaginationPageOption(25)
-            ->modifyQueryUsing(fn(Builder $query) => $query->orderBy('title'))
-            ->defaultSort('title', 'asc');
+            ->defaultPaginationPageOption(25);
     }
 
     public function form(Form $form): Form
