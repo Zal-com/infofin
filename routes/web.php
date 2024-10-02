@@ -12,39 +12,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 
-
-Route::controller(ApiController::class)->group(function () {
-    Route::prefix('api')->middleware('enforce.limit')->group(function () {
-        // API information endpoint
-        Route::get('', 'index')->name('api.index');
-
-        // Projects endpoint
-        Route::get('/projects', 'projects_index')->name('api.projects');
-
-        // Continents endpoint
-        Route::get('/continents', 'continents_index')->name('api.continents');
-
-        // Countries endpoint
-        Route::get('/countries', 'countries_index')->name('api.countries');
-
-        // Info Types endpoint
-        Route::get('/info-types', 'info_types_index')->name('api.info_types');
-
-        // Organisations endpoint
-        Route::get('/organisations', 'organisation_index')->name('api.organisations');
-
-        // Scientific Domains endpoint
-        Route::get('/scientific-domains', 'scientific_domains_index')->name('api.scientific_domains');
-
-        Route::get('/projects/{id}', 'show_project')->name('api.show_project');
-        Route::get('/continents/{id}', 'show_continent')->name('api.show_continent');
-        Route::get('/countries/{id}', 'show_country')->name('api.show_country');
-        Route::get('/info-types/{id}', 'show_info_type')->name('api.show_info_type');
-        Route::get('/organisations/{id}', 'show_organisation')->name('api.show_organisation');
-        Route::get('/scientific-domains/{id}', 'show_scientific_domain')->name('api.show_scientific_domain');
-    });
-});
-
 Route::get('/', function () {
     return redirect()->route('projects.index');
 })->name('home');
@@ -53,45 +20,63 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::controller(ProjectController::class)->group(function () {
-    Route::get('/projects/preview', "preview")->name('projects.preview');
-    Route::get('/projects/archive', "archive")->name("projects.archive");
-    Route::get('projects/create/', "create")->name('projects.create');
-    Route::get('/projects', "index")->name('projects.index');
-    Route::get('/projects/{id}', "show")->name('projects.show');
-    Route::get('/projects/{id}/edit', "edit")->name('projects.edit');
-});
-
-Route::controller(CollectionController::class)->group(function () {
-    Route::get('/collection/{id}', 'show')->name('collection.show');
-    Route::get('/collection/{id}/edit', "edit")->name('collection.edit');
-});
+Route::prefix('projects')
+    ->controller(ProjectController::class)
+    ->name('projects.')
+    ->group(function () {
+        Route::get('/preview', "preview")->name('preview');
+        Route::get('/archive', "archive")->name("archive");
+        Route::get('/create/', "create")->name('create');
+        Route::get('', "index")->name('index');
+        Route::get('/{id}', "show")->name('show');
+        Route::get('/{id}/edit', "edit")->name('edit');
+    });
 
 
+Route::prefix('collection')
+    ->controller(CollectionController::class)
+    ->name('collection.')
+    ->group(function () {
+        Route::get('/{id}', 'show')->name('show');
+        Route::get('/{id}/edit', 'edit')->name('edit');
+    });
+
+//FIXME Toujours nécessaires ???
 Route::controller(UserController::class)->group(function () {
     Route::get('users', 'index')->name('users.index');
     Route::get('users/{id}', 'show')->name('users.show');
 });
 
-Route::controller(DraftController::class)->group(function () {
-    Route::get('drafts', 'index')->name('drafts.index');
-    Route::get('drafts/{id}', 'show')->name('drafts.show');
-});
+Route::prefix('drafts')
+    ->controller(DraftController::class)
+    ->name('drafts.')
+    ->group(function () {
+        Route::get('', 'index')->name('index');
+        Route::get('/{id}', 'show')->name('show');
+    });
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
+Route::prefix('profile')
+    ->controller(ProfileController::class)
+    ->name('profile.')
+    ->middleware('auth')
+    ->group(function () {
+        Route::get('', 'show')->name('show');
+        Route::patch('', 'update')->name('update');
+        Route::delete('', 'destroy')->name('destroy');
+    });
 
 Route::get('/unsubscribe', [UnsubscribeController::class, 'unsubscribe']);
 
-Route::controller(InfoSessionController::class)->group(function () {
-    Route::get('/info_session/create', 'create')->name('info_session.create');
-    Route::get('/info_session', "index")->name('info_session.index');
-    Route::get('/info_session/{id}', 'show')->name('info_session.show');
-    Route::get('/info_session/{id}/edit', 'edit')->name('info_session.edit');
-});
+Route::prefix('info_session')
+    ->controller(InfoSessionController::class)
+    ->name('info_session.')
+    ->group(function () {
+        Route::get('/create', 'create')->name('create');
+        Route::get('', "index")->name('index');
+        Route::get('/{id}', 'show')->name('show');
+        Route::get('/{id}/edit', 'edit')->name('edit');
+    });
+
 
 Route::get('/agenda', function () {
     return view('calendar');
@@ -118,3 +103,4 @@ Route::get('/faq', function () {
 
 
 require __DIR__ . '/auth.php';
+require __DIR__ . '/api.php';
