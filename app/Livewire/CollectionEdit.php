@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Collection;
 use App\Models\Project;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -12,7 +13,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
 
 class CollectionEdit extends Component implements HasForms, HasTable
@@ -21,11 +22,13 @@ class CollectionEdit extends Component implements HasForms, HasTable
     use InteractsWithForms;
 
     public ?array $data = [];
-    public $collection;
+    public array $selectedProjects = [];
+    public Collection $collection;
 
-    public function mount(Collection $collection): void
+    public function mount(Collection $collection = null): void
     {
-        $this->collection = $collection;
+        $this->collection = $collection ?? new Collection();
+        $this->selectedProjects = $this->collection->projects->pluck('id')->toArray();
         $this->form->fill($this->collection->toArray());
     }
 
@@ -39,17 +42,24 @@ class CollectionEdit extends Component implements HasForms, HasTable
         return $table
             ->query(Project::query())
             ->columns([
-                TextColumn::make('title'),
+                TextColumn::make('title')
+                    ->label('Titre'),
             ])
             ->bulkActions([
-                BulkAction::make('add_to_collection')
-                    ->label('Ajouter')
-                    ->icon('heroicon-o-plus')
+                BulkAction::make('update_collection')
+                    ->label('Mettre à jour la collection')
+                    ->icon('heroicon-o-arrow-path')
                     ->action(function (Collection $records) {
-                        //
+                        $this->selectedProjects = $records->pluck('id')->toArray();
+                        $this->collection->projects()->sync($this->selectedProjects);
+                        $this->dispatch('collection-updated');
                     })
-            ]);
-        //idk
+                    ->deselectRecordsAfterCompletion()
+                    ->requiresConfirmation()
+            ])
+            ->defaultPaginationPageOption(25)
+            ->modifyQueryUsing(fn(Builder $query) => $query->orderBy('title'))
+            ->defaultSort('title', 'asc');
     }
 
     public function form(Form $form): Form
@@ -65,6 +75,7 @@ class CollectionEdit extends Component implements HasForms, HasTable
                     ->maxLength(500)
                     ->nullable(),
             ])
+            ->model($this->collection)
             ->statePath('data');
     }
 
@@ -72,9 +83,17 @@ class CollectionEdit extends Component implements HasForms, HasTable
     {
         $data = $this->form->getState();
 
-        // Logique pour sauvegarder la collection
-        // Par exemple : Collection::create($data);
+        $this->collection->update($data);
+        $this->collection->projects()->sync($this->selectedProjects);
 
-        // Redirection ou message de succès
+        $this->dispatch('collection-saved');
+    }
+
+    public function getListeners()
+    {
+        return [
+            'collection-updated' => '$refresh',
+            'collection-saved' => '$refresh',
+        ];
     }
 }
