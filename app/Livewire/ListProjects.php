@@ -192,7 +192,7 @@ class ListProjects extends Component implements HasForms, HasTable
                         ->icon('heroicon-o-plus')
                         ->iconPosition('after')
                         ->modalHeading('Ajouter à une collection')
-                        ->modalDescription('Choisissez une collection pour y ajouter ce projet.')
+                        ->modalDescription('Choisissez une collection pour y ajouter cet appel.')
                         ->form([
                             Select::make('collection')
                                 ->label('Collection')

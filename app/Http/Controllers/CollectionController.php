@@ -12,4 +12,10 @@ class CollectionController extends Controller
         $collection = Collection::find($id);
         return view('collections.show', compact('collection'));
     }
+
+    public function edit(string $id)
+    {
+        $collection = Collection::find($id);
+        return view('collections.edit', ['collection' => $collection]);
+    }
 }

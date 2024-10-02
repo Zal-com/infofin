@@ -75,8 +75,7 @@ class UserCollection extends Component implements HasTable, HasForms
                 Action::make('edit')
                     ->label('Modifier')
                     ->icon('heroicon-s-pencil')
-                    ->disabled(true)
-                //->action() //Redirect vers le furmulaire de modification
+                    ->action(fn($record) => $this->redirect(route('collection.edit'), $record->id)) //Redirect vers le furmulaire de modification
             ])
             ->recordUrl(fn($record) => route('collection.show', $record->id))
             ->modifyQueryUsing(fn(Builder $query) => $query->withCount('projects'));

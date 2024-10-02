@@ -54,15 +54,19 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::controller(ProjectController::class)->group(function () {
-    Route::get('/projects/preview', "preview")->name('projects.preview');
-    Route::get('/projects/archive', "archive")->name("projects.archive");
-    Route::get('projects/create/', "create")->name('projects.create');
-    Route::get('/projects', "index")->name('projects.index');
-    Route::get('/projects/{id}', "show")->name('projects.show');
-    Route::get('/projects/{id}/edit', "edit")->name('projects.edit');
-});
+    Route::get('/preview', "preview")->name('projects.preview');
+    Route::get('/archive', "archive")->name("projects.archive");
+    Route::get('/create', "create")->name('projects.create');
+    Route::get('/', "index")->name('projects.index');
+    Route::get('/{id}', "show")->name('projects.show');
+    Route::get('/{id}/edit', "edit")->name('projects.edit');
+})->prefix('/projects')->middleware(['auth', 'verified'])->name('projects');
 
-Route::get('/collection/{id}', [CollectionController::class, 'show'])->name('collection.show');
+Route::controller(CollectionController::class)->group(function () {
+    Route::get('/{id}', 'show')->name('collection.show');
+    Route::get('/{id}/edit', 'edit')->name('collection.edit');
+})->prefix('/collection')->name('collection');
+
 
 Route::controller(UserController::class)->group(function () {
     Route::get('users', 'index')->name('users.index');
