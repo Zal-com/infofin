@@ -45,7 +45,7 @@ class CollectionEdit extends Component implements HasForms, HasTable
             ->query(Project::query())
             ->columns([
                 TextColumn::make('title')
-                    ->label('Titre'),
+                    ->label('Titre')
             ])
             ->bulkActions([
                 BulkAction::make('update_collection')
@@ -56,7 +56,6 @@ class CollectionEdit extends Component implements HasForms, HasTable
                         $this->collection->projects()->sync($this->selectedTableRecords);
                         $this->dispatch('collection-updated');
                     })
-                    ->deselectRecordsAfterCompletion()
                     ->requiresConfirmation()
             ])
             ->defaultPaginationPageOption(25);
@@ -77,23 +76,5 @@ class CollectionEdit extends Component implements HasForms, HasTable
             ])
             ->model($this->collection)
             ->statePath('data');
-    }
-
-    public function save()
-    {
-        $data = $this->form->getState();
-
-        $this->collection->update($data);
-        $this->collection->projects()->sync($this->selectedProjects);
-
-        $this->dispatch('collection-saved');
-    }
-
-    public function getListeners()
-    {
-        return [
-            'collection-updated' => '$refresh',
-            'collection-saved' => '$refresh',
-        ];
     }
 }

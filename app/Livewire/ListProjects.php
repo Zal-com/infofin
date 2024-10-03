@@ -49,8 +49,7 @@ class ListProjects extends Component implements HasForms, HasTable
 
     public function table(Table $table): Table
     {
-        $actions = [];
-
+ 
         $filters = [
             Filter::make('is_big')->label('Projets majeurs')->query(fn($query) => $query->where('is_big', '=', 1)),
             Filter::make('organisation')->label('Organisation')->form([
