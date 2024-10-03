@@ -7,6 +7,8 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -69,13 +71,19 @@ class UserCollection extends Component implements HasTable, HasForms
                 Action::make('copy_link')
                     ->icon('heroicon-s-link')
                     ->iconButton()
+                    ->tooltip('Copier le lien')
                     ->color('danger')
                     ->label(false)
                     ->action(fn($record) => $this->copyLink($record->id)),
                 Action::make('edit')
                     ->label('Modifier')
                     ->icon('heroicon-s-pencil')
-                    ->action(fn($record) => redirect()->route('collection.edit', $record->id))
+                    ->action(fn($record) => redirect()->route('collection.edit', $record->id)),
+                ActionGroup::make([
+                    DeleteAction::make()
+                        ->requiresConfirmation()
+                        ->icon('heroicon-o-trash')
+                ])
             ])
             ->recordUrl(fn($record) => route('collection.show', $record->id))
             ->modifyQueryUsing(fn(Builder $query) => $query->withCount('projects'));
