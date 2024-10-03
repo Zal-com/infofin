@@ -17,6 +17,7 @@ use Filament\Support\Enums\FontWeight;
 use Filament\Support\Enums\IconPosition;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\Layout\Grid;
 use Filament\Tables\Columns\Layout\Stack;
@@ -49,7 +50,7 @@ class ListProjects extends Component implements HasForms, HasTable
 
     public function table(Table $table): Table
     {
- 
+
         $filters = [
             Filter::make('is_big')->label('Projets majeurs')->query(fn($query) => $query->where('is_big', '=', 1)),
             Filter::make('organisation')->label('Organisation')->form([
@@ -246,6 +247,57 @@ class ListProjects extends Component implements HasForms, HasTable
                     ->size('lg')
                     ->color('secondary')
                     ->visible(Auth::check() && Auth::user()->can('create projects'))])
+            ->bulkActions([
+                BulkAction::make('add_to_collection')
+                    ->label('Ajouter à une collection')
+                    ->icon('heroicon-o-plus')
+                    ->iconPosition('before')
+                    ->modalHeading('Collection')
+                    ->form([
+                        Select::make('collection')
+                            ->options(Collection::where('user_id', Auth::id())->pluck('name', 'id')->toArray())
+                            ->createOptionForm([
+                                TextInput::make('name')->label('Titre')->required(),
+                                TextInput::make('description')->label('Description')->maxLength(500),
+                            ])
+                            ->createOptionUsing(function ($data) {
+                                // Create and return a new collection
+                                $collection = Collection::create([
+                                    'name' => $data['name'],
+                                    'description' => $data['description'],
+                                    'user_id' => Auth::id(),
+                                ]);
+                                return $collection->id; // Return the ID of the new collection
+                            }),
+                    ])
+                    ->action(function (array $data, $records) {
+                        // Handle the bulk action to add the selected records (projects) to the collection
+                        $collection = Collection::findOrFail($data['collection']); // Get the selected collection
+
+                        try {
+                            // Attach each selected project to the collection
+                            foreach ($records as $record) {
+                                $collection->projects()->attach($record->id);
+                            }
+                            Notification::make()
+                                ->title('Les projets ont été ajoutés à la collection avec succès')
+                                ->icon('heroicon-o-check-circle')
+                                ->color('success')
+                                ->iconColor('success')
+                                ->seconds(5)
+                                ->send();
+                        } catch (\Exception $e) {
+                            Notification::make()
+                                ->title('Quelque chose ne s\'est pas passé comme prévu. Veuillez réessayer.')
+                                ->icon('heroicon-o-x-circle')
+                                ->iconColor('danger')
+                                ->color('danger')
+                                ->seconds(5)
+                                ->send();
+                        }
+
+                    })
+            ])
             ->defaultPaginationPageOption(25)
             ->defaultSort('updated_at', 'desc')
             ->paginationPageOptions([5, 10, 25, 50, 100])
