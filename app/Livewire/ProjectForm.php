@@ -268,16 +268,16 @@ final class ProjectForm extends Component implements HasForms
                 Tabs\Tab::make("Contacts")->schema([
                     Fieldset::make('Internes')->schema([
                         Repeater::make('contact_ulb')->schema([
-                            TextInput::make('first_name')->label('Prénom'),
-                            TextInput::make('last_name')->label('Nom'),
-                            TextInput::make('email')->label('E-mail')->email(),
+                            TextInput::make('first_name')->label('Prénom')->required()->minLength(3),
+                            TextInput::make('last_name')->label('Nom')->required()->minLength(3),
+                            TextInput::make('email')->label('E-mail')->email()->required()->minLength(5),
                         ])->columns(2)->addActionLabel('+ Nouveau contact')->label(false)->maxItems(3)
                     ]),
                     Fieldset::make('Externes')->schema([
                         Repeater::make('contact_ext')->schema([
-                            TextInput::make('first_name')->label('Prénom'),
-                            TextInput::make('last_name')->label('Nom'),
-                            TextInput::make('email')->label('E-mail')->email(),
+                            TextInput::make('first_name')->label('Prénom')->required()->minLength(3),
+                            TextInput::make('last_name')->label('Nom')->required()->minLength(3),
+                            TextInput::make('email')->label('E-mail')->email()->required()->minLength(5),
                         ])->columns(2)->addActionLabel('+ Nouveau contact')->label(false)->maxItems(3)
                     ]),
                 ]),
@@ -483,9 +483,9 @@ final class ProjectForm extends Component implements HasForms
             'contact_ulb.*.last_name' => 'nullable|string',
             'contact_ulb.*.email' => 'nullable|email',
             'contact_ext' => 'array',
-            'contact_ext.*.first_name' => 'nullable|string|max:50',
-            'contact_ext.*.last_name' => 'nullable|string|max:50',
-            'contact_ext.*.email' => 'nullable|email|max:255',
+            'contact_ext.*.first_name' => 'string|max:50',
+            'contact_ext.*.last_name' => 'string|max:50',
+            'contact_ext.*.email' => 'email|max:255',
             'status' => 'integer',
             'is_draft' => 'boolean',
             'info_sessions' => 'nullable|array'
@@ -557,20 +557,26 @@ final class ProjectForm extends Component implements HasForms
 
             // Filtrer les contacts vides
             $contact_ulb = array_filter($contact_ulb, function ($contact) {
-                return !empty($contact['first_name']) || !empty($contact['last_name']) || !empty($contact['email']);
+                return !empty(trim($contact['first_name'] ?? ''))
+                    && !empty(trim($contact['last_name'] ?? ''))
+                    && !empty(trim($contact['email'] ?? ''));
             });
 
             $contact_ext = array_filter($contact_ext, function ($contact) {
-                return !empty($contact['first_name']) || !empty($contact['last_name']) || !empty($contact['email']);
+                return !empty(trim($contact['first_name'] ?? ''))
+                    && !empty(trim($contact['last_name'] ?? ''))
+                    && !empty(trim($contact['email'] ?? ''));
             });
 
+            // Vérification si au moins un contact ULB ou externe est fourni
             $ulb_has_contact = !empty($contact_ulb);
             $ext_has_contact = !empty($contact_ext);
 
             if (!$ulb_has_contact && !$ext_has_contact) {
-                $validator->errors()->add('contact_ulb', 'Veuillez fournir au moins un contact interne ou externe.');
+                $validator->errors()->add('contact_ulb', 'Veuillez fournir au moins un contact interne ou externe avec les informations complètes.');
             }
         });
+
 
         if ($validator->fails()) {
             foreach ($validator->errors()->all() as $error) {
