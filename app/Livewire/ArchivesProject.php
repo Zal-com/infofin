@@ -36,12 +36,12 @@ class ArchivesProject extends Component implements HasForms, HasTable
     {
         /** @noinspection PhpIllegalArrayKeyTypeInspection */
         return $table->query(
-            Project::where('status', '=', 2)
+            Project::where('status', '=', -1)
                 ->where(function ($query) {
                     $query->where('updated_at', '<=', now()->subYears(2))
-                          ->orWhereJsonContains('deadlines->date', function ($subQuery) {
-                              $subQuery->where('date', '<', now());
-                          });
+                        ->orWhereJsonContains('deadlines->date', function ($subQuery) {
+                            $subQuery->where('date', '<', now());
+                        });
                 }))->columns([
             IconColumn::make('status')
                 ->label(false)
