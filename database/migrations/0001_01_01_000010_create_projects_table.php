@@ -14,9 +14,9 @@ class CreateProjectsTable extends Migration
             $table->json('contact_ulb'); // JSON pour les contacts ULB
             $table->json('contact_ext'); // JSON pour les contacts externes
             $table->json('deadlines'); // JSON pour les dates limites
-            $table->longText('admission_requirements'); // Conditions d'admission
-            $table->longText('funding'); // Détails du financement
-            $table->longText('apply_instructions'); // Instructions pour postuler
+            $table->longText('admission_requirements')->nullable(); // Conditions d'admission
+            $table->longText('funding')->nullable(); // Détails du financement
+            $table->longText('apply_instructions')->nullable(); // Instructions pour postuler
             $table->foreignId('poster_id')->constrained('users')->onDelete('cascade'); // Clé étrangère vers users
             $table->integer('visit_count')->default(0); // Nombre de visites par défaut 0
             $table->foreignId('last_update_user_id')->constrained('users')->onDelete('cascade'); // Clé étrangère vers users

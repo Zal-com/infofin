@@ -102,83 +102,77 @@
             </div>
         </div>
         <div x-show="tab === 'infos'" class="m-4">
-            @if(!empty($project->funding))
-                <div class="markdown mb-5">
-                    <x-filament::section.heading class="text-2xl">
-                        Financement
-                    </x-filament::section.heading>
-                    <x-filament::section.description
-                        class="mb-1 text-sm text-gray-500 dark:text-gray-400 text-justify list-inside">
-                        <div class="text-sm text-gray-500 dark:text-gray-400 text-justify">
-                            @php
-                                $funding = $project->funding ?? '';
+            <div class="markdown mb-5">
+                <x-filament::section.heading class="text-2xl">
+                    Financement
+                </x-filament::section.heading>
+                <x-filament::section.description
+                    class="mb-1 text-sm text-gray-500 dark:text-gray-400 text-justify list-inside">
+                    <div class="text-sm text-gray-500 dark:text-gray-400 text-justify">
+                        @php
+                            $funding = $project->funding ?? '';
 
-                                if (!empty($funding)) {
-                                    try {
-                                        echo tiptap_converter()->asHTML($funding);
-                                    } catch (Exception $e) {
-                                        echo \Illuminate\Support\Str::of($funding)->markdown();
-                                    }
-                                } else {
-                                    echo '<p>No funding information provided.</p>';
+                            if (!empty($funding)) {
+                                try {
+                                    echo tiptap_converter()->asHTML($funding);
+                                } catch (Exception $e) {
+                                    echo \Illuminate\Support\Str::of($funding)->markdown();
                                 }
-                            @endphp
-                        </div>
-                    </x-filament::section.description>
-                </div>
-            @endif
-            @if(!empty($project->apply_instructions))
-                <hr>
-                <div class="markdown mt-5 mb-5">
-                    <x-filament::section.heading class="text-2xl">
-                        Pour postuler
-                    </x-filament::section.heading>
-                    <x-filament::section.description
-                        class="mb-1 text-sm text-gray-500 dark:text-gray-400 text-justify list-inside">
-                        <div class="text-sm text-gray-500 dark:text-gray-400 text-justify">
-                            @php
-                                $apply_instructions = $project->apply_instructions ?? '';
+                            } else {
+                                echo '<p>Aucune information sur le financement n\'a été fourni.</p>';
+                            }
+                        @endphp
+                    </div>
+                </x-filament::section.description>
+            </div>
+            <hr>
+            <div class="markdown mt-5 mb-5">
+                <x-filament::section.heading class="text-2xl">
+                    Pour postuler
+                </x-filament::section.heading>
+                <x-filament::section.description
+                    class="mb-1 text-sm text-gray-500 dark:text-gray-400 text-justify list-inside">
+                    <div class="text-sm text-gray-500 dark:text-gray-400 text-justify">
+                        @php
+                            $apply_instructions = $project->apply_instructions ?? '';
 
-                                if (!empty($apply_instructions)) {
-                                    try {
-                                        echo tiptap_converter()->asHTML($apply_instructions);
-                                    } catch (Exception $e) {
-                                        echo \Illuminate\Support\Str::of($apply_instructions)->markdown();
-                                    }
-                                } else {
-                                    echo '<p>No application instructions provided.</p>';
+                            if (!empty($apply_instructions)) {
+                                try {
+                                    echo tiptap_converter()->asHTML($apply_instructions);
+                                } catch (Exception $e) {
+                                    echo \Illuminate\Support\Str::of($apply_instructions)->markdown();
                                 }
-                            @endphp
-                        </div>
-                    </x-filament::section.description>
-                </div>
-            @endif
-            @if(!empty($project->admission_requirements))
-                <hr>
-                <div class="markdown mt-5">
-                    <x-filament::section.heading class="text-2xl">
-                        Requis d'admission
-                    </x-filament::section.heading>
-                    <x-filament::section.description
-                        class="mb-1 text-sm text-gray-500 dark:text-gray-400 text-justify list-inside">
-                        <div class="text-sm text-gray-500 dark:text-gray-400 text-justify">
-                            @php
-                                $admission_requirements = $project->admission_requirements ?? '';
+                            } else {
+                                echo '<p>Les instructions pour postuler n\'ont pas encore été fournies.</p>';
+                            }
+                        @endphp
+                    </div>
+                </x-filament::section.description>
+            </div>
+            <hr>
+            <div class="markdown mt-5">
+                <x-filament::section.heading class="text-2xl">
+                    Requis d'admission
+                </x-filament::section.heading>
+                <x-filament::section.description
+                    class="mb-1 text-sm text-gray-500 dark:text-gray-400 text-justify list-inside">
+                    <div class="text-sm text-gray-500 dark:text-gray-400 text-justify">
+                        @php
+                            $admission_requirements = $project->admission_requirements ?? '';
 
-                                if (!empty($admission_requirements)) {
-                                    try {
-                                        echo tiptap_converter()->asHTML($admission_requirements);
-                                    } catch (Exception $e) {
-                                        echo \Illuminate\Support\Str::of($admission_requirements)->markdown();
-                                    }
-                                } else {
-                                    echo '<p>No admission requirements provided.</p>';
+                            if (!empty($admission_requirements)) {
+                                try {
+                                    echo tiptap_converter()->asHTML($admission_requirements);
+                                } catch (Exception $e) {
+                                    echo \Illuminate\Support\Str::of($admission_requirements)->markdown();
                                 }
-                            @endphp
-                        </div>
-                    </x-filament::section.description>
-                </div>
-            @endif
+                            } else {
+                                echo '<p>Les critères d\'admission n\'ont pas encore été spécifiés.</p>';
+                            }
+                        @endphp
+                    </div>
+                </x-filament::section.description>
+            </div>
         </div>
         <div x-show="tab === 'documents'" class="m-4">
             @if($project->documents && $project->documents->isNotEmpty())
