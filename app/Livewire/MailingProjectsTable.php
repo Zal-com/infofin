@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\NewsletterSchedule;
 use App\Models\Project;
+use App\Models\User;
 use Awcodes\FilamentBadgeableColumn\Components\Badge;
 use Awcodes\FilamentBadgeableColumn\Components\BadgeableColumn;
 use Carbon\Carbon;
@@ -65,6 +66,29 @@ class MailingProjectsTable extends Component implements HasForms, HasTable
                 })
                 ->separator(false)
                 ->searchable(),
+            TextColumn::make('created_at')
+                ->label("Nombre de personnes concernées")
+                ->formatStateUsing(function (Project $record) {
+                    return User::where('is_email_subscriber', 1)
+                        ->where(function ($query) use ($record) {
+                            $scientificDomainIds = $record->scientific_domains->pluck('id')->toArray();
+                            $infoTypeIds = $record->info_types->pluck('id')->toArray();
+
+                            if (!empty($scientificDomainIds)) {
+                                $query->whereHas('scientific_domains', function ($subQuery) use ($scientificDomainIds) {
+                                    $subQuery->whereIn('scientific_domain_id', $scientificDomainIds);
+                                });
+                            }
+
+                            if (!empty($infoTypeIds)) {
+                                $query->whereHas('info_types', function ($subQuery) use ($infoTypeIds) {
+                                    $subQuery->whereIn('info_type_id', $infoTypeIds);
+                                });
+                            }
+                        })
+                        ->count();
+                })
+
         ];
 
         $actions = [

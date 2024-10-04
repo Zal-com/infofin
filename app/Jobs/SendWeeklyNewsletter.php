@@ -49,7 +49,7 @@ class SendWeeklyNewsletter implements ShouldQueue
                     $query->whereHas('scientific_domains', function ($query) use ($subscriber) {
                         $query->whereIn('scientific_domain_id', $subscriber->scientific_domains->pluck('id'));
                     })
-                        ->orWhereHas('info_types', function ($query) use ($subscriber) {
+                        ->whereHas('info_types', function ($query) use ($subscriber) {
                             $query->whereIn('info_type_id', $subscriber->info_types->pluck('id'));
                         });
                 })
