@@ -3,10 +3,12 @@
 namespace App\Livewire;
 
 use App\Models\InfoSession;
-use App\Models\Organisation;
+use App\Models\ScientificDomainCategory;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -14,10 +16,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
-use Filament\Forms\Get;
 use Filament\Notifications\Notification;
-use Filament\Tables\Concerns\InteractsWithTable;
-use Filament\Tables\Contracts\HasTable;
 use Livewire\Component;
 
 class InfoSessionForm extends Component implements HasForms
@@ -41,6 +40,34 @@ class InfoSessionForm extends Component implements HasForms
         );
     }
 
+    protected function getFieldsetSchema(): array
+    {
+        $categories = ScientificDomainCategory::with('domains')->get();
+        $fieldsets = [];
+
+        foreach ($categories as $category) {
+            $sortedDomains = $category->domains->sortBy('name')->pluck('name', 'id')->toArray();
+            $fieldsets[] = Fieldset::make($category->name)
+                ->schema([
+                    CheckboxList::make('scientific_domains')
+                        ->label(false)
+                        ->options($sortedDomains)
+                        ->bulkToggleable()
+                        ->columnSpan(2)
+                        ->required()
+                        ->extraAttributes([
+                            'class' => 'w-full'
+                        ])->columns(3)
+                ])
+                ->columnSpan(3)
+                ->extraAttributes([
+                    'class' => 'w-full disciplines-fieldset',
+                ]);
+        }
+
+        return $fieldsets;
+    }
+
     public function submit(): void
     {
         try {
@@ -49,6 +76,8 @@ class InfoSessionForm extends Component implements HasForms
             $this->infoSession->fill($validatedData);
 
             $this->infoSession->save();
+
+            $this->infoSession->scientific_domains()->attach($validatedData['scientific_domains']);
             Notification::make()
                 ->color('success')
                 ->seconds(5)
@@ -124,6 +153,16 @@ class InfoSessionForm extends Component implements HasForms
                     ->createOptionForm([
                         TextInput::make('title')
                             ->required(),
+                    ]),
+                \LaraZeus\Accordion\Forms\Accordions::make('Disciplines scientifiques')
+                    ->columnSpan(2)
+                    ->activeAccordion(2)
+                    ->isolated()
+                    ->accordions([
+                        \LaraZeus\Accordion\Forms\Accordion::make('main-data')
+                            ->columns()
+                            ->label('Disciplines scientifiques')
+                            ->schema($this->getFieldsetSchema()),
                     ]),
             ])->columns(2),
             Actions::make([

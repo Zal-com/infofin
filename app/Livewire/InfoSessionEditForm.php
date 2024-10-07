@@ -3,9 +3,12 @@
 namespace App\Livewire;
 
 use App\Models\InfoSession;
+use App\Models\ScientificDomainCategory;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -14,7 +17,6 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
-use Illuminate\Support\Facades\Request;
 use Livewire\Component;
 
 class InfoSessionEditForm extends Component implements HasForms
@@ -32,7 +34,45 @@ class InfoSessionEditForm extends Component implements HasForms
     public function mount(InfoSession $info_session = null)
     {
         $this->info_session = $this->info_session ?? new InfoSession();
-        $this->form->fill($this->info_session->toArray());
+        $this->info_session->load('scientific_domains');
+
+        // Transformer les domaines scientifiques en tableau d'ID
+        $scientificDomainsIds = $this->info_session->scientific_domains->pluck('id')->toArray();
+
+        // Pré-remplir le formulaire avec les données de la session et les domaines scientifiques sélectionnés
+        $this->form->fill(array_merge(
+            $this->info_session->toArray(),
+            ['scientific_domains' => $scientificDomainsIds]
+        ));
+    }
+
+
+    protected function getFieldsetSchema(): array
+    {
+        $categories = ScientificDomainCategory::with('domains')->get();
+        $fieldsets = [];
+
+        foreach ($categories as $category) {
+            $sortedDomains = $category->domains->sortBy('name')->pluck('name', 'id')->toArray();
+            $fieldsets[] = Fieldset::make($category->name)
+                ->schema([
+                    CheckboxList::make('scientific_domains')
+                        ->label(false)
+                        ->options($sortedDomains)
+                        ->bulkToggleable()
+                        ->columnSpan(2)
+                        ->required()
+                        ->extraAttributes([
+                            'class' => 'w-full'
+                        ])->columns(3)
+                ])
+                ->columnSpan(3)
+                ->extraAttributes([
+                    'class' => 'w-full disciplines-fieldset',
+                ]);
+        }
+
+        return $fieldsets;
     }
 
     public function submit(): void
@@ -43,6 +83,8 @@ class InfoSessionEditForm extends Component implements HasForms
             $this->info_session->fill($validatedData);
 
             $this->info_session->update();
+
+            $this->info_session->scientific_domains()->attach($validatedData['scientific_domains']);
             Notification::make()
                 ->color('success')
                 ->title('Session modifiée avec succès.')
@@ -53,7 +95,7 @@ class InfoSessionEditForm extends Component implements HasForms
             $this->redirect(route('info_session.index'));
         } catch (\Exception $e) {
             Notification::make()
-                ->title("Erreur lors de la modification.")
+                ->title($e->getMessage())
                 ->color('danger')
                 ->seconds(5)
                 ->icon('heroicon-o-x-circle')
@@ -114,6 +156,16 @@ class InfoSessionEditForm extends Component implements HasForms
                     ->createOptionForm([
                         TextInput::make('title')
                             ->required(),
+                    ]),
+                \LaraZeus\Accordion\Forms\Accordions::make('Disciplines scientifiques')
+                    ->columnSpan(2)
+                    ->activeAccordion(2)
+                    ->isolated()
+                    ->accordions([
+                        \LaraZeus\Accordion\Forms\Accordion::make('main-data')
+                            ->columns()
+                            ->label('Disciplines scientifiques')
+                            ->schema($this->getFieldsetSchema()),
                     ]),
             ])->columns(2),
             Actions::make([

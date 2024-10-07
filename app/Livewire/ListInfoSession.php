@@ -3,19 +3,14 @@
 namespace App\Livewire;
 
 use App\Models\InfoSession;
-use App\Models\Organisation;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Illuminate\Database\Query\Builder;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\HtmlString;
 use Livewire\Component;
 
@@ -104,6 +99,12 @@ class ListInfoSession extends Component implements HasForms, HasTable
         ];
 
 
-        return $table->query(InfoSession::query())->columns($columns)->actions($actions)->filters($filters)->recordUrl(fn($record) => route('info_session.show', $record->id));
+        return $table
+            ->query(InfoSession::query())
+            ->columns($columns)
+            ->actions($actions)
+            ->filters($filters)
+            ->defaultSort('session_datetime', 'desc')
+            ->recordUrl(fn($record) => route('info_session.show', $record->id));
     }
 }

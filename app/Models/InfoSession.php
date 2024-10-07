@@ -22,6 +22,11 @@ class InfoSession extends Model
         return $this->belongsTo(Organisation::class);
     }
 
+    public function scientific_domains(): BelongsToMany
+    {
+        return $this->belongsToMany(ScientificDomain::class, 'info_sessions_scientific_domains', 'info_session_id', 'scientific_domain_id');
+    }
+
     public function getSessionTypeStringAttribute(): string
     {
         switch ($this->session_type) {
@@ -33,6 +38,9 @@ class InfoSession extends Model
                 break;
             case 2 :
                 return 'Hybride';
+                break;
+            default :
+                return 'Non communiqué';
                 break;
         }
     }
