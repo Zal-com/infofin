@@ -99,7 +99,7 @@
                             @endforeach
                         </div>
                     @else
-                        <p>No scientific domains selected.</p>
+                        <p>Aucun domaine scientifique.</p>
                     @endif
                 </div>
                 <div class="tiptap">

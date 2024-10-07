@@ -451,8 +451,9 @@ final class ProjectForm extends Component implements HasForms
         if (!$this->fileService) {
             $this->fileService = app(FileService::class);
         }
+        session()->forget("previewData");
         $this->data['documents'] = $this->fileService->previewFile($this->data['documents']);
-        session()->flash('previewData', $this->data);
+        session()->put('previewData', $this->data);
         return redirect()->route('projects.preview');
     }
 

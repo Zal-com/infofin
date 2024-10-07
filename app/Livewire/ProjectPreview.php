@@ -36,6 +36,13 @@ class ProjectPreview extends Component
             $this->info_sessions = InfoSession::find($this->data["info_sessions"]);
             $this->transformGeoZones();
             $this->transformContacts();
+        } else {
+            Notification::make()
+                ->title("Oops, fallait pas refresh, recommencez.")
+                ->color('danger')
+                ->seconds(5)
+                ->send();
+            return redirect()->to('/projects');
         }
     }
 
@@ -309,6 +316,7 @@ class ProjectPreview extends Component
                     }
                 }
 
+                session()->forget('previewData');
                 $project->save();
                 Notification::make()->title('Votre appel a bien été ajouté.')->icon('heroicon-o-check-circle')->seconds(5)->color('success')->send();
                 return redirect()->route('projects.index');
@@ -319,6 +327,7 @@ class ProjectPreview extends Component
 
     public function return()
     {
+        session()->forget('previewData');
         session()->flash('fromPreviewData', $this->data);
         return redirect()->route('projects.create');
     }
