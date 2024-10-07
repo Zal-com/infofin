@@ -640,22 +640,21 @@ class ProjectEditForm extends Component implements HasForms
 
     public function replicateModelWithRelations($model)
     {
-        $model->load('scientific_domains', 'info_types', 'country', 'continent', 'documents');
+        $model->load('scientific_domains', 'info_types', 'countries', 'continents', 'documents');
 
         $newModel = $model->replicate();
         $newModel->save();
 
         $newModel->scientific_domains()->sync($model->scientific_domains->pluck('id')->toArray());
         $newModel->info_types()->sync($model->info_types->pluck('id')->toArray());
+        $newModel->countries()->sync($model->countries->pluck('id')->toArray());
+        $newModel->continents()->sync($model->continents->pluck('code')->toArray());
 
         foreach ($model->documents as $document) {
             $newDocument = $document->replicate();
             $newDocument->project_id = $newModel->id;
             $newDocument->save();
         }
-
-        $newModel->country()->associate($model->country);
-        $newModel->continent()->associate($model->continent);
         $newModel->save();
 
         return $newModel;

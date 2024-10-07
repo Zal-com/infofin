@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Continent;
 use App\Models\Country;
+use App\Models\InfoSession;
 use App\Models\InfoType;
 use App\Models\Organisation;
 use App\Models\Project;
@@ -23,6 +24,7 @@ class ProjectPreview extends Component
     public $organisation;
     public $scientificDomains = [];
     public $info_types = [];
+    public $info_sessions = [];
 
     public function mount()
     {
@@ -31,8 +33,16 @@ class ProjectPreview extends Component
             $this->organisation = Organisation::find($this->data["organisation_id"]);
             $this->scientificDomains = ScientificDomain::find($this->data["scientific_domains"]);
             $this->info_types = InfoType::find($this->data["info_types"]);
+            $this->info_sessions = InfoSession::find($this->data["info_sessions"]);
             $this->transformGeoZones();
             $this->transformContacts();
+        } else {
+            Notification::make()
+                ->title("Oops, fallait pas refresh, recommencez.")
+                ->color('danger')
+                ->seconds(5)
+                ->send();
+            return redirect()->to('/projects');
         }
     }
 
@@ -306,6 +316,7 @@ class ProjectPreview extends Component
                     }
                 }
 
+                session()->forget('previewData');
                 $project->save();
                 Notification::make()->title('Votre appel a bien été ajouté.')->icon('heroicon-o-check-circle')->seconds(5)->color('success')->send();
                 return redirect()->route('projects.index');
@@ -316,6 +327,7 @@ class ProjectPreview extends Component
 
     public function return()
     {
+        session()->forget('previewData');
         session()->flash('fromPreviewData', $this->data);
         return redirect()->route('projects.create');
     }
