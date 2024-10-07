@@ -9,6 +9,7 @@ use App\Models\Draft;
 use App\Models\InfoSession;
 use App\Models\InfoType;
 use App\Models\Project;
+use App\Models\ScientificDomain;
 use App\Models\ScientificDomainCategory;
 use App\Services\FileService;
 use Filament\Forms\Components\Actions;
@@ -27,6 +28,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
+use Filament\Forms\Set;
 use Filament\Notifications\Notification;
 use Filament\Resources\Components\Tab;
 use FilamentTiptapEditor\Enums\TiptapOutput;
@@ -45,6 +47,7 @@ final class ProjectForm extends Component implements HasForms
     public array $data = [];
     public $fromPrev;
     protected $fileService;
+    public $infoSessionsOptions = [];
 
     public function mount(FileService $fileService, Project $project = null)
     {
@@ -58,6 +61,17 @@ final class ProjectForm extends Component implements HasForms
         }
 
         $this->form->fill($this->project->toArray());
+        $this->refreshInfoSessionsOptions();
+    }
+
+    public function refreshInfoSessionsOptions()
+    {
+        $this->infoSessionsOptions = InfoSession::where('session_datetime', '>', now())
+            ->get()
+            ->mapWithKeys(function ($item) {
+                return [$item->id => $item->id . ' - ' . $item->title];
+            })
+            ->toArray();
     }
 
     private function initializeProjectFromData(array $data)
@@ -296,6 +310,7 @@ final class ProjectForm extends Component implements HasForms
                 ]),
                 Tabs\Tab::make('info_sessions')
                     ->label("Séances d'information")
+                    ->live()
                     ->schema([
                         Select::make('info_sessions')
                             ->label('Séances d\'info')
@@ -322,6 +337,15 @@ final class ProjectForm extends Component implements HasForms
                                     ->string()
                                     ->extraAttributes(['style' => 'max-height: 200px'])
                                     ->columnSpanFull(),
+                                \LaraZeus\Accordion\Forms\Accordions::make('Disciplines scientifiques')
+                                    ->activeAccordion(2)
+                                    ->isolated()
+                                    ->accordions([
+                                        \LaraZeus\Accordion\Forms\Accordion::make('info-data')
+                                            ->columns()
+                                            ->label('Disciplines scientifiques')
+                                            ->schema($this->getFieldsetSchema()),
+                                    ]),
                                 DateTimePicker::make('session_datetime')
                                     ->seconds(false)
                                     ->label('Date et heure')
@@ -358,8 +382,44 @@ final class ProjectForm extends Component implements HasForms
                                         TextInput::make('title')
                                             ->required(),
                                     ])
-                            ])
-                    ])
+                            ])->createOptionUsing(function ($data, $set) {
+                                try {
+                                    $info_session = InfoSession::create([
+                                        'title' => $data['title'],
+                                        'description' => $data['description'],
+                                        'session_datetime' => $data['session_datetime'],
+                                        'speaker' => $data['speaker'],
+                                        'session_type' => $data['session_type'],
+                                        'location' => $data['location'],
+                                        'organisation_id' => $data['organisation_id'],
+                                    ]);
+                                    $info_session->scientific_domains()->attach($data['scientific_domains']);
+
+                                    Notification::make()
+                                        ->icon('heroicon-o-check')
+                                        ->color('success')
+                                        ->iconColor('success')
+                                        ->title('Session d\'info créée avec succès.')
+                                        ->seconds(5)
+                                        ->send();
+
+                                    $this->refreshInfoSessionsOptions();
+                                    $set('info_sessions', $this->infoSessionsOptions);
+
+                                } catch (\Exception $e) {
+                                    Notification::make()
+                                        ->icon('heroicon-o-x')
+                                        ->color('danger')
+                                        ->iconColor('danger')
+                                        ->title('Quelque chose ne s\'est pas passé comme prévu. Veuillez réessayer.')
+                                        ->seconds(5)
+                                        ->send();
+                                }
+                            })
+                    ])->afterStateUpdated(function (Set $set, $state) {
+                        $this->refreshInfoSessionsOptions();
+                        $set('info_sessions', $this->infoSessionsOptions);
+                    })
             ]),
             Actions::make([
                 Action::make('submit')
