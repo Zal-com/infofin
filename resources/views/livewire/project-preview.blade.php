@@ -16,6 +16,26 @@
                 </x-filament::tabs.item>
             </x-filament::tabs>
             <div x-show="tab === 'description'" class="m-4">
+                @if(empty($data['contact_ulb']))
+                    <x-filament::section class="bg-primary-100 mt-1 custom-section-wrapper mb-2"
+                                         style="background: #2A9D8F60">
+                        <div class="flex flex-row items-start text-xs gap-5">
+                            <div class="w-fit">
+                                <x-filament::icon icon="heroicon-o-information-circle" class="h-5"/>
+                            </div>
+                            <p>
+                                Cet appel ne nécessite pas de suivi particulier par le Département
+                                Recherche. Merci de suivre directement la procédure indiquée. Si toutefois vous
+                                souhaitez
+                                contacter
+                                le
+                                Département Recherche, écrivez à ulbkto@ulb.be (propriété intellectuelle) ou
+                                fonds.recherche@ulb.be
+                                (pour
+                                toute autre question).
+                            </p></div>
+                    </x-filament::section>
+                @endif
                 <x-filament::section.description class="flex flex-wrap gap-1">
                     @if($info_types->isNotEmpty())
                         @foreach($info_types as $info_type)
@@ -266,19 +286,35 @@
                     @endforeach
                 </x-filament::section>
             @endif
-            @if(!empty($project->deadlines))
-                <x-filament::section class="col-span-1 row-span-1 sticky top-5">
-                    <x-filament::section.heading class="text-xl mb-4">
-                        Dates
+            @if($info_sessions && $info_sessions->count() > 0)
+                <x-filament::section class="col-span-1 row-span-1">
+                    <x-filament::section.heading>
+                        Prochaine session d'information
                     </x-filament::section.heading>
-                    @foreach($project->deadlines as $deadline)
-                        <div class="mb-3 last-of-type:mb-0">
-                            <x-filament::section>
-                                <div>{{$deadline['continuous'] == 1 ? "Continue" : \Carbon\Carbon::make($deadline['date'])->format('d/m/Y')}}</div>
-                                {{$deadline['proof'] ?? ""}}
-                            </x-filament::section>
+                    <div class="mt-3">
+                        <p class="flex flex-row gap-2 items-center my-1">
+                            <x-filament::icon
+                                icon="heroicon-o-map-pin"
+                                class="max-h-6 max-w-6"/> {{$info_sessions[0]->sessionTypeString}}
+                        </p>
+                        <p class="flex flex-row gap-2 items-center my-1">
+                            <x-filament::icon
+                                icon="heroicon-o-calendar-days"
+                                class="max-h-6 max-w-6"/> {{\Carbon\Carbon::make($info_sessions[0]->session_datetime)->format('d/m/Y')}}
+                        </p>
+                        <p class="flex flex-row gap-2 items-center my-1">
+                            <x-filament::icon
+                                icon="heroicon-o-clock"
+                                class="max-h-6 max-w-6"/> {{\Carbon\Carbon::make($info_sessions[0]->session_datetime)->format('H:i')}}
+                        </p>
+                        <div class="flex justify-end">
+                            <x-filament::button color="secondary" tag="a"
+                                                href="{{route('info_session.show', $info_sessions[0]->id)}}"
+                                                icon="heroicon-o-arrow-right" iconPosition="after"
+                                                class="mt-2 justify-end">Plus d'infos
+                            </x-filament::button>
                         </div>
-                    @endforeach
+                    </div>
                 </x-filament::section>
             @endif
         </div>

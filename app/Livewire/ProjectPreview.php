@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Continent;
 use App\Models\Country;
+use App\Models\InfoSession;
 use App\Models\InfoType;
 use App\Models\Organisation;
 use App\Models\Project;
@@ -23,6 +24,7 @@ class ProjectPreview extends Component
     public $organisation;
     public $scientificDomains = [];
     public $info_types = [];
+    public $info_sessions = [];
 
     public function mount()
     {
@@ -31,6 +33,7 @@ class ProjectPreview extends Component
             $this->organisation = Organisation::find($this->data["organisation_id"]);
             $this->scientificDomains = ScientificDomain::find($this->data["scientific_domains"]);
             $this->info_types = InfoType::find($this->data["info_types"]);
+            $this->info_sessions = InfoSession::find($this->data["info_sessions"]);
             $this->transformGeoZones();
             $this->transformContacts();
         }
