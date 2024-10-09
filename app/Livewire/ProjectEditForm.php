@@ -534,7 +534,12 @@ class ProjectEditForm extends Component implements HasForms
 
         if ($validator->fails()) {
             foreach ($validator->errors()->all() as $error) {
-                Notification::make()->color('danger')->icon('heroicon-o-x-circle')->seconds(5)->send()->title($error);
+                Notification::make()
+                    ->title($error)
+                    ->color('danger')
+                    ->icon('heroicon-o-x-circle')
+                    ->seconds(5)
+                    ->send();
             }
         } else {
             $data = $validator->validated();
