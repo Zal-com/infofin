@@ -150,7 +150,7 @@
                 </x-filament::section.description>
             </div>
             <hr>
-            <div class="markdown mt-5">
+            <div class="markdown mt-5 mb-5">
                 <x-filament::section.heading class="text-2xl">
                     Requis d'admission
                 </x-filament::section.heading>
@@ -170,6 +170,33 @@
                                 echo '<p>Les critères d\'admission n\'ont pas encore été spécifiés.</p>';
                             }
                         @endphp
+                    </div>
+                </x-filament::section.description>
+            </div>
+            <hr>
+            <div class="markdown mt-5">
+                <x-filament::section.heading class="text-2xl">
+                    Zones géographiques
+                </x-filament::section.heading>
+                <x-filament::section.description
+                    class="mb-1 text-sm text-gray-500 dark:text-gray-400 text-justify list-inside">
+                    <div class="text-sm text-gray-500 dark:text-gray-400 text-justify">
+                        @php
+                            $geo_zones = [];
+
+                            if(!empty($project->continents)){
+                                foreach ($project->continents as $continent){
+                                $geo_zones[] = $continent->name;
+                                }
+                            }
+                                if(!empty($project->countries)){
+                                foreach ($project->countries as $country){
+                                $geo_zones[] = $country->name;
+                                }
+                                }
+                        @endphp
+
+                        {{implode(', ', $geo_zones)}}
                     </div>
                 </x-filament::section.description>
             </div>
