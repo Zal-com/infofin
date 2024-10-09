@@ -172,6 +172,34 @@
                         </div>
                     </x-filament::section.description>
                 </div>
+                <div class="markdown mb-5">
+                    <x-filament::section.heading class="text-2xl">
+                        Zones géographiques
+                    </x-filament::section.heading>
+                    <x-filament::section.description
+                        class="mb-1 text-sm text-gray-500 dark:text-gray-400 text-justify list-inside">
+                        <div class="text-sm text-gray-500 dark:text-gray-400 text-justify">
+                            @empty($data['geo_zones'])
+                                Pas de zones géographiques fournies.
+                            @else
+                                @php
+                                    $geo_zones = [];
+                                        //Si geo_zone contient 'pays' chercher pays, si 'continent' chercher continent
+                                        foreach($data['geo_zones'] as $zone){
+                                           $zone = explode('_', $zone);
+                                           switch ($zone[0]){
+                                               case 'continent' : $geo_zones[] = \App\Models\Continent::where('code', $zone[1])->pluck('name')->first();
+                                                break;
+                                                case 'pays' : $geo_zones[] = \App\Models\Country::where('id', $zone[1])->pluck('name')->first();
+                                                    break;
+                                           }
+                                        }
+                                @endphp
+                                {{implode(', ',$geo_zones)}}
+                            @endempty
+                        </div>
+                    </x-filament::section.description>
+                </div>
             </div>
 
             <div x-show="tab === 'documents'" class="m-4">
