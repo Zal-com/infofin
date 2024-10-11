@@ -323,7 +323,7 @@ class ProjectEditForm extends Component implements HasForms
                         ->label('Documents')
                         ->disk('public')
                         ->visibility('public')
-                        ->maxSize(20)
+                        ->maxSize(2000)
                         ->acceptedFileTypes([
                             'application/pdf',
                             'application/vnd.openxmlformats-officedocument.wordprocessingml.document',

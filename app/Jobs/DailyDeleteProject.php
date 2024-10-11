@@ -48,6 +48,7 @@ class DailyDeleteProject implements ShouldQueue
 
             if ($allDeadlinesPassed && $allContinuousZero) {
                 $project->status = 0;
+                $project->timestamps = false;
                 $project->save();
             }
         }
