@@ -545,7 +545,7 @@ class ProjectEditForm extends Component implements HasForms
             $data = $validator->validated();
             try {
                 $data['last_update_user_id'] = $userId;
-                /* REMOVED causait des problèmes d'interprétation de l'éditeur lors de la modification
+                /* REMOVED causait des problèmes d'interprétation de l'éditeur lors de la modification BLABLOU
                 $converter = new HtmlConverter();
                 $markdown = $converter->convert($this->data["short_description"]);
 
