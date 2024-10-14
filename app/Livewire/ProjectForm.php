@@ -9,8 +9,8 @@ use App\Models\Draft;
 use App\Models\InfoSession;
 use App\Models\InfoType;
 use App\Models\Project;
-use App\Models\ScientificDomainCategory;
 use App\Services\FileService;
+use App\Traits\ScientificDomainSchemaTrait;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Checkbox;
@@ -39,7 +39,7 @@ use Livewire\Component;
 
 final class ProjectForm extends Component implements HasForms
 {
-    use InteractsWithForms;
+    use InteractsWithForms, ScientificDomainSchemaTrait;
 
     public $draft;
     public Project $project;
@@ -99,34 +99,6 @@ final class ProjectForm extends Component implements HasForms
                 }
             }
         }
-    }
-
-    protected function getFieldsetSchema(): array
-    {
-        $categories = ScientificDomainCategory::with('domains')->get();
-        $fieldsets = [];
-
-        foreach ($categories as $category) {
-            $sortedDomains = $category->domains->sortBy('name')->pluck('name', 'id')->toArray();
-            $fieldsets[] = Fieldset::make($category->name)
-                ->schema([
-                    CheckboxList::make('scientific_domains')
-                        ->label(false)
-                        ->options($sortedDomains)
-                        ->bulkToggleable()
-                        ->columnSpan(2)
-                        ->required()
-                        ->extraAttributes([
-                            'class' => 'w-full'
-                        ])->columns(3)
-                ])
-                ->columnSpan(3)
-                ->extraAttributes([
-                    'class' => 'w-full disciplines-fieldset',
-                ]);
-        }
-
-        return $fieldsets;
     }
 
     public function form(Form $form): Form
