@@ -17,4 +17,9 @@ class Activity extends Model
     {
         return $this->belongsToMany(Project::class, 'projects_activities', 'activity_id', 'project_id');
     }
+
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'users_activities', 'activity_id', 'user_id');
+    }
 }

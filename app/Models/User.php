@@ -138,6 +138,15 @@ class User extends Authenticatable implements HasName
         return $this->belongsToMany(InfoType::class, 'users_info_types', 'user_id', 'info_type_id');
     }
 
+    public function expenses(): BelongsToMany
+    {
+        return $this->belongsToMany(Expense::class, 'users_expenses', 'user_id', 'expense_id');
+    }
+
+    public function activities(): BelongsToMany
+    {
+        return $this->belongsToMany(Activity::class, 'users_activities', 'user_id', 'activity_id');
+    }
 
     public function searches(): HasMany
     {
@@ -237,5 +246,5 @@ class User extends Authenticatable implements HasName
         $this->delete();
     }
 
-    
+
 }
