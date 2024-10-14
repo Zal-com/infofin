@@ -2,7 +2,8 @@
 
 namespace App\Livewire;
 
-use App\Models\InfoTypeCategory;
+use App\Models\Activity;
+use App\Models\Expense;
 use App\Models\Organisation;
 use App\Models\Project;
 use Awcodes\FilamentBadgeableColumn\Components\Badge;
@@ -149,30 +150,54 @@ class ArchivesProject extends Component implements HasForms, HasTable
                         });
                     })
                     ->indicateUsing(fn($data) => isset($data['organisation_id']) ? 'Organisation : ' . Organisation::find($data['organisation_id'])->title : null),
-                Filter::make('info_type_category')
-                    ->label('Catégories')
+                Filter::make('activity_expense')
+                    ->label('Filtrer par Activités et Dépenses')
                     ->form([
-                        Select::make('category_id')
-                            ->label('Categorie')
-                            ->multiple()  // Permettre la sélection multiple
+                        Select::make('activity_id')
+                            ->label('Activités')
+                            ->multiple()
                             ->options(function () {
-                                return InfoTypeCategory::all()->pluck('name', 'id')->toArray();
-                            })
+                                return Activity::all()->pluck('title', 'id')->toArray();
+                            }),
+                        Select::make('expense_id')
+                            ->label('Dépenses')
+                            ->multiple()
+                            ->options(function () {
+                                return Expense::all()->pluck('title', 'id')->toArray();
+                            }),
                     ])
                     ->query(function ($query, $data) {
-                        if (!empty($data['category_id'])) {
-                            return $query->whereHas('info_types', function ($query) use ($data) {
-                                $query->whereIn('info_types_cat_id', $data['category_id']);
+                        if (!empty($data['activity_id']) || !empty($data['expense_id'])) {
+                            return $query->where(function ($subQuery) use ($data) {
+                                if (!empty($data['activity_id'])) {
+                                    $subQuery->whereHas('activities', function ($q) use ($data) {
+                                        $q->whereIn('activity_id', $data['activity_id']);
+                                    });
+                                }
+
+                                if (!empty($data['expense_id'])) {
+                                    $subQuery->orWhereHas('expenses', function ($q) use ($data) {
+                                        $q->whereIn('expense_id', $data['expense_id']);
+                                    });
+                                }
                             });
                         }
                         return $query;
                     })
                     ->indicateUsing(function ($data) {
-                        if (isset($data['category_id']) && !empty($data['category_id'])) {
-                            $categoryNames = InfoTypeCategory::whereIn('id', $data['category_id'])->pluck('name')->toArray();
-                            return 'Catégories : ' . implode(', ', $categoryNames);
+                        $indicators = [];
+
+                        if (isset($data['activity_id']) && !empty($data['activity_id'])) {
+                            $activityNames = Activity::whereIn('id', $data['activity_id'])->pluck('title')->toArray();
+                            $indicators[] = 'Activités : ' . implode(', ', $activityNames);
                         }
-                        return null;
+
+                        if (isset($data['expense_id']) && !empty($data['expense_id'])) {
+                            $expenseNames = Expense::whereIn('id', $data['expense_id'])->pluck('title')->toArray();
+                            $indicators[] = 'Dépenses : ' . implode(', ', $expenseNames);
+                        }
+
+                        return implode(' | ', $indicators);
                     })
             ]);
     }

@@ -46,15 +46,23 @@ class SendWeeklyNewsletter implements ShouldQueue
 
             $projects = Project::where('is_in_next_email', 1)
                 ->where(function ($query) use ($subscriber) {
+                    // Condition sur les scientific_domains
                     $query->whereHas('scientific_domains', function ($query) use ($subscriber) {
                         $query->whereIn('scientific_domain_id', $subscriber->scientific_domains->pluck('id'));
                     })
-                        ->whereHas('info_types', function ($query) use ($subscriber) {
-                            $query->whereIn('info_type_id', $subscriber->info_types->pluck('id'));
+                        // Condition sur (activities OU expenses)
+                        ->where(function ($query) use ($subscriber) {
+                            $query->whereHas('activities', function ($query) use ($subscriber) {
+                                $query->whereIn('activity_id', $subscriber->activities->pluck('id'));
+                            })
+                                ->orWhereHas('expenses', function ($query) use ($subscriber) {
+                                    $query->whereIn('expense_id', $subscriber->expenses->pluck('id'));
+                                });
                         });
                 })
                 ->where("is_big", 0)
                 ->get();
+
 
             $projects = $projects->merge(
                 Project::where('is_big', 1)->where('is_in_next_email', 1)->get()

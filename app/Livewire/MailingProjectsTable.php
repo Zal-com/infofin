@@ -70,25 +70,23 @@ class MailingProjectsTable extends Component implements HasForms, HasTable
                 ->label("Nombre de personnes concernées")
                 ->formatStateUsing(function (Project $record) {
                     return User::where('is_email_subscriber', 1)
-                        ->where(function ($query) use ($record) {
+                        ->whereHas('scientific_domains', function ($query) use ($record) {
                             $scientificDomainIds = $record->scientific_domains->pluck('id')->toArray();
-                            $infoTypeIds = $record->info_types->pluck('id')->toArray();
+                            $query->whereIn('scientific_domain_id', $scientificDomainIds);
+                        })
+                        ->where(function ($query) use ($record) {
+                            $activityIds = $record->activities->pluck('id')->toArray();
+                            $expenseIds = $record->expenses->pluck('id')->toArray();
 
-                            if (!empty($scientificDomainIds)) {
-                                $query->whereHas('scientific_domains', function ($subQuery) use ($scientificDomainIds) {
-                                    $subQuery->whereIn('scientific_domain_id', $scientificDomainIds);
+                            $query->whereHas('activities', function ($q) use ($activityIds) {
+                                $q->whereIn('activity_id', $activityIds);
+                            })
+                                ->orWhereHas('expenses', function ($q) use ($expenseIds) {
+                                    $q->whereIn('expense_id', $expenseIds);
                                 });
-                            }
-
-                            if (!empty($infoTypeIds)) {
-                                $query->whereHas('info_types', function ($subQuery) use ($infoTypeIds) {
-                                    $subQuery->whereIn('info_type_id', $infoTypeIds);
-                                });
-                            }
                         })
                         ->count();
                 })
-
         ];
 
         $actions = [

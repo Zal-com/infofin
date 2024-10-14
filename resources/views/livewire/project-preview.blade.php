@@ -118,18 +118,6 @@
             </div>
 
             <div x-show="tab === 'infos'" class="m-4">
-                <x-filament::section.heading class="text-2xl">
-                    Type de programme
-                </x-filament::section.heading>
-                @if(!empty($info_types))
-                    @foreach($info_types as $info_type)
-                        <x-filament::section.description class="mb-4 text-justify">
-                            {{ $info_type['title'] ?? 'No Title' }}
-                        </x-filament::section.description>
-                    @endforeach
-                @else
-                    <p>Pas de type de programme entré</p>
-                @endif
                 <div class="markdown mb-5">
                     <x-filament::section.heading class="text-2xl">
                         Financement

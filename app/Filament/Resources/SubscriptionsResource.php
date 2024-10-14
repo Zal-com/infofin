@@ -37,12 +37,18 @@ class SubscriptionsResource extends Resource
                     ->columnSpanFull()
                     ->bulkToggleable()
                     ->columns(3),
-                CheckboxList::make('info_type')
-                    ->relationship('info_types', 'title')
-                    ->label('Types d\'infos')
+                CheckboxList::make('activities')
+                    ->relationship('activities', 'title')
+                    ->label("Catégorie d'activités")
                     ->columnSpanFull()
                     ->bulkToggleable()
-                    ->columns(3),
+                    ->columns(2),
+                CheckboxList::make('expenses')
+                    ->relationship('expenses', 'title')
+                    ->label("Catégorie de dépenses éligibles")
+                    ->columnSpanFull()
+                    ->bulkToggleable()
+                    ->columns(2),
             ]);
     }
 
@@ -52,7 +58,8 @@ class SubscriptionsResource extends Resource
             ->query(User::where('is_email_subscriber', '=', 1))
             ->columns([
                 TextColumn::make('email')->searchable()->sortable(),
-                TextColumn::make('info_type')->label('Types d\'informations')->badge(),
+                TextColumn::make('activities')->label('Catégorie d\'activités')->badge(),
+                TextColumn::make('expenses')->label('Catégorie de dépenses éligibles')->badge(),
                 TextColumn::make('scientific_domain')->label('Domaines scientifiques')->badge(),
             ])
             ->paginationPageOptions([5, 10, 25, 50, 100])

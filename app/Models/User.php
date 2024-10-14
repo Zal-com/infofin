@@ -208,6 +208,16 @@ class User extends Authenticatable implements HasName
         return $this->info_types->pluck('title');
     }
 
+    public function getExpenseAttribute(): Collection
+    {
+        return $this->expenses->pluck('title');
+    }
+
+    public function getActivityAttribute(): Collection
+    {
+        return $this->activities->pluck('title');
+    }
+
     public function getScientificDomainAttribute(): Collection
     {
         return $this->scientific_domains->pluck('name');
