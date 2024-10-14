@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Continent;
 use App\Models\Country;
+use App\Models\Expense;
 use App\Models\InfoSession;
 use App\Models\InfoType;
 use App\Models\Organisation;
@@ -23,7 +24,8 @@ class ProjectPreview extends Component
     public $contactExts = [];
     public $organisation;
     public $scientificDomains = [];
-    public $info_types = [];
+    public $expenses = [];
+    public $activities = [];
     public $info_sessions = [];
 
     public function mount()
@@ -32,7 +34,8 @@ class ProjectPreview extends Component
             $this->data = session('previewData');
             $this->organisation = Organisation::find($this->data["organisation_id"]);
             $this->scientificDomains = ScientificDomain::find($this->data["scientific_domains"]);
-            $this->info_types = InfoType::find($this->data["info_types"]);
+            $this->activities = InfoType::find($this->data["activities"]);
+            $this->expenses = Expense::find($this->data["expenses"]);
             $this->info_sessions = InfoSession::find($this->data["info_sessions"]);
             $this->transformGeoZones();
             $this->transformContacts();
@@ -87,7 +90,8 @@ class ProjectPreview extends Component
             'title' => 'required|string|max:255',
             'is_big' => 'boolean',
             'organisation_id' => 'required|exists:organisations,id',
-            'info_types' => 'array',
+            "expenses" => 'array',
+            'activities' => 'array',
             'documents' => 'array',
             'scientific_domains' => 'required|array|min:1',
             'scientific_domains.*' => 'integer|exists:scientific_domains,id',
@@ -115,7 +119,8 @@ class ProjectPreview extends Component
             'title' => 'Titre',
             'is_big' => 'Projet Majeur',
             'organisation_id' => 'Organisation',
-            'info_types' => 'Types de programme',
+            'activities' => 'Catégorie d\'activités',
+            'expenses' => 'Catégorie de dépenses éligibles',
             'scientific_domains' => 'Disciplines scientifiques',
             'geo_zones' => 'Zones géographiques',
             'deadline' => 'Deadline 1',
@@ -150,7 +155,8 @@ class ProjectPreview extends Component
             'is_big.boolean' => 'Le champ "Projet Majeur" doit être vrai ou faux.',
             'organisation_id.required' => 'Le champ Organisation est requis.',
             'organisation_id.exists' => 'L\'organisation sélectionnée n\'existe pas.',
-            'info_types.array' => 'Les types de programme doivent être remplis.',
+            'activities.array' => 'Les catégories d\'activité doivent être remplis.',
+            'expenses.array' => 'Les catégories de dépenses éligibles doivent être remplis.',
             'documents.array' => 'Les documents doivent être remplis.',
             'scientific_domains.array' => 'Les disciplines scientifiques doivent être remplies.',
             'scientific_domains.required' => 'Veuillez sélectionner au moins une discipline scientifique.',
@@ -182,7 +188,8 @@ class ProjectPreview extends Component
             'title' => 'Titre',
             'is_big' => 'Projet Majeur',
             'organisation_id' => 'Organisation',
-            'info_types' => 'Types de programme',
+            'activities' => 'Catégorie d\'activités',
+            'expenses' => 'Catégorie de dépenses éligibles',
             'scientific_domains' => 'Disciplines scientifiques',
             'geo_zones' => 'Zones géographiques',
             'deadlines' => 'Deadlines',
@@ -275,8 +282,12 @@ class ProjectPreview extends Component
             }
 
             if ($project = Project::create($data)) {
-                if (!empty($data['info_types'])) {
-                    $project->info_types()->sync($data['info_types']);
+                if (!empty($data['expenses'])) {
+                    $project->expenses()->sync($data['expenses']);
+                }
+
+                if (!empty($data['activities'])) {
+                    $project->activities()->sync($data['activities']);
                 }
 
                 if (!empty($data['scientific_domains'])) {

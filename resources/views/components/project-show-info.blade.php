@@ -36,8 +36,11 @@
                 </x-filament::section>
             @endif
             <x-filament::section.description class="flex flex-wrap gap-1">
-                @foreach($project->info_types as $info_type)
-                    <x-filament::badge>{{$info_type->title ?? ''}}</x-filament::badge>
+                @foreach($project->expenses as $expense)
+                    <x-filament::badge>{{$expense->title ?? ''}}</x-filament::badge>
+                @endforeach
+                @foreach($project->activities as $activity)
+                    <x-filament::badge>{{$activity->title ?? ''}}</x-filament::badge>
                 @endforeach
             </x-filament::section.description>
             <h1 class="font-bold text-4xl my-1">{{$project->title ?? ''}}</h1>

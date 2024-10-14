@@ -37,9 +37,14 @@
                     </x-filament::section>
                 @endif
                 <x-filament::section.description class="flex flex-wrap gap-1">
-                    @if($info_types->isNotEmpty())
-                        @foreach($info_types as $info_type)
-                            <x-filament::badge>{{$info_type->title ?? ''}}</x-filament::badge>
+                    @if($expenses->isNotEmpty())
+                        @foreach($expenses as $expense)
+                            <x-filament::badge>{{$expense->title ?? ''}}</x-filament::badge>
+                        @endforeach
+                    @endif
+                    @if($activities->isNotEmpty())
+                        @foreach($activities as $activity)
+                            <x-filament::badge>{{$activity->title ?? ''}}</x-filament::badge>
                         @endforeach
                     @endif
                 </x-filament::section.description>
