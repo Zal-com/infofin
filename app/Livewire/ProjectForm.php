@@ -9,9 +9,8 @@ use App\Models\Draft;
 use App\Models\InfoSession;
 use App\Models\InfoType;
 use App\Models\Project;
-use App\Models\ScientificDomain;
-use App\Models\ScientificDomainCategory;
 use App\Services\FileService;
+use App\Traits\ScientificDomainSchemaTrait;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Checkbox;
@@ -40,7 +39,7 @@ use Livewire\Component;
 
 final class ProjectForm extends Component implements HasForms
 {
-    use InteractsWithForms;
+    use InteractsWithForms, ScientificDomainSchemaTrait;
 
     public $draft;
     public Project $project;
@@ -91,7 +90,7 @@ final class ProjectForm extends Component implements HasForms
             }, $data['documents']);
         }
 
-        foreach (['organisation', 'scientific_domains', 'info_types', 'geo_zones', 'documents', 'document_filenames', 'info_sessions'] as $attribute) {
+        foreach (['organisation', 'scientific_domains', 'info_types', 'geo_zones', 'documents', 'document_filenames', 'info_sessions', 'expenses', 'activities'] as $attribute) {
             if (isset($data[$attribute])) {
                 if ($attribute == 'organisation') {
                     $this->project->{$attribute} = $data[$attribute];
@@ -100,34 +99,6 @@ final class ProjectForm extends Component implements HasForms
                 }
             }
         }
-    }
-
-    protected function getFieldsetSchema(): array
-    {
-        $categories = ScientificDomainCategory::with('domains')->get();
-        $fieldsets = [];
-
-        foreach ($categories as $category) {
-            $sortedDomains = $category->domains->sortBy('name')->pluck('name', 'id')->toArray();
-            $fieldsets[] = Fieldset::make($category->name)
-                ->schema([
-                    CheckboxList::make('scientific_domains')
-                        ->label(false)
-                        ->options($sortedDomains)
-                        ->bulkToggleable()
-                        ->columnSpan(2)
-                        ->required()
-                        ->extraAttributes([
-                            'class' => 'w-full'
-                        ])->columns(3)
-                ])
-                ->columnSpan(3)
-                ->extraAttributes([
-                    'class' => 'w-full disciplines-fieldset',
-                ]);
-        }
-
-        return $fieldsets;
     }
 
     public function form(Form $form): Form
@@ -158,8 +129,13 @@ final class ProjectForm extends Component implements HasForms
                     TextInput::make('origin_url')
                         ->label('URL vers l\'appel original')
                         ->url(),
-                    CheckboxList::make('info_types')
-                        ->label('Types de programmes')
+                    CheckboxList::make('activities')
+                        ->label("Catégorie d'activités")
+                        ->options(InfoType::all()->sortBy('title')->pluck('title', 'id')->toArray())
+                        ->columns(2)
+                        ->required(),
+                    CheckboxList::make('expenses')
+                        ->label("Catégorie de dépenses éligibles")
                         ->options(InfoType::all()->sortBy('title')->pluck('title', 'id')->toArray())
                         ->columns(3)
                         ->required(),
@@ -300,6 +276,7 @@ final class ProjectForm extends Component implements HasForms
                         ->label('Documents')
                         ->disk('public')
                         ->visibility('public')
+                        ->maxSize(20000)
                         ->acceptedFileTypes([
                             'application/pdf',
                             'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -529,6 +506,8 @@ final class ProjectForm extends Component implements HasForms
             'is_big' => 'boolean',
             'organisation_id' => 'required|exists:organisations,id',
             'info_types' => 'array',
+            "expenses" => 'array',
+            'activities' => 'array',
             'documents' => 'array',
             'scientific_domains' => 'required|array|min:1',
             'scientific_domains.*' => 'integer|exists:scientific_domains,id',
@@ -560,6 +539,8 @@ final class ProjectForm extends Component implements HasForms
             'organisation_id.required' => 'Le champ Organisation est requis.',
             'organisation_id.exists' => 'L\'organisation sélectionnée n\'existe pas.',
             'info_types.array' => 'Les types de programme doivent être remplis.',
+            'activities.array' => 'Les catégories d\'activité doivent être remplis.',
+            'expenses.array' => 'Les catégories de dépenses éligibles doivent être remplis.',
             'documents.array' => 'Les documents doivent être remplis.',
             'scientific_domains.array' => 'Les disciplines scientifiques doivent être remplies.',
             'scientific_domains.required' => 'Veuillez sélectionner au moins une discipline scientifique.',
@@ -593,6 +574,8 @@ final class ProjectForm extends Component implements HasForms
             'is_big' => 'Projet Majeur',
             'organisation_id' => 'Organisation',
             'info_types' => 'Types de programme',
+            'activities' => 'Catégorie d\'activités',
+            'expenses' => 'Catégorie de dépenses éligibles',
             'scientific_domains' => 'Disciplines scientifiques',
             'geo_zones' => 'Zones géographiques',
             'deadlines' => 'Deadlines',
@@ -693,6 +676,14 @@ final class ProjectForm extends Component implements HasForms
             if ($project = Project::create($data)) {
                 if (!empty($data['info_types'])) {
                     $project->info_types()->sync($data['info_types']);
+                }
+
+                if (!empty($data['expenses'])) {
+                    $project->expenses()->sync($data['expenses']);
+                }
+
+                if (!empty($data['activities'])) {
+                    $project->activities()->sync($data['activities']);
                 }
 
                 if (!empty($data['scientific_domains'])) {
