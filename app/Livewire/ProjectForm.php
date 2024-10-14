@@ -286,11 +286,11 @@ final class ProjectForm extends Component implements HasForms
                         ->multiple()
                         ->moveFiles(),
                 ]),
-                Tabs\Tab::make('info_sessions')
+                Tabs\Tab::make('sessions')
                     ->label("Séances d'information")
                     ->live()
                     ->schema([
-                        Select::make('info_sessions')
+                        Select::make('infos_sessions')
                             ->label('Séances d\'info')
                             ->relationship('info_sessions', 'title')
                             ->multiple()
@@ -497,6 +497,7 @@ final class ProjectForm extends Component implements HasForms
 
     public function submit()
     {
+
         if (!$this->fileService) {
             $this->fileService = app(FileService::class);
         }
@@ -685,8 +686,8 @@ final class ProjectForm extends Component implements HasForms
                     $project->scientific_domains()->sync($data['scientific_domains']);
                 }
 
-                if (!empty($data['info_sessions'])) {
-                    $project->info_sessions()->sync($data['info_sessions']);
+                if (!empty($data['infos_sessions'])) {
+                    $project->info_sessions()->sync($data['infos_sessions']);
                 }
 
                 if (isset($data['documents']) && count($data['documents']) > 0) {
