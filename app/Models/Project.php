@@ -39,6 +39,16 @@ class Project extends Model
         return $this->belongsToMany(InfoType::class, 'projects_info_types', 'project_id', 'info_type_id');
     }
 
+    public function expenses(): BelongsToMany
+    {
+        return $this->belongsToMany(Expense::class, 'projects_expenses', 'project_id', 'expense_id');
+    }
+
+    public function activities(): BelongsToMany
+    {
+        return $this->belongsToMany(Activity::class, 'projects_activities', 'project_id', 'activity_id');
+    }
+
     public function poster(): BelongsTo
     {
         return $this->belongsTo(User::class, 'poster_id');

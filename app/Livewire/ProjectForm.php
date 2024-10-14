@@ -2,12 +2,13 @@
 
 namespace App\Livewire;
 
+use App\Models\Activity;
 use App\Models\Continent;
 use App\Models\Country;
 use App\Models\Document;
 use App\Models\Draft;
+use App\Models\Expense;
 use App\Models\InfoSession;
-use App\Models\InfoType;
 use App\Models\Project;
 use App\Services\FileService;
 use App\Traits\ScientificDomainSchemaTrait;
@@ -90,7 +91,7 @@ final class ProjectForm extends Component implements HasForms
             }, $data['documents']);
         }
 
-        foreach (['organisation', 'scientific_domains', 'info_types', 'geo_zones', 'documents', 'document_filenames', 'info_sessions', 'expenses', 'activities'] as $attribute) {
+        foreach (['organisation', 'scientific_domains', 'geo_zones', 'documents', 'document_filenames', 'info_sessions', 'expenses', 'activities'] as $attribute) {
             if (isset($data[$attribute])) {
                 if ($attribute == 'organisation') {
                     $this->project->{$attribute} = $data[$attribute];
@@ -131,13 +132,13 @@ final class ProjectForm extends Component implements HasForms
                         ->url(),
                     CheckboxList::make('activities')
                         ->label("Catégorie d'activités")
-                        ->options(InfoType::all()->sortBy('title')->pluck('title', 'id')->toArray())
+                        ->options(Activity::all()->sortBy('title')->pluck('title', 'id')->toArray())
                         ->columns(2)
                         ->required(),
                     CheckboxList::make('expenses')
                         ->label("Catégorie de dépenses éligibles")
-                        ->options(InfoType::all()->sortBy('title')->pluck('title', 'id')->toArray())
-                        ->columns(3)
+                        ->options(Expense::all()->sortBy('title')->pluck('title', 'id')->toArray())
+                        ->columns(2)
                         ->required(),
                     \LaraZeus\Accordion\Forms\Accordions::make('Disciplines scientifiques')
                         ->activeAccordion(2)
@@ -505,7 +506,6 @@ final class ProjectForm extends Component implements HasForms
             'title' => 'required|string|max:255',
             'is_big' => 'boolean',
             'organisation_id' => 'required|exists:organisations,id',
-            'info_types' => 'array',
             "expenses" => 'array',
             'activities' => 'array',
             'documents' => 'array',
@@ -538,7 +538,6 @@ final class ProjectForm extends Component implements HasForms
             'is_big.boolean' => 'Le champ "Projet Majeur" doit être vrai ou faux.',
             'organisation_id.required' => 'Le champ Organisation est requis.',
             'organisation_id.exists' => 'L\'organisation sélectionnée n\'existe pas.',
-            'info_types.array' => 'Les types de programme doivent être remplis.',
             'activities.array' => 'Les catégories d\'activité doivent être remplis.',
             'expenses.array' => 'Les catégories de dépenses éligibles doivent être remplis.',
             'documents.array' => 'Les documents doivent être remplis.',
@@ -573,7 +572,6 @@ final class ProjectForm extends Component implements HasForms
             'title' => 'Titre',
             'is_big' => 'Projet Majeur',
             'organisation_id' => 'Organisation',
-            'info_types' => 'Types de programme',
             'activities' => 'Catégorie d\'activités',
             'expenses' => 'Catégorie de dépenses éligibles',
             'scientific_domains' => 'Disciplines scientifiques',
@@ -674,9 +672,6 @@ final class ProjectForm extends Component implements HasForms
             }
 
             if ($project = Project::create($data)) {
-                if (!empty($data['info_types'])) {
-                    $project->info_types()->sync($data['info_types']);
-                }
 
                 if (!empty($data['expenses'])) {
                     $project->expenses()->sync($data['expenses']);
