@@ -20,6 +20,12 @@ Route::controller(ApiController::class)->group(function () {
         // Info Types endpoint
         Route::get('/info-types', 'info_types_index')->name('info_types');
 
+        // Activities endpoint
+        Route::get('/activities', 'activities_index')->name('activities');
+
+        // Expenses endpoint
+        Route::get('/expenses', 'expenses_index')->name('expenses');
+
         // Organisations endpoint
         Route::get('/organisations', 'organisation_index')->name('organisations');
 

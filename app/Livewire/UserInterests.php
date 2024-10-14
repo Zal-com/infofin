@@ -2,11 +2,11 @@
 
 namespace App\Livewire;
 
-use App\Models\InfoType;
-use App\Models\ScientificDomainCategory;
+use App\Models\Activity;
+use App\Models\Expense;
 use App\Models\User;
+use App\Traits\ScientificDomainSchemaTrait;
 use Filament\Forms\Components\CheckboxList;
-use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -16,7 +16,7 @@ use Livewire\Component;
 
 class UserInterests extends Component implements HasForms
 {
-    use InteractsWithForms;
+    use InteractsWithForms, ScientificDomainSchemaTrait;
 
     public User $user;
     public $data = [];
@@ -29,41 +29,15 @@ class UserInterests extends Component implements HasForms
     public function mount()
     {
         $this->user = auth()->user();
-        $this->user->load('info_types', 'scientific_domains');
+        $this->user->load('activities', 'expenses', 'scientific_domains');
 
         $this->data = [
-            'info_types' => $this->user->info_types->pluck('id')->toArray(),
+            'activities' => $this->user->activities->pluck('id')->toArray(),
+            'expenses' => $this->user->expenses->pluck('id')->toArray(),
             'scientific_domains' => $this->user->scientific_domains->pluck('id')->toArray()
         ];
 
         $this->form->fill($this->data);
-    }
-
-    protected function getFieldsetSchema(): array
-    {
-        $categories = ScientificDomainCategory::with('domains')->get();
-        $fieldsets = [];
-
-        foreach ($categories as $category) {
-            $sortedDomains = $category->domains->sortBy('name')->pluck('name', 'id')->toArray();
-            $fieldsets[] = Fieldset::make($category->name)
-                ->schema([
-                    CheckboxList::make('scientific_domains')
-                        ->label(false)
-                        ->options($sortedDomains)
-                        ->bulkToggleable()
-                        ->columnSpan(2)
-                        ->extraAttributes([
-                            'class' => 'w-full'
-                        ])->columns(3)
-                ])
-                ->columnSpan(3)
-                ->extraAttributes([
-                    'class' => 'w-full'
-                ]);
-        }
-
-        return $fieldsets;
     }
 
     public function form(Form $form): Form
@@ -73,13 +47,21 @@ class UserInterests extends Component implements HasForms
                 ->tabs([
                     Tabs\Tab::make('Disciplines scientifiques')
                         ->schema($this->getFieldsetSchema()),
-                    Tabs\Tab::make("Types d'appels")
+                    Tabs\Tab::make("Catégories d'activités")
                         ->schema([
-                            CheckboxList::make('info_types')
-                                ->label('Types de programmes')
-                                ->options(InfoType::all()->sortBy('title')->pluck('title', 'id')->toArray())
+                            CheckboxList::make('activities')
+                                ->label('Catégories d\'activités')
+                                ->options(Activity::all()->sortBy('title')->pluck('title', 'id')->toArray())
                                 ->columns(3)
-                                ->relationship('info_types', 'title')
+                                ->relationship('activities', 'title')
+                        ]),
+                    Tabs\Tab::make("Catégories de dépenses éligibles")
+                        ->schema([
+                            CheckboxList::make('expenses')
+                                ->label('Catégories de dépenses éligibles')
+                                ->options(Expense::all()->sortBy('title')->pluck('title', 'id')->toArray())
+                                ->columns(3)
+                                ->relationship('expenses', 'title')
                         ])
                 ])->contained(false)
                 ->extraAttributes(['class' => 'left-aligned-tabs'])
@@ -89,7 +71,8 @@ class UserInterests extends Component implements HasForms
     public function save()
     {
         try {
-            $this->user->info_types()->sync($this->data['info_types']);
+            $this->user->activities()->sync($this->data['activities']);
+            $this->user->expenses()->sync($this->data['expenses']);
             $this->user->scientific_domains()->sync($this->data['scientific_domains']);
             Notification::make()
                 ->title('Profil mis à jour.')
@@ -99,7 +82,7 @@ class UserInterests extends Component implements HasForms
                 ->send();
         } catch (\Exception $e) {
             Notification::make()
-                ->title('Problème lors de la mise a jour du profil. Veuillez réessayer plus tard.')
+                ->title('Problème lors de la mise à jour du profil. Veuillez réessayer plus tard.')
                 ->icon('heroicon-o-x-circle')
                 ->iconColor('danger')
                 ->seconds(5)

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Traits\HandlesPagination;
+use App\Models\Activity;
 use App\Models\Continent;
 use App\Models\Country;
+use App\Models\Expense;
 use App\Models\InfoType;
 use App\Models\Organisation;
 use App\Models\Project;
@@ -51,6 +53,16 @@ class ApiController extends Controller
     public function info_types_index(Request $request): JsonResponse
     {
         return $this->paginateModel($request, new InfoType());
+    }
+
+    public function activities_index(Request $request): JsonResponse
+    {
+        return $this->paginateModel($request, new Activity());
+    }
+
+    public function expenses_index(Request $request): JsonResponse
+    {
+        return $this->paginateModel($request, new Expense());
     }
 
     public function organisation_index(Request $request): JsonResponse

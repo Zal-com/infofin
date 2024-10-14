@@ -2,12 +2,13 @@
 
 namespace App\Livewire;
 
+use App\Models\Activity;
 use App\Models\Continent;
 use App\Models\Country;
 use App\Models\Document;
 use App\Models\Draft;
+use App\Models\Expense;
 use App\Models\InfoSession;
-use App\Models\InfoType;
 use App\Models\Project;
 use App\Models\ProjectEditHistory;
 use App\Services\FileService;
@@ -75,7 +76,7 @@ class ProjectEditForm extends Component implements HasForms
     {
         $this->fileService = $fileService;
 
-        $this->project = $project->load('scientific_domains', 'info_types', 'countries', 'continents', 'documents');
+        $this->project = $project->load('scientific_domains', 'expenses', 'activities', 'countries', 'continents', 'documents');
 
         $this->project->contact_ulb = $this->transformContacts($this->project->contact_ulb);
         $this->project->contact_ext = $this->transformContacts($this->project->contact_ext);
@@ -104,6 +105,8 @@ class ProjectEditForm extends Component implements HasForms
             $this->project->toArray(),
             [
                 'scientific_domains' => $this->project->scientific_domains->pluck('id')->toArray(),
+                'expenses' => $this->project->expenses->pluck('id')->toArray(),
+                'activities' => $this->project->activities->pluck('id')->toArray(),
                 'geo_zones' => $geo_zones,
                 'documents' => $documents,
                 'organisation_id' => $this->project->organisation_id,
@@ -165,12 +168,18 @@ class ProjectEditForm extends Component implements HasForms
                     Checkbox::make('is_big')
                         ->label('Projet majeur')
                         ->default(false),
-                    CheckboxList::make('info_types')
-                        ->label('Types de programmes')
-                        ->options(InfoType::all()->sortBy('title')->pluck('title')->toArray())
-                        ->columns(3)
-                        ->required()
-                        ->relationship('info_types', 'title'),
+                    CheckboxList::make('activities')
+                        ->label("Catégorie d'activités")
+                        ->options(Activity::all()->sortBy('title')->pluck('title', 'id')->toArray())
+                        ->columns(2)
+                        ->columnSpanFull()
+                        ->required(),
+                    CheckboxList::make('expenses')
+                        ->label("Catégorie de dépenses éligibles")
+                        ->options(Expense::all()->sortBy('title')->pluck('title', 'id')->toArray())
+                        ->columns(2)
+                        ->columnSpanFull()
+                        ->required(),
                     \LaraZeus\Accordion\Forms\Accordions::make('Disciplines scientifiques')
                         ->activeAccordion(2)
                         ->isolated()
@@ -394,7 +403,8 @@ class ProjectEditForm extends Component implements HasForms
             'title' => 'required|string|max:255',
             'is_big' => 'boolean',
             'organisation_id' => 'required|exists:organisations,id',
-            'info_types' => 'array',
+            "expenses" => 'array',
+            'activities' => 'array',
             'documents' => 'array',
             'scientific_domains' => 'required|array|min:1',
             'scientific_domains.*' => 'integer|exists:scientific_domains,id',
@@ -425,7 +435,8 @@ class ProjectEditForm extends Component implements HasForms
             'is_big.boolean' => 'Le champ "Projet Majeur" doit être vrai ou faux.',
             'organisation_id.required' => 'Le champ Organisation est requis.',
             'organisation_id.exists' => 'L\'organisation sélectionnée n\'existe pas.',
-            'info_types.array' => 'Les types de programme doivent être remplis.',
+            'activities.array' => 'Les catégories d\'activité doivent être remplis.',
+            'expenses.array' => 'Les catégories de dépenses éligibles doivent être remplis.',
             'documents.array' => 'Les documents doivent être remplis.',
             'scientific_domains.array' => 'Les disciplines scientifiques doivent être remplies.',
             'scientific_domains.required' => 'Veuillez sélectionner au moins une discipline scientifique.',
@@ -458,7 +469,8 @@ class ProjectEditForm extends Component implements HasForms
             'title' => 'Titre',
             'is_big' => 'Projet Majeur',
             'organisation_id' => 'Organisation',
-            'info_types' => 'Types de programme',
+            'activities' => 'Catégorie d\'activités',
+            'expenses' => 'Catégorie de dépenses éligibles',
             'scientific_domains' => 'Disciplines scientifiques',
             'geo_zones' => 'Zones géographiques',
             'deadlines' => 'Deadlines',
@@ -563,7 +575,8 @@ class ProjectEditForm extends Component implements HasForms
 
                 $this->project->update($data);
 
-                $this->project->info_types()->sync($data['info_types'] ?? []);
+                $this->project->expenses()->sync($data['expenses'] ?? []);
+                $this->project->activities()->sync($data['activities'] ?? []);
                 $this->project->scientific_domains()->sync($data['scientific_domains'] ?? []);
                 $this->project->info_sessions()->sync($data['info_sessions'] ?? []);
 
@@ -617,13 +630,14 @@ class ProjectEditForm extends Component implements HasForms
 
     public function replicateModelWithRelations($model)
     {
-        $model->load('scientific_domains', 'info_types', 'countries', 'continents', 'documents');
+        $model->load('scientific_domains', 'expenses', 'activities', 'countries', 'continents', 'documents');
 
         $newModel = $model->replicate();
         $newModel->save();
 
         $newModel->scientific_domains()->sync($model->scientific_domains->pluck('id')->toArray());
-        $newModel->info_types()->sync($model->info_types->pluck('id')->toArray());
+        $newModel->expenses()->sync($model->expenses->pluck('id')->toArray());
+        $newModel->activities()->sync($model->activities->pluck('id')->toArray());
         $newModel->countries()->sync($model->countries->pluck('id')->toArray());
         $newModel->continents()->sync($model->continents->pluck('code')->toArray());
 

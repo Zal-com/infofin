@@ -17,4 +17,9 @@ class Expense extends Model
     {
         return $this->belongsToMany(Project::class, 'projects_expenses', 'expense_id', 'project_id');
     }
+
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'expenses_users', 'expense_id', 'user_id');
+    }
 }

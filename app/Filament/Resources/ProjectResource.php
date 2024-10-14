@@ -4,9 +4,10 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProjectResource\Pages;
 use App\Filament\Resources\ProjectResource\RelationManagers;
+use App\Models\Activity;
 use App\Models\Continent;
 use App\Models\Country;
-use App\Models\InfoType;
+use App\Models\Expense;
 use App\Models\Organisation;
 use App\Models\Project;
 use App\Models\ScientificDomainCategory;
@@ -65,10 +66,16 @@ class ProjectResource extends Resource
                     ])
                     ->selectablePlaceholder(false)
                     ->required(),
-                CheckboxList::make('info_types')
-                    ->label('Types de programmes')
-                    ->options(InfoType::all()->sortBy('title')->pluck('title')->toArray())
-                    ->columns(3)
+                CheckboxList::make('activities')
+                    ->label("Catégorie d'activités")
+                    ->options(Activity::all()->sortBy('title')->pluck('title', 'id')->toArray())
+                    ->columns(2)
+                    ->columnSpanFull()
+                    ->required(),
+                CheckboxList::make('expenses')
+                    ->label("Catégorie de dépenses éligibles")
+                    ->options(Expense::all()->sortBy('title')->pluck('title', 'id')->toArray())
+                    ->columns(2)
                     ->columnSpanFull()
                     ->required(),
                 Select::make('scientific_domains')

@@ -12,20 +12,26 @@ class CreateSubscriptions extends CreateRecord
     protected static ?string $title = "Nouvelle souscription à la newsletter";
 
     protected array $scientific_domains = [];
-    protected array $info_types = [];
+    protected array $activities = [];
+    protected array $expenses = [];
 
     protected function beforeValidate()
     {
         $this->scientific_domains = $this->data['scientific_domains'] ?? [];
-        $this->info_types = $this->data['info_types'] ?? [];
+        $this->activities = $this->data['activities'] ?? [];
+        $this->expenses = $this->data['expenses'] ?? [];
     }
 
     protected function handleRecordCreation(array $data): \Illuminate\Database\Eloquent\Model
     {
         $user = User::where("id", $data['email'] + 1)->first();
 
-        if (!empty($this->info_types)) {
-            $user->info_types()->sync($this->info_types);
+        if (!empty($this->activities)) {
+            $user->activities()->sync($this->activities);
+        }
+
+        if (!empty($this->expenses)) {
+            $user->expenses()->sync($this->expenses);
         }
 
         if (isset($this->scientific_domains)) {
