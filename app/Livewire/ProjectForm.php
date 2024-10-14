@@ -112,7 +112,8 @@ final class ProjectForm extends Component implements HasForms
                         ->placeholder('Titre concis, évitez les acronymes seuls')
                         ->maxLength(255)
                         ->required()
-                        ->autofocus(),
+                        ->autofocus()
+                        ->columnSpanFull(),
                     Select::make('organisation_id')
                         ->label('Organisation')
                         ->searchable()
@@ -123,23 +124,33 @@ final class ProjectForm extends Component implements HasForms
                                 ->label("Nom de l'organisation")
                                 ->required(),
                         ])
-                        ->required(),
+                        ->required()
+                        ->columnSpanFull(),
                     Checkbox::make('is_big')
                         ->label('Projet majeur')
-                        ->default(false),
+                        ->default(false)
+                        ->columnSpanFull(),
                     TextInput::make('origin_url')
                         ->label('URL vers l\'appel original')
-                        ->url(),
-                    CheckboxList::make('activities')
-                        ->label("Catégorie d'activités")
-                        ->options(Activity::all()->sortBy('title')->pluck('title', 'id')->toArray())
-                        ->columns(2)
-                        ->required(),
-                    CheckboxList::make('expenses')
-                        ->label("Catégorie de dépenses éligibles")
-                        ->options(Expense::all()->sortBy('title')->pluck('title', 'id')->toArray())
-                        ->columns(2)
-                        ->required(),
+                        ->url()
+                        ->columnSpanFull(),
+                    Fieldset::make('activities_fieldset')->schema([
+                        CheckboxList::make('activities')
+                            ->label(false)
+                            ->options(Activity::all()->sortBy('title')->pluck('title', 'id')->toArray())
+                            ->required(),
+                    ])
+                        ->label('Catégories d\'activité')
+                        ->columnSpan(1)
+                        ->extraAttributes(['class' => 'disciplines-fieldset']),
+                    Fieldset::make('expenses_fieldset')->schema([
+                        CheckboxList::make('expenses')
+                            ->label(false)
+                            ->options(Expense::all()->sortBy('title')->pluck('title', 'id')->toArray())
+                            ->required(),
+                    ])->extraAttributes(['class' => 'h-full disciplines-fieldset'])
+                        ->label('Catégorie de dépenses éligibles')
+                        ->columnSpan(1),
                     \LaraZeus\Accordion\Forms\Accordions::make('Disciplines scientifiques')
                         ->activeAccordion(2)
                         ->isolated()
@@ -148,7 +159,8 @@ final class ProjectForm extends Component implements HasForms
                                 ->columns()
                                 ->label('Disciplines scientifiques')
                                 ->schema($this->getFieldsetSchema()),
-                        ]),
+                        ])
+                        ->columnSpanFull(),
                     Select::make('geo_zones')
                         ->label("Zones géographiques")
                         ->multiple()
@@ -178,7 +190,8 @@ final class ProjectForm extends Component implements HasForms
                             // Retourner les options
                             return $options;
                         })
-                ]),
+                        ->columnSpanFull()
+                ])->columnSpan(2),
                 Tabs\Tab::make('Dates importantes')->schema([
                     Fieldset::make('Deadlines')->schema([
                         Repeater::make('deadlines')->schema([
