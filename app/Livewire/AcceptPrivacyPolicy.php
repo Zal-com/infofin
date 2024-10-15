@@ -128,6 +128,15 @@ class AcceptPrivacyPolicy extends Component implements HasForms
                 }
 
                 Auth::login($user);
+                Notification::make()
+                    ->success()
+                    ->title('Vous êtes abonné.e à la newsletter Infofin.')
+                    ->body('Si vous ne voulez pas recevoir la newsletter, vous pouvez cliquer ici.')
+                    ->actions([
+                        Action::make('Me désabonner')
+                            ->label('button')
+                            ->action(fn() => \Illuminate\Support\Facades\Auth::user()->updateQuietly(['is_email_subscriber' => false]))
+                    ]);
                 return redirect()->route('projects.index');
             }
         } else {
