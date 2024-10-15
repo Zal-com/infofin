@@ -23,9 +23,15 @@ trait ScientificDomainSchemaTrait
                         ->bulkToggleable()
                         ->columnSpan(2)
                         ->required()
+                        ->minItems(1)
                         ->extraAttributes([
                             'class' => 'w-full'
-                        ])->columns(3)
+                        ])
+                        ->columns(3)
+                        ->validationMessages([
+                            'required' => "Le champ 'Disciplines scientifiques' est obligatoire.",
+                            'min' => "Le champ 'Disciplines scientifiques' doit comprendre au moins :min élement.",
+                        ])
                 ])
                 ->columnSpan(3)
                 ->extraAttributes([
