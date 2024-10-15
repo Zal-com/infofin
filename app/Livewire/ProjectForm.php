@@ -308,39 +308,32 @@ final class ProjectForm extends Component implements HasForms
                 Tabs\Tab::make('Budget et dépenses')->schema([
                     TiptapEditor::make('funding')
                         ->label(false)
-                        ->required()
+                        ->nullable()
                         ->extraInputAttributes(['style' => 'min-height: 12rem;'])
                         ->output(TiptapOutput::Json)
                         ->maxContentWidth('full')
                         ->disableFloatingMenus()
                         ->placeholder('Informations sur le montant du financement, sa durée, etc.')
-                        ->validationAttribute("Budget et dépenses")
-                        ->validationMessages(['required' => 'Le champ ":attribute" est obligatoire.']),
+                        ->validationAttribute("Budget et dépenses"),
                 ]),
                 Tabs\Tab::make("Critères d'admission")->schema([
                     TiptapEditor::make('admission_requirements')
                         ->label(false)
-                        ->required()
+                        ->nullable()
                         ->output(TiptapOutput::Json)
                         ->extraInputAttributes(['style' => 'min-height: 12rem;'])
                         ->maxContentWidth('full')
                         ->disableFloatingMenus()
-                        ->validationAttribute("Critères d'admission")
-                        ->validationMessages([
-                            'required' => 'Le champ ":attribute" est obligatoire.',
-                        ]),
+                        ->validationAttribute("Critères d'admission"),
                 ]),
                 Tabs\Tab::make("Pour postuler")->schema([
                     TiptapEditor::make('apply_instructions')
-                        ->required()
+                        ->nullable()
                         ->extraInputAttributes(['style' => 'min-height: 12rem;'])
                         ->maxContentWidth('full')
                         ->disableFloatingMenus()
                         ->label(false)
-                        ->validationAttribute('Pour postuler')
-                        ->validationMessages([
-                            'required' => 'Le champ ":attribute" est obligatoire.',
-                        ]),
+                        ->validationAttribute('Pour postuler'),
                 ]),
                 Tabs\Tab::make("Contacts")
                     ->schema([

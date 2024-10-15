@@ -342,24 +342,20 @@ class ProjectEditForm extends Component implements HasForms
                 Tabs\Tab::make('Budget et dépenses')->schema([
                     TiptapEditor::make('funding')
                         ->label(false)
-                        ->required()
+                        ->nullable()
                         ->extraInputAttributes(['style' => 'min-height: 12rem;'])
                         ->maxContentWidth('full')
                         ->disableFloatingMenus()
-                        ->validationAttribute("Budget et dépenses")
-                        ->validationMessages(['required' => 'Le champ ":attribute" est obligatoire.']),
+                        ->validationAttribute("Budget et dépenses"),
                 ]),
                 Tabs\Tab::make("Critères d'admission")->schema([
                     TiptapEditor::make('admission_requirements')
                         ->label(false)
-                        ->required()
+                        ->nullable()
                         ->extraInputAttributes(['style' => 'min-height: 12rem;'])
                         ->maxContentWidth('full')
                         ->disableFloatingMenus()
-                        ->validationAttribute("Critères d'admission")
-                        ->validationMessages([
-                            'required' => 'Le champ ":attribute" est obligatoire.',
-                        ]),
+                        ->validationAttribute("Critères d'admission"),
                 ]),
                 Tabs\Tab::make("Pour postuler")->schema([
                     TiptapEditor::make('apply_instructions')
@@ -367,11 +363,8 @@ class ProjectEditForm extends Component implements HasForms
                         ->extraInputAttributes(['style' => 'min-height: 12rem;'])
                         ->maxContentWidth('full')
                         ->disableFloatingMenus()
-                        ->required()
-                        ->validationAttribute('Pour postuler')
-                        ->validationMessages([
-                            'required' => 'Le champ ":attribute" est obligatoire.',
-                        ]),
+                        ->nullable()
+                        ->validationAttribute('Pour postuler'),
                 ]),
                 Tabs\Tab::make("Contacts")
                     ->schema([
