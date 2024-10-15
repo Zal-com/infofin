@@ -126,8 +126,7 @@ class AcceptPrivacyPolicy extends Component implements HasForms
                     $scientificDomains = collect($this->data['scientific_domains'])->flatten()->filter()->all();
                     $user->scientific_domains()->sync($scientificDomains);
                 }
-
-                Auth::login($user);
+                dd('new user');
                 Notification::make()
                     ->success()
                     ->title('Vous êtes abonné.e à la newsletter Infofin.')
@@ -137,6 +136,8 @@ class AcceptPrivacyPolicy extends Component implements HasForms
                             ->label('button')
                             ->action(fn() => \Illuminate\Support\Facades\Auth::user()->updateQuietly(['is_email_subscriber' => false]))
                     ]);
+                Auth::login($user);
+
                 return redirect()->route('projects.index');
             }
         } else {
@@ -154,8 +155,7 @@ class AcceptPrivacyPolicy extends Component implements HasForms
                 $scientificDomains = collect($this->data['scientific_domains'])->flatten()->filter()->all();
                 $oldUser->scientific_domains()->sync($scientificDomains);
             }
-
-            Auth::login($oldUser);
+            dd('old user');
             Notification::make()
                 ->success()
                 ->title('Vous êtes abonné.e à la newsletter Infofin.')
@@ -165,9 +165,10 @@ class AcceptPrivacyPolicy extends Component implements HasForms
                         ->label('button')
                         ->action(fn() => \Illuminate\Support\Facades\Auth::user()->updateQuietly(['is_email_subscriber' => false]))
                 ]);
+            Auth::login($oldUser);
+
             return redirect()->route('projects.index');
         }
-
         return redirect()->route('login');
     }
 
