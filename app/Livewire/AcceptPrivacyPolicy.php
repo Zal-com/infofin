@@ -7,6 +7,7 @@ use App\Models\Expense;
 use App\Models\ScientificDomainCategory;
 use App\Models\User;
 use Auth;
+use Filament\Actions\Action;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Section;
@@ -16,6 +17,7 @@ use Filament\Forms\Components\Wizard\Step;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
 use Livewire\Component;
@@ -145,6 +147,15 @@ class AcceptPrivacyPolicy extends Component implements HasForms
             }
 
             Auth::login($oldUser);
+            Notification::make()
+                ->success()
+                ->title('Vous êtes abonné.e à la newsletter Infofin.')
+                ->body('Si vous ne voulez pas recevoir la newsletter, vous pouvez cliquer ici.')
+                ->actions([
+                    Action::make('Me désabonner')
+                        ->label('button')
+                        ->action(fn() => \Illuminate\Support\Facades\Auth::user()->updateQuietly(['is_email_subscriber' => false]))
+                ]);
             return redirect()->route('projects.index');
         }
 
