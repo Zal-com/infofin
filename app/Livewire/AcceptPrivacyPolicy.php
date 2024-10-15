@@ -155,7 +155,7 @@ class AcceptPrivacyPolicy extends Component implements HasForms
                 $scientificDomains = collect($this->data['scientific_domains'])->flatten()->filter()->all();
                 $oldUser->scientific_domains()->sync($scientificDomains);
             }
-            dd('old user');
+            dd('old user'); //test
             Notification::make()
                 ->success()
                 ->title('Vous êtes abonné.e à la newsletter Infofin.')
