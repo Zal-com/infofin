@@ -37,6 +37,7 @@ use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\HtmlString;
+use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 
 class ProjectEditForm extends Component implements HasForms
@@ -665,6 +666,24 @@ class ProjectEditForm extends Component implements HasForms
                     ->button(),
             ])->alignEnd()
         ])->statePath('data')->model($this->project); //sauvegarde todo
+    }
+
+    protected function onValidationError(ValidationException $exception): void
+    {
+        foreach ($exception->errors() as $error) {
+            foreach ($error as $e) {
+                Notification::make()
+                    ->title($e)
+                    ->warning()
+                    ->icon('heroicon-o-exclamation-circle')
+                    ->color('warning')
+                    ->iconColor('warning')
+                    ->seconds(5)
+                    ->send();
+            }
+
+        }
+
     }
 
     public function submit(): void
