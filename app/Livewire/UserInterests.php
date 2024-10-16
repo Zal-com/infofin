@@ -76,13 +76,15 @@ class UserInterests extends Component implements HasForms
             $this->user->scientific_domains()->sync($this->data['scientific_domains']);
             Notification::make()
                 ->title('Profil mis à jour.')
+                ->color('success')
                 ->icon('heroicon-o-check-circle')
                 ->iconColor('success')
                 ->seconds(5)
                 ->send();
         } catch (\Exception $e) {
             Notification::make()
-                ->title('Problème lors de la mise à jour du profil. Veuillez réessayer plus tard.')
+                ->title('Un problème est survenu lors de la mise à jour du profil. Veuillez réessayer plus tard.')
+                ->color('danger')
                 ->icon('heroicon-o-x-circle')
                 ->iconColor('danger')
                 ->seconds(5)

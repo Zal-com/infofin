@@ -93,7 +93,7 @@ class AcceptPrivacyPolicy extends Component implements HasForms
                                     ->columns(2)
                                     ->required(),
                             ])
-                            ->columns(3),
+                            ->columns(2),
                     ]),
                 Step::make("Centres d'intérêts - Disciplines")
                     ->schema([
@@ -159,7 +159,7 @@ class AcceptPrivacyPolicy extends Component implements HasForms
                             ->success()
                             ->title('Vous êtes désabonné.e de la newsletter Infofin.')
                             ->send();
-                    })
+                    }),
             ])
             ->persistent()
             ->send();
