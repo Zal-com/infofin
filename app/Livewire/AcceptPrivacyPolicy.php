@@ -83,7 +83,7 @@ class AcceptPrivacyPolicy extends Component implements HasForms
                         Section::make('Activités et Dépenses')
                             ->schema([
                                 CheckboxList::make('activities')
-                                    ->label(new HtmlString("<strong>Catégorie d'activités</strong>")
+                                    ->label(new HtmlString("<strong>Catégorie d'activités</strong>"))
                                     ->options(Activity::all()->sortBy('title')->pluck('title', 'id')->toArray())
                                     ->columns(2)
                                     ->bulkToggleable()
