@@ -199,7 +199,8 @@
                                 }
                         @endphp
 
-                        {{implode(', ', $geo_zones)}}
+                        <p>{{ empty($geo_zones) ? "Les zones géographiques n'ont pas encore été spécifiées." : implode(', ', $geo_zones) }}</p>
+
                     </div>
                 </x-filament::section.description>
             </div>

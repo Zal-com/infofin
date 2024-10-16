@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\InfoSession;
 use App\Models\ScientificDomainCategory;
+use App\Traits\ScientificDomainSchemaTrait;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\CheckboxList;
@@ -17,11 +18,13 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
+use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 
 class InfoSessionEditForm extends Component implements HasForms
 {
     use InteractsWithForms;
+    use ScientificDomainSchemaTrait;
 
     public InfoSession $info_session;
     public array $data = [];
@@ -46,61 +49,35 @@ class InfoSessionEditForm extends Component implements HasForms
         ));
     }
 
-
-    protected function getFieldsetSchema(): array
-    {
-        $categories = ScientificDomainCategory::with('domains')->get();
-        $fieldsets = [];
-
-        foreach ($categories as $category) {
-            $sortedDomains = $category->domains->sortBy('name')->pluck('name', 'id')->toArray();
-            $fieldsets[] = Fieldset::make($category->name)
-                ->schema([
-                    CheckboxList::make('scientific_domains')
-                        ->label(false)
-                        ->options($sortedDomains)
-                        ->bulkToggleable()
-                        ->columnSpan(2)
-                        ->required()
-                        ->extraAttributes([
-                            'class' => 'w-full'
-                        ])->columns(3)
-                ])
-                ->columnSpan(3)
-                ->extraAttributes([
-                    'class' => 'w-full disciplines-fieldset',
-                ]);
-        }
-
-        return $fieldsets;
-    }
-
     public function submit(): void
     {
-        try {
-            $validatedData = $this->form->getState();
+        if ($this->form->validate()) {
+            
+            try {
+                $validatedData = $this->data;
 
-            $this->info_session->fill($validatedData);
+                $this->info_session->fill($validatedData);
 
-            $this->info_session->update();
+                $this->info_session->update();
 
-            $this->info_session->scientific_domains()->attach($validatedData['scientific_domains']);
-            Notification::make()
-                ->color('success')
-                ->title('Session modifiée avec succès.')
-                ->seconds(5)
-                ->icon('heroicon-o-check-circle')
-                ->iconColor('success')
-                ->send();
-            $this->redirect(route('info_session.index'));
-        } catch (\Exception $e) {
-            Notification::make()
-                ->title($e->getMessage())
-                ->color('danger')
-                ->seconds(5)
-                ->icon('heroicon-o-x-circle')
-                ->iconColor('danger')
-                ->send();
+                $this->info_session->scientific_domains()->attach($validatedData['scientific_domains']);
+                Notification::make()
+                    ->color('success')
+                    ->title('Session modifiée avec succès.')
+                    ->seconds(5)
+                    ->icon('heroicon-o-check-circle')
+                    ->iconColor('success')
+                    ->send();
+                $this->redirect(route('info_session.index'));
+            } catch (\Exception $e) {
+                Notification::make()
+                    ->title($e->getMessage())
+                    ->color('danger')
+                    ->seconds(5)
+                    ->icon('heroicon-o-x-circle')
+                    ->iconColor('danger')
+                    ->send();
+            }
         }
     }
 
@@ -112,6 +89,11 @@ class InfoSessionEditForm extends Component implements HasForms
                     ->label('Titre')
                     ->required()
                     ->string()
+                    ->validationAttribute("Titre")
+                    ->validationMessages([
+                        'required' => 'Le champ ":attribute" est obligatoire.',
+                        'string' => 'Le champ ":attribute" doit être une chaîne de caractères.',
+                    ])
                     ->columnSpanFull()
                 ,
                 RichEditor::make('description')
@@ -120,43 +102,12 @@ class InfoSessionEditForm extends Component implements HasForms
                     ->required()
                     ->string()
                     ->extraAttributes(['style' => 'max-height: 200px'])
-                    ->columnSpanFull(),
-                DateTimePicker::make('session_datetime')
-                    ->seconds(false)
-                    ->label('Date et heure')
-                    ->columnSpan(1)
-                    ->required(),
-                TextInput::make('speaker')
-                    ->label('Présentateur·ice')
-                    ->string()
-                    ->columnSpan(1),
-                Select::make('session_type')
-                    ->label('Type de session')
-                    ->options([
-                        2 => 'Hybride',
-                        1 => 'Présentiel',
-                        0 => 'Distanciel',
+                    ->validationAttribute('Description')
+                    ->validationMessages([
+                        'required' => 'Le champ ":attribute" est obligatoire.',
+                        'string' => 'Le champ ":attribute" doit être une chaîne de caractères.',
                     ])
-                    ->reactive(),
-                TextInput::make('url')
-                    ->required()
-                    ->label('URL de la réunion')
-                    ->visible(fn($get) => in_array($get('session_type'), [2, 0]))
-                    ->reactive(),
-                TextInput::make('location')
-                    ->required()
-                    ->label('Adresse')
-                    ->visible(fn($get) => in_array($get('session_type'), [2, 1])),
-                Select::make('organisation_id')
-                    ->required()
-                    ->relationship('organisation', 'title')
-                    ->label('Organisation')
-                    ->searchable()
-                    ->preload()
-                    ->createOptionForm([
-                        TextInput::make('title')
-                            ->required(),
-                    ]),
+                    ->columnSpanFull(),
                 \LaraZeus\Accordion\Forms\Accordions::make('Disciplines scientifiques')
                     ->columnSpan(2)
                     ->activeAccordion(2)
@@ -167,6 +118,77 @@ class InfoSessionEditForm extends Component implements HasForms
                             ->label('Disciplines scientifiques')
                             ->schema($this->getFieldsetSchema()),
                     ]),
+                DateTimePicker::make('session_datetime')
+                    ->seconds(false)
+                    ->label('Date et heure')
+                    ->after('today')
+                    ->columnSpan(1)
+                    ->required()
+                    ->validationAttribute('Date et heure')
+                    ->validationMessages([
+                        'required' => 'Le champ ":attribute" est obligatoire.',
+                        'after' => 'Le champ ":attribute" doit avoir une valeur ultérieure à la date du jour.',
+                    ]),
+                TextInput::make('speaker')
+                    ->label('Présentateur·ice')
+                    ->string()
+                    ->nullable()
+                    ->columnSpan(1)
+                    ->validationAttribute('Présentateur·ice')
+                    ->validationMessages([
+                        'string' => 'Le champ ":attribute" doit être une chaîne de caractères.',
+                    ]),
+                Select::make('session_type')
+                    ->label('Type de session')
+                    ->options([
+                        2 => 'Hybride',
+                        1 => 'Présentiel',
+                        0 => 'Distanciel',
+                    ])
+                    ->default(2)
+                    ->required()
+                    ->reactive()
+                    ->validationAttribute('Type de session')
+                    ->validationMessages([
+                        'required' => 'Le champ ":attribute" est obligatoire.',
+                    ]),
+                TextInput::make('url')
+                    ->required()
+                    ->label('URL de la réunion')
+                    ->url()
+                    ->activeUrl()
+                    ->visible(fn($get) => in_array($get('session_type'), [2, 0]))
+                    ->reactive()
+                    ->validationAttribute('URL de la réunion')
+                    ->validationMessages([
+                        'required' => 'Le champ ":attribute" est obligatoire.',
+                        'activeUrl' => 'L\'URL renseignée n\'est pas jugée sûre.',
+                        'url' => 'Le champ ":attribute" doit être un URL valide.',
+                    ]),
+                TextInput::make('location')
+                    ->required()
+                    ->string()
+                    ->label('Adresse')
+                    ->visible(fn($get) => in_array($get('session_type'), [2, 1]))
+                    ->validationAttribute('Adresse')
+                    ->validationMessages([
+                        'required' => 'Le champ ":attribute" est obligatoire.',
+                        'string' => 'Le champ ":attribute" doit être une chaîne de caractères.',
+                    ]),
+                Select::make('organisation_id')
+                    ->required()
+                    ->relationship('organisation', 'title')
+                    ->label('Organisation')
+                    ->searchable()
+                    ->preload()
+                    ->createOptionForm([
+                        TextInput::make('title')
+                            ->required(),
+                    ])
+                    ->validationAttribute('Organisation')
+                    ->validationMessages([
+                        'required' => 'Le champ ":attribute" est obligatoire.',
+                    ]),
             ])->columns(2),
             Actions::make([
                 Action::make('submit')
@@ -176,6 +198,24 @@ class InfoSessionEditForm extends Component implements HasForms
                     ->label('Modifier'),
             ])->alignEnd()
         ])->model($this->info_session)->statePath('data');
+
+    }
+
+    protected function onValidationError(ValidationException $exception): void
+    {
+        foreach ($exception->errors() as $error) {
+            foreach ($error as $e) {
+                Notification::make()
+                    ->title($e)
+                    ->warning()
+                    ->icon('heroicon-o-exclamation-circle')
+                    ->color('warning')
+                    ->iconColor('warning')
+                    ->seconds(5)
+                    ->send();
+            }
+
+        }
 
     }
 }

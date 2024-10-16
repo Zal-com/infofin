@@ -193,6 +193,7 @@ class ListProjects extends Component implements HasForms, HasTable
                     ->label('Ajouter aux favoris')
                     ->icon(fn($record) => Auth::user()->favorites->contains($record->id) ? 'heroicon-s-bookmark' : 'heroicon-o-bookmark')
                     ->iconButton()
+                    ->tooltip('Ajouter aux favoris')
                     ->color('black')
                     ->action(function ($record) {
                         $user = Auth::user();
@@ -207,6 +208,7 @@ class ListProjects extends Component implements HasForms, HasTable
                 Action::make('edit')
                     ->label('Modifier')
                     ->iconButton()
+                    ->tooltip('Modifier')
                     ->url(fn($record) => route('projects.edit', $record->id))
                     ->icon('heroicon-s-pencil')
                     ->color('primary')
@@ -268,6 +270,7 @@ class ListProjects extends Component implements HasForms, HasTable
                         }),
 
                 ])
+                    ->tooltip("Plus d'actions")
                     ->iconButton()
                     ->size('lg')
                     ->color('secondary')

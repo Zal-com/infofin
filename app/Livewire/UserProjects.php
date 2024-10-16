@@ -34,9 +34,11 @@ class UserProjects extends Component implements HasTable, HasForms
                 Action::make('edit')
                     ->label('Modifier')
                     ->url(fn(project $record) => route('projects.edit', ['id' => $record->id]))
-                    ->icon('heroicon-o-pencil-square')->iconPosition(IconPosition::Before),
+                    ->icon('heroicon-o-pencil')->iconPosition(IconPosition::Before),
                 Action::make('delete')
                     ->label('Supprimer')
+                    ->iconButton()
+                    ->tooltip('Supprimer')
                     ->requiresConfirmation()
                     ->action(function (Project $project) {
                         try {
@@ -62,7 +64,7 @@ class UserProjects extends Component implements HasTable, HasForms
                     ->icon('heroicon-o-trash')->iconPosition(IconPosition::Before)
                     ->color('danger')
 
-            ])->actionsPosition(ActionsPosition::BeforeColumns);
+            ])->actionsPosition(ActionsPosition::AfterColumns);
     }
 
     public function render()

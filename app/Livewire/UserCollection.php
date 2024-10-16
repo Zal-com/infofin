@@ -83,7 +83,7 @@ class UserCollection extends Component implements HasTable, HasForms
                     DeleteAction::make()
                         ->requiresConfirmation()
                         ->icon('heroicon-o-trash')
-                ])
+                ])->tooltip("Plus d'actions")
             ])
             ->recordUrl(fn($record) => route('collection.show', $record->id))
             ->modifyQueryUsing(fn(Builder $query) => $query->withCount('projects'));

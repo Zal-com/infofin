@@ -31,6 +31,7 @@ class UserDrafts extends Component implements HasTable, HasForms
                 TextColumn::make('content.title')
                     ->label('Titre'),
                 TextColumn::make('content.short_description')
+                    ->wrap()
                     ->label('Description')
                     ->formatStateUsing(fn(string $state): HtmlString => new HtmlString($state)),
                 TextColumn::make('updated_at')
@@ -41,8 +42,11 @@ class UserDrafts extends Component implements HasTable, HasForms
                 Action::make('edit')
                     ->label('Modifier')
                     ->url(fn(Draft $record) => route('projects.create', ['record' => $record->id]))
-                    ->icon('heroicon-o-pencil-square')->iconPosition(IconPosition::Before),
+                    ->icon('heroicon-o-pencil')->iconPosition(IconPosition::Before),
                 Action::make('delete')
+                    ->icon('heroicon-o-trash')
+                    ->iconButton()
+                    ->tooltip('Supprimer')
                     ->label('Supprimer')
                     ->requiresConfirmation()
                     ->action(function (Draft $draft) {
@@ -56,7 +60,7 @@ class UserDrafts extends Component implements HasTable, HasForms
                     ->icon('heroicon-o-trash')->iconPosition(IconPosition::Before)
                     ->color('danger')
 
-            ])->actionsPosition(ActionsPosition::BeforeColumns)
+            ])->actionsPosition(ActionsPosition::AfterColumns)
             ->defaultPaginationPageOption(25)
             ->paginationPageOptions([5, 10, 25, 50, 100])
             ->recordUrl(fn($record) => route('projects.create', ['record' => $record->id]));
