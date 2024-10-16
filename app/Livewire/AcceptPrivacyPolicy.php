@@ -83,12 +83,14 @@ class AcceptPrivacyPolicy extends Component implements HasForms
                         Section::make('Activités et Dépenses')
                             ->schema([
                                 CheckboxList::make('activities')
-                                    ->label("Catégorie d'activités")
+                                    ->label(new HtmlString("<strong>Catégorie d'activités</strong>")
                                     ->options(Activity::all()->sortBy('title')->pluck('title', 'id')->toArray())
                                     ->columns(2)
+                                    ->bulkToggleable()
                                     ->required(),
                                 CheckboxList::make('expenses')
-                                    ->label("Catégorie de dépenses éligibles")
+                                    ->label(new HtmlString("<strong>Catégorie de dépenses éligibles</strong>"))
+                                    ->bulkToggleable()
                                     ->options(Expense::all()->sortBy('title')->pluck('title', 'id')->toArray())
                                     ->columns(2)
                                     ->required(),
@@ -149,7 +151,7 @@ class AcceptPrivacyPolicy extends Component implements HasForms
         Notification::make()
             ->success()
             ->title('Vous êtes abonné.e à la newsletter Infofin.')
-            ->body('Si vous ne voulez pas recevoir la newsletter, vous pouvez cliquer ici.')
+            ->body('Si vous ne voulez pas recevoir la newsletter, vous pouvez cliquer ici. Cette action est réversible.')
             ->actions([
                 \Filament\Notifications\Actions\Action::make('Me désabonner')
                     ->button()
