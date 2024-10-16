@@ -6,7 +6,7 @@ use App\Models\Activity;
 use App\Models\Expense;
 use App\Models\ScientificDomainCategory;
 use App\Models\User;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Filament\Actions\Action;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Fieldset;
@@ -114,60 +114,55 @@ class AcceptPrivacyPolicy extends Component implements HasForms
 
         if (!$oldUser) {
             if ($user = User::create($this->userDetails)) {
-                if (isset($this->data['activities'])) {
-                    $user->activities()->sync($this->data['activities']);
-                }
-
-                if (isset($this->data['expenses'])) {
-                    $user->expenses()->sync($this->data['expenses']);
-                }
-
-                if (isset($this->data['scientific_domains'])) {
-                    $scientificDomains = collect($this->data['scientific_domains'])->flatten()->filter()->all();
-                    $user->scientific_domains()->sync($scientificDomains);
-                }
-                Notification::make()
-                    ->success()
-                    ->title('Vous êtes abonné.e à la newsletter Infofin.')
-                    ->body('Si vous ne voulez pas recevoir la newsletter, vous pouvez cliquer ici.')
-                    ->actions([
-                        Action::make('Me désabonner')
-                            ->label('button')
-                            ->action(fn() => \Illuminate\Support\Facades\Auth::user()->updateQuietly(['is_email_subscriber' => false]))
-                    ]);
+                $this->syncUserData($user);
                 Auth::login($user);
-
-                return redirect()->route('projects.index');
             }
         } else {
             $oldUser->update($this->userDetails);
-
-            if (isset($this->data['activities'])) {
-                $oldUser->activities()->sync($this->data['activities']);
-            }
-
-            if (isset($this->data['expenses'])) {
-                $oldUser->expenses()->sync($this->data['expenses']);
-            }
-
-            if (isset($this->data['scientific_domains'])) {
-                $scientificDomains = collect($this->data['scientific_domains'])->flatten()->filter()->all();
-                $oldUser->scientific_domains()->sync($scientificDomains);
-            }
-            Notification::make()
-                ->success()
-                ->title('Vous êtes abonné.e à la newsletter Infofin.')
-                ->body('Si vous ne voulez pas recevoir la newsletter, vous pouvez cliquer ici.')
-                ->actions([
-                    Action::make('Me désabonner')
-                        ->label('button')
-                        ->action(fn() => \Illuminate\Support\Facades\Auth::user()->updateQuietly(['is_email_subscriber' => false]))
-                ]);
+            $this->syncUserData($oldUser);
             Auth::login($oldUser);
-
-            return redirect()->route('projects.index');
         }
-        return redirect()->route('login');
+
+        $this->showNotification();
+
+        return redirect()->route('projects.index');
+    }
+
+    private function syncUserData($user)
+    {
+        if (isset($this->data['activities'])) {
+            $user->activities()->sync($this->data['activities']);
+        }
+
+        if (isset($this->data['expenses'])) {
+            $user->expenses()->sync($this->data['expenses']);
+        }
+
+        if (isset($this->data['scientific_domains'])) {
+            $scientificDomains = collect($this->data['scientific_domains'])->flatten()->filter()->all();
+            $user->scientific_domains()->sync($scientificDomains);
+        }
+    }
+
+    private function showNotification()
+    {
+        Notification::make()
+            ->success()
+            ->title('Vous êtes abonné.e à la newsletter Infofin.')
+            ->body('Si vous ne voulez pas recevoir la newsletter, vous pouvez cliquer ici.')
+            ->actions([
+                \Filament\Notifications\Actions\Action::make('Me désabonner')
+                    ->button()
+                    ->action(function () {
+                        Auth::user()->update(['is_email_subscriber' => false]);
+                        Notification::make()
+                            ->success()
+                            ->title('Vous êtes désabonné.e de la newsletter Infofin.')
+                            ->send();
+                    })
+            ])
+            ->persistent()
+            ->send();
     }
 
 }
