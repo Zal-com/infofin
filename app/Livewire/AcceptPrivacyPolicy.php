@@ -4,12 +4,9 @@ namespace App\Livewire;
 
 use App\Models\Activity;
 use App\Models\Expense;
-use App\Models\ScientificDomainCategory;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
-use Filament\Actions\Action;
+use App\Traits\ScientificDomainSchemaTrait;
 use Filament\Forms\Components\CheckboxList;
-use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\View;
 use Filament\Forms\Components\Wizard;
@@ -18,13 +15,14 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
 use Livewire\Component;
 
 class AcceptPrivacyPolicy extends Component implements HasForms
 {
-    use InteractsWithForms;
+    use InteractsWithForms, ScientificDomainSchemaTrait;
 
     public $userDetails;
     public array $data = [];
@@ -38,33 +36,6 @@ class AcceptPrivacyPolicy extends Component implements HasForms
     public function render()
     {
         return view('livewire.accept-privacy-policy');
-    }
-
-    protected function getFieldsetSchema(): array
-    {
-        $categories = ScientificDomainCategory::with('domains')->get();
-        $fieldsets = [];
-
-        foreach ($categories as $category) {
-            $sortedDomains = $category->domains->sortBy('name')->pluck('name', 'id')->toArray();
-            $fieldsets[] = Fieldset::make($category->name)
-                ->schema([
-                    CheckboxList::make('scientific_domains.' . $category->id)
-                        ->options($sortedDomains)
-                        ->label(false)
-                        ->bulkToggleable()
-                        ->columnSpan(2)
-                        ->extraAttributes([
-                            'class' => 'w-full'
-                        ])->columns(2)
-                ])
-                ->columnSpan(3)
-                ->extraAttributes([
-                    'class' => 'w-full'
-                ]);
-        }
-
-        return $fieldsets;
     }
 
     public function form(Form $form): Form
