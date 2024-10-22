@@ -14,8 +14,8 @@ return new class extends Migration {
             // Utilisation de foreignId pour project_id
             $table->foreignId('project_id')->constrained('projects')->onDelete('cascade');
 
-            // Utilisation de string pour collection_uid car ce n'est pas un id numérique
-            $table->string('collection_id'); // Clé étrangère vers collections.uid
+            // Utilisation de uuid pour collection_id car il fait référence à un uuid
+            $table->uuid('collection_id'); // Clé étrangère vers collections.id
 
             // Clés primaires composites pour éviter les doublons
             $table->primary(['project_id', 'collection_id']);
@@ -23,6 +23,7 @@ return new class extends Migration {
             // Définitions des clés étrangères
             $table->foreign('collection_id')->references('id')->on('collections')->onDelete('cascade');
         });
+
     }
 
     /**
