@@ -2,7 +2,7 @@
 @section('content')
     <div>
         <div class="flex flex-row justify-between">
-            <h2>Liste des sessions d'informations</h2>
+            <h2>Liste des séances d'information</h2>
             @can('create info_session')
                 <x-filament::button color="primary" tag="a" href="{{route('info_session.create')}}"
                                     icon="heroicon-o-plus">

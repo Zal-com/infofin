@@ -18,7 +18,7 @@
                 tag="a"
                 href="{{ route('info_session.index') }}"
                 :active="request()->routeIs('info_session.index')">
-                Infos & sessions
+                Séances info
             </x-filament::tabs.item>
             <x-filament::tabs.item
                 tag="a"
