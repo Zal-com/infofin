@@ -126,6 +126,7 @@ class AcceptPrivacyPolicy extends Component implements HasForms
             ->actions([
                 \Filament\Notifications\Actions\Action::make('Me désabonner')
                     ->button()
+                    ->close()
                     ->action(function () {
                         Auth::user()->update(['is_email_subscriber' => false]);
                         Notification::make()

@@ -35,7 +35,6 @@ use FilamentTiptapEditor\TiptapEditor;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\HtmlString;
 use Illuminate\Validation\ValidationException;
 use Livewire\Component;
@@ -858,6 +857,8 @@ class ProjectEditForm extends Component implements HasForms
                 } else {
                     $data['contact_ext'] = [];
                 }
+
+                $data["status"] = 1;
 
                 $this->project->update($data);
 
