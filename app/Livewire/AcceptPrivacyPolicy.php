@@ -134,7 +134,6 @@ class AcceptPrivacyPolicy extends Component implements HasForms
                             ->send();
                     }),
             ])
-            ->persistent()
             ->send();
     }
 
