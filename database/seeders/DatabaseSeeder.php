@@ -21,10 +21,9 @@ class DatabaseSeeder extends Seeder
         // Create the user
         $user = User::create([
             'email' => 'axel.hoffmann@ulb.be',
-            'password' => 'Test123*',
-            "matricule" => 12345678,
             "first_name" => 'Axel',
-            "last_name" => "Hoffmann"
+            "last_name" => "Hoffmann",
+            "uid" => "ahof0006",
         ]);
 
         // Retrieve the role 'admin'
