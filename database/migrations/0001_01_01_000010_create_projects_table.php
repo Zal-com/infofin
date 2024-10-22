@@ -26,7 +26,7 @@ class CreateProjectsTable extends Migration
             $table->string('short_description', 500); // Description courte
             $table->string('origin_url')->nullable(); // URL d'origine
             $table->boolean('is_in_next_email')->default(true); // Inclusion dans le prochain email
-            $table->foreignId('organisation_id')->constrained()->onDelete('cascade'); // Clé étrangère vers organisations
+            $table->foreignId('organisation_id')->nullable()->constrained()->onDelete('cascade'); // Clé étrangère vers organisations
             $table->string('Organisation', 255)->nullable(); // Organisation
             $table->string('OrganisationReference', 255)->nullable(); // Référence de l'organisation
             $table->boolean('InfoULB')->nullable(); // Information ULB
