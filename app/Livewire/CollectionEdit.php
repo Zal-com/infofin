@@ -43,7 +43,7 @@ class CollectionEdit extends Component implements HasForms, HasTable
     {
         return $table
             ->query(
-                Project::whereHas('collection', function ($query) {
+                Project::whereHas('collections', function ($query) {
                     $query->where('id', $this->collection->id);
                 })
             )([
