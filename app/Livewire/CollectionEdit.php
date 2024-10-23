@@ -46,10 +46,11 @@ class CollectionEdit extends Component implements HasForms, HasTable
                 Project::whereHas('collections', function ($query) {
                     $query->where('id', $this->collection->id);
                 })
-            )([
-            TextColumn::make('title')
-                ->label('Titre')
-        ])
+            )
+            ->columns([
+                TextColumn::make('title')
+                    ->label('Titre')
+            ])
             ->bulkActions([
                 BulkAction::make('remove_from_collection')
                     ->label('Retirer de la collection')
