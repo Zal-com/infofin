@@ -42,15 +42,19 @@ class CollectionEdit extends Component implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(Project::query())
-            ->columns([
-                TextColumn::make('title')
-                    ->label('Titre')
-            ])
+            ->query(
+                Project::whereHas('collection', function ($query) {
+                    $query->where('id', $this->collection->id);
+                })
+            )([
+            TextColumn::make('title')
+                ->label('Titre')
+        ])
             ->bulkActions([
-                BulkAction::make('update_collection')
-                    ->label('Mettre à jour la collection')
-                    ->icon('heroicon-o-arrow-path')
+                BulkAction::make('remove_from_collection')
+                    ->label('Retirer de la collection')
+                    ->color('danger')
+                    ->icon('heroicon-o-trash')
                     ->action(function (\Illuminate\Support\Collection $records) {
                         $this->selectedTableRecords = $records->pluck('id')->toArray();
                         $this->collection->projects()->sync($this->selectedTableRecords);
