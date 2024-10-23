@@ -58,7 +58,7 @@ class CollectionEdit extends Component implements HasForms, HasTable
                     ->icon('heroicon-o-trash')
                     ->action(function (\Illuminate\Support\Collection $records) {
                         $this->selectedTableRecords = $records->pluck('id')->toArray();
-                        $this->collection->projects()->sync($this->selectedTableRecords);
+                        $this->collection->projects()->detach($this->selectedTableRecords);
                         $this->dispatch('collection-updated');
                     })
                     ->requiresConfirmation()
