@@ -4,16 +4,20 @@ namespace App\Livewire;
 
 use App\Models\Collection;
 use App\Models\Project;
+use Filament\Forms\Components\Actions\Action;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Notifications\Notifiable;
 use Livewire\Component;
 
 class CollectionEdit extends Component implements HasForms, HasTable
@@ -57,9 +61,25 @@ class CollectionEdit extends Component implements HasForms, HasTable
                     ->color('danger')
                     ->icon('heroicon-o-trash')
                     ->action(function (\Illuminate\Support\Collection $records) {
-                        $this->selectedTableRecords = $records->pluck('id')->toArray();
-                        $this->collection->projects()->detach($this->selectedTableRecords);
-                        $this->dispatch('collection-updated');
+                        try {
+                            $this->selectedTableRecords = $records->pluck('id')->toArray();
+                            $this->collection->projects()->detach($this->selectedTableRecords);
+                            $this->dispatch('collection-updated');
+
+                            Notification::make()
+                                ->success()
+                                ->icon('heroicon-o-check-circle')
+                                ->title('Collection mise à jour.')
+                                ->seconds(5)
+                                ->send();
+                        } catch (\Exception $exception) {
+                            Notification::make()
+                                ->danger()
+                                ->icon('heroicon-o-x-circle')
+                                ->title("Quelque chose ne s'est pas passé comme prévu. Veuillez réessayer.")
+                                ->seconds(5)
+                                ->send();
+                        }
                     })
                     ->requiresConfirmation()
             ])
@@ -70,16 +90,48 @@ class CollectionEdit extends Component implements HasForms, HasTable
     {
         return $form
             ->schema([
-                TextInput::make('name')
-                    ->label('Titre')
-                    ->maxLength(255)
-                    ->required(),
-                TextInput::make('description')
-                    ->label('Description')
-                    ->maxLength(500)
-                    ->nullable(),
+                Section::make()
+                    ->schema([
+                        TextInput::make('name')
+                            ->label('Titre')
+                            ->maxLength(255)
+                            ->required(),
+                        TextInput::make('description')
+                            ->label('Description')
+                            ->maxLength(500)
+                            ->nullable(),
+                    ])
+                    ->footerActions([
+                        Action::make('submit')
+                            ->icon('heroicon-o-check')
+                            ->label('Valider')
+                            ->action('submit')
+                    ])
             ])
             ->model($this->collection)
             ->statePath('data');
+    }
+
+    public function submit(): void
+    {
+
+        if ($this->form->validate()) {
+            try {
+                $this->collection->update($this->data);
+                Notification::make()
+                    ->success()
+                    ->icon('heroicon-o-check-circle')
+                    ->title('Collection mise à jour.')
+                    ->seconds(5)
+                    ->send();
+            } catch (\Exception $e) {
+                Notification::make()
+                    ->danger()
+                    ->icon('heroicon-o-x-circle')
+                    ->title("Quelque chose ne s'est pas passé comme prévu. Veuillez réessayer.")
+                    ->seconds(5)
+                    ->send();
+            }
+        }
     }
 }
