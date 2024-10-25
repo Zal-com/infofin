@@ -439,7 +439,7 @@ class ListProjects extends Component implements HasForms, HasTable
                         ->columnSpanFull(),
                 ])->columnSpan(5),
                 IconColumn::make('status')
-                    ->label(false)
+                    ->label("Actif")
                     ->boolean()
                     ->trueIcon('heroicon-s-check-circle')
                     ->trueColor('success')
