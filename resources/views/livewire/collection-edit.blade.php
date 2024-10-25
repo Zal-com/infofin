@@ -1,7 +1,8 @@
 <div>
     <x-filament::button
         icon="heroicon-o-arrow-uturn-left"
-        href="{{\Illuminate\Support\Facades\URL::previous()}}"
+        tag="a"
+        href="{{route('profile.show')}}"
     >
         Retour
     </x-filament::button>
