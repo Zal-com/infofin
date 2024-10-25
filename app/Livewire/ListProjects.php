@@ -242,13 +242,24 @@ class ListProjects extends Component implements HasForms, HasTable
                         ])
                         ->action(function (array $data, $record) {
                             // Add the project to the selected collection
-                            $record->collections()->attach($data['collection']);
 
-                            Notification::make()
-                                ->title("Projet ajouté à la collection avec succès")
-                                ->icon('heroicon-o-check-circle')
-                                ->iconColor('success')
-                                ->send();
+                            if ($record->collections()->where('collection_id', $data['collection'])->exists()) {
+                                // Envoyer une notification si le projet est déjà dans la collection
+                                Notification::make()
+                                    ->title("Le projet est déjà dans cette collection.")
+                                    ->icon('heroicon-o-information-circle')
+                                    ->iconColor('warning')
+                                    ->send();
+                            } else {
+                                // Ajouter le projet à la collection s'il n'est pas déjà présent
+                                $record->collections()->attach($data['collection']);
+
+                                Notification::make()
+                                    ->title("Projet ajouté à la collection avec succès.")
+                                    ->icon('heroicon-o-check-circle')
+                                    ->iconColor('success')
+                                    ->send();
+                            }
                         }),
                     Action::make('archive')
                         ->label('Archiver')
@@ -306,8 +317,13 @@ class ListProjects extends Component implements HasForms, HasTable
                         try {
                             // Attach each selected project to the collection
                             foreach ($records as $record) {
-                                $collection->projects()->attach($record->id);
+                                // Vérifier si le projet est déjà dans la collection
+                                if (!$collection->projects()->where('project_id', $record->id)->exists()) {
+                                    // Ajouter le projet uniquement s'il n'est pas déjà présent
+                                    $collection->projects()->attach($record->id);
+                                }
                             }
+
                             Notification::make()
                                 ->title('Les projets ont été ajoutés à la collection avec succès')
                                 ->icon('heroicon-o-check-circle')
