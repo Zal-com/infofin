@@ -317,9 +317,6 @@
                         </x-filament::section.heading>
                         @if($contact_ext['email'] != "")
                             <div class="flex flex-col sm:flex-row items-start gap-2">
-                                <div class="flex-shrink-0">
-                                    <x-filament::icon icon="heroicon-s-at-symbol" class="h-[24px] w-[24px]"/>
-                                </div>
                                 <div class="flex-grow min-w-0">
                                     <x-filament::icon icon="heroicon-s-at-symbol" class="h-[24px] w-[24px] mr-2"/>
                                     <p class="flex-1 flex-wrap overflow-ellipsis line-clamp-1">
