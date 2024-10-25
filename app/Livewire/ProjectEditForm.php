@@ -651,7 +651,7 @@ class ProjectEditForm extends Component implements HasForms
                     ->action('saveAsDraft'),
                 Action::make('copy')
                     ->icon('heroicon-o-document-duplicate')
-                    ->label('Copier')
+                    ->label('Dupliquer')
                     ->color('info')
                     ->action('copyProject'),
                 Action::make('archive')
