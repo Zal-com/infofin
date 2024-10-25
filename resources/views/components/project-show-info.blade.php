@@ -293,7 +293,8 @@
                                     <x-filament::icon icon="heroicon-s-at-symbol" class="h-[24px] w-[24px]"/>
                                 </div>
                                 <div class="flex-grow min-w-0">
-                                    <a href="mailto:{{trim($contact_ulb['email'])}}" class="inline-block break-all">
+                                    <a href="mailto:{{trim($contact_ulb['email'])}}?subject=Infofin - {{$project->title}}({{$project->id}})"
+                                       class="inline-block break-all">
                                         {{$contact_ulb['email']}}
                                     </a>
                                 </div>
