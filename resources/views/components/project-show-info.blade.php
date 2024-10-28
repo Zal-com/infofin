@@ -1,8 +1,7 @@
 @props(['project'])
 <div class="grid grid-cols-5 gap-4 mb-5" x-data="{
-    tab: ['description', 'infos', 'documents'].includes(localStorage.getItem('projectActiveTab')) ? localStorage.getItem('projectActiveTab') : 'description'
-}"
-     x-init="$watch('tab', value => localStorage.setItem('projectActiveTab', value))">
+    tab: 'description'
+}">
     <x-filament::section class="col-span-4 row-span-1 max-h-fit">
         <x-filament::tabs>
             <x-filament::tabs.item @click="tab = 'description'" :alpine-active="'tab === \'description\''">

@@ -4,8 +4,7 @@
 
     <div class="grid grid-cols-6 gap-2 mb-10"
          x-data="{
-            tab: ['infos', 'drafts', 'appels', 'interests', 'favorites', 'collections'].includes(localStorage.getItem('activeTab')) ? localStorage.getItem('activeTab') :  'interests' }"
-         x-init="$watch('tab', value => localStorage.setItem('activeTab', value))">
+            tab: 'interests' }">
         <div class="sticky top-5"> <!-- Sticky avec hauteur et overflow -->
             <x-filament::tabs class="flex-col max-h-min">
                 {{--
