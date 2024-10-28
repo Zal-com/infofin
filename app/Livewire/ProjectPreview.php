@@ -2,11 +2,11 @@
 
 namespace App\Livewire;
 
+use App\Models\Activity;
 use App\Models\Continent;
 use App\Models\Country;
 use App\Models\Expense;
 use App\Models\InfoSession;
-use App\Models\InfoType;
 use App\Models\Organisation;
 use App\Models\Project;
 use App\Models\ScientificDomain;
@@ -34,7 +34,7 @@ class ProjectPreview extends Component
             $this->data = session('previewData');
             $this->organisation = Organisation::find($this->data["organisation_id"]);
             $this->scientificDomains = ScientificDomain::find($this->data["scientific_domains"]);
-            $this->activities = InfoType::find($this->data["activities"]);
+            $this->activities = Activity::find($this->data["activities"]);
             $this->expenses = Expense::find($this->data["expenses"]);
             $this->info_sessions = InfoSession::find($this->data["info_sessions"]);
             $this->transformGeoZones();
