@@ -8,6 +8,7 @@ use App\Models\Expense;
 use App\Models\Organisation;
 use App\Models\Project;
 use App\Models\UserFavorite;
+use App\Traits\ReplicateModelWithRelations;
 use Awcodes\FilamentBadgeableColumn\Components\Badge;
 use Awcodes\FilamentBadgeableColumn\Components\BadgeableColumn;
 use Filament\Forms\Components\Select;
@@ -35,11 +36,13 @@ use Illuminate\View\View;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
+
 class ListProjects extends Component implements HasForms, HasTable
 {
     use InteractsWithForms;
     use InteractsWithTable;
     use HasToggleableTable;
+    use ReplicateModelWithRelations;
 
     protected $listeners = ['projectDeleted', 'refreshTable'];
 
@@ -296,7 +299,17 @@ class ListProjects extends Component implements HasForms, HasTable
                                 ->seconds(5)
                                 ->send();
                         }),
+                    Action::make('copyProject')
+                        ->label('Dupliquer')
+                        ->icon('heroicon-o-document-duplicate')
+                        ->color("info")
+                        ->action(function ($record) {
+                            $project = $this->replicateModelWithRelations($record);
 
+                            Notification::make()->title('Le projet a été copié avec succès.')->icon('heroicon-o-check-circle')->seconds(5)->color('success')->send();
+
+                            return redirect()->route('projects.show', $project->id);
+                        })
                 ])
                     ->tooltip("Plus d'actions")
                     ->iconButton()
@@ -479,7 +492,7 @@ class ListProjects extends Component implements HasForms, HasTable
                         ->formatStateUsing(function ($record) {
                             $parts = explode('|', $record->firstDeadline);
                             if (!empty($parts[1])) {
-                                return new HtmlString("<p class='text-sm text-gray-400'>" . e($parts[1]) . "</p>");
+                                return new HtmlString("<p class='text-sm text-gray-400' style='margin: 0; padding: 0;'>" . e(strip_tags($parts[1])) . "</p>");
                             }
                             return '';
                         })->extraAttributes(['style' => 'color: grey; font-size: 10'])
@@ -487,7 +500,7 @@ class ListProjects extends Component implements HasForms, HasTable
                 ])->columnSpan(3)->alignEnd(),
                 TextColumn::make('short_description')
                     ->label('Description courte')
-                    ->formatStateUsing(fn(string $state): HtmlString => new HtmlString(Markdown::parse($state)))
+                    ->formatStateUsing(fn(string $state): HtmlString => new HtmlString(Markdown::parse(strip_tags($state))))
                     ->wrap()
                     ->lineClamp(5)
                     ->columnSpanFull()->extraAttributes(['class' => 'text-justify']),
@@ -497,7 +510,7 @@ class ListProjects extends Component implements HasForms, HasTable
                     ->sortable()
                     ->alignCenter()
                     ->hidden()
-            ])->columns(6)->extraAttributes(['class' => 'h-max']),
+            ])->columns(6)->extraAttributes(['class' => 'h-[350px]']),
         ];
     }
 

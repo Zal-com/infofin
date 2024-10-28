@@ -12,6 +12,7 @@ use App\Models\InfoSession;
 use App\Models\Project;
 use App\Models\ProjectEditHistory;
 use App\Services\FileService;
+use App\Traits\ReplicateModelWithRelations;
 use App\Traits\ScientificDomainSchemaTrait;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
@@ -42,6 +43,7 @@ use Livewire\Component;
 class ProjectEditForm extends Component implements HasForms
 {
     use InteractsWithForms, ScientificDomainSchemaTrait;
+    use ReplicateModelWithRelations;
 
     public $draft;
     public Project $project;
@@ -913,29 +915,6 @@ class ProjectEditForm extends Component implements HasForms
                 redirect()->route('projects.index');
             }
         }
-    }
-
-    public function replicateModelWithRelations($model)
-    {
-        $model->load('scientific_domains', 'expenses', 'activities', 'countries', 'continents', 'documents');
-
-        $newModel = $model->replicate();
-        $newModel->save();
-
-        $newModel->scientific_domains()->sync($model->scientific_domains->pluck('id')->toArray());
-        $newModel->expenses()->sync($model->expenses->pluck('id')->toArray());
-        $newModel->activities()->sync($model->activities->pluck('id')->toArray());
-        $newModel->countries()->sync($model->countries->pluck('id')->toArray());
-        $newModel->continents()->sync($model->continents->pluck('code')->toArray());
-
-        foreach ($model->documents as $document) {
-            $newDocument = $document->replicate();
-            $newDocument->project_id = $newModel->id;
-            $newDocument->save();
-        }
-        $newModel->save();
-
-        return $newModel;
     }
 
     public function copyProject()
