@@ -492,7 +492,7 @@ class ListProjects extends Component implements HasForms, HasTable
                         ->formatStateUsing(function ($record) {
                             $parts = explode('|', $record->firstDeadline);
                             if (!empty($parts[1])) {
-                                return new HtmlString("<p class='text-sm text-gray-400'>" . e($parts[1]) . "</p>");
+                                return new HtmlString("<p class='text-sm text-gray-400' style='margin: 0; padding: 0;'>" . e(strip_tags($parts[1])) . "</p>");
                             }
                             return '';
                         })->extraAttributes(['style' => 'color: grey; font-size: 10'])
@@ -500,7 +500,7 @@ class ListProjects extends Component implements HasForms, HasTable
                 ])->columnSpan(3)->alignEnd(),
                 TextColumn::make('short_description')
                     ->label('Description courte')
-                    ->formatStateUsing(fn(string $state): HtmlString => new HtmlString(Markdown::parse($state)))
+                    ->formatStateUsing(fn(string $state): HtmlString => new HtmlString(Markdown::parse(strip_tags($state))))
                     ->wrap()
                     ->lineClamp(5)
                     ->columnSpanFull()->extraAttributes(['class' => 'text-justify']),
@@ -510,7 +510,7 @@ class ListProjects extends Component implements HasForms, HasTable
                     ->sortable()
                     ->alignCenter()
                     ->hidden()
-            ])->columns(6)->extraAttributes(['class' => 'h-max']),
+            ])->columns(6)->extraAttributes(['class' => 'h-[350px]']),
         ];
     }
 
