@@ -7,6 +7,7 @@ use App\Models\Collection;
 use App\Models\Expense;
 use App\Models\Organisation;
 use App\Models\Project;
+use App\Models\UserFavorite;
 use Awcodes\FilamentBadgeableColumn\Components\Badge;
 use Awcodes\FilamentBadgeableColumn\Components\BadgeableColumn;
 use Filament\Forms\Components\Select;
@@ -163,7 +164,22 @@ class ListProjects extends Component implements HasForms, HasTable
                         });
                     }
                     return $query;
-                }));
+                }),
+            Filter::make('favorites')
+                ->label('Favoris')
+                ->query(function ($query) {
+                    $user = Auth::user();
+                    if ($user) {
+                        $favoriteProjectIds = UserFavorite::where('user_id', $user->id)
+                            ->pluck('project_id')
+                            ->toArray();
+
+                        return $query->whereIn('id', $favoriteProjectIds);
+                    }
+                    return $query;
+                })
+
+        );
 
 
         return $table->query(
