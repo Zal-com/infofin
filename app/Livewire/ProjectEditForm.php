@@ -865,7 +865,7 @@ class ProjectEditForm extends Component implements HasForms
                 $this->project->expenses()->sync($data['expenses'] ?? []);
                 $this->project->activities()->sync($data['activities'] ?? []);
                 $this->project->scientific_domains()->sync($data['scientific_domains'] ?? []);
-                $this->project->info_sessions()->sync($data['info_sessions'] ?? []);
+                $this->project->info_sessions()->sync($data['infos_sessions'] ?? []);
 
                 if (!empty($data['documents'])) {
                     $this->fileService->handleDocumentUpdates($data['documents'], $this->project);
