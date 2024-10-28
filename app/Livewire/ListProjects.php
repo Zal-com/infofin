@@ -53,7 +53,6 @@ class ListProjects extends Component implements HasForms, HasTable
     {
 
         $filters = [
-            Filter::make('is_big')->label('Projets majeurs')->query(fn($query) => $query->where('is_big', '=', 1)),
             Filter::make('organisation')->label('Organisation')->form([
                 Select::make('organisation_id')
                     ->label('Organisation')
@@ -146,41 +145,43 @@ class ListProjects extends Component implements HasForms, HasTable
 
         ];
 
-        array_unshift($filters,
-            Filter::make('pour_moi')
-                ->label('Pour moi')
-                ->query(function ($query) {
-                    $user = Auth::user();
-                    if ($user) {
-                        $userInfoTypes = $user->info_types->pluck('id')->toArray();
-                        $userScientificDomains = $user->scientific_domains->pluck('id')->toArray();
+        if (Auth::user()) {
+            array_unshift($filters,
+                Filter::make('is_big')->label('Projets majeurs')->query(fn($query) => $query->where('is_big', '=', 1)),
+                Filter::make('pour_moi')
+                    ->label('Pour moi')
+                    ->query(function ($query) {
+                        $user = Auth::user();
+                        if ($user) {
+                            $userInfoTypes = $user->info_types->pluck('id')->toArray();
+                            $userScientificDomains = $user->scientific_domains->pluck('id')->toArray();
 
-                        return $query->where(function ($query) use ($userInfoTypes, $userScientificDomains) {
-                            $query->whereHas('info_types', function ($query) use ($userInfoTypes) {
-                                $query->whereIn('info_type_id', $userInfoTypes);
-                            })->orWhereHas('scientific_domains', function ($query) use ($userScientificDomains) {
-                                $query->whereIn('scientific_domain_id', $userScientificDomains);
+                            return $query->where(function ($query) use ($userInfoTypes, $userScientificDomains) {
+                                $query->whereHas('info_types', function ($query) use ($userInfoTypes) {
+                                    $query->whereIn('info_type_id', $userInfoTypes);
+                                })->orWhereHas('scientific_domains', function ($query) use ($userScientificDomains) {
+                                    $query->whereIn('scientific_domain_id', $userScientificDomains);
+                                });
                             });
-                        });
-                    }
-                    return $query;
-                }),
-            Filter::make('favorites')
-                ->label('Favoris')
-                ->query(function ($query) {
-                    $user = Auth::user();
-                    if ($user) {
-                        $favoriteProjectIds = UserFavorite::where('user_id', $user->id)
-                            ->pluck('project_id')
-                            ->toArray();
+                        }
+                        return $query;
+                    }),
+                Filter::make('favorites')
+                    ->label('Favoris')
+                    ->query(function ($query) {
+                        $user = Auth::user();
+                        if ($user) {
+                            $favoriteProjectIds = UserFavorite::where('user_id', $user->id)
+                                ->pluck('project_id')
+                                ->toArray();
 
-                        return $query->whereIn('id', $favoriteProjectIds);
-                    }
-                    return $query;
-                })
+                            return $query->whereIn('id', $favoriteProjectIds);
+                        }
+                        return $query;
+                    })
 
-        );
-
+            );
+        }
 
         return $table->query(
             Project::where('status', '!=', 2)->where('status', '!=', -1)
