@@ -8,6 +8,7 @@ use App\Models\Expense;
 use App\Models\Organisation;
 use App\Models\Project;
 use App\Models\UserFavorite;
+use App\Traits\ReplicateModelWithRelations;
 use Awcodes\FilamentBadgeableColumn\Components\Badge;
 use Awcodes\FilamentBadgeableColumn\Components\BadgeableColumn;
 use Filament\Forms\Components\Select;
@@ -35,11 +36,13 @@ use Illuminate\View\View;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
+
 class ListProjects extends Component implements HasForms, HasTable
 {
     use InteractsWithForms;
     use InteractsWithTable;
     use HasToggleableTable;
+    use ReplicateModelWithRelations;
 
     protected $listeners = ['projectDeleted', 'refreshTable'];
 
@@ -296,7 +299,17 @@ class ListProjects extends Component implements HasForms, HasTable
                                 ->seconds(5)
                                 ->send();
                         }),
+                    Action::make('copyProject')
+                        ->label('Dupliquer')
+                        ->icon('heroicon-o-document-duplicate')
+                        ->color("info")
+                        ->action(function ($record) {
+                            $project = $this->replicateModelWithRelations($record);
 
+                            Notification::make()->title('Le projet a été copié avec succès.')->icon('heroicon-o-check-circle')->seconds(5)->color('success')->send();
+
+                            return redirect()->route('projects.show', $project->id);
+                        })
                 ])
                     ->tooltip("Plus d'actions")
                     ->iconButton()
