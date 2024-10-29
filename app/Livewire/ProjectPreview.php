@@ -36,7 +36,7 @@ class ProjectPreview extends Component
             $this->scientificDomains = ScientificDomain::find($this->data["scientific_domains"]);
             $this->activities = Activity::find($this->data["activities"]);
             $this->expenses = Expense::find($this->data["expenses"]);
-            $this->info_sessions = InfoSession::find($this->data["info_sessions"]);
+            $this->info_sessions = InfoSession::find($this->data["infos_sessions"]);
             $this->transformGeoZones();
             $this->transformContacts();
         } else {
