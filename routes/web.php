@@ -19,7 +19,7 @@ Route::prefix('projects')
     ->name('projects.')
     ->group(function () {
         // Routes protégées par auth
-        Route::middleware('auth')->group(function () {
+        Route::middleware('contributor')->group(function () {
             Route::get('/preview', "preview")->name('preview');
             Route::get('/archive', "archive")->name("archive");
             Route::get('/create/', "create")->name('create');
@@ -60,7 +60,7 @@ Route::prefix('info_session')
         Route::get('', "index")->name('index');
 
         //Routes protégées par auth
-        Route::middleware('auth')->group(function () {
+        Route::middleware('contributor')->group(function () {
             Route::get('/create', 'create')->name('create');
             Route::get('/{id}/edit', 'edit')->name('edit');
         });
