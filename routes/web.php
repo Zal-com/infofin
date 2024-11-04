@@ -14,10 +14,6 @@ Route::get('/', function () {
     return redirect()->route('projects.index');
 })->name('home');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
 Route::prefix('projects')
     ->controller(ProjectController::class)
     ->name('projects.')
@@ -37,14 +33,6 @@ Route::prefix('collection')
     ->group(function () {
         Route::get('/{id}', 'show')->name('show');
         Route::get('/{id}/edit', 'edit')->name('edit');
-    });
-
-Route::prefix('drafts')
-    ->controller(DraftController::class)
-    ->name('drafts.')
-    ->group(function () {
-        Route::get('', 'index')->name('index');
-        Route::get('/{id}', 'show')->name('show');
     });
 
 Route::prefix('profile')
