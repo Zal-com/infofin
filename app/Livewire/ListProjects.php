@@ -149,7 +149,7 @@ class ListProjects extends Component implements HasForms, HasTable
         ];
 
         if (Auth::user()) {
-            if (Auth::user()->can('create projects')) {
+            if (Auth::user()->can('create project')) {
                 array_unshift($filters,
                     Filter::make('is_big')->label('Projets majeurs')->query(fn($query) => $query->where('is_big', '=', 1)));
             }
