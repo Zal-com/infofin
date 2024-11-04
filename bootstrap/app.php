@@ -20,6 +20,9 @@ return Application::configure(basePath: dirname(__DIR__))
             RouteStatisticsMiddleware::class,
             \App\Http\Middleware\TrustProxies::class,
         ]);
+        $middleware->alias([
+            'contributor' => \App\Http\Middleware\ContributorMiddleware::class
+        ]);
     })
     ->withSchedule(function (Schedule $schedule) {
         $schedule->job(new DailyDeleteProject())->dailyAt('02:00');
