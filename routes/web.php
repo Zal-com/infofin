@@ -16,20 +16,21 @@ Route::get('/', function () {
     return redirect()->route('projects.index');
 })->name('home');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
 Route::prefix('projects')
     ->controller(ProjectController::class)
     ->name('projects.')
     ->group(function () {
-        Route::get('/preview', "preview")->name('preview');
-        Route::get('/archive', "archive")->name("archive");
-        Route::get('/create/', "create")->name('create');
+        // Routes publiques
         Route::get('', "index")->name('index');
         Route::get('/{id}', "show")->name('show');
-        Route::get('/{id}/edit', "edit")->name('edit');
+
+        // Routes protégées par auth
+        Route::middleware('auth')->group(function () {
+            Route::get('/preview', "preview")->name('preview');
+            Route::get('/archive', "archive")->name("archive");
+            Route::get('/create/', "create")->name('create');
+            Route::get('/{id}/edit', "edit")->name('edit');
+        });
     });
 
 
@@ -38,14 +39,8 @@ Route::prefix('collection')
     ->name('collection.')
     ->group(function () {
         Route::get('/{id}', 'show')->name('show');
-        Route::get('/{id}/edit', 'edit')->name('edit');
+        Route::get('/{id}/edit', 'edit')->name('edit')->middleware('auth');
     });
-
-//FIXME Toujours nécessaires ???
-Route::controller(UserController::class)->group(function () {
-    Route::get('users', 'index')->name('users.index');
-    Route::get('users/{id}', 'show')->name('users.show');
-});
 
 Route::prefix('drafts')
     ->controller(DraftController::class)
@@ -71,10 +66,15 @@ Route::prefix('info_session')
     ->controller(InfoSessionController::class)
     ->name('info_session.')
     ->group(function () {
-        Route::get('/create', 'create')->name('create');
-        Route::get('', "index")->name('index');
+        //Routes publiques
         Route::get('/{id}', 'show')->name('show');
-        Route::get('/{id}/edit', 'edit')->name('edit');
+        Route::get('', "index")->name('index');
+
+        //Routes protégées par auth
+        Route::middleware('auth')->group(function () {
+            Route::get('/create', 'create')->name('create');
+            Route::get('/{id}/edit', 'edit')->name('edit');
+        });
     });
 
 
