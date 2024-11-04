@@ -21,7 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\TrustProxies::class,
         ]);
         $middleware->alias([
-            'contributor' => \App\Http\Middleware\ContributorMiddleware::class
+            'contributor' => \App\Http\Middleware\Contributor::class
         ]);
     })
     ->withSchedule(function (Schedule $schedule) {
