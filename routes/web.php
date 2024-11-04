@@ -18,10 +18,6 @@ Route::prefix('projects')
     ->controller(ProjectController::class)
     ->name('projects.')
     ->group(function () {
-        // Routes publiques
-        Route::get('', "index")->name('index');
-        Route::get('/{id}', "show")->name('show');
-
         // Routes protégées par auth
         Route::middleware('auth')->group(function () {
             Route::get('/preview', "preview")->name('preview');
@@ -29,6 +25,11 @@ Route::prefix('projects')
             Route::get('/create/', "create")->name('create');
             Route::get('/{id}/edit', "edit")->name('edit');
         });
+        // Routes publiques
+        Route::get('', "index")->name('index');
+        Route::get('/{id}', "show")->name('show');
+
+
     });
 
 
