@@ -445,19 +445,13 @@ class ListProjects extends Component implements HasForms, HasTable
         return [
             Grid::make()->schema([
                 Stack::make([
-                    BadgeableColumn::make('title')
+                    TextColumn::make('title')
                         ->label('Programme')
                         ->wrap()
                         ->lineClamp(3)
                         ->weight(FontWeight::SemiBold)
                         ->extraAttributes(['class' => 'text'], true)
                         ->sortable()
-                        ->suffixBadges(function (Project $record) {
-                            return $record->is_big
-                                ? [Badge::make('is_big')->label('Projet majeur')->color('primary')]
-                                : [];
-                        })
-                        ->separator(false)
                         ->searchable()
                         ->columnSpanFull(),
                     TextColumn::make('organisation.title')
