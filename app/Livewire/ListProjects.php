@@ -46,6 +46,7 @@ class ListProjects extends Component implements HasForms, HasTable
 
     protected $listeners = ['projectDeleted', 'refreshTable'];
 
+
     #[On('refreshTable')]
     public function render(): View
     {
@@ -515,4 +516,6 @@ class ListProjects extends Component implements HasForms, HasTable
     {
         return request()->header('User-Agent') && preg_match('/Mobile|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i', request()->header('User-Agent'));
     }
+
+
 }
