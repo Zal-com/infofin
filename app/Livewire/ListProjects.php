@@ -232,7 +232,7 @@ class ListProjects extends Component implements HasForms, HasTable
                     ->url(fn($record) => route('projects.edit', $record->id))
                     ->icon('heroicon-s-pencil')
                     ->color('primary')
-                    ->visible(Auth::check() && Auth::user()->can('create projects')),
+                    ->visible(Auth::check() && Auth::user()->can('create project')),
                 ActionGroup::make([
                     Action::make('add_to_collection')
                         ->label('Collection')
@@ -315,7 +315,7 @@ class ListProjects extends Component implements HasForms, HasTable
                     ->iconButton()
                     ->size('lg')
                     ->color('secondary')
-                    ->visible(Auth::check() && Auth::user()->can('create projects'))])
+                    ->visible(Auth::check() && Auth::user()->can('create project'))])
             ->bulkActions([
                 BulkAction::make('add_to_collection')
                     ->visible(Auth::check() && Auth::user()->hasRole(['contributor', 'admin']))
