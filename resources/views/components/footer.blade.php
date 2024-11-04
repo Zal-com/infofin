@@ -96,7 +96,7 @@
                             <li class="flex items-center gap-1">
                                 <x-filament::icon icon="heroicon-o-chevron-right"
                                                   style="height: 18px; width: 18px;"/>
-                                <a href="{{route('users.show', \Illuminate\Support\Facades\Auth::id())}}"
+                                <a href="{{route('profile.show', \Illuminate\Support\Facades\Auth::id())}}"
                                    class="hover:text-slate-300">Mon profil</a>
                             </li>
                             <li class="flex items-center gap-1">
