@@ -28,8 +28,6 @@ Route::prefix('projects')
         // Routes publiques
         Route::get('', "index")->name('index');
         Route::get('/{id}', "show")->name('show');
-
-
     });
 
 
