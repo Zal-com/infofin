@@ -164,7 +164,20 @@ class ProjectResource extends Resource
                     ->preserveFilenames()
                     ->disk('public')
                     ->directory('media')
-                    ->acceptedFileTypes(['pdf'])
+                    ->acceptedFileTypes([
+                        'application/pdf',
+                        'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // DOCX
+                        'application/vnd.oasis.opendocument.text', // ODT
+                        'application/msword', // DOC
+                        'text/plain', // TXT
+                        'image/png', // PNG
+                        'image/jpeg', // JPG, JPEG
+                        'image/svg+xml', // SVG
+                        'application/vnd.ms-excel', // XLS
+                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // XLSX
+                        'application/vnd.ms-powerpoint', // PPT
+                        'application/vnd.openxmlformats-officedocument.presentationml.presentation', // PPTX
+                    ])
                     ->maxFiles(10),
                 TextInput::make('poster_id')->label(false)->hidden()->default(Auth::id()),
             ]);
