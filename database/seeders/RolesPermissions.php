@@ -27,7 +27,7 @@ class RolesPermissions extends Seeder
             $contributor = Role::create(['name' => 'contributor']);
 
             $contributorPermissions = [
-                Permission::create(['name' => 'create projects']),
+                Permission::create(['name' => 'create project']),
                 Permission::create(['name' => 'edit own project']),
                 Permission::create(['name' => 'delete own project']),
                 Permission::create(['name' => 'view own project']),
@@ -41,7 +41,12 @@ class RolesPermissions extends Seeder
                 Permission::create(['name' => 'delete other draft']),
                 Permission::create(['name' => 'view own draft']),
                 Permission::create(['name' => 'view other draft']),
-                Permission::create(['name' => 'view archives'])
+                Permission::create(['name' => 'view archives']),
+                Permission::create(['name' => 'create collection']),
+                Permission::create(['name' => 'edit own collection']),
+                Permission::create(['name' => 'edit other collection']),
+                Permission::create(['name' => 'delete other collection']),
+                Permission::create(['name' => 'delete own collection']),
             ];
 
             //Permissions
