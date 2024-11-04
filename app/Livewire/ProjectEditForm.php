@@ -276,12 +276,10 @@ class ProjectEditForm extends Component implements HasForms
                         Repeater::make('deadlines')->schema([
                             DatePicker::make('date')
                                 ->label('Date')
-                                ->after('today')
                                 ->required()
                                 ->validationAttribute('Date')
                                 ->validationMessages([
                                     'required' => 'Le champ ":attribute" est obligatoire.',
-                                    'after' => 'Le champ ":attribute" doit avoir une valeur ultérieure à la date du jour.',
                                 ]),
                             TextInput::make('proof')
                                 ->label('Justificatif')
