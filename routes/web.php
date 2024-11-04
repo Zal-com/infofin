@@ -1,13 +1,11 @@
 <?php
 
-use App\Http\Controllers\ApiController;
 use App\Http\Controllers\CollectionController;
 use App\Http\Controllers\DraftController;
 use App\Http\Controllers\InfoSessionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\UnsubscribeController;
-use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
@@ -40,12 +38,6 @@ Route::prefix('collection')
         Route::get('/{id}', 'show')->name('show');
         Route::get('/{id}/edit', 'edit')->name('edit');
     });
-
-//FIXME Toujours nécessaires ???
-Route::controller(UserController::class)->group(function () {
-    Route::get('users', 'index')->name('users.index');
-    Route::get('users/{id}', 'show')->name('users.show');
-});
 
 Route::prefix('drafts')
     ->controller(DraftController::class)
