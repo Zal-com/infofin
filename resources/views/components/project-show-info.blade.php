@@ -336,7 +336,7 @@
         @if($project->info_sessions && $project->info_sessions->count() > 0)
             <x-filament::section class="col-span-1 row-span-1">
                 <x-filament::section.heading>
-                    Prochaine session d'information
+                    Prochaine séance d'information
                 </x-filament::section.heading>
                 <div class="mt-3">
                     <p class="flex flex-row gap-2 items-center my-1">

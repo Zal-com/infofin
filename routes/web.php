@@ -63,6 +63,8 @@ Route::prefix('info_session')
         //Routes publiques
         Route::get('/{id}', 'show')->name('show');
         Route::get('', "index")->name('index');
+
+
     });
 
 
