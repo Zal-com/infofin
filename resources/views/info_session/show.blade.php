@@ -10,7 +10,10 @@
     @endcanany
     <div class="grid grid-cols-5 gap-4 mb-5">
         <x-filament::section class="col-span-4 row-span-1 max-h-fit">
-            <h1 class="font-bold text-4xl my-1">{{$info_session->title ?? ''}}</h1>
+            <div class="flex flex-row justify-between w-full items-top">
+                <h1 class="font-bold text-4xl my-1">{{$info_session->title ?? ''}}</h1>
+            </div>
+
             <p class="text-md italic">{{$info_session->organisation->title ?? ''}}</p>
             <div class="markdown">
                 <x-filament::section.description class="my-3 text-justify">
@@ -32,7 +35,19 @@
                         <x-filament::icon size="6" class="max-h-[24px] max-w-[24px]" icon="heroicon-o-clock"/>
                         {{\Carbon\Carbon::make($info_session->session_datetime)->format('H:i')}}
                     </p>
+
                 </x-filament::section.description>
+                @if($info_session->url)
+                    <div class="flex justify-end mt-3">
+                        <x-filament::button icon="heroicon-s-arrow-right" icon-position="after" color="primary"
+                                            class="h-fit"
+                                            tag="a"
+                                            href="{{$info_session->url}}"
+                        >
+                            Inscription
+                        </x-filament::button>
+                    </div>
+                @endif
             </x-filament::section>
             @if(in_array($info_session->session_type, [1,2]))
                 <div>

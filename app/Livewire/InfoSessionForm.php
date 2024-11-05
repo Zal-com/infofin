@@ -169,10 +169,9 @@ class InfoSessionForm extends Component implements HasForms
                     ]),
                 TextInput::make('url')
                     ->required()
-                    ->label('URL de la réunion')
+                    ->label("URL d'inscription")
                     ->url()
                     ->activeUrl()
-                    ->visible(fn($get) => in_array($get('session_type'), [2, 0]))
                     ->reactive()
                     ->validationAttribute('URL de la réunion')
                     ->validationMessages([
