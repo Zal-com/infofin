@@ -55,15 +55,16 @@ Route::prefix('info_session')
     ->controller(InfoSessionController::class)
     ->name('info_session.')
     ->group(function () {
-        //Routes publiques
-        Route::get('/{id}', 'show')->name('show');
-        Route::get('', "index")->name('index');
-
         //Routes protégées par auth
         Route::middleware('contributor')->group(function () {
             Route::get('/create', 'create')->name('create');
             Route::get('/{id}/edit', 'edit')->name('edit');
         });
+        //Routes publiques
+        Route::get('/{id}', 'show')->name('show');
+        Route::get('', "index")->name('index');
+
+
     });
 
 
