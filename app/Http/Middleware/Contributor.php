@@ -17,7 +17,7 @@ class Contributor
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check() && Auth::user()->hasRole('contributor')) {
+        if (Auth::check() && Auth::user()->hasAnyRole(['contributor', 'admin'])) {
             return $next($request);
         }
         Notification::make()->danger()->title("Vous n'êtes pas autorisé à faire cela.")->icon('heroicon-o-x-circle')->iconColor('danger');
