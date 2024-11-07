@@ -277,9 +277,8 @@ final class ProjectForm extends Component implements HasForms
                             'underline',
                             'undo',
                         ])
-                        ->extraAttributes(['maxlength' => 500, 'script'])
+                        ->extraAttributes(['className' => "limited-trix"])
                         ->maxLength(500)
-                        ->extraAttributes(['maxlength' => 500, 'script' => ""])
                         ->hint(function ($component, $state) {
                             $cleanedState = strip_tags($state);
                             return strlen($cleanedState) . '/' . $component->getMaxLength() . ' caractères';

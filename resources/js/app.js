@@ -5,7 +5,7 @@ import.meta.glob([
 ]);
 
 document.addEventListener('DOMContentLoaded', function () {
-    const trixEditor = document.querySelector('trix-editor');
+    const trixEditor = document.querySelector('limited-trix');
     const maxChars = 500;
 
     trixEditor.addEventListener('trix-change', function () {
