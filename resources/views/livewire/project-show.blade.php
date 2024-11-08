@@ -40,14 +40,14 @@
             par {{ $project->poster->full_name() }}
         </x-filament::section.description>
         @auth
-            @hasrole("contributor")
+            @hasrole('contributor|admin')
             <x-filament::section.description class="px-5">
                 Vues : {{ $project->visit_count }}
             </x-filament::section.description>
             @endrole
         @endauth
         @auth
-            @hasrole("contributor")
+            @hasanyrole('contributor|admin')
             <x-filament::section.description class="px-5">
                 Vues depuis le mail : {{ $project->visit_count_email }}
             </x-filament::section.description>
