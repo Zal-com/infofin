@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class RolesPermissions extends Seeder
 {
@@ -47,6 +47,7 @@ class RolesPermissions extends Seeder
                 Permission::create(['name' => 'edit other collection']),
                 Permission::create(['name' => 'delete other collection']),
                 Permission::create(['name' => 'delete own collection']),
+                Permission::create(['name' => 'create info_session']),
             ];
 
             //Permissions
