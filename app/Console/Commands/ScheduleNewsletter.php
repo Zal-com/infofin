@@ -2,10 +2,11 @@
 
 namespace App\Console\Commands;
 
+use App\Models\NewsletterSchedule;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Console\Scheduling\Schedule;
-use App\Models\NewsletterSchedule;
-use Log;
+use Illuminate\Support\Facades\Artisan;
 
 class ScheduleNewsletter extends Command
 {
@@ -31,8 +32,14 @@ class ScheduleNewsletter extends Command
         $newsletterSchedule = NewsletterSchedule::first();
 
         if ($newsletterSchedule && $newsletterSchedule->is_active) {
-            $schedule->command('newsletter:send')
-                ->weeklyOn($newsletterSchedule->day_of_week, $newsletterSchedule->send_time);
+            $date = Carbon::now();
+            $dayNow = $date->dayOfWeek();
+            $hour = $date->format('H:i');
+            $formattedTime = Carbon::createFromFormat('H:i:s', $newsletterSchedule->send_time)->format('H:i');
+
+            if ($dayNow + 1 == $newsletterSchedule->day_of_week && $hour === $formattedTime) {
+                Artisan::call('newsletter:send');
+            }
         }
     }
 }
