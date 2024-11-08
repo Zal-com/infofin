@@ -143,3 +143,41 @@
     padding-bottom: 10px !important; /* Ajustez selon vos besoins */
 }
 
+.border-alternating-wrapper {
+    padding: 8px; /* Largeur de la bordure */
+    background: repeating-linear-gradient(
+        45deg, /* Angle en diagonale */ black 0, /* Début du noir */ black 10px, /* Largeur du noir */ #fed053 10px, /* Début du jaune */ #fed053 20px /* Largeur du jaune */
+    );
+    border-radius: 8px; /* Optionnel : arrondir les coins */
+    display: inline-block; /* S'adapte au contenu */
+    position: relative; /* Pour positionner le pseudo-élément */
+}
+
+.border-alternating-wrapper::before {
+    content: "Mode prévisualisation activé";
+    position: absolute;
+    top: -2%;
+    right: 38%;
+    transform: translate(-50%, -50%);
+    font-size: 12px;
+    color: black;
+    background-color: #fed053;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+    white-space: nowrap;
+    z-index: -1;
+}
+
+.border-alternating-content {
+    background: white; /* Fond du contenu */
+    border-radius: 5px; /* Ajuster pour que le rayon soit un peu plus petit */
+    padding: 20px; /* Espace interne pour le contenu */
+    position: relative;
+    z-index: 2; /* Assure que le contenu est au-dessus du pseudo-élément */
+}
+
+
+
+
+
