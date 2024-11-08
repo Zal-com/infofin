@@ -322,6 +322,7 @@ class ListProjects extends Component implements HasForms, HasTable
                     ->visible(Auth::check() && Auth::user()->can('create project'))])
             ->bulkActions([
                 BulkAction::make('add_to_collection')
+                    ->deselectRecordsAfterCompletion()
                     ->visible(Auth::check() && Auth::user()->hasRole(['contributor', 'admin']))
                     ->label('Ajouter à une collection')
                     ->icon('heroicon-o-plus')
