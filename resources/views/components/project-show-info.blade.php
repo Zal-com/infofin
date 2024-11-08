@@ -322,7 +322,8 @@
                                 </div>
                                 <div class="flex-grow min-w-0">
                                     <p class="flex-1 flex-wrap overflow-ellipsis line-clamp-1">
-                                        <a href="mailto:{{trim($contact_ext['email'])}}" class="inline-block break-all">
+                                        <a href="mailto:{{trim($contact_ext['email'])}}?subject=Infofin - {{$project->title}}({{$project->id}})"
+                                           class="inline-block break-all">
                                             {{$contact_ext['email']}}
                                         </a>
                                     </p>

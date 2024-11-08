@@ -15,7 +15,7 @@ return [
         /**
          * The filament view hook to render the action in.
          */
-        'position' => 'tables::toolbar.search.after',
+        'position' => 'tables::toolbar.start',
 
         /**
          * Action icons when toggling between list and grid layout.

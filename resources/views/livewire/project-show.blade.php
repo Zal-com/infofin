@@ -7,13 +7,26 @@
             </x-filament::button>
         @endcan
         @auth
+            @hasanyrole('contributor|admin')
             @if(\Illuminate\Support\Facades\Auth::user()->favorites->contains($project->id))
-                <x-filament::icon-button icon="heroicon-s-heart" tooltip="Retirer des favoris" size="lg" outlined
+                <x-filament::icon-button icon="heroicon-s-bookmark" tooltip="Retirer des favoris" size="lg" outlined
                                          color="black" class="font-bold" wire:click="removeFromFavorites"/>
             @else
-                <x-filament::icon-button icon="heroicon-o-heart" tooltip="Ajouter aux favoris" size="lg" outlined
+                <x-filament::icon-button icon="heroicon-o-bookmark" tooltip="Ajouter aux favoris" size="lg" outlined
                                          color="black" class="font-bold" wire:click="addToFavorites"/>
             @endif
+        @else
+            @if(\Illuminate\Support\Facades\Auth::user()->favorites->contains($project->id))
+                <x-filament::button icon="heroicon-s-bookmark"
+                                    size="lg"
+                                    color="primary" class="font-bold" wire:click="removeFromFavorites">Favoris
+                </x-filament::button>
+            @else
+                <x-filament::button icon="heroicon-o-bookmark" size="lg"
+                                    color="primary" class="font-bold" wire:click="addToFavorites">Favoris
+                </x-filament::button>
+            @endif
+            @endhasanyrole
         @endauth
         @can('create collection')
             <x-filament::dropdown placement="bottom-end">
