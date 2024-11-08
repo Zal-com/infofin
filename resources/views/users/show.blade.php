@@ -28,7 +28,7 @@
                 @can('create project')
                     <x-filament::tabs.item @click="tab = 'appels'" :alpine-active="'tab === \'appels\''"
                                            icon="heroicon-o-document-text">
-                        Mes appels
+                        Mes projets
                     </x-filament::tabs.item>
                 @endcan
                 <x-filament::tabs.item @click="tab = 'interests'" :alpine-active="'tab === \'interests\''"
@@ -76,7 +76,7 @@
             @can('view own project')
                 <div x-show="tab === 'appels'" class="m-4">
                     <x-filament::section.heading class="mb-5 flex justify-between items-center">
-                        Appels Infofin
+                        Mes projets Infofin
                         @can('create project', \App\Models\Project::class)
                             <x-filament::button icon="heroicon-o-plus" class="m-0" tag="a"
                                                 href="{{ route('projects.create') }}">
