@@ -4,7 +4,7 @@
 
     <div class="grid grid-cols-6 gap-2 mb-10"
          x-data="{
-            tab: 'interests' }">
+            tab: '{{ session('defaultTab', 'interests') }}' }">
         <div class="sticky top-5"> <!-- Sticky avec hauteur et overflow -->
             <x-filament::tabs class="flex-col max-h-min">
                 {{--
