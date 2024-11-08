@@ -7,25 +7,32 @@
             </x-filament::button>
         @endcan
         @auth
+            @php
+                $isFavorite = \Illuminate\Support\Facades\Auth::user()->favorites->contains($project->id);
+                $icon = $isFavorite ? 'heroicon-s-bookmark' : 'heroicon-o-bookmark';
+                $tooltip = $isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris';
+                $action = $isFavorite ? 'removeFromFavorites' : 'addToFavorites';
+            @endphp
             @hasanyrole('contributor|admin')
-            @if(\Illuminate\Support\Facades\Auth::user()->favorites->contains($project->id))
-                <x-filament::icon-button icon="heroicon-s-bookmark" tooltip="Retirer des favoris" size="lg" outlined
-                                         color="black" class="font-bold" wire:click="removeFromFavorites"/>
-            @else
-                <x-filament::icon-button icon="heroicon-o-bookmark" tooltip="Ajouter aux favoris" size="lg" outlined
-                                         color="black" class="font-bold" wire:click="addToFavorites"/>
-            @endif
+            <x-filament::icon-button
+                :icon="$icon"
+                :tooltip="$tooltip"
+                size="lg"
+                outlined
+                color="black"
+                class="font-bold"
+                wire:click="{{ $action }}"
+            />
         @else
-            @if(\Illuminate\Support\Facades\Auth::user()->favorites->contains($project->id))
-                <x-filament::button icon="heroicon-s-bookmark"
-                                    size="lg"
-                                    color="primary" class="font-bold" wire:click="removeFromFavorites">Favoris
-                </x-filament::button>
-            @else
-                <x-filament::button icon="heroicon-o-bookmark" size="lg"
-                                    color="primary" class="font-bold" wire:click="addToFavorites">Favoris
-                </x-filament::button>
-            @endif
+            <x-filament::button
+                :icon="$icon"
+                size="lg"
+                color="primary"
+                class="font-bold"
+                wire:click="{{ $action }}"
+            >
+                Favoris
+            </x-filament::button>
             @endhasanyrole
         @endauth
         @can('create collection')
