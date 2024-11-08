@@ -52,7 +52,7 @@ class InfoSessionEditForm extends Component implements HasForms
     public function submit(): void
     {
         if ($this->form->validate()) {
-            
+
             try {
                 $validatedData = $this->data;
 
@@ -101,7 +101,7 @@ class InfoSessionEditForm extends Component implements HasForms
                     ->label('Description')
                     ->required()
                     ->string()
-                    ->extraAttributes(['style' => 'max-height: 200px'])
+                    ->extraAttributes(['style' => 'max-height: 500px'])
                     ->validationAttribute('Description')
                     ->validationMessages([
                         'required' => 'Le champ ":attribute" est obligatoire.',

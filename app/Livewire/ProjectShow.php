@@ -28,6 +28,48 @@ class ProjectShow extends Component implements HasForms
         $this->project = $project;
     }
 
+    public function addToFavorites()
+    {
+        try {
+            Auth::user()->favorites()->attach($this->project->id);
+
+            Notification::make()
+                ->success()
+                ->title('Ajouté aux favoris.')
+                ->icon('heroicon-o-check-circle')
+                ->send()
+                ->seconds(5);
+        } catch (Exception $e) {
+            Notification::make()
+                ->danger()
+                ->title("Quelque chose ne s'est pas passé comme prévu. Veuillez réessayer.")
+                ->icon('heroicon-o-x-circle')
+                ->send()
+                ->seconds(5);
+        }
+    }
+
+    public function removeFromFavorites()
+    {
+        try {
+            Auth::user()->favorites()->detach($this->project->id);
+
+            Notification::make()
+                ->success()
+                ->title('Retiré des favoris.')
+                ->icon('heroicon-o-check-circle')
+                ->send()
+                ->seconds(5);
+        } catch (Exception $e) {
+            Notification::make()
+                ->danger()
+                ->title("Quelque chose ne s'est pas passé comme prévu. Veuillez réessayer.")
+                ->icon('heroicon-o-x-circle')
+                ->send()
+                ->seconds(5);
+        }
+    }
+
     public function archiveProject()
     {
         try {

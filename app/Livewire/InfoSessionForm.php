@@ -116,7 +116,7 @@ class InfoSessionForm extends Component implements HasForms
                     ->label('Description')
                     ->required()
                     ->string()
-                    ->extraAttributes(['style' => 'max-height: 200px'])
+                    ->extraAttributes(['style' => 'max-height: 500px'])
                     ->validationAttribute('Description')
                     ->validationMessages([
                         'required' => 'Le champ ":attribute" est obligatoire.',
