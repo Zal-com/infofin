@@ -1,11 +1,20 @@
 <div>
-    <div class="flex flex-row justify-end gap-1 items-center mb-4">
-        @can('edit project')
+    <div class="flex flex-row justify-end gap-2 items-center mb-4">
+        @canany(['edit own project', 'edit other project'])
             <x-filament::button icon="heroicon-s-pencil" tag="a"
                                 href="{{ url(route('projects.edit', $project->id)) }}">
                 Modifier
             </x-filament::button>
         @endcan
+        @auth
+            @if(\Illuminate\Support\Facades\Auth::user()->favorites->contains($project->id))
+                <x-filament::icon-button icon="heroicon-s-heart" tooltip="Retirer des favoris" size="lg" outlined
+                                         color="black" class="font-bold" wire:click="removeFromFavorites"/>
+            @else
+                <x-filament::icon-button icon="heroicon-o-heart" tooltip="Ajouter aux favoris" size="lg" outlined
+                                         color="black" class="font-bold" wire:click="addToFavorites"/>
+            @endif
+        @endauth
         @can('create collection')
             <x-filament::dropdown placement="bottom-end">
                 <x-slot name="trigger">
