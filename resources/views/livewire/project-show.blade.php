@@ -38,4 +38,11 @@
         Dernière modification le {{ \Carbon\Carbon::make($project->updated_at)->format('d/m/Y') }}
         par {{ $project->poster->full_name() }}
     </x-filament::section.description>
+    <x-filament::section.description class="pl-5">
+        @auth
+            @hasrole("contributor")
+            Vues : {{ $project->visit_count }}
+            @endrole
+        @endauth
+    </x-filament::section.description>
 </div>
