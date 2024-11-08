@@ -19,6 +19,7 @@ class CreateProjectsTable extends Migration
             $table->longText('apply_instructions')->nullable(); // Instructions pour postuler
             $table->foreignId('poster_id')->constrained('users')->onDelete('cascade'); // Clé étrangère vers users
             $table->integer('visit_count')->default(0); // Nombre de visites par défaut 0
+            $table->integer('visit_count_email')->default(0); // Nombre de visites email par défaut 0
             $table->foreignId('last_update_user_id')->constrained('users')->onDelete('cascade'); // Clé étrangère vers users
             $table->smallInteger('status')->default(1)->comment("-1 = Archive, 0 = Inactif, 1 = Actif, 2 = ?"); // Statut
             $table->boolean('is_big')->default(false); // Indicateur pour grands projets
