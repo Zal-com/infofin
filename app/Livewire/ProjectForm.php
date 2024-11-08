@@ -12,7 +12,6 @@ use App\Models\InfoSession;
 use App\Models\Project;
 use App\Services\FileService;
 use App\Traits\ScientificDomainSchemaTrait;
-use Closure;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Checkbox;
@@ -35,12 +34,10 @@ use Filament\Resources\Components\Tab;
 use FilamentTiptapEditor\Enums\TiptapOutput;
 use FilamentTiptapEditor\TiptapEditor;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\HtmlString;
 use Illuminate\Validation\ValidationException;
 use League\HTMLToMarkdown\HtmlConverter;
 use Livewire\Component;
-use Nette\Utils\Html;
 
 final class ProjectForm extends Component implements HasForms
 {
@@ -683,6 +680,7 @@ final class ProjectForm extends Component implements HasForms
                     ->seconds(5)
                     ->send();
 
+                session()->flash('defaultTab', 'drafts');
                 return redirect()->route('profile.show');
             }
         }
@@ -700,6 +698,7 @@ final class ProjectForm extends Component implements HasForms
                 ->iconColor('success')
                 ->send();
 
+            session()->flash('defaultTab', 'drafts');
             return redirect()->route('profile.show');
         } else {
             Notification::make()

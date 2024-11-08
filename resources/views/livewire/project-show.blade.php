@@ -47,8 +47,25 @@
         @endcan
     </div>
     <x-project-show-info :project="$project"/>
-    <x-filament::section.description class="pl-5">
-        Dernière modification le {{ \Carbon\Carbon::make($project->updated_at)->format('d/m/Y') }}
-        par {{ $project->poster->full_name() }}
-    </x-filament::section.description>
+    <div class="flex justify-start divide-x">
+        <x-filament::section.description class="px-5">
+            Dernière modification le {{ \Carbon\Carbon::make($project->updated_at)->format('d/m/Y') }}
+            par {{ $project->poster->full_name() }}
+        </x-filament::section.description>
+        @auth
+            @hasrole('contributor|admin')
+            <x-filament::section.description class="px-5">
+                Vues : {{ $project->visit_count }}
+            </x-filament::section.description>
+            @endrole
+        @endauth
+        @auth
+            @hasanyrole('contributor|admin')
+            <x-filament::section.description class="px-5">
+                Vues depuis le mail : {{ $project->visit_count_email }}
+            </x-filament::section.description>
+            @endrole
+        @endauth
+    </div>
+
 </div>

@@ -144,7 +144,7 @@
                             @empty($data['apply_instructions'])
                                 Pas d'instructions d'application fournies.
                             @else
-                                {!! tiptap_converter()->asHTML($data['apply_instructions']) !!}}
+                                {!! tiptap_converter()->asHTML($data['apply_instructions']) !!}
                             @endempty
                         </div>
                     </x-filament::section.description>
@@ -284,23 +284,13 @@
                     </x-filament::section.heading>
                     @foreach($contactExts as $contact_ext)
                         <div class="mb-3 last-of-type:mb-0">
-                            <x-filament::section.heading>{{$contact_ext['name']}}</x-filament::section.heading>
-                            @if($contact_ext['tel'] != "")
-                                <div class="flex items-center">
-                                    <x-filament::icon icon="heroicon-s-phone" class="h-5 w-5 mr-2"/>
-                                    {{$contact_ext['tel']}}
-                                </div>
+                            @if($contact_ext['name'] != "")
+                                <x-filament::section.heading>{{$contact_ext['name']}}</x-filament::section.heading>
                             @endif
                             @if($contact_ext['email'] != "")
                                 <div class="flex items-center">
                                     <x-filament::icon icon="heroicon-s-at-symbol" class="h-5 w-5 mr-2"/>
                                     {{$contact_ext['email']}}
-                                </div>
-                            @endif
-                            @if($contact_ext['address'] != "")
-                                <div class="flex items-center">
-                                    <x-filament::icon icon="heroicon-s-envelope" class="h-5 w-5 mr-2 overflow-auto"/>
-                                    {{$contact_ext['address']}}
                                 </div>
                             @endif
                         </div>
@@ -346,7 +336,6 @@
             <x-filament::button wire:click="return" color="secondary" icon="heroicon-o-arrow-uturn-left" class="mx-2">
                 Retour
             </x-filament::button>
-            <x-filament::button wire:click="create" color="primary" icon="heroicon-o-plus">Créer</x-filament::button>
         </div>
     </div>
 </div>
