@@ -1,6 +1,6 @@
 <!doctype html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml"
-      xmlns:o="urn:schemas-microsoft-com:office:office">
+<html xmlns="http://www.w3.org/1999/xhtml"
+>
 
 <head>
     <title>
@@ -331,7 +331,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td style="text-align: right; padding: 8px;" colspan="2">
-                                                            <a href="{{url('/projects/' . $card->id)}}">
+                                                            <a href="{{url('/projects/' . $card->id . "?from_email=true")}}">
                                                                 <button
                                                                     style="color: white; font-size: 12px; font-weight: 400; line-height: 17px; word-wrap: break-word; padding: 6px 20px; background: #276D20; border: none; border-radius: 5px;">
                                                                     <span

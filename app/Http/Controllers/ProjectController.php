@@ -20,14 +20,21 @@ class ProjectController extends Controller
         return view('projects.preview');
     }
 
-    public function show(int $id)
+    public function show(int $id, Request $request)
     {
         $project = Project::find($id);
         $project->timestamps = false;
 
+        $qs = $request->query('from_mail');
+
+        if ($qs == "true") {
+            $project->visit_count_email = $project->visit_count_email + 1;
+        } else {
+            $project->visit_count = $project->visit_count + 1;
+        }
+
         VisitsRate::create(["project_id" => $id]);
 
-        $project->visit_count = $project->visit_count + 1;
 
         $project->save();
 

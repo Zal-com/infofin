@@ -15,7 +15,7 @@ class Project extends Model
         'title', 'contact_ulb', 'contact_ext', 'admission_requirements', 'funding', 'apply_instructions',
         'poster_id', 'is_view_for_mail', /*'date_lessor',*/
         'info_lessor',
-        'visit_count', 'last_update_user_id', 'country_id', 'continent_id',
+        'visit_count', 'visit_count_email', 'last_update_user_id', 'country_id', 'continent_id',
         'status', 'is_big', 'long_description', 'short_description', 'is_draft',
         'created_at', 'updated_at', 'origin_url', 'deadlines', 'is_in_next_email', 'organisation_id'
     ];
