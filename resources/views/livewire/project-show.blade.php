@@ -8,10 +8,10 @@
         @endcan
         @auth
             @if(\Illuminate\Support\Facades\Auth::user()->favorites->contains($project->id))
-                <x-filament::icon-button icon="heroicon-s-heart" tooltip="Retirer des favoris" size="lg" outlined
+                <x-filament::icon-button icon="heroicon-s-bookmark" tooltip="Retirer des favoris" size="lg" outlined
                                          color="black" class="font-bold" wire:click="removeFromFavorites"/>
             @else
-                <x-filament::icon-button icon="heroicon-o-heart" tooltip="Ajouter aux favoris" size="lg" outlined
+                <x-filament::icon-button icon="heroicon-o-bookmark" tooltip="Ajouter aux favoris" size="lg" outlined
                                          color="black" class="font-bold" wire:click="addToFavorites"/>
             @endif
         @endauth

@@ -319,7 +319,7 @@ final class ProjectForm extends Component implements HasForms
                         ->output(TiptapOutput::Json)
                         ->maxContentWidth('full')
                         ->disableFloatingMenus()
-                        ->placeholder('Informations sur le montant du financement, sa durée, etc.')
+                        ->placeholder('Informations sur le montant du financement, sa durée, etc. (Vous pouvez laisser ce champ vide)')
                         ->validationAttribute("Budget et dépenses"),
                 ]),
                 Tabs\Tab::make("Critères d'admission")->schema([
@@ -330,6 +330,7 @@ final class ProjectForm extends Component implements HasForms
                         ->extraInputAttributes(['style' => 'min-height: 12rem;'])
                         ->maxContentWidth('full')
                         ->disableFloatingMenus()
+                        ->placeholder("Informations sur les prérequis pour l'admission. (Vous pouvez laisser ce champ vide)")
                         ->validationAttribute("Critères d'admission"),
                 ]),
                 Tabs\Tab::make("Pour postuler")->schema([
@@ -339,6 +340,7 @@ final class ProjectForm extends Component implements HasForms
                         ->maxContentWidth('full')
                         ->disableFloatingMenus()
                         ->label(false)
+                        ->placeholder("Informations sur la marche à suivre pour candidater au projet/prix. (Vous pouvez laisser ce champ vide)")
                         ->validationAttribute('Pour postuler'),
                 ]),
                 Tabs\Tab::make("Contacts")
