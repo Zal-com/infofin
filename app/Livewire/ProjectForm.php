@@ -12,6 +12,7 @@ use App\Models\InfoSession;
 use App\Models\Project;
 use App\Services\FileService;
 use App\Traits\ScientificDomainSchemaTrait;
+use Filament\Forms\ComponentContainer;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Checkbox;
@@ -28,6 +29,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Notifications\Notification;
 use Filament\Resources\Components\Tab;
@@ -113,499 +115,609 @@ final class ProjectForm extends Component implements HasForms
     public function form(Form $form): Form
     {
         return $form->schema([
-            Tabs::make('Tabs')->tabs([
-                Tabs\Tab::make('Informations')->schema([
-                    TextInput::make('title')
-                        ->label('Titre')
-                        ->placeholder('Titre concis, évitez les acronymes seuls')
-                        ->maxLength(255)
-                        ->required()
-                        ->autofocus()
-                        ->columnSpanFull()
-                        ->validationAttribute('Titre')
-                        ->validationMessages([
-                            'required' => 'Le champ ":attribute" est obligatoire.',
-                            'max' => 'Le champ ":attribute" ne peut pas excéder :max caractères de long.',
-                        ]),
-                    Select::make('organisation_id')
-                        ->label('Organisation')
-                        ->searchable()
-                        ->relationship('organisation', 'title')
-                        ->preload()
-                        ->createOptionForm([
+            Tabs::make('Tabs')
+                ->statePath('data')
+                ->model($this->project)
+                ->reactive()
+                ->live()
+                ->tabs([
+                    Tabs\Tab::make('infos')
+                        ->label('Informations')
+                        ->schema([
                             TextInput::make('title')
-                                ->label("Nom de l'organisation")
-                                ->helperText('Veuillez éviter les abbréviations seules.')
-                                ->required(),
-                        ])
-                        ->required()
-                        ->columnSpanFull()
-                        ->validationAttribute('Organisation')
-                        ->validationMessages([
-                            'required' => 'Le champ ":attribute" est obligatoire.',
-                        ]),
-                    Checkbox::make('is_big')
-                        ->label('Projet majeur')
-                        ->default(false)
-                        ->columnSpanFull(),
-                    TextInput::make('origin_url')
-                        ->label('URL vers l\'appel original')
-                        ->url()
-                        ->activeUrl()
-                        ->nullable()
-                        ->columnSpanFull(),
-                    Fieldset::make('activities_fieldset')->schema([
-                        CheckboxList::make('activities')
-                            ->label(new HtmlString("<strong>Catégories d'activité</strong>"))
-                            ->options(Activity::all()->sortBy('title')->pluck('title', 'id')->toArray())
-                            ->required()
-                            ->bulkToggleable()
-                            ->minItems(1)
-                            ->validationAttribute('Catégories d\'activité')
-                            ->validationMessages([
-                                'required' => 'Le champ ":attribute" est obligatoire.',
-                                'min' => 'Le champ ":attribute" doit comprendre au moins :min élément.',
-                            ]),
-                    ])
-                        ->label(false)
-                        ->columnSpan(1),
-                    Fieldset::make('expenses_fieldset')->schema([
-                        CheckboxList::make('expenses')
-                            ->label(new HtmlString("<strong>Catégories de dépenses éligibles</strong>"))
-                            ->options(Expense::all()->sortBy('title')->pluck('title', 'id')->toArray())
-                            ->required()
-                            ->minItems(1)
-                            ->bulkToggleable()
-                            ->validationAttribute('Catégories de dépenses éligibles')
-                            ->validationMessages([
-                                'required' => 'Le champ ":attribute" est obligatoire.',
-                                'min' => 'Le champ ":attribute" doit comprendre au moins :min élément.',
-                            ]),
-                    ])->extraAttributes(['class' => 'h-full'])
-                        ->label(false)
-                        ->columnSpan(1),
-                    \LaraZeus\Accordion\Forms\Accordions::make('Disciplines scientifiques')
-                        ->activeAccordion(2)
-                        ->isolated()
-                        ->accordions([
-                            \LaraZeus\Accordion\Forms\Accordion::make('main-data')
-                                ->columns()
-                                ->label('Disciplines scientifiques')
-                                ->schema($this->getFieldsetSchema()),
-                        ])
-                        ->columnSpanFull(),
-                    Select::make('geo_zones')
-                        ->label("Zones géographiques")
-                        ->multiple()
-                        ->nullable()
-                        ->maxItems(3)
-                        ->options(function () {
-                            // Initialisation des options avec l'option "Monde entier"
-                            $options = [
-                                'Monde entier' => 'Monde entier',
-                            ];
-
-                            // Récupérer tous les continents en utilisant 'code' comme clé
-                            $continents = Continent::all()->pluck('name', 'code')->toArray();
-
-                            // Récupérer tous les pays en utilisant 'id' comme clé
-                            $pays = Country::all()->pluck('name', 'id')->toArray();
-
-                            // Ajouter les continents au tableau des options
-                            foreach ($continents as $code => $name) {
-                                $options["continent_$code"] = $name;
-                            }
-
-                            // Ajouter les pays au tableau des options
-                            foreach ($pays as $id => $name) {
-                                $options["pays_$id"] = $name;
-                            }
-
-                            return $options;
-                        })
-                        ->columnSpanFull(),
-                ])->columns(2),
-                Tabs\Tab::make('Dates importantes')->schema([
-                    Fieldset::make('Deadlines')->schema([
-                        Repeater::make('deadlines')->schema([
-                            DatePicker::make('date')
-                                ->label('Date')
-                                ->after('today')
-                                ->required()
-                                ->validationAttribute('Date')
-                                ->validationMessages([
-                                    'required' => 'Le champ ":attribute" est obligatoire.',
-                                    'after' => 'Le champ ":attribute" doit avoir une valeur ultérieure à la date du jour.',
-                                ]),
-                            TextInput::make('proof')
-                                ->label('Justificatif')
-                                ->required()
+                                ->label('Titre')
+                                ->placeholder('Titre concis, évitez les acronymes seuls')
                                 ->maxLength(255)
-                                ->validationAttribute('Justificatif')
+                                ->required()
+                                ->autofocus()
+                                ->columnSpanFull()
+                                ->validationAttribute('Titre')
                                 ->validationMessages([
                                     'required' => 'Le champ ":attribute" est obligatoire.',
                                     'max' => 'Le champ ":attribute" ne peut pas excéder :max caractères de long.',
                                 ]),
-                            Checkbox::make('continuous')
+                            Select::make('organisation_id')
+                                ->label('Organisation')
+                                ->searchable()
+                                ->relationship('organisation', 'title')
+                                ->preload()
+                                ->createOptionForm([
+                                    TextInput::make('title')
+                                        ->label("Nom de l'organisation")
+                                        ->helperText('Veuillez éviter les abbréviations seules.')
+                                        ->required(),
+                                ])
+                                ->required()
+                                ->columnSpanFull()
+                                ->validationAttribute('Organisation')
+                                ->validationMessages([
+                                    'required' => 'Le champ ":attribute" est obligatoire.',
+                                ]),
+                            Checkbox::make('is_big')
+                                ->label('Projet majeur')
                                 ->default(false)
-                                ->label('Continu'),
-                        ])->label(false)
-                            ->addActionLabel('+ Ajouter une deadline')
-                            ->minItems(1)
-                            ->required()
-                            ->defaultItems(1)
-                            ->validationAttribute('Deadlines')
-                            ->validationMessages([
-                                'required' => 'L\'appel doit contenir au moins une ":attribute".',
+                                ->columnSpanFull(),
+                            TextInput::make('origin_url')
+                                ->label('URL vers l\'appel original')
+                                ->url()
+                                ->activeUrl()
+                                ->nullable()
+                                ->columnSpanFull(),
+                            Fieldset::make('activities_fieldset')->schema([
+                                CheckboxList::make('activities')
+                                    ->label(new HtmlString("<strong>Catégories d'activité</strong>"))
+                                    ->options(Activity::all()->sortBy('title')->pluck('title', 'id')->toArray())
+                                    ->required()
+                                    ->bulkToggleable()
+                                    ->minItems(1)
+                                    ->validationAttribute('Catégories d\'activité')
+                                    ->validationMessages([
+                                        'required' => 'Le champ ":attribute" est obligatoire.',
+                                        'min' => 'Le champ ":attribute" doit comprendre au moins :min élément.',
+                                    ]),
+                            ])
+                                ->label(false)
+                                ->columnSpan(1),
+                            Fieldset::make('expenses_fieldset')->schema([
+                                CheckboxList::make('expenses')
+                                    ->label(new HtmlString("<strong>Catégories de dépenses éligibles</strong>"))
+                                    ->options(Expense::all()->sortBy('title')->pluck('title', 'id')->toArray())
+                                    ->required()
+                                    ->minItems(1)
+                                    ->bulkToggleable()
+                                    ->validationAttribute('Catégories de dépenses éligibles')
+                                    ->validationMessages([
+                                        'required' => 'Le champ ":attribute" est obligatoire.',
+                                        'min' => 'Le champ ":attribute" doit comprendre au moins :min élément.',
+                                    ]),
+                            ])->extraAttributes(['class' => 'h-full'])
+                                ->label(false)
+                                ->columnSpan(1),
+                            \LaraZeus\Accordion\Forms\Accordions::make('Disciplines scientifiques')
+                                ->activeAccordion(2)
+                                ->isolated()
+                                ->accordions([
+                                    \LaraZeus\Accordion\Forms\Accordion::make('main-data')
+                                        ->columns()
+                                        ->label('Disciplines scientifiques')
+                                        ->schema($this->getFieldsetSchema()),
+                                ])
+                                ->columnSpanFull(),
+                            Select::make('geo_zones')
+                                ->label("Zones géographiques")
+                                ->multiple()
+                                ->nullable()
+                                ->maxItems(3)
+                                ->options(function () {
+                                    // Initialisation des options avec l'option "Monde entier"
+                                    $options = [
+                                        'Monde entier' => 'Monde entier',
+                                    ];
+
+                                    // Récupérer tous les continents en utilisant 'code' comme clé
+                                    $continents = Continent::all()->pluck('name', 'code')->toArray();
+
+                                    // Récupérer tous les pays en utilisant 'id' comme clé
+                                    $pays = Country::all()->pluck('name', 'id')->toArray();
+
+                                    // Ajouter les continents au tableau des options
+                                    foreach ($continents as $code => $name) {
+                                        $options["continent_$code"] = $name;
+                                    }
+
+                                    // Ajouter les pays au tableau des options
+                                    foreach ($pays as $id => $name) {
+                                        $options["pays_$id"] = $name;
+                                    }
+
+                                    return $options;
+                                })
+                                ->columnSpanFull(),
+                            Actions::make([
+                                Action::make('nextTab')
+                                    ->label('Suivant')
+                                    ->icon('heroicon-o-arrow-right')
+                                    ->color('primary')
+                            ])->extraAttributes([
+                                '@click' => "tab = '-dates-importantes-tab'",
+                                'x-bind:class' => "{ 'alpine-active': tab === '-dates-importantes-tab' }",
+                            ])
+                                ->alignEnd()
+                                ->columnSpanFull(),
+                        ])->columns(2),
+                    Tabs\Tab::make('dates-importantes')
+                        ->id('dates-importantes')
+                        ->label('Dates importantes')
+                        ->schema([
+                            Fieldset::make('Deadlines')->schema([
+                                Repeater::make('deadlines')->schema([
+                                    DatePicker::make('date')
+                                        ->label('Date')
+                                        ->after('today')
+                                        ->required()
+                                        ->validationAttribute('Date')
+                                        ->validationMessages([
+                                            'required' => 'Le champ ":attribute" est obligatoire.',
+                                            'after' => 'Le champ ":attribute" doit avoir une valeur ultérieure à la date du jour.',
+                                        ]),
+                                    TextInput::make('proof')
+                                        ->label('Justificatif')
+                                        ->required()
+                                        ->maxLength(255)
+                                        ->validationAttribute('Justificatif')
+                                        ->validationMessages([
+                                            'required' => 'Le champ ":attribute" est obligatoire.',
+                                            'max' => 'Le champ ":attribute" ne peut pas excéder :max caractères de long.',
+                                        ]),
+                                    Checkbox::make('continuous')
+                                        ->default(false)
+                                        ->label('Continu'),
+                                ])->label(false)
+                                    ->addActionLabel('+ Ajouter une deadline')
+                                    ->minItems(1)
+                                    ->required()
+                                    ->defaultItems(1)
+                                    ->validationAttribute('Deadlines')
+                                    ->validationMessages([
+                                        'required' => 'L\'appel doit contenir au moins une ":attribute".',
+                                    ]),
                             ]),
-                    ]),
-                ]),
-                Tabs\Tab::make('Description')->schema([
-                    RichEditor::make('short_description')
-                        ->label('Description courte')
-                        ->placeholder('Courte et catchy, elle sera visible depuis la page principale et dans la newsletter')
-                        ->required()
-                        ->live()
-                        ->toolbarButtons([
-                            'bold',
-                            'italic',
-                            'redo',
-                            'strike',
-                            'underline',
-                            'undo',
+                            Actions::make([
+                                Action::make('nextTab')
+                                    ->label('Suivant')
+                                    ->icon('heroicon-o-arrow-right')
+                                    ->color('primary')
+                            ])->extraAttributes([
+                                '@click' => "tab = '-description-tab'",
+                                'x-bind:class' => "{ 'alpine-active': tab === '-description-tab' }",
+                            ])
+                                ->alignEnd()
+                                ->columnSpanFull(),
+                        ]),
+                    Tabs\Tab::make('description')
+                        ->label('Description')
+                        ->schema([
+                            RichEditor::make('short_description')
+                                ->label('Description courte')
+                                ->placeholder('Courte et catchy, elle sera visible depuis la page principale et dans la newsletter')
+                                ->required()
+                                ->live()
+                                ->toolbarButtons([
+                                    'bold',
+                                    'italic',
+                                    'redo',
+                                    'strike',
+                                    'underline',
+                                    'undo',
+                                ])
+                                ->extraAttributes(['className' => "limited-trix"])
+                                ->maxLength(500)
+                                ->hint(function ($component, $state) {
+                                    $cleanedState = strip_tags($state);
+                                    return strlen($cleanedState) . '/' . $component->getMaxLength() . ' caractères';
+                                })
+                                ->afterStateHydrated(function ($component, $state) {
+                                    if (strlen($state) >= 500) {
+                                        $component->disabled(true);
+                                    }
+                                })
+                                ->dehydrated(false)
+                                ->reactive()
+                                ->validationAttribute('Description courte')
+                                ->validationMessages([
+                                    'required' => 'Le champ ":attribute" est obligatoire.',
+                                    'max' => 'Le champ ":attribute" ne peut pas excéder :max caractères de long.',
+                                ]),
+                            TiptapEditor::make('long_description')
+                                ->profile('default')
+                                ->output(TiptapOutput::Json)
+                                ->columnSpan(1)
+                                ->maxContentWidth('full')
+                                ->label('Description complète')
+                                ->extraInputAttributes(['style' => 'min-height: 12rem;'])
+                                ->disableFloatingMenus()
+                                ->placeholder('Description la plus complète possible du projet, aucune limite de caractères')
+                                ->required()
+                                ->validationAttribute('Description complète')
+                                ->validationMessages([
+                                    'required' => 'Le champ ":attribute" est obligatoire.',
+                                    'max' => 'Le champ ":attribute" ne peut pas excéder :max caractères de long.',
+                                ]),
+                            Actions::make([
+                                Action::make('nextTab')
+                                    ->label('Suivant')
+                                    ->icon('heroicon-o-arrow-right')
+                                    ->color('primary')
+                            ])->extraAttributes([
+                                '@click' => "tab = '-funding-tab'",
+                                'x-bind:class' => "{ 'alpine-active': tab === '-funding-tab' }",
+                            ])
+                                ->alignEnd()
+                                ->columnSpanFull(),
+                        ]),
+                    Tabs\Tab::make('funding')
+                        ->label('Budget et dépenses')
+                        ->schema([
+                            TiptapEditor::make('funding')
+                                ->label(false)
+                                ->nullable()
+                                ->extraInputAttributes(['style' => 'min-height: 12rem;'])
+                                ->output(TiptapOutput::Json)
+                                ->maxContentWidth('full')
+                                ->disableFloatingMenus()
+                                ->placeholder('Informations sur le montant du financement, sa durée, etc. (Vous pouvez laisser ce champ vide)')
+                                ->validationAttribute("Budget et dépenses"),
+                            Actions::make([
+                                Action::make('nextTab')
+                                    ->label('Suivant')
+                                    ->icon('heroicon-o-arrow-right')
+                                    ->color('primary')
+                            ])->extraAttributes([
+                                '@click' => "tab = '-requirements-tab'",
+                                'x-bind:class' => "{ 'alpine-active': tab === '-requirements-tab' }",
+                            ])
+                                ->alignEnd()
+                                ->columnSpanFull(),
                         ])
-                        ->extraAttributes(['className' => "limited-trix"])
-                        ->maxLength(500)
-                        ->hint(function ($component, $state) {
-                            $cleanedState = strip_tags($state);
-                            return strlen($cleanedState) . '/' . $component->getMaxLength() . ' caractères';
-                        })
-                        ->afterStateHydrated(function ($component, $state) {
-                            if (strlen($state) >= 500) {
-                                $component->disabled(true);
-                            }
-                        })
-                        ->dehydrated(false)
-                        ->reactive()
-                        ->validationAttribute('Description courte')
-                        ->validationMessages([
-                            'required' => 'Le champ ":attribute" est obligatoire.',
-                            'max' => 'Le champ ":attribute" ne peut pas excéder :max caractères de long.',
-                        ]),
-                    TiptapEditor::make('long_description')
-                        ->profile('default')
-                        ->output(TiptapOutput::Json)
-                        ->columnSpan(1)
-                        ->maxContentWidth('full')
-                        ->label('Description complète')
-                        ->extraInputAttributes(['style' => 'min-height: 12rem;'])
-                        ->disableFloatingMenus()
-                        ->placeholder('Description la plus complète possible du projet, aucune limite de caractères')
-                        ->required()
-                        ->validationAttribute('Description complète')
-                        ->validationMessages([
-                            'required' => 'Le champ ":attribute" est obligatoire.',
-                            'max' => 'Le champ ":attribute" ne peut pas excéder :max caractères de long.',
-                        ]),
-                ]),
-                Tabs\Tab::make('Budget et dépenses')->schema([
-                    TiptapEditor::make('funding')
-                        ->label(false)
-                        ->nullable()
-                        ->extraInputAttributes(['style' => 'min-height: 12rem;'])
-                        ->output(TiptapOutput::Json)
-                        ->maxContentWidth('full')
-                        ->disableFloatingMenus()
-                        ->placeholder('Informations sur le montant du financement, sa durée, etc. (Vous pouvez laisser ce champ vide)')
-                        ->validationAttribute("Budget et dépenses"),
-                ]),
-                Tabs\Tab::make("Critères d'admission")->schema([
-                    TiptapEditor::make('admission_requirements')
-                        ->label(false)
-                        ->nullable()
-                        ->output(TiptapOutput::Json)
-                        ->extraInputAttributes(['style' => 'min-height: 12rem;'])
-                        ->maxContentWidth('full')
-                        ->disableFloatingMenus()
-                        ->placeholder("Informations sur les prérequis pour l'admission. (Vous pouvez laisser ce champ vide)")
-                        ->validationAttribute("Critères d'admission"),
-                ]),
-                Tabs\Tab::make("Pour postuler")->schema([
-                    TiptapEditor::make('apply_instructions')
-                        ->nullable()
-                        ->extraInputAttributes(['style' => 'min-height: 12rem;'])
-                        ->maxContentWidth('full')
-                        ->disableFloatingMenus()
-                        ->label(false)
-                        ->placeholder("Informations sur la marche à suivre pour candidater au projet/prix. (Vous pouvez laisser ce champ vide)")
-                        ->validationAttribute('Pour postuler'),
-                ]),
-                Tabs\Tab::make("Contacts")
-                    ->schema([
-                        Fieldset::make('Internes')->schema([
-                            Repeater::make('contact_ulb')
-                                ->schema([
-                                    TextInput::make('first_name')
-                                        ->label('Prénom')
-                                        ->required()
-                                        ->minLength(3)
-                                        ->validationAttribute('Prénom')
-                                        ->validationMessages([
-                                            'required' => 'Le prénom d\'un contact interne est obligatoire.',
-                                            'min' => 'Le prénom d\'un contact interne ne doit pas faire moins de :min caractères de long.',
-                                        ]),
-                                    TextInput::make('last_name')
-                                        ->label('Nom')
-                                        ->required()
-                                        ->minLength(3)
-                                        ->validationAttribute('Nom')
-                                        ->validationMessages([
-                                            'required' => 'Le nom d\'un contact interne est obligatoire.',
-                                            'min' => 'Le nom d\'un contact interne ne doit pas faire moins de :min caractères de long.',
-                                        ]),
-                                    TextInput::make('email')
-                                        ->label('E-mail')
-                                        ->email()
-                                        ->required()
-                                        ->minLength(5)
-                                        ->validationAttribute('E-mail')
-                                        ->validationMessages([
-                                            'required' => 'L\'adresse e-mail d\'un contact interne est obligatoire.',
-                                            'min' => 'L\'adresse e-mail d\'un contact interne ne doit pas faire moins de :min caractères de long.',
-                                            'email' => 'L\'adresse e-mail d\'un contact interne n\'est pas valide.',
-                                        ]),
-                                ])
-                                ->columns(2)
-                                ->addActionLabel('+ Nouveau contact')
+                    ,
+                    Tabs\Tab::make("requirements")
+                        ->label("Critères d'admission")
+                        ->schema([
+                            TiptapEditor::make('admission_requirements')
                                 ->label(false)
-                                ->maxItems(3)
-                                ->requiredWithout('contact_ext')
-                                ->validationAttribute('Contact interne')
-                                ->validationMessages([
-                                    'required_without' => 'Veuillez renseigner au moins un contact interne ou externe.',
-                                ]),
+                                ->nullable()
+                                ->output(TiptapOutput::Json)
+                                ->extraInputAttributes(['style' => 'min-height: 12rem;'])
+                                ->maxContentWidth('full')
+                                ->disableFloatingMenus()
+                                ->placeholder("Informations sur les prérequis pour l'admission. (Vous pouvez laisser ce champ vide)")
+                                ->validationAttribute("Critères d'admission"),
+                            Actions::make([
+                                Action::make('nextTab')
+                                    ->label('Suivant')
+                                    ->icon('heroicon-o-arrow-right')
+                                    ->color('primary')
+                            ])->extraAttributes([
+                                '@click' => "tab = '-apply-instructions-tab'",
+                                'x-bind:class' => "{ 'alpine-active': tab === '-apply-instructions-tab' }",
+                            ])
+                                ->alignEnd()
+                                ->columnSpanFull(),
                         ]),
-                        Fieldset::make('Externes')->schema([
-                            Repeater::make('contact_ext')
-                                ->schema([
-                                    TextInput::make('first_name')
-                                        ->label('Prénom')
-                                        ->required()
-                                        ->minLength(3)
-                                        ->validationAttribute('Prénom externe')
-                                        ->validationMessages([
-                                            'required' => 'Le prénom d\'un contact externe est obligatoire.',
-                                            'min' => 'Le prénom d\'un contact externe ne doit pas faire moins de :min caractères de long.',
-                                        ]),
-                                    TextInput::make('last_name')
-                                        ->label('Nom')
-                                        ->required()
-                                        ->minLength(3)
-                                        ->validationAttribute('Nom externe')
-                                        ->validationMessages([
-                                            'required' => 'Le nom d\'un contact externe est obligatoire.',
-                                            'min' => 'Le nom d\'un contact externe ne doit pas faire moins de :min caractères de long.',
-                                        ]),
-                                    TextInput::make('email')
-                                        ->label('E-mail')
-                                        ->email()
-                                        ->required()
-                                        ->minLength(5)
-                                        ->validationAttribute('E-mail externe')
-                                        ->validationMessages([
-                                            'required' => 'L\'adresse e-mail d\'un contact externe est obligatoire.',
-                                            'min' => 'L\'adresse e-mail d\'un contact externe ne doit pas faire moins de :min caractères de long.',
-                                            'email' => 'L\'adresse e-mail d\'un contact externe n\'est pas valide.',
-                                        ]),
-                                ])
-                                ->columns(2)
-                                ->addActionLabel('+ Nouveau contact')
+                    Tabs\Tab::make("apply_instructions")
+                        ->label("Pour postuler")
+                        ->schema([
+                            TiptapEditor::make('apply_instructions')
+                                ->nullable()
+                                ->extraInputAttributes(['style' => 'min-height: 12rem;'])
+                                ->maxContentWidth('full')
+                                ->disableFloatingMenus()
                                 ->label(false)
-                                ->maxItems(3)
-                                ->requiredWithout('contact_ulb')
-                                ->validationAttribute('Contact externe')
-                                ->validationMessages([
-                                    'required_without' => 'Veuillez renseigner au moins un contact interne ou externe.',
-                                ]),
+                                ->placeholder("Informations sur la marche à suivre pour candidater au projet/prix. (Vous pouvez laisser ce champ vide)")
+                                ->validationAttribute('Pour postuler'),
+                            Actions::make([
+                                Action::make('nextTab')
+                                    ->label('Suivant')
+                                    ->icon('heroicon-o-arrow-right')
+                                    ->color('primary')
+                            ])->extraAttributes([
+                                '@click' => "tab = '-contact-tab'",
+                                'x-bind:class' => "{ 'alpine-active': tab === '-contact-tab' }",
+                            ])
+                                ->alignEnd()
+                                ->columnSpanFull(),
                         ]),
-                    ])
-                    ->reactive(),
-                Tabs\Tab::make('Documents')->schema([
-                    FileUpload::make('documents')
+                    Tabs\Tab::make("contact")
+                        ->label('Contacts')
+                        ->schema([
+                            Fieldset::make('Internes')->schema([
+                                Repeater::make('contact_ulb')
+                                    ->schema([
+                                        TextInput::make('first_name')
+                                            ->label('Prénom')
+                                            ->required()
+                                            ->minLength(3)
+                                            ->validationAttribute('Prénom')
+                                            ->validationMessages([
+                                                'required' => 'Le prénom d\'un contact interne est obligatoire.',
+                                                'min' => 'Le prénom d\'un contact interne ne doit pas faire moins de :min caractères de long.',
+                                            ]),
+                                        TextInput::make('last_name')
+                                            ->label('Nom')
+                                            ->required()
+                                            ->minLength(3)
+                                            ->validationAttribute('Nom')
+                                            ->validationMessages([
+                                                'required' => 'Le nom d\'un contact interne est obligatoire.',
+                                                'min' => 'Le nom d\'un contact interne ne doit pas faire moins de :min caractères de long.',
+                                            ]),
+                                        TextInput::make('email')
+                                            ->label('E-mail')
+                                            ->email()
+                                            ->required()
+                                            ->minLength(5)
+                                            ->validationAttribute('E-mail')
+                                            ->validationMessages([
+                                                'required' => 'L\'adresse e-mail d\'un contact interne est obligatoire.',
+                                                'min' => 'L\'adresse e-mail d\'un contact interne ne doit pas faire moins de :min caractères de long.',
+                                                'email' => 'L\'adresse e-mail d\'un contact interne n\'est pas valide.',
+                                            ]),
+                                    ])
+                                    ->columns(2)
+                                    ->addActionLabel('+ Nouveau contact')
+                                    ->label(false)
+                                    ->maxItems(3)
+                                    ->requiredWithout('contact_ext')
+                                    ->validationAttribute('Contact interne')
+                                    ->validationMessages([
+                                        'required_without' => 'Veuillez renseigner au moins un contact interne ou externe.',
+                                    ]),
+                            ]),
+                            Fieldset::make('Externes')->schema([
+                                Repeater::make('contact_ext')
+                                    ->schema([
+                                        TextInput::make('first_name')
+                                            ->label('Prénom')
+                                            ->required()
+                                            ->minLength(3)
+                                            ->validationAttribute('Prénom externe')
+                                            ->validationMessages([
+                                                'required' => 'Le prénom d\'un contact externe est obligatoire.',
+                                                'min' => 'Le prénom d\'un contact externe ne doit pas faire moins de :min caractères de long.',
+                                            ]),
+                                        TextInput::make('last_name')
+                                            ->label('Nom')
+                                            ->required()
+                                            ->minLength(3)
+                                            ->validationAttribute('Nom externe')
+                                            ->validationMessages([
+                                                'required' => 'Le nom d\'un contact externe est obligatoire.',
+                                                'min' => 'Le nom d\'un contact externe ne doit pas faire moins de :min caractères de long.',
+                                            ]),
+                                        TextInput::make('email')
+                                            ->label('E-mail')
+                                            ->email()
+                                            ->required()
+                                            ->minLength(5)
+                                            ->validationAttribute('E-mail externe')
+                                            ->validationMessages([
+                                                'required' => 'L\'adresse e-mail d\'un contact externe est obligatoire.',
+                                                'min' => 'L\'adresse e-mail d\'un contact externe ne doit pas faire moins de :min caractères de long.',
+                                                'email' => 'L\'adresse e-mail d\'un contact externe n\'est pas valide.',
+                                            ]),
+                                    ])
+                                    ->columns(2)
+                                    ->addActionLabel('+ Nouveau contact')
+                                    ->label(false)
+                                    ->maxItems(3)
+                                    ->requiredWithout('contact_ulb')
+                                    ->validationAttribute('Contact externe')
+                                    ->validationMessages([
+                                        'required_without' => 'Veuillez renseigner au moins un contact interne ou externe.',
+                                    ]),
+                            ]),
+                            Actions::make([
+                                Action::make('nextTab')
+                                    ->label('Suivant')
+                                    ->icon('heroicon-o-arrow-right')
+                                    ->color('primary')
+                            ])->extraAttributes([
+                                '@click' => "tab = '-files-tab'",
+                                'x-bind:class' => "{ 'alpine-active': tab === '-files-tab' }",
+                            ])
+                                ->alignEnd()
+                                ->columnSpanFull(),
+                        ])
+                        ->reactive(),
+                    Tabs\Tab::make('files')
                         ->label('Documents')
-                        ->disk('public')
-                        ->visibility('public')
-                        ->maxSize(15000)
-                        ->acceptedFileTypes([
-                            'application/pdf',
-                            'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // DOCX
-                            'application/vnd.oasis.opendocument.text', // ODT
-                            'application/msword', // DOC
-                            'text/plain', // TXT
-                            'image/png', // PNG
-                            'image/jpeg', // JPG, JPEG
-                            'image/svg+xml', // SVG
-                            'application/vnd.ms-excel', // XLS
-                            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // XLSX
-                            'application/vnd.ms-powerpoint', // PPT
-                            'application/vnd.openxmlformats-officedocument.presentationml.presentation', // PPTX
-                        ])
-                        ->multiple()
-                        ->moveFiles(),
+                        ->schema([
+                            FileUpload::make('documents')
+                                ->label('Documents')
+                                ->disk('public')
+                                ->visibility('public')
+                                ->maxSize(15000)
+                                ->acceptedFileTypes([
+                                    'application/pdf',
+                                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // DOCX
+                                    'application/vnd.oasis.opendocument.text', // ODT
+                                    'application/msword', // DOC
+                                    'text/plain', // TXT
+                                    'image/png', // PNG
+                                    'image/jpeg', // JPG, JPEG
+                                    'image/svg+xml', // SVG
+                                    'application/vnd.ms-excel', // XLS
+                                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // XLSX
+                                    'application/vnd.ms-powerpoint', // PPT
+                                    'application/vnd.openxmlformats-officedocument.presentationml.presentation', // PPTX
+                                ])
+                                ->multiple()
+                                ->moveFiles(),
+                            Actions::make([
+                                Action::make('nextTab')
+                                    ->label('Suivant')
+                                    ->icon('heroicon-o-arrow-right')
+                                    ->color('primary')
+                            ])->extraAttributes([
+                                '@click' => "tab = '-sessions-tab'",
+                                'x-bind:class' => "{ 'alpine-active': tab === '-sessions-tab' }",
+                            ])
+                                ->alignEnd()
+                                ->columnSpanFull(),
+                        ]),
+                    Tabs\Tab::make('sessions')
+                        ->label("Séances d'information")
+                        ->live()
+                        ->schema([
+                            Select::make('infos_sessions')
+                                ->label('Séances d\'info')
+                                ->relationship('info_sessions', 'title')
+                                ->multiple()
+                                ->searchable()
+                                ->nullable()
+                                ->options(fn() => $this->infoSessionsOptions)
+                                ->createOptionForm([
+                                    TextInput::make('title')
+                                        ->label('Titre')
+                                        ->required()
+                                        ->string()
+                                        ->columnSpanFull()
+                                        ->validationAttribute('Titre')
+                                        ->validationMessages([
+                                            'required' => 'Le champ ":attribute" est obligatoire.',
+                                            'string' => 'Le champ ":attribute" doit être une chaîne de caractères.',
+                                        ]),
+                                    RichEditor::make('description')
+                                        ->toolbarButtons(['underline', 'italic', 'bold'])
+                                        ->label('Description')
+                                        ->required()
+                                        ->string()
+                                        ->extraAttributes(['style' => 'max-height: 200px'])
+                                        ->columnSpanFull()
+                                        ->validationAttribute('Description')
+                                        ->validationMessages([
+                                            'required' => 'Le champ ":attribute" est obligatoire.',
+                                            'string' => 'Le champ ":attribute" doit être une chaîne de caractères.',
+                                        ]),
+                                    \LaraZeus\Accordion\Forms\Accordions::make('Disciplines scientifiques')
+                                        ->activeAccordion(2)
+                                        ->isolated()
+                                        ->accordions([
+                                            \LaraZeus\Accordion\Forms\Accordion::make('info-data')
+                                                ->columns()
+                                                ->label('Disciplines scientifiques')
+                                                ->schema($this->getFieldsetSchema()),
+                                        ]),
+                                    DateTimePicker::make('session_datetime')
+                                        ->seconds(false)
+                                        ->label('Date et heure')
+                                        ->after('today')
+                                        ->columnSpan(1)
+                                        ->required()
+                                        ->validationAttribute('Date et heure')
+                                        ->validationMessages([
+                                            'required' => 'Le champ ":attribute" est obligatoire.',
+                                            'after' => 'Le champ ":attribute" doit avoir une valeur ultérieure à la date du jour.',
+                                        ]),
+                                    TextInput::make('speaker')
+                                        ->label('Présentateur·ice')
+                                        ->string()
+                                        ->nullable()
+                                        ->columnSpan(1)
+                                        ->validationAttribute('Présentateur·ice')
+                                        ->validationMessages([
+                                            'string' => 'Le champ ":attribute" doit être une chaîne de caractères.',
+                                        ]),
+                                    Select::make('session_type')
+                                        ->label('Type de session')
+                                        ->options([
+                                            2 => 'Hybride',
+                                            1 => 'Présentiel',
+                                            0 => 'Distanciel',
+                                        ])
+                                        ->default(2)
+                                        ->reactive()
+                                        ->required()
+                                        ->validationAttribute('Type de session')
+                                        ->validationMessages([
+                                            'required' => 'Le champ ":attribute" est obligatoire.',
+                                        ]),
+                                    TextInput::make('url')
+                                        ->required()
+                                        ->label('URL de la réunion')
+                                        ->visible(fn($get) => in_array($get('session_type'), [0, 2]))
+                                        ->url()
+                                        ->activeUrl()
+                                        ->reactive()
+                                        ->validationAttribute('URL de la réunion')
+                                        ->validationMessages([
+                                            'required' => 'Le champ ":attribute" est obligatoire.',
+                                            'activeUrl' => 'L\'URL renseignée n\'est pas jugée sûre.',
+                                            'url' => 'Le champ ":attribute" doit être un URL valide.',
+                                        ]),
+                                    TextInput::make('location')
+                                        ->required()
+                                        ->string()
+                                        ->label('Adresse')
+                                        ->visible(fn($get) => in_array($get('session_type'), [1, 2]))
+                                        ->validationAttribute('Adresse')
+                                        ->validationMessages([
+                                            'required' => 'Le champ ":attribute" est obligatoire.',
+                                            'string' => 'Le champ ":attribute" doit être une chaîne de caractères.',
+                                        ]),
+                                    Select::make('organisation_id')
+                                        ->required()
+                                        ->relationship('organisation', 'title')
+                                        ->label('Organisation')
+                                        ->searchable()
+                                        ->preload()
+                                        ->createOptionForm([
+                                            TextInput::make('title')
+                                                ->required(),
+                                        ])
+                                        ->validationAttribute('Organisation')
+                                        ->validationMessages([
+                                            'required' => 'Le champ ":attribute" est obligatoire.',
+                                        ]),
+                                ])->createOptionUsing(function ($data, $set) {
+                                    try {
+                                        $info_session = InfoSession::create([
+                                            'title' => $data['title'],
+                                            'description' => $data['description'],
+                                            'session_datetime' => $data['session_datetime'],
+                                            'speaker' => $data['speaker'],
+                                            'session_type' => $data['session_type'],
+                                            'location' => $data['location'],
+                                            'organisation_id' => $data['organisation_id'],
+                                        ]);
+                                        $info_session->scientific_domains()->attach($data['scientific_domains']);
+
+                                        Notification::make()
+                                            ->icon('heroicon-o-check')
+                                            ->color('success')
+                                            ->iconColor('success')
+                                            ->title('Session d\'info créée avec succès.')
+                                            ->seconds(5)
+                                            ->send();
+
+                                        $this->refreshInfoSessionsOptions();
+                                        $set('infos_sessions', [$info_session->id]);
+
+                                    } catch (\Exception $e) {
+                                        Notification::make()
+                                            ->icon('heroicon-o-x')
+                                            ->color('danger')
+                                            ->iconColor('danger')
+                                            ->title('Quelque chose ne s\'est pas passé comme prévu. Veuillez réessayer.')
+                                            ->seconds(5)
+                                            ->send();
+                                    }
+                                })
+                        ])->afterStateUpdated(function (Set $set, $state) {
+                            $this->refreshInfoSessionsOptions();
+                            $set('info_sessions', $this->infoSessionsOptions);
+                        })
                 ]),
-                Tabs\Tab::make('sessions')
-                    ->label("Séances d'information")
-                    ->live()
-                    ->schema([
-                        Select::make('infos_sessions')
-                            ->label('Séances d\'info')
-                            ->relationship('info_sessions', 'title')
-                            ->multiple()
-                            ->searchable()
-                            ->nullable()
-                            ->options(fn() => $this->infoSessionsOptions)
-                            ->createOptionForm([
-                                TextInput::make('title')
-                                    ->label('Titre')
-                                    ->required()
-                                    ->string()
-                                    ->columnSpanFull()
-                                    ->validationAttribute('Titre')
-                                    ->validationMessages([
-                                        'required' => 'Le champ ":attribute" est obligatoire.',
-                                        'string' => 'Le champ ":attribute" doit être une chaîne de caractères.',
-                                    ]),
-                                RichEditor::make('description')
-                                    ->toolbarButtons(['underline', 'italic', 'bold'])
-                                    ->label('Description')
-                                    ->required()
-                                    ->string()
-                                    ->extraAttributes(['style' => 'max-height: 200px'])
-                                    ->columnSpanFull()
-                                    ->validationAttribute('Description')
-                                    ->validationMessages([
-                                        'required' => 'Le champ ":attribute" est obligatoire.',
-                                        'string' => 'Le champ ":attribute" doit être une chaîne de caractères.',
-                                    ]),
-                                \LaraZeus\Accordion\Forms\Accordions::make('Disciplines scientifiques')
-                                    ->activeAccordion(2)
-                                    ->isolated()
-                                    ->accordions([
-                                        \LaraZeus\Accordion\Forms\Accordion::make('info-data')
-                                            ->columns()
-                                            ->label('Disciplines scientifiques')
-                                            ->schema($this->getFieldsetSchema()),
-                                    ]),
-                                DateTimePicker::make('session_datetime')
-                                    ->seconds(false)
-                                    ->label('Date et heure')
-                                    ->after('today')
-                                    ->columnSpan(1)
-                                    ->required()
-                                    ->validationAttribute('Date et heure')
-                                    ->validationMessages([
-                                        'required' => 'Le champ ":attribute" est obligatoire.',
-                                        'after' => 'Le champ ":attribute" doit avoir une valeur ultérieure à la date du jour.',
-                                    ]),
-                                TextInput::make('speaker')
-                                    ->label('Présentateur·ice')
-                                    ->string()
-                                    ->nullable()
-                                    ->columnSpan(1)
-                                    ->validationAttribute('Présentateur·ice')
-                                    ->validationMessages([
-                                        'string' => 'Le champ ":attribute" doit être une chaîne de caractères.',
-                                    ]),
-                                Select::make('session_type')
-                                    ->label('Type de session')
-                                    ->options([
-                                        2 => 'Hybride',
-                                        1 => 'Présentiel',
-                                        0 => 'Distanciel',
-                                    ])
-                                    ->default(2)
-                                    ->reactive()
-                                    ->required()
-                                    ->validationAttribute('Type de session')
-                                    ->validationMessages([
-                                        'required' => 'Le champ ":attribute" est obligatoire.',
-                                    ]),
-                                TextInput::make('url')
-                                    ->required()
-                                    ->label('URL de la réunion')
-                                    ->visible(fn($get) => in_array($get('session_type'), [0, 2]))
-                                    ->url()
-                                    ->activeUrl()
-                                    ->reactive()
-                                    ->validationAttribute('URL de la réunion')
-                                    ->validationMessages([
-                                        'required' => 'Le champ ":attribute" est obligatoire.',
-                                        'activeUrl' => 'L\'URL renseignée n\'est pas jugée sûre.',
-                                        'url' => 'Le champ ":attribute" doit être un URL valide.',
-                                    ]),
-                                TextInput::make('location')
-                                    ->required()
-                                    ->string()
-                                    ->label('Adresse')
-                                    ->visible(fn($get) => in_array($get('session_type'), [1, 2]))
-                                    ->validationAttribute('Adresse')
-                                    ->validationMessages([
-                                        'required' => 'Le champ ":attribute" est obligatoire.',
-                                        'string' => 'Le champ ":attribute" doit être une chaîne de caractères.',
-                                    ]),
-                                Select::make('organisation_id')
-                                    ->required()
-                                    ->relationship('organisation', 'title')
-                                    ->label('Organisation')
-                                    ->searchable()
-                                    ->preload()
-                                    ->createOptionForm([
-                                        TextInput::make('title')
-                                            ->required(),
-                                    ])
-                                    ->validationAttribute('Organisation')
-                                    ->validationMessages([
-                                        'required' => 'Le champ ":attribute" est obligatoire.',
-                                    ]),
-                            ])->createOptionUsing(function ($data, $set) {
-                                try {
-                                    $info_session = InfoSession::create([
-                                        'title' => $data['title'],
-                                        'description' => $data['description'],
-                                        'session_datetime' => $data['session_datetime'],
-                                        'speaker' => $data['speaker'],
-                                        'session_type' => $data['session_type'],
-                                        'location' => $data['location'],
-                                        'organisation_id' => $data['organisation_id'],
-                                    ]);
-                                    $info_session->scientific_domains()->attach($data['scientific_domains']);
-
-                                    Notification::make()
-                                        ->icon('heroicon-o-check')
-                                        ->color('success')
-                                        ->iconColor('success')
-                                        ->title('Session d\'info créée avec succès.')
-                                        ->seconds(5)
-                                        ->send();
-
-                                    $this->refreshInfoSessionsOptions();
-                                    $set('infos_sessions', [$info_session->id]);
-
-                                } catch (\Exception $e) {
-                                    Notification::make()
-                                        ->icon('heroicon-o-x')
-                                        ->color('danger')
-                                        ->iconColor('danger')
-                                        ->title('Quelque chose ne s\'est pas passé comme prévu. Veuillez réessayer.')
-                                        ->seconds(5)
-                                        ->send();
-                                }
-                            })
-                    ])->afterStateUpdated(function (Set $set, $state) {
-                        $this->refreshInfoSessionsOptions();
-                        $set('info_sessions', $this->infoSessionsOptions);
-                    })
-            ]),
             Actions::make([
                 Action::make('submit')
                     ->label('Valider')
@@ -623,7 +735,7 @@ final class ProjectForm extends Component implements HasForms
                     ->color('info')
                     ->action('saveAsDraft')
             ])->alignEnd()
-        ])->statePath('data')->model($this->project);
+        ]);
     }
 
 
