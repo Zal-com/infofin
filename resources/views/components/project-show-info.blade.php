@@ -211,7 +211,7 @@
                 </x-filament::section.heading>
                 <ul>
                     @foreach($project->documents as $document)
-                        <x-filament::section class="flex flew-row w-1/2 gap-3">
+                        <x-filament::section class="flex flex-row w-1/2 gap-3">
                             <li>
                                 <div class="flex justify-between">
                                     <div class="flex items-center">
