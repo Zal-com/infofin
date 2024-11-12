@@ -270,103 +270,180 @@ class ProjectEditForm extends Component implements HasForms
                             return $options;
                         })
                         ->columnSpanFull(),
+                    Actions::make([
+                        Action::make('nextTab')
+                            ->label('Suivant')
+                            ->icon('heroicon-o-arrow-right')
+                            ->color('primary')
+                    ])->extraAttributes([
+                        '@click' => "tab = '-dates-importantes-tab'",
+                        'x-bind:class' => "{ 'alpine-active': tab === '-dates-importantes-tab' }",
+                    ])
+                        ->alignEnd()
+                        ->columnSpanFull(),
                 ])->columns(2),
-                Tabs\Tab::make('Dates importantes')->schema([
-                    Fieldset::make('Deadlines')->schema([
-                        Repeater::make('deadlines')->schema([
-                            DatePicker::make('date')
-                                ->label('Date')
+                Tabs\Tab::make('dates-importantes')
+                    ->label('Dates importantes')
+                    ->schema([
+                        Fieldset::make('Deadlines')->schema([
+                            Repeater::make('deadlines')->schema([
+                                DatePicker::make('date')
+                                    ->label('Date')
+                                    ->required()
+                                    ->validationAttribute('Date')
+                                    ->validationMessages([
+                                        'required' => 'Le champ ":attribute" est obligatoire.',
+                                    ]),
+                                TextInput::make('proof')
+                                    ->label('Justificatif')
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->validationAttribute('Justificatif')
+                                    ->validationMessages([
+                                        'required' => 'Le champ ":attribute" est obligatoire.',
+                                        'max' => 'Le champ ":attribute" ne peut pas excéder :max caractères de long.',
+                                    ]),
+                                Checkbox::make('continuous')
+                                    ->default(false)
+                                    ->label('Continu'),
+                            ])->label(false)
+                                ->addActionLabel('+ Ajouter une deadline')
+                                ->minItems(1)
                                 ->required()
-                                ->validationAttribute('Date')
+                                ->defaultItems(1)
+                                ->validationAttribute('Deadlines')
                                 ->validationMessages([
-                                    'required' => 'Le champ ":attribute" est obligatoire.',
+                                    'required' => 'L\'appel doit contenir au moins une ":attribute".',
                                 ]),
-                            TextInput::make('proof')
-                                ->label('Justificatif')
-                                ->required()
-                                ->maxLength(255)
-                                ->validationAttribute('Justificatif')
-                                ->validationMessages([
-                                    'required' => 'Le champ ":attribute" est obligatoire.',
-                                    'max' => 'Le champ ":attribute" ne peut pas excéder :max caractères de long.',
-                                ]),
-                            Checkbox::make('continuous')
-                                ->default(false)
-                                ->label('Continu'),
-                        ])->label(false)
-                            ->addActionLabel('+ Ajouter une deadline')
-                            ->minItems(1)
-                            ->required()
-                            ->defaultItems(1)
-                            ->validationAttribute('Deadlines')
-                            ->validationMessages([
-                                'required' => 'L\'appel doit contenir au moins une ":attribute".',
-                            ]),
-                    ]),
-                ]),
-                Tabs\Tab::make('Description')->schema([
-                    RichEditor::make('short_description')
-                        ->label('Description courte')
-                        ->placeholder('Courte et catchy, elle sera visible depuis la page principale et dans la newsletter')
-                        ->required()
-                        ->live()
-                        ->toolbarButtons([
-                            'bold',
-                            'italic',
-                            'redo',
-                            'strike',
-                            'underline',
-                            'undo',
-                        ])
-                        ->extraAttributes(['maxlength' => 500, 'script'])
-                        ->maxLength(500)
-                        ->extraAttributes(['maxlength' => 500, 'script' => ""])
-                        ->hint(function ($component, $state) {
-                            $cleanedState = strip_tags($state);
-                            return strlen($cleanedState) . '/' . $component->getMaxLength() . ' caractères';
-                        })
-                        ->helperText('Maximum 500 caractères')
-                        ->dehydrated(false),
-                    TiptapEditor::make('long_description')
-                        ->extraInputAttributes(['style' => 'min-height: 12rem;'])
-                        ->maxContentWidth('full')
-                        ->disableFloatingMenus()
-                        ->label('Description complète')
-                        ->required()
-                        ->validationAttribute('Description courte')
-                        ->validationMessages([
-                            'required' => 'Le champ ":attribute" est obligatoire.',
-                            'max' => 'Le champ ":attribute" ne peut pas excéder :max caractères de long.',
                         ]),
-                ]),
-                Tabs\Tab::make('Budget et dépenses')->schema([
-                    TiptapEditor::make('funding')
-                        ->label(false)
-                        ->nullable()
-                        ->extraInputAttributes(['style' => 'min-height: 12rem;'])
-                        ->maxContentWidth('full')
-                        ->disableFloatingMenus()
-                        ->validationAttribute("Budget et dépenses"),
-                ]),
-                Tabs\Tab::make("Critères d'admission")->schema([
-                    TiptapEditor::make('admission_requirements')
-                        ->label(false)
-                        ->nullable()
-                        ->extraInputAttributes(['style' => 'min-height: 12rem;'])
-                        ->maxContentWidth('full')
-                        ->disableFloatingMenus()
-                        ->validationAttribute("Critères d'admission"),
-                ]),
-                Tabs\Tab::make("Pour postuler")->schema([
-                    TiptapEditor::make('apply_instructions')
-                        ->label(false)
-                        ->extraInputAttributes(['style' => 'min-height: 12rem;'])
-                        ->maxContentWidth('full')
-                        ->disableFloatingMenus()
-                        ->nullable()
-                        ->validationAttribute('Pour postuler'),
-                ]),
-                Tabs\Tab::make("Contacts")
+                        Actions::make([
+                            Action::make('nextTab')
+                                ->label('Suivant')
+                                ->icon('heroicon-o-arrow-right')
+                                ->color('primary')
+                        ])->extraAttributes([
+                            '@click' => "tab = '-description-tab'",
+                            'x-bind:class' => "{ 'alpine-active': tab === '-description-tab' }",
+                        ])
+                            ->alignEnd()
+                            ->columnSpanFull(),
+                    ]),
+                Tabs\Tab::make('description')
+                    ->label('Description')
+                    ->schema([
+                        RichEditor::make('short_description')
+                            ->label('Description courte')
+                            ->placeholder('Courte et catchy, elle sera visible depuis la page principale et dans la newsletter')
+                            ->required()
+                            ->live()
+                            ->toolbarButtons([
+                                'bold',
+                                'italic',
+                                'redo',
+                                'strike',
+                                'underline',
+                                'undo',
+                            ])
+                            ->extraAttributes(['maxlength' => 500, 'script'])
+                            ->maxLength(500)
+                            ->extraAttributes(['maxlength' => 500, 'script' => ""])
+                            ->hint(function ($component, $state) {
+                                $cleanedState = strip_tags($state);
+                                return strlen($cleanedState) . '/' . $component->getMaxLength() . ' caractères';
+                            })
+                            ->helperText('Maximum 500 caractères')
+                            ->dehydrated(false),
+                        TiptapEditor::make('long_description')
+                            ->extraInputAttributes(['style' => 'min-height: 12rem;'])
+                            ->maxContentWidth('full')
+                            ->disableFloatingMenus()
+                            ->label('Description complète')
+                            ->required()
+                            ->validationAttribute('Description courte')
+                            ->validationMessages([
+                                'required' => 'Le champ ":attribute" est obligatoire.',
+                                'max' => 'Le champ ":attribute" ne peut pas excéder :max caractères de long.',
+                            ]),
+                        Actions::make([
+                            Action::make('nextTab')
+                                ->label('Suivant')
+                                ->icon('heroicon-o-arrow-right')
+                                ->color('primary')
+                        ])->extraAttributes([
+                            '@click' => "tab = '-funding-tab'",
+                            'x-bind:class' => "{ 'alpine-active': tab === '-funding-tab' }",
+                        ])
+                            ->alignEnd()
+                            ->columnSpanFull(),
+                    ]),
+                Tabs\Tab::make('funding')
+                    ->label('Budget et dépenses')
+                    ->schema([
+                        TiptapEditor::make('funding')
+                            ->label(false)
+                            ->nullable()
+                            ->extraInputAttributes(['style' => 'min-height: 12rem;'])
+                            ->maxContentWidth('full')
+                            ->disableFloatingMenus()
+                            ->validationAttribute("Budget et dépenses"),
+                        Actions::make([
+                            Action::make('nextTab')
+                                ->label('Suivant')
+                                ->icon('heroicon-o-arrow-right')
+                                ->color('primary')
+                        ])->extraAttributes([
+                            '@click' => "tab = '-requirements-tab'",
+                            'x-bind:class' => "{ 'alpine-active': tab === '-requirements-tab' }",
+                        ])
+                            ->alignEnd()
+                            ->columnSpanFull(),
+                    ]),
+                Tabs\Tab::make("requirements")
+                    ->label("Critères d'admission")
+                    ->schema([
+                        TiptapEditor::make('admission_requirements')
+                            ->label(false)
+                            ->nullable()
+                            ->extraInputAttributes(['style' => 'min-height: 12rem;'])
+                            ->maxContentWidth('full')
+                            ->disableFloatingMenus()
+                            ->validationAttribute("Critères d'admission"),
+                        Actions::make([
+                            Action::make('nextTab')
+                                ->label('Suivant')
+                                ->icon('heroicon-o-arrow-right')
+                                ->color('primary')
+                        ])->extraAttributes([
+                            '@click' => "tab = '-apply-instructions-tab'",
+                            'x-bind:class' => "{ 'alpine-active': tab === '-apply-instructions-tab' }",
+                        ])
+                            ->alignEnd()
+                            ->columnSpanFull(),
+                    ]),
+                Tabs\Tab::make("apply-instructions")
+                    ->label('Pour postuler')
+                    ->schema([
+                        TiptapEditor::make('apply_instructions')
+                            ->label(false)
+                            ->extraInputAttributes(['style' => 'min-height: 12rem;'])
+                            ->maxContentWidth('full')
+                            ->disableFloatingMenus()
+                            ->nullable()
+                            ->validationAttribute('Pour postuler'),
+                        Actions::make([
+                            Action::make('nextTab')
+                                ->label('Suivant')
+                                ->icon('heroicon-o-arrow-right')
+                                ->color('primary')
+                        ])->extraAttributes([
+                            '@click' => "tab = '-contact-tab'",
+                            'x-bind:class' => "{ 'alpine-active': tab === '-contact-tab' }",
+                        ])
+                            ->alignEnd()
+                            ->columnSpanFull(),
+                    ]),
+                Tabs\Tab::make("contact")
+                    ->label("Contacts")
                     ->schema([
                         Fieldset::make('Internes')->schema([
                             Repeater::make('contact_ulb')
@@ -454,32 +531,56 @@ class ProjectEditForm extends Component implements HasForms
                                     'required_without' => 'Veuillez renseigner au moins un contact interne ou externe.',
                                 ]),
                         ]),
+                        Actions::make([
+                            Action::make('nextTab')
+                                ->label('Suivant')
+                                ->icon('heroicon-o-arrow-right')
+                                ->color('primary')
+                        ])->extraAttributes([
+                            '@click' => "tab = '-files-tab'",
+                            'x-bind:class' => "{ 'alpine-active': tab === '-files-tab' }",
+                        ])
+                            ->alignEnd()
+                            ->columnSpanFull(),
                     ])
                     ->reactive(),
-                Tabs\Tab::make('Documents')->schema([
-                    FileUpload::make('documents')
-                        ->label('Documents')
-                        ->disk('public')
-                        ->visibility('public')
-                        ->maxSize(15000)
-                        ->acceptedFileTypes([
-                            'application/pdf',
-                            'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // DOCX
-                            'application/vnd.oasis.opendocument.text', // ODT
-                            'application/msword', // DOC
-                            'text/plain', // TXT
-                            'image/png', // PNG
-                            'image/jpeg', // JPG, JPEG
-                            'image/svg+xml', // SVG
-                            'application/vnd.ms-excel', // XLS
-                            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // XLSX
-                            'application/vnd.ms-powerpoint', // PPT
-                            'application/vnd.openxmlformats-officedocument.presentationml.presentation', // PPTX
+                Tabs\Tab::make('files')
+                    ->label('Documents')
+                    ->schema([
+                        FileUpload::make('documents')
+                            ->label('Documents')
+                            ->disk('public')
+                            ->visibility('public')
+                            ->maxSize(15000)
+                            ->acceptedFileTypes([
+                                'application/pdf',
+                                'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // DOCX
+                                'application/vnd.oasis.opendocument.text', // ODT
+                                'application/msword', // DOC
+                                'text/plain', // TXT
+                                'image/png', // PNG
+                                'image/jpeg', // JPG, JPEG
+                                'image/svg+xml', // SVG
+                                'application/vnd.ms-excel', // XLS
+                                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // XLSX
+                                'application/vnd.ms-powerpoint', // PPT
+                                'application/vnd.openxmlformats-officedocument.presentationml.presentation', // PPTX
+                            ])
+                            ->multiple()
+                            ->moveFiles()
+                            ->default(fn() => $this->project->documents->pluck('path')->toArray()),
+                        Actions::make([
+                            Action::make('nextTab')
+                                ->label('Suivant')
+                                ->icon('heroicon-o-arrow-right')
+                                ->color('primary')
+                        ])->extraAttributes([
+                            '@click' => "tab = '-sessions-tab'",
+                            'x-bind:class' => "{ 'alpine-active': tab === '-sessions-tab' }",
                         ])
-                        ->multiple()
-                        ->moveFiles()
-                        ->default(fn() => $this->project->documents->pluck('path')->toArray()),
-                ]),
+                            ->alignEnd()
+                            ->columnSpanFull(),
+                    ]),
                 Tabs\Tab::make('sessions')
                     ->label("Séances d'information")
                     ->live()
