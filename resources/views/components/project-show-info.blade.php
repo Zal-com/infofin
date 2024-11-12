@@ -209,7 +209,7 @@
                 <x-filament::section.heading class="text-2xl mb-4">
                     Documents disponibles
                 </x-filament::section.heading>
-                <ul class="flex flex-row gap-3">
+                <ul class="flex flex-col gap-3">
                     @foreach($project->documents as $document)
                         <x-filament::section class="w-1/2">
                             <li>
