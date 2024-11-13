@@ -14,9 +14,9 @@
     </div>
     <footer class="bg-blue-950 text-white flex sm:flex-row flex-col p-5 gap-5 min-h-[200px]">
         <div class="container m-auto flex flew-row">
-            <div class="contain-content">
+            <a href="{{route('projects.index')}}" class="contain-content">
                 <img src="{{ asset('img/ULB_logo_mono_blanc.png') }}" alt="ULB Logo">
-            </div>
+            </a>
 
             <div class="flex flex-col justify-center w-full gap-5 sm:flex-row sm:gap-10">
                 <!-- Groupe 1: Liens utiles -->
