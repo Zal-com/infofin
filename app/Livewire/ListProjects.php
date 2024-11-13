@@ -11,7 +11,9 @@ use App\Models\UserFavorite;
 use App\Traits\ReplicateModelWithRelations;
 use Awcodes\FilamentBadgeableColumn\Components\Badge;
 use Awcodes\FilamentBadgeableColumn\Components\BadgeableColumn;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -251,8 +253,8 @@ class ListProjects extends Component implements HasForms, HasTable
                                 ->required()
                                 ->createOptionForm([
                                     TextInput::make('name')->label('Titre')->required(),
-                                    TextInput::make('description')->label('Description')->maxLength(500),
-                                ])
+                                    RichEditor::make('description')->label('Description')->maxLength(500)->toolbarButtons(['bold', 'bulletlist', 'italic', 'link', 'orderedList', 'strike', 'underline']),
+                                ])->createOptionModalHeading('Créer une nouvelle collection')
                                 ->createOptionUsing(function ($data) {
                                     // Save the new collection to the database
                                     $collection = Collection::create([
@@ -333,8 +335,8 @@ class ListProjects extends Component implements HasForms, HasTable
                             ->options(Collection::where('user_id', Auth::id())->pluck('name', 'id')->toArray())
                             ->createOptionForm([
                                 TextInput::make('name')->label('Titre')->required(),
-                                TextInput::make('description')->label('Description')->maxLength(500),
-                            ])
+                                RichEditor::make('description')->label('Description')->maxLength(500)->toolbarButtons(['bold', 'bulletlist', 'italic', 'link', 'orderedList', 'strike', 'underline']),
+                            ])->createOptionModalHeading('Créer une nouvelle collection')
                             ->createOptionUsing(function ($data) {
                                 // Create and return a new collection
                                 $collection = Collection::create([

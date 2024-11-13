@@ -71,6 +71,7 @@ class UserProjects extends Component implements HasTable, HasForms
                     ->color('danger')
 
             ])->actionsPosition(ActionsPosition::AfterColumns)
+            ->defaultSort('updated_at', 'desc')
             ->filters([
                     Filter::make('organisation')->label('Organisation')->form([
                         Select::make('organisation_id')

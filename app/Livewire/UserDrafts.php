@@ -61,6 +61,7 @@ class UserDrafts extends Component implements HasTable, HasForms
                     ->color('danger')
 
             ])->actionsPosition(ActionsPosition::AfterColumns)
+            ->defaultSort('updated_at', 'desc')
             ->defaultPaginationPageOption(25)
             ->paginationPageOptions([5, 10, 25, 50, 100])
             ->recordUrl(fn($record) => route('projects.create', ['record' => $record->id]));
