@@ -116,8 +116,6 @@ final class ProjectForm extends Component implements HasForms
     {
         return $form->schema([
             Tabs::make('Tabs')
-                ->statePath('data')
-                ->model($this->project)
                 ->reactive()
                 ->live()
                 ->tabs([
@@ -735,7 +733,9 @@ final class ProjectForm extends Component implements HasForms
                     ->color('info')
                     ->action('saveAsDraft')
             ])->alignEnd()
-        ]);
+        ])
+            ->statePath('data')
+            ->model($this->project);
     }
 
 
