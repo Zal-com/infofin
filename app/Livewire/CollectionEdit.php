@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\Collection;
 use App\Models\Project;
 use Filament\Forms\Components\Actions\Action;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -96,8 +97,9 @@ class CollectionEdit extends Component implements HasForms, HasTable
                             ->label('Titre')
                             ->maxLength(255)
                             ->required(),
-                        TextInput::make('description')
+                        RichEditor::make('description')
                             ->label('Description')
+                            ->toolbarButtons(['bold', 'bulletlist', 'italic', 'link', 'orderedList', 'strike', 'underline'])
                             ->maxLength(500)
                             ->nullable(),
                     ])

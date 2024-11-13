@@ -62,6 +62,7 @@ class UserCollection extends Component implements HasTable, HasForms
                 TextColumn::make('name')
                     ->label('Titre'),
                 TextColumn::make('description')
+                    ->html()
                     ->label('Description')
                     ->wrap(),
                 TextColumn::make('projects_count')
