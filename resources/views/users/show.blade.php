@@ -13,6 +13,14 @@
                     Informations personnelles
                 </x-filament::tabs.item>
                 --}}
+                <x-filament::tabs.item @click="tab = 'interests'" :alpine-active="'tab === \'interests\''"
+                                       icon="heroicon-o-heart">
+                    Mes centres d'intérêt
+                </x-filament::tabs.item>
+                <x-filament::tabs.item @click="tab = 'favorites'" :alpine-active="'tab === \'favorites\''"
+                                       icon="heroicon-o-bookmark">
+                    Mes favoris
+                </x-filament::tabs.item>
                 @can('create collection')
                     <x-filament::tabs.item @click="tab = 'collections'" :alpine-active="'tab === \'collections\''"
                                            icon="heroicon-o-folder">
@@ -31,14 +39,6 @@
                         Mes projets
                     </x-filament::tabs.item>
                 @endcan
-                <x-filament::tabs.item @click="tab = 'interests'" :alpine-active="'tab === \'interests\''"
-                                       icon="heroicon-o-heart">
-                    Mes centres d'intérêt
-                </x-filament::tabs.item>
-                <x-filament::tabs.item @click="tab = 'favorites'" :alpine-active="'tab === \'favorites\''"
-                                       icon="heroicon-o-bookmark">
-                    Mes favoris
-                </x-filament::tabs.item>
             </x-filament::tabs>
             @livewire('newsletter-subscription-component')
         </div>
