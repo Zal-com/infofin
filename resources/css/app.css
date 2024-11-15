@@ -12,8 +12,14 @@
 .markdown ul,
 .markdown ol {
     list-style: revert !important;
-    list-style-position: outside !important;
+    list-style-position: inside !important;
 }
+
+ul li p {
+    margin: 0;
+    display: inline;
+}
+
 
 #or {
     position: relative;

@@ -157,7 +157,7 @@
                     Requis d'admission
                 </x-filament::section.heading>
                 <x-filament::section.description
-                    class="mb-1 text-sm text-gray-500 dark:text-gray-400 text-justify list-inside">
+                    class="mb-1 text-sm text-gray-500 dark:text-gray-400 text-justify list-outside">
                     <div class="text-sm text-gray-500 dark:text-gray-400 text-justify">
                         @php
                             $admission_requirements = $project->admission_requirements ?? '';
