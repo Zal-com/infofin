@@ -32,7 +32,7 @@ class ListInfoSession extends Component implements HasForms, HasTable
                 ->icon('heroicon-o-pencil')
                 ->action(fn($record) => redirect()->route('info_session.edit', $record->id))
                 ->visible(fn($record) => auth()->check() && (
-                        auth()->user()->can('edit others info_session') ||
+                        auth()->user()->can('edit other info_session') ||
                         auth()->user()->can('edit own info_session', $record)))
         ];
 

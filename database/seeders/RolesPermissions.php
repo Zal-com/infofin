@@ -48,6 +48,10 @@ class RolesPermissions extends Seeder
                 Permission::create(['name' => 'delete other collection']),
                 Permission::create(['name' => 'delete own collection']),
                 Permission::create(['name' => 'create info_session']),
+                Permission::create(['name' => 'edit own info_session']),
+                Permission::create(['name' => 'edit other info_session']),
+                Permission::create(['name' => 'delete other info_session']),
+                Permission::create(['name' => 'delete own info_session']),
             ];
 
             //Permissions
