@@ -119,6 +119,7 @@ class InfoSessionEditForm extends Component implements HasForms
                             ->schema($this->getFieldsetSchema()),
                     ]),
                 DateTimePicker::make('session_datetime')
+                    ->maxDate('9999-12-31T23:59')
                     ->seconds(false)
                     ->label('Date et heure')
                     ->after('today')

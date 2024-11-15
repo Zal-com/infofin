@@ -134,7 +134,9 @@ class InfoSessionForm extends Component implements HasForms
                             ->schema($this->getFieldsetSchema()),
                     ]),
                 DateTimePicker::make('session_datetime')
+                    ->displayFormat('d/m/Y H:i')
                     ->seconds(false)
+                    ->maxDate('9999-12-31T23:59')
                     ->label('Date et heure')
                     ->after('today')
                     ->columnSpan(1)
