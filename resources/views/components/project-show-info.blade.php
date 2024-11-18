@@ -293,7 +293,7 @@
                                 </div>
                                 <div class="flex-grow min-w-0">
                                     <a href="mailto:{{trim($contact_ulb['email'])}}?subject=Infofin - {{$project->title}}({{$project->id}})"
-                                       class="inline-block break-all">
+                                       class="inline-block break-all hover:text-primary-500">
                                         {{$contact_ulb['email']}}
                                     </a>
                                 </div>
@@ -323,7 +323,7 @@
                                 <div class="flex-grow min-w-0">
                                     <p class="flex-1 flex-wrap overflow-ellipsis line-clamp-1">
                                         <a href="mailto:{{trim($contact_ext['email'])}}?subject=Infofin - {{$project->title}}({{$project->id}})"
-                                           class="inline-block break-all">
+                                           class="inline-block break-all hover:text-primary-500">
                                             {{$contact_ext['email']}}
                                         </a>
                                     </p>

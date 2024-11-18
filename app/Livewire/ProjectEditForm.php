@@ -297,6 +297,17 @@ class ProjectEditForm extends Component implements HasForms
                                 TextInput::make('proof')
                                     ->label('Justificatif')
                                     ->required()
+                                    ->datalist([
+                                        'Deposit of the draft',
+                                        'Deposit of the letter of Intent',
+                                        'Deposit of the preliminary draft',
+                                        'Full-proposal',
+                                        'Internal deadline',
+                                        'Pre-proposal',
+                                        'Promoter',
+                                        'Registration',
+                                        'Submission of applications'
+                                    ])
                                     ->maxLength(255)
                                     ->validationAttribute('Justificatif')
                                     ->validationMessages([
