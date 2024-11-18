@@ -2,30 +2,20 @@
 
 namespace App\Livewire;
 
-use App\Models\Organisation;
-use App\Models\Project;
-use App\Models\User;
 use App\Models\UserFavorite;
 use Awcodes\FilamentBadgeableColumn\Components\Badge;
 use Awcodes\FilamentBadgeableColumn\Components\BadgeableColumn;
-use Doctrine\DBAL\Schema\Column;
-use Filament\Actions\Contracts\HasActions;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Models\Contracts\HasDefaultTenant;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Filters\Filter;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\HtmlString;
 use Livewire\Component;
-use Tiptap\Nodes\Text;
 
 class UserFavorites extends Component implements HasTable, HasForms
 {
@@ -42,7 +32,7 @@ class UserFavorites extends Component implements HasTable, HasForms
         return $table
             ->query(
                 UserFavorite::where('user_id', Auth::id())
-                    ->with(['project', 'user'])
+                    ->with(['project.organisation', 'user'])
             )
             ->columns([
                 BadgeableColumn::make('project.title')
@@ -54,7 +44,8 @@ class UserFavorites extends Component implements HasTable, HasForms
                     ->searchable()
                     ->width(300)
                     ->suffixBadges(function (UserFavorite $record) {
-                        if ($record->project->is_big) {
+                        $user = Auth::user();
+                        if (($user->hasRole('contributor') || $user->hasRole('admin')) && $record->project->is_big) {
                             return [
                                 Badge::make('is_big')
                                     ->label('Projet majeur')
@@ -71,7 +62,7 @@ class UserFavorites extends Component implements HasTable, HasForms
                     ->limit(100)
                     ->width(300)
                     ->searchable(),
-                TextColumn::make('project.organisations.title')
+                TextColumn::make('project.organisation.title')
                     ->label('Organisation')
                     ->wrap()
                     ->width(200)
