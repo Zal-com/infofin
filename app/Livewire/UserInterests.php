@@ -7,6 +7,7 @@ use App\Models\Expense;
 use App\Models\User;
 use App\Traits\ScientificDomainSchemaTrait;
 use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -49,19 +50,31 @@ class UserInterests extends Component implements HasForms
                         ->schema($this->getFieldsetSchema()),
                     Tabs\Tab::make("Catégories d'activités")
                         ->schema([
-                            CheckboxList::make('activities')
+                            Fieldset::make('activities')
                                 ->label('Catégories d\'activités')
-                                ->options(Activity::all()->sortBy('title')->pluck('title', 'id')->toArray())
-                                ->columns(3)
-                                ->relationship('activities', 'title')
+                                ->schema([
+                                    CheckboxList::make('activities')
+                                        ->label(false)
+                                        ->options(Activity::all()->sortBy('title')->pluck('title', 'id')->toArray())
+                                        ->columns(3)
+                                        ->columnSpan(2)
+                                        ->relationship('activities', 'title')
+                                ])->extraAttributes(['class' => 'w-full disciplines-fieldset'])
                         ]),
                     Tabs\Tab::make("Catégories de dépenses éligibles")
                         ->schema([
-                            CheckboxList::make('expenses')
+                            Fieldset::make('expenses')
                                 ->label('Catégories de dépenses éligibles')
-                                ->options(Expense::all()->sortBy('title')->pluck('title', 'id')->toArray())
-                                ->columns(3)
-                                ->relationship('expenses', 'title')
+                                ->schema([
+                                    CheckboxList::make('expenses')
+                                        ->label(false)
+                                        ->options(Expense::all()->sortBy('title')->pluck('title', 'id')->toArray())
+                                        ->columnSpan(2)
+                                        ->columns(3)
+                                        ->extraAttributes(['class' => 'w-full'])
+                                        ->relationship('expenses', 'title')
+                                ])->columnSpanFull()
+                                ->extraAttributes(['class' => 'w-full disciplines-fieldset']),
                         ])
                 ])->contained(false)
                 ->extraAttributes(['class' => 'left-aligned-tabs'])
