@@ -57,11 +57,13 @@ class ListInfoSession extends Component implements HasForms, HasTable
             TextColumn::make('title')
                 ->label('Titre')
                 ->wrap()
+                ->lineClamp(2)
                 ->sortable()
                 ->searchable(),
             TextColumn::make('description')
                 ->label('Description')
                 ->wrap()
+                ->lineClamp(2)
                 ->sortable()
                 ->searchable()
                 ->formatStateUsing(function ($record) {
@@ -94,6 +96,7 @@ class ListInfoSession extends Component implements HasForms, HasTable
             TextColumn::make('organisation.title')
                 ->label('Organisation')
                 ->wrap()
+                ->lineClamp(2)
                 ->sortable()
                 ->searchable()
         ];
