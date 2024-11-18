@@ -33,7 +33,13 @@ class ListInfoSession extends Component implements HasForms, HasTable
                 ->action(fn($record) => redirect()->route('info_session.edit', $record->id))
                 ->visible(fn($record) => auth()->check() && (
                         auth()->user()->can('edit other info_session') ||
-                        auth()->user()->can('edit own info_session', $record)))
+                        auth()->user()->can('edit own info_session', $record))),
+            Action::make('delete')
+                ->label('Supprimer')
+                ->icon('heroicon-o-trash')
+                ->action(fn($record) => $record->status = false)
+                //->visible(fn() => auth()->check() && auth()->user()->can('delete info_session'))
+                ->requiresConfirmation()
         ];
 
         $filters = [
@@ -98,9 +104,8 @@ class ListInfoSession extends Component implements HasForms, HasTable
                 ->searchable()
         ];
 
-
         return $table
-            ->query(InfoSession::query())
+            ->query(InfoSession::query()->where("status", "1"))
             ->columns($columns)
             ->actions($actions)
             ->filters($filters)

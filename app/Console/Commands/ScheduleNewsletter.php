@@ -37,7 +37,7 @@ class ScheduleNewsletter extends Command
             $hour = $date->format('H:i');
             $formattedTime = Carbon::createFromFormat('H:i:s', $newsletterSchedule->send_time)->format('H:i');
 
-            if ($dayNow + 1 == $newsletterSchedule->day_of_week && $hour === $formattedTime) {
+            if ($dayNow == $newsletterSchedule->day_of_week && $hour === $formattedTime) {
                 Artisan::call('newsletter:send');
             }
         }
