@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Log;
 
 class ScheduleNewsletter extends Command
 {
@@ -36,8 +37,12 @@ class ScheduleNewsletter extends Command
             $dayNow = $date->dayOfWeek();
             $hour = $date->format('H:i');
             $formattedTime = Carbon::createFromFormat('H:i:s', $newsletterSchedule->send_time)->format('H:i');
+            Log::info($dayNow);
+            Log::info($hour);
+            Log::info($formattedTime);
+            Log::info($newsletterSchedule->day_of_week);
 
-            if ($dayNow + 1 == $newsletterSchedule->day_of_week && $hour === $formattedTime) {
+            if ($dayNow == $newsletterSchedule->day_of_week && $hour === $formattedTime) {
                 Artisan::call('newsletter:send');
             }
         }
