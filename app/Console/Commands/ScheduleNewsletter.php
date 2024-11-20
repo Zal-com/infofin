@@ -31,6 +31,7 @@ class ScheduleNewsletter extends Command
     public function handle(Schedule $schedule): void
     {
         $newsletterSchedule = NewsletterSchedule::first();
+        Log::info($newsletterSchedule);
 
         if ($newsletterSchedule && $newsletterSchedule->is_active) {
             $date = Carbon::now();
