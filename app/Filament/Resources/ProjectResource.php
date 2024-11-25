@@ -22,6 +22,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
@@ -198,7 +199,20 @@ class ProjectResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->action(function ($record) {
+                        // Mettre à jour le statut du record
+                        $record->update(['status' => -1]);
+
+                        // Envoyer une notification Filament
+                        Notification::make()
+                            ->title('Projet archivé')
+                            ->body("Le projet '{$record->title}' a été archivé avec succès.")
+                            ->success() // Style de notification (success, danger, warning, etc.)
+                            ->send();
+                    })
+                    ->label('Archiver'),
+
                 Tables\Actions\ViewAction::make()
                     ->url(fn(Project $record) => route('projects.show', $record->id))
             ])
