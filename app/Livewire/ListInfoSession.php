@@ -41,9 +41,9 @@ class ListInfoSession extends Component implements HasForms, HasTable
                 ->label(false)
                 ->tooltip('Supprimer')
                 ->icon('heroicon-o-trash')
-                ->iconButton()
-                ->action(fn($record) => $record->status = false)
-                ->visible(fn() => auth()->check() && auth()->user()->can('delete others info_session')) //perm session
+                ->color('danger')
+                ->action(fn($record) => $record->update(['status' => false]))
+                ->visible(fn() => auth()->check() && auth()->user()->can('delete other info_session')) //perm session
                 ->requiresConfirmation()
         ];
 
