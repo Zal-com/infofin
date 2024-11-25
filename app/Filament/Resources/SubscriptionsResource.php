@@ -3,8 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\SubscriptionsResource\Pages;
-use App\Filament\Resources\SubscriptionsResource\RelationManagers;
-use App\Models\Subscriptions;
 use App\Models\User;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Select;
@@ -31,7 +29,7 @@ class SubscriptionsResource extends Resource
                     ->required()
                     ->disabledOn('edit')
                     ->columnSpanFull(),
-                CheckboxList::make('scientific_domain')
+                CheckboxList::make('scientific_domains')
                     ->relationship('scientific_domains', 'name')
                     ->label('Domaines scientifiques')
                     ->columnSpanFull()
@@ -58,8 +56,8 @@ class SubscriptionsResource extends Resource
             ->query(User::where('is_email_subscriber', '=', 1))
             ->columns([
                 TextColumn::make('email')->searchable()->sortable(),
-                TextColumn::make('activities')->label('Catégorie d\'activités')->badge(),
-                TextColumn::make('expenses')->label('Catégorie de dépenses éligibles')->badge(),
+                TextColumn::make('activity')->label('Catégorie d\'activités')->badge(),
+                TextColumn::make('expense')->label('Catégorie de dépenses éligibles')->badge(),
                 TextColumn::make('scientific_domain')->label('Domaines scientifiques')->badge(),
             ])
             ->paginationPageOptions([5, 10, 25, 50, 100])
