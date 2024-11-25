@@ -4,17 +4,14 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
 use App\Models\User;
-use Filament\Forms;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
-use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Support\Str;
 use Spatie\Permission\Models\Permission;
 
 class UserResource extends Resource
@@ -37,36 +34,11 @@ class UserResource extends Resource
                 TextInput::make('last_name')
                     ->label('Nom')
                     ->required(),
-                Checkbox::make('is_internal')
-                    ->afterStateUpdated(function (Forms\Set $set, $state) {
-                        if (!$state) {
-                            $set('matricule', '99999999');
-                        } else {
-                            $set('matricule', '');
-                        }
-                    })
-                    ->reactive()
-                    ->default(true)
-                    ->label('Interne ULB'),
-                TextInput::make('matricule')
-                    ->required()
-                    ->disabled(fn(Get $get): bool => !$get('is_internal')),
                 TextInput::make('email')
                     ->email()
                     ->required()
                     ->unique(User::class, 'email', ignorable: fn($record) => $record)
                     ->rules('required|email'),
-                TextInput::make('password')
-                    ->label('Mot de passe')
-                    ->required(fn($livewire) => $livewire instanceof \Filament\Resources\Pages\CreateRecord)
-                    ->disabled(fn($livewire) => $livewire instanceof \Filament\Resources\Pages\EditRecord)
-                    ->password()
-                    ->default(fn($livewire) => $livewire instanceof \Filament\Resources\Pages\CreateRecord ? Str::password(8) : null)
-                    ->dehydrated(fn($state) => filled($state)),
-                Checkbox::make('is_email_subscriber')
-                    ->label('Abonnement à la newsletter')
-                    ->default(false)
-                    ->disabled(),
                 Select::make('role')
                     ->label('Rôle')
                     ->relationship('roles', 'name')
@@ -77,7 +49,13 @@ class UserResource extends Resource
                         Select::make('permissions')
                             ->multiple()
                             ->options(Permission::all()->pluck('name', 'id'))
-                    ])
+                    ]),
+                TextInput::make('uid')
+                    ->label('UID')
+                    ->disabled(fn($record) => $record !== null) // Désactive si le record existe (édition)
+                    ->required(fn($record) => $record === null), // Rend obligatoire uniquement à la création
+                Checkbox::make('is_email_subscriber')
+                    ->label('Abonnement à la newsletter'),
             ]);
     }
 
