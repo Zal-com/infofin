@@ -23,7 +23,7 @@ class InfoSessionShow extends Component
     public function delete()
     {
         try {
-            $this->info_session->delete();
+            $this->info_session->update(['status' => 0]);
 
             Notification::make('success')
                 ->icon('heroicon-o-check-circle')
