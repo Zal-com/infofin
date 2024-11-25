@@ -1,8 +1,8 @@
 @props(['project'])
-<div class="grid grid-cols-5 gap-4 mb-5" x-data="{
+<div class="grid grid-cols-5 grid-rows-[repeat(2, min)] gap-4 mb-5" x-data="{
     tab: 'description'
 }">
-    <x-filament::section class="col-span-4 row-span-1 max-h-fit">
+    <x-filament::section class="col-span-4 row-span-1 h-full">
         <x-filament::tabs>
             <x-filament::tabs.item @click="tab = 'description'" :alpine-active="'tab === \'description\''">
                 Description
@@ -42,7 +42,14 @@
                     <x-filament::badge>{{$activity->title ?? ''}}</x-filament::badge>
                 @endforeach
             </x-filament::section.description>
-            <h1 class="font-bold text-4xl my-1">{{$project->title ?? ''}}</h1>
+            @if(!empty($project->origin_url))
+                <a href="{{ $project->origin_url }}" class="flex flex-row">
+                    <h1 class="font-bold text-4xl my-1">{{ $project->title ?? '' }}</h1>
+                    <x-filament::icon icon="heroicon-o-arrow-top-right-on-square" class="h-4 w-4"/>
+                </a>
+            @else
+                <h1 class="font-bold text-4xl my-1">{{ $project->title ?? '' }}</h1>
+            @endif
             <div class="inline-flex justify-between gap-2 mt-0 w-full">
                 <div>
                     <p class="text-md italic">{{$project->organisation->title ?? $project->Organisation}}</p>
@@ -241,7 +248,7 @@
             @endif
         </div>
     </x-filament::section>
-    <div class="flex flex-col gap-4 sticky top-4 max-h-fit">
+    <div class="flex flex-col gap-4 row-span-2 sticky top-4 max-h-fit">
         @if($project->hasUpcomingDeadline())
             <x-zeus-accordion::accordion>
                 <x-zeus-accordion::accordion.item
@@ -366,4 +373,27 @@
             </x-filament::section>
         @endif
     </div>
+    <div class="col-span-4 row-start-2 last:max-h-fit">
+        <div class="flex flex-col justify-start divide-x">
+            <x-filament::section.description class="px-5">
+                Dernière modification le {{ \Carbon\Carbon::make($project->updated_at)->format('d/m/Y') }}
+                par {{ $project->poster->full_name() }}
+            </x-filament::section.description>
+            @auth
+                @hasrole('contributor|admin')
+                <x-filament::section.description class="px-5">
+                    Vues : {{ $project->visit_count }}
+                </x-filament::section.description>
+                @endrole
+            @endauth
+            @auth
+                @hasanyrole('contributor|admin')
+                <x-filament::section.description class="px-5">
+                    Vues depuis le mail : {{ $project->visit_count_email }}
+                </x-filament::section.description>
+                @endrole
+            @endauth
+        </div>
+    </div>
+
 </div>
