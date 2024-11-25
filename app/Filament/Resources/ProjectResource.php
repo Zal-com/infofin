@@ -200,6 +200,7 @@ class ProjectResource extends Resource
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
                 Tables\Actions\ViewAction::make()
+                    ->url(fn(Project $record) => route('projects.show', $record->id))
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
