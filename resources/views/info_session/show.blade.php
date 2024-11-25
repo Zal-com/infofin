@@ -1,11 +1,17 @@
 @extends('layout')
 @section('content')
     @canany(['edit others info_session', 'edit own info_session'])
-        <div class="flex flex-row mb-4 w-full justify-end">
+        <div class="flex flex-row mb-4 w-full justify-end space-x-2">
             <x-filament::button icon="heroicon-o-pencil" color="primary" tag="a"
-                                href="{{route('info_session.edit', $info_session->id)}}">
+                                href="{{ route('info_session.edit', $info_session->id) }}">
                 Modifier
             </x-filament::button>
+            @can('delete other info_session')
+                <!-- Vérifie si l'utilisateur a la permission de supprimer -->
+                <x-filament::button icon="heroicon-o-trash" color="danger">
+                    Supprimer
+                </x-filament::button>
+            @endcan
         </div>
     @endcanany
     <div class="grid grid-cols-5 gap-4 mb-5">
