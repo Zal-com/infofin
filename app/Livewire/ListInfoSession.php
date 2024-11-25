@@ -28,14 +28,18 @@ class ListInfoSession extends Component implements HasForms, HasTable
     {
         $actions = [
             Action::make('edit')
-                ->label('Modifier')
-                ->icon('heroicon-o-pencil')
+                ->label(false)
+                ->icon('heroicon-s-pencil')
+                ->iconButton()
+                ->tooltip('Modifier')
                 ->action(fn($record) => redirect()->route('info_session.edit', $record->id))
                 ->visible(fn($record) => auth()->check() && (
                         auth()->user()->can('edit other info_session') ||
                         auth()->user()->can('edit own info_session', $record))),
             Action::make('delete')
-                ->label('Supprimer')
+                ->color('danger')
+                ->label(false)
+                ->tooltip('Supprimer')
                 ->icon('heroicon-o-trash')
                 ->color('danger')
                 ->action(fn($record) => $record->update(['status' => false]))

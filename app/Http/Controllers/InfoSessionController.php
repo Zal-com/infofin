@@ -38,7 +38,7 @@ class InfoSessionController extends Controller
     {
         $info_session = InfoSession::find($id);
 
-        return view('info_session.show', compact('info_session'));
+        return view('info_session.show', ['info_session' => $info_session]);
     }
 
     /**
