@@ -42,7 +42,14 @@
                     <x-filament::badge>{{$activity->title ?? ''}}</x-filament::badge>
                 @endforeach
             </x-filament::section.description>
-            <h1 class="font-bold text-4xl my-1">{{$project->title ?? ''}}</h1>
+            @if(!empty($project->origin_url))
+                <a href="{{ $project->origin_url }}" class="flex flex-row">
+                    <h1 class="font-bold text-4xl my-1">{{ $project->title ?? '' }}</h1>
+                    <x-filament::icon icon="heroicon-o-arrow-top-right-on-square" class="h-4 w-4"/>
+                </a>
+            @else
+                <h1 class="font-bold text-4xl my-1">{{ $project->title ?? '' }}</h1>
+            @endif
             <div class="inline-flex justify-between gap-2 mt-0 w-full">
                 <div>
                     <p class="text-md italic">{{$project->organisation->title ?? $project->Organisation}}</p>
