@@ -18,6 +18,7 @@ class ExpenseResource extends Resource
     protected static ?string $label = 'Dépenses';
 
     protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
+    protected static ?string $activeNavigationIcon = 'heroicon-s-currency-dollar';
 
     public static function form(Form $form): Form
     {
