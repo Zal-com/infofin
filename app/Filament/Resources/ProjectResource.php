@@ -4,15 +4,23 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProjectResource\Pages;
 use App\Filament\Resources\ProjectResource\RelationManagers;
+use App\Models\Continent;
+use App\Models\Country;
 use App\Models\Project;
+use App\Models\ScientificDomainCategory;
+use App\Traits\ScientificDomainSchemaTrait;
 use Filament\Forms;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use FilamentTiptapEditor\TiptapEditor;
 use Illuminate\Database\Eloquent\Builder;
@@ -22,6 +30,8 @@ use const http\Client\Curl\AUTH_ANY;
 
 class ProjectResource extends Resource
 {
+    use ScientificDomainSchemaTrait;
+
     protected static ?string $model = Project::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
@@ -32,23 +42,48 @@ class ProjectResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('title')
                     ->required()
-                    ->maxLength(255),
-                Forms\Components\Repeater::make('contact_ulb')
+                    ->maxLength(255)
+                    ->columnSpanFull(),
+                Forms\Components\RichEditor::make('short_description')
+                    ->required()
+                    ->maxLength(500)
+                    ->columnSpanFull(),
+                TiptapEditor::make('long_description')
+                    ->required()
+                    ->columnSpanFull(),
+                Forms\Components\TextInput::make('status')
+                    ->required()
+                    ->numeric()
+                    ->minValue(0)
+                    ->maxValue(2)
+                    ->default(1)
+                    ->columnSpan(1),
+                Forms\Components\Toggle::make('is_big')
+                    ->required()
+                    ->columnSpan(1),
+                Forms\Components\TextInput::make('origin_url')
+                    ->maxLength(191)
+                    ->default(null)
+                    ->columnSpan(1),
+                Fieldset::make('contacts')
                     ->schema([
-                        TextInput::make('name')->string()->maxLength(255),
-                        TextInput::make('email')->email(),
-                    ]),
-                Repeater::make('contact_ext')
-                    ->schema([
-                        TextInput::make('name')->string()->maxLength(255),
-                        TextInput::make('email')->email(),
+                        Forms\Components\Repeater::make('contact_ulb')
+                            ->schema([
+                                TextInput::make('name')->string()->maxLength(255),
+                                TextInput::make('email')->email(),
+                            ]),
+                        Repeater::make('contact_ext')
+                            ->schema([
+                                TextInput::make('name')->string()->maxLength(255),
+                                TextInput::make('email')->email(),
+                            ])
                     ]),
                 Repeater::make('deadlines')
                     ->schema([
-                        DatePicker::make('deadline'),
+                        DatePicker::make('date'),
                         TextInput::make('proof')->string(),
                         Forms\Components\Toggle::make('continuous')
-                    ]),
+                    ])->columnSpan(2),
                 TiptapEditor::make('admission_requirements')
                     ->columnSpanFull(),
                 TiptapEditor::make('funding')
@@ -63,69 +98,72 @@ class ProjectResource extends Resource
                     ->required()
                     ->numeric()
                     ->default(Auth::id()),
-                Forms\Components\TextInput::make('status')
-                    ->required()
-                    ->numeric()
-                    ->default(1),
-                Forms\Components\Toggle::make('is_big')
-                    ->required(),
-                Forms\Components\Textarea::make('long_description')
-                    ->required()
-                    ->columnSpanFull(),
-                Forms\Components\TextInput::make('short_description')
-                    ->required()
-                    ->maxLength(500),
-                Forms\Components\TextInput::make('origin_url')
-                    ->maxLength(191)
-                    ->default(null),
                 Forms\Components\Select::make('organisation_id')
                     ->relationship('organisation', 'title')
-                    ->default(null),
-                Forms\Components\TextInput::make('Pays')
-                    ->maxLength(255)
-                    ->default(null),
-            ]);
+                    ->default(null)
+                    ->columnSpan(2),
+                Forms\Components\Fieldset::make('scientific_domains')
+                    ->label('Domaines scientifiques')
+                    ->schema(function (): array {
+                        $categories = ScientificDomainCategory::with('domains')->get();
+                        $fieldsets = [];
+
+                        foreach ($categories as $category) {
+                            $sortedDomains = $category->domains->sortBy('name')->pluck('name', 'id')->toArray();
+                            $fieldsets[] = Fieldset::make($category->name)
+                                ->schema([
+                                    CheckboxList::make('scientific_domains')
+                                        ->label(false)
+                                        ->options($sortedDomains)
+                                        ->bulkToggleable()
+                                        ->columnSpan(2)
+                                        ->required()
+                                        ->minItems(1)
+                                        ->extraAttributes([
+                                            'class' => 'w-full'
+                                        ])
+                                        ->columns(3)
+                                        ->validationMessages([
+                                            'required' => "Le champ 'Disciplines scientifiques' est obligatoire.",
+                                            'min' => "Le champ 'Disciplines scientifiques' doit comprendre au moins :min élement.",
+                                        ])
+                                ])
+                                ->columnSpan(3)
+                                ->extraAttributes([
+                                    'class' => 'w-full disciplines-fieldset',
+                                ]);
+                        }
+
+                        return $fieldsets;
+                    }),
+            ])
+            ->columns(3);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
+                TextColumn::make('id')
+                    ->label('ID')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('title')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('poster.id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('visit_count')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('last_update_user_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('status')
-                    ->numeric()
-                    ->sortable(),
+                    ->searchable()
+                    ->limit(300)
+                    ->wrap()
+                    ->lineClamp(2),
                 Tables\Columns\IconColumn::make('is_big')
-                    ->boolean(),
+                    ->boolean()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('short_description')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('origin_url')
-                    ->searchable(),
-                Tables\Columns\IconColumn::make('is_in_next_email')
-                    ->boolean(),
+                    ->searchable()
+                    ->limit(300)
+                    ->wrap()
+                    ->lineClamp(2)
+                    ->html(),
                 Tables\Columns\TextColumn::make('organisation.title')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('Organisation')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('OrganisationReference')
-                    ->searchable(),
-                Tables\Columns\IconColumn::make('InfoULB')
-                    ->boolean(),
-                Tables\Columns\IconColumn::make('SeanceFin')
-                    ->boolean(),
-                Tables\Columns\TextColumn::make('Pays')
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
