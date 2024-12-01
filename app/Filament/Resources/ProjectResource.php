@@ -153,6 +153,8 @@ class ProjectResource extends Resource
                     ->wrap()
                     ->lineClamp(2),
                 Tables\Columns\IconColumn::make('is_big')
+                    ->label('P. majeur')
+                    ->alignCenter()
                     ->boolean()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('short_description')

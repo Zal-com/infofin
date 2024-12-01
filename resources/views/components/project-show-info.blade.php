@@ -374,7 +374,7 @@
         @endif
     </div>
     <div class="col-span-4 row-start-2 last:max-h-fit">
-        <div class="flex flex-col justify-start divide-x">
+        <div class="flex flex-row justify-start divide-x">
             <x-filament::section.description class="px-5">
                 Dernière modification le {{ \Carbon\Carbon::make($project->updated_at)->format('d/m/Y') }}
                 par {{ $project->poster->full_name() }}
