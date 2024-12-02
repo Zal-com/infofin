@@ -3,7 +3,11 @@
 namespace App\Providers\Filament;
 
 use Amendozaaguiar\FilamentRouteStatistics\FilamentRouteStatisticsPlugin;
+use App\Filament\Pages\Dashboard;
 use App\Filament\Pages\MailingPage;
+use App\Filament\Widgets\AdvancedProjectsChart;
+use App\Filament\Widgets\ProjectsChart;
+use App\Filament\Widgets\SubscribersOverview;
 use App\Filament\Widgets\TotalProjects;
 use App\Filament\Widgets\UserRegistration;
 use App\Filament\Widgets\UsersOverview;
@@ -47,14 +51,15 @@ class AdminPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages(pages: [
-                Pages\Dashboard::class,
+                //Pages\Dashboard::class,
+                Dashboard::class,
                 MailingPage::class
             ])
-            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
+                TotalProjects::class,
                 UsersOverview::class,
-                TotalProjects::class
+                SubscribersOverview::class,
+                AdvancedProjectsChart::class
             ])
             ->plugins([
                     FilamentLaravelLogPlugin::make(),

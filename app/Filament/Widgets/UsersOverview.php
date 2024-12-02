@@ -6,10 +6,13 @@ use App\Models\User;
 use Carbon\Carbon;
 use EightyNine\FilamentAdvancedWidget\AdvancedStatsOverviewWidget as BaseWidget;
 use EightyNine\FilamentAdvancedWidget\AdvancedStatsOverviewWidget\Stat;
+use EightyNine\FilamentAdvancedWidget\AdvancedWidgetConfiguration;
 
 
 class UsersOverview extends BaseWidget
 {
+    protected int|string|array $columnSpan = '7';
+
     protected int $currentMonthRegistrations;
     protected int $previousMonthRegistrations;
     protected float $percentageDifference;
@@ -42,10 +45,16 @@ class UsersOverview extends BaseWidget
         return [
             Stat::make("Total d'utilisateurs", User::all()->count())->icon('heroicon-o-users')
                 ->iconPosition('start')
-                ->description('Nouveaux utilisateurs ce mois-ci')
+                ->description("+{$this->currentMonthRegistrations} nouveaux utilisateurs ce mois-ci")
                 ->descriptionIcon($this->isPositiveTrend ? 'heroicon-o-chevron-up' : 'heroicon-o-chevron-down', 'before')
                 ->descriptionColor($this->isPositiveTrend ? 'success' : 'danger')
                 ->iconColor('warning'),
         ];
+    }
+
+
+    protected function getColumns(): int
+    {
+        return 7;
     }
 }
