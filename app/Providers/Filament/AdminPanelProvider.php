@@ -4,6 +4,10 @@ namespace App\Providers\Filament;
 
 use Amendozaaguiar\FilamentRouteStatistics\FilamentRouteStatisticsPlugin;
 use App\Filament\Pages\MailingPage;
+use App\Filament\Widgets\TotalProjects;
+use App\Filament\Widgets\UserRegistration;
+use App\Filament\Widgets\UsersOverview;
+use App\Filament\Widgets\UsersThisMonthTrendWidget;
 use App\Http\Middleware\Admin;
 use BezhanSalleh\FilamentExceptions\FilamentExceptionsPlugin;
 use Croustibat\FilamentJobsMonitor\FilamentJobsMonitorPlugin;
@@ -49,6 +53,8 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
+                UsersOverview::class,
+                TotalProjects::class
             ])
             ->plugins([
                     FilamentLaravelLogPlugin::make(),
