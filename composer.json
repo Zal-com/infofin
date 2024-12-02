@@ -15,6 +15,7 @@
         "bezhansalleh/filament-exceptions": "^2.1",
         "croustibat/filament-jobs-monitor": "^2.5",
         "daylaborers/laravel-mjml": "^1.0",
+        "eightynine/filament-advanced-widgets": "^3.0",
         "evanschleret/lara-mjml": "^0.1.2",
         "filament/filament": "^3.2",
         "filament/forms": "^3.2",
