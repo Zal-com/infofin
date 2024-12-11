@@ -15,7 +15,7 @@ class ProjectPolicy
      */
     public function create(User $user)
     {
-        return $user->hasPermissionTo('create projects');
+        return $user->hasPermissionTo('create project');
     }
 
     /**
@@ -23,7 +23,7 @@ class ProjectPolicy
      */
     public function edit(User $user, Project $project)
     {
-        if($user->can('edit own project')){
+        if ($user->can('edit own project')) {
             return $user->id === $project->user_id;
         }
     }
@@ -33,7 +33,7 @@ class ProjectPolicy
      */
     public function delete(User $user, Project $project)
     {
-        if($user->can('delete own project')){
+        if ($user->can('delete own project')) {
             return $user->id === $project->user_id;
         }
     }

@@ -9,12 +9,9 @@ class CreateScientificDomainsTable extends Migration
     public function up()
     {
         Schema::create('scientific_domains', function (Blueprint $table) {
-           $table->id();
-           $table->string('name', 255);
-           $table->foreignId('sci_dom_cat_id');
-
-           //Relations
-           $table->foreign('sci_dom_cat_id')->references('id')->on('scientific_domain_categories');
+            $table->id(); // Clé primaire
+            $table->string('name', 255); // Nom du domaine scientifique
+            $table->foreignId('sci_dom_cat_id')->constrained('scientific_domain_categories')->onDelete('cascade'); // Clé étrangère vers scientific_domain_categories avec cascade
         });
     }
 
@@ -23,4 +20,3 @@ class CreateScientificDomainsTable extends Migration
         Schema::dropIfExists('scientific_domains');
     }
 }
-

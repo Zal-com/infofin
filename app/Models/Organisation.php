@@ -7,12 +7,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Organisation extends Model
 {
-    protected $table = 'organisation';
+    protected $table = 'organisations';
     public $timestamps = false; // Spécifier car pas de colonnes timestamp
     protected $fillable = ['title'];
 
-    public function projects() : HasMany
+    public function projects(): HasMany
     {
-        return $this->hasMany(Project::class, 'organisation_id');
+        return $this->hasMany(Project::class);
     }
 }

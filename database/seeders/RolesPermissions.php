@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class RolesPermissions extends Seeder
 {
@@ -14,18 +14,52 @@ class RolesPermissions extends Seeder
     public function run(): void
     {
         //Roles
-        Role::create(['name' => 'admin']);
-        $contributor = Role::create(['name' => 'contributor']);
 
-        //Permissions
-        $createProjects = Permission::create(['name' => 'create projects']);
-        $editOwnProject = Permission::create(['name' => 'edit own project']);
-        $deleteOwnProject = Permission::create(['name' => 'delete own project']);
+        $adminRole = Role::where('name', 'admin')->first();
 
-        //Assignation
-        $contributor->givePermissionTo($createProjects);
-        $contributor->givePermissionTo($editOwnProject);
-        $contributor->givePermissionTo($deleteOwnProject);
+        if (!$adminRole) {
+            Role::create(['name' => 'admin']);
+        }
+
+        $contributorRole = Role::where('name', 'contributor')->first();
+
+        if (!$contributorRole) {
+            $contributor = Role::create(['name' => 'contributor']);
+
+            $contributorPermissions = [
+                Permission::create(['name' => 'create project']),
+                Permission::create(['name' => 'edit own project']),
+                Permission::create(['name' => 'delete own project']),
+                Permission::create(['name' => 'view own project']),
+                Permission::create(['name' => 'view other project']),
+                Permission::create(['name' => 'edit other project']),
+                Permission::create(['name' => 'delete other project']),
+                Permission::create(['name' => 'edit own interests']),
+                Permission::create(['name' => 'edit own draft']),
+                Permission::create(['name' => 'create draft']),
+                Permission::create(['name' => 'delete own draft']),
+                Permission::create(['name' => 'delete other draft']),
+                Permission::create(['name' => 'view own draft']),
+                Permission::create(['name' => 'view other draft']),
+                Permission::create(['name' => 'view archives']),
+                Permission::create(['name' => 'create collection']),
+                Permission::create(['name' => 'edit own collection']),
+                Permission::create(['name' => 'edit other collection']),
+                Permission::create(['name' => 'delete other collection']),
+                Permission::create(['name' => 'delete own collection']),
+                Permission::create(['name' => 'create info_session']),
+                Permission::create(['name' => 'edit own info_session']),
+                Permission::create(['name' => 'edit other info_session']),
+                Permission::create(['name' => 'delete other info_session']),
+                Permission::create(['name' => 'delete own info_session']),
+            ];
+
+            //Permissions
+            Permission::create(['name' => 'edit other interests']);
+
+            //Assignation
+            $contributor->givePermissionTo($contributorPermissions);
+        }
 
     }
 }

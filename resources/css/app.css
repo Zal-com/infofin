@@ -1,4 +1,189 @@
+@import '../../vendor/awcodes/filament-tiptap-editor/resources/css/plugin.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+    font-family: 'Fira Sans', sans-serif;
+}
+
+.markdown li,
+.markdown ul,
+.markdown ol {
+    list-style: revert !important;
+    list-style-position: inside !important;
+}
+
+ul li p {
+    margin: 0;
+    display: inline;
+}
+
+
+#or {
+    position: relative;
+    width: 300px;
+    height: 50px;
+
+    line-height: 50px;
+    text-align: center;
+}
+
+#or::before,
+#or::after {
+    position: absolute;
+    width: 130px;
+    height: 1px;
+    top: 24px;
+    background-color: #aaa;
+    content: '';
+}
+
+#or::before {
+    left: 0;
+}
+
+#or::after {
+    right: 0;
+}
+
+.custom-badge {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 100% !important;
+    display: inline-block !important;
+}
+
+.tiptap-content {
+    p {
+        font-size: 16px;
+        color: #333;
+        line-height: 1.6;
+    }
+
+    /* Style for h1 */
+
+    h1 {
+        font-size: 32px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        line-height: 1.2;
+    }
+
+    /* Style for h2 */
+
+    h2 {
+        font-size: 28px;
+        font-weight: bold;
+        margin-bottom: 18px;
+        line-height: 1.3;
+    }
+
+    /* Style for h3 */
+
+    h3 {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 16px;
+        line-height: 1.4;
+    }
+
+    /* Style for h4 */
+
+    h4 {
+        font-size: 20px;
+        font-weight: semi-bold;
+        margin-bottom: 14px;
+        line-height: 1.5;
+    }
+
+    /* Style for h5 */
+
+    h5 {
+        font-size: 18px;
+        font-weight: semi-bold;
+        margin-bottom: 12px;
+        line-height: 1.6;
+    }
+
+    /* Style for h6 */
+
+    h6 {
+        font-size: 16px;
+        font-weight: semi-bold;
+        margin-bottom: 10px;
+        line-height: 1.7;
+    }
+
+
+    blockquote {
+        border-left: 4px solid #2d3748;
+        padding-left: 15px;
+        font-style: italic;
+        color: #4a5568;
+    }
+
+    ol {
+        list-style-type: decimal;
+        padding-left: 20px;
+    }
+
+    ul {
+        list-style-type: disc;
+        padding-left: 20px;
+    }
+}
+
+.disciplines-fieldset legend {
+    font-weight: bold;
+}
+
+.fi-fo-field-wrp-label {
+    font-weight: bolder !important;
+}
+
+.custom-section-wrapper > * > * {
+    padding-top: 10px !important; /* Ajustez selon vos besoins */
+    padding-bottom: 10px !important; /* Ajustez selon vos besoins */
+}
+
+.border-alternating-wrapper {
+    padding: 8px; /* Largeur de la bordure */
+    background: repeating-linear-gradient(
+        45deg, /* Angle en diagonale */ black 0, /* Début du noir */ black 10px, /* Largeur du noir */ #fed053 10px, /* Début du jaune */ #fed053 20px /* Largeur du jaune */
+    );
+    border-radius: 8px; /* Optionnel : arrondir les coins */
+    display: inline-block; /* S'adapte au contenu */
+    position: relative; /* Pour positionner le pseudo-élément */
+}
+
+.border-alternating-wrapper::before {
+    content: "Mode prévisualisation activé";
+    position: absolute;
+    top: -2%;
+    right: 38%;
+    transform: translate(-50%, -50%);
+    font-size: 12px;
+    color: black;
+    background-color: #fed053;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+    white-space: nowrap;
+    z-index: -1;
+}
+
+.border-alternating-content {
+    background: white; /* Fond du contenu */
+    border-radius: 5px; /* Ajuster pour que le rayon soit un peu plus petit */
+    padding: 20px; /* Espace interne pour le contenu */
+    position: relative;
+    z-index: 2; /* Assure que le contenu est au-dessus du pseudo-élément */
+}
+
+
+
+
 

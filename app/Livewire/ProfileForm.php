@@ -1,0 +1,131 @@
+<?php
+
+namespace App\Livewire;
+
+use App\Models\User;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Forms\Form;
+use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Password;
+use Livewire\Component;
+use PharIo\Manifest\ElementCollectionException;
+
+class ProfileForm extends Component implements HasForms
+{
+    use InteractsWithForms;
+
+    public User $user;
+    public array $data = [];
+
+    public function mount(User $user = null)
+    {
+        $this->user = Auth::user() ?? new User();
+        $this->form->fill($this->user->toArray());
+    }
+
+    public function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                TextInput::make('email')
+                    ->label('Email')
+                    ->required()
+                    ->columnSpan(1)
+                    ->maxLength(191),
+                TextInput::make('matricule')
+                    ->label('Matricule')
+                    ->required()
+                    ->maxLength(8)
+                    ->minLength(8)
+                    ->columnSpan(1),
+                TextInput::make('first_name')
+                    ->label('Prénom')
+                    ->required()
+                    ->maxLength(191),
+                TextInput::make('last_name')
+                    ->label('Nom')
+                    ->required()
+                    ->maxLength(191),
+                TextInput::make('password')
+                    ->password()
+                    ->revealable()
+                    ->label('Mot de passe')
+                    ->autocomplete(false)
+                    ->nullable()
+                    ->default(null),
+                TextInput::make('password_confirmation')
+                    ->password()
+                    ->revealable()
+                    ->label('Confirmation mot de passe')
+                    ->autocomplete(false)
+                    ->nullable()
+                    ->default('null'),
+            ])->statePath('data')->model($this->user)->columns(2);
+    }
+
+    public function submit()
+    {
+        if (!(isset($this->data['password'])) || $this->data['password'] === '') $this->data['password'] = null;
+
+        $rules = [
+            'email' => ['required', 'email', 'max:255'],
+            'matricule' => ['required', 'max:8', 'min:8', 'regex:/^[2,5]\d{7}$/'],
+            'first_name' => ['required', 'max:191'],
+            'last_name' => ['required', 'max:191'],
+            'password' => ['nullable', Password::min(8)->letters()->mixedCase()->numbers()->symbols()->uncompromised()],
+            'password_confirmation' => ['required_with:password', 'same:password'],
+        ];
+
+        $validator = Validator::make($this->data, $rules);
+
+        if ($validator->fails()) {
+            foreach ($validator->errors()->all() as $error) {
+                Notification::make()
+                    ->title($error)
+                    ->icon('heroicon-o-x-circle')
+                    ->iconColor('danger')
+                    ->color('danger')
+                    ->seconds(5)
+                    ->send();
+            }
+            // session()->flash('error', $validator->errors()->all());
+            //return redirect()->back()->withInput();
+        } else {
+            // Mise à jour des données utilisateur
+            if ($this->data['password'] === null) {
+                unset($this->data['password']);
+            }
+            try {
+                $this->user->update($this->data);
+                Notification::make()
+                    ->title('Profil mis à jour.')
+                    ->icon('heroicon-o-check-circle')
+                    ->iconColor('success')
+                    ->color('success')
+                    ->seconds(5)
+                    ->send();
+            } catch (\Exception $exception) {
+                Notification::make()
+                    ->title('Problème lors de la mise a jour du profil. Veuillez réessayer plus tard.')
+                    ->icon('heroicon-o-x-circle')
+                    ->iconColor('danger')
+                    ->color('danger')
+                    ->seconds(5)
+                    ->send();
+            }
+        }
+
+
+        //session()->flash('success', 'Profil mis à jour avec succès.');
+        //return redirect()->back()->withInput();
+    }
+
+    public function render()
+    {
+        return view('livewire.profile-form');
+    }
+}

@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -8,42 +9,31 @@ class CreateProjectsTable extends Migration
     public function up()
     {
         Schema::create('projects', function (Blueprint $table) {
-            $table->id();
-            $table->string('title', 255);
-            $table->foreignId('organisation_id');
-            $table->dateTime('deadline');
-            $table->dateTime('deadline_2')->nullable();
-            $table->boolean('continuous');
-            $table->boolean('continuous_2');
-            $table->string('proof', 50);
-            $table->string('proof_2', 50);
-            $table->json('contact_ulb');
-            $table->json('contact_ext');
-            $table->integer('periodicity');
-            $table->longText('admission_requirements');
-            $table->longText('funding');
-            $table->longText('apply_instructions');
-            $table->foreignId('poster_id');
-            $table->boolean('is_view_for_mail');
-            $table->dateTime('date_lessor');
-            $table->boolean('info_lessor');
-            $table->integer('visit_count')->default(0);
-            $table->foreignId('last_update_user_id');
-            $table->foreignId('country_id');
-            $table->foreignId('continent_id');
-            $table->smallInteger('status')->default(1);
-            $table->boolean('is_big')->default(false);
-            $table->text('long_description');
-            $table->string('short_description', 500);
-            $table->boolean('is_draft')->default(false);
-            $table->timestamps();
-
-            //Relations
-            $table->foreign('organisation_id')->references('id')->on('organisations')->onDelete('cascade');
-            $table->foreign('country_id')->references('id')->on('countries')->onDelete('cascade');
-            $table->foreign('poster_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('last_update_user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('continent_id')->references('id')->on('continents')->onDelete('cascade');
+            $table->id(); // Clé primaire
+            $table->string('title', 255); // Titre du projet
+            $table->json('contact_ulb'); // JSON pour les contacts ULB
+            $table->json('contact_ext'); // JSON pour les contacts externes
+            $table->json('deadlines'); // JSON pour les dates limites
+            $table->longText('admission_requirements')->nullable(); // Conditions d'admission
+            $table->longText('funding')->nullable(); // Détails du financement
+            $table->longText('apply_instructions')->nullable(); // Instructions pour postuler
+            $table->foreignId('poster_id')->constrained('users')->onDelete('cascade'); // Clé étrangère vers users
+            $table->integer('visit_count')->default(0); // Nombre de visites par défaut 0
+            $table->integer('visit_count_email')->default(0); // Nombre de visites email par défaut 0
+            $table->foreignId('last_update_user_id')->constrained('users')->onDelete('cascade'); // Clé étrangère vers users
+            $table->smallInteger('status')->default(1)->comment("-1 = Archive, 0 = Inactif, 1 = Actif, 2 = ?"); // Statut
+            $table->boolean('is_big')->default(false); // Indicateur pour grands projets
+            $table->text('long_description'); // Description longue
+            $table->string('short_description', 500); // Description courte
+            $table->string('origin_url')->nullable(); // URL d'origine
+            $table->boolean('is_in_next_email')->default(true); // Inclusion dans le prochain email
+            $table->foreignId('organisation_id')->nullable()->constrained()->onDelete('cascade'); // Clé étrangère vers organisations
+            $table->string('Organisation', 255)->nullable(); // Organisation
+            $table->string('OrganisationReference', 255)->nullable(); // Référence de l'organisation
+            $table->boolean('InfoULB')->nullable(); // Information ULB
+            $table->boolean('SeanceFin')->nullable(); // Séance fin
+            $table->string('Pays', 255)->nullable(); // Pays
+            $table->timestamps(); // Colonnes created_at et updated_at
         });
     }
 
@@ -52,4 +42,3 @@ class CreateProjectsTable extends Migration
         Schema::dropIfExists('projects');
     }
 }
-

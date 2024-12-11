@@ -1,5 +1,6 @@
 import defaultTheme from 'tailwindcss/defaultTheme';
 import forms from '@tailwindcss/forms';
+import typography from '@tailwindcss/typography'
 import preset from './vendor/filament/support/tailwind.config.preset'
 
 const plugin = require('tailwindcss/plugin')
@@ -14,6 +15,9 @@ export default {
         './app/Filament/**/*.php',
         './resources/views/filament/**/*.blade.php',
         './vendor/filament/**/*.blade.php',
+        './vendor/awcodes/filament-badgeable-column/resources/**/*.blade.php',
+        './vendor/awcodes/filament-tiptap-editor/resources/**/*.blade.php',
+        './vendor/lara-zeus/accordion/resources/views/**/*.blade.php',
     ],
 
     theme: {
@@ -23,8 +27,7 @@ export default {
             },
         },
     },
-
-    plugins: [forms, plugin(function ({addBase, theme}) {
+    plugins: [forms, typography, plugin(function ({addBase, theme}) {
         addBase({
             'h1': {fontSize: theme('fontSize.4xl'), fontWeight: 800},
             'h2': {fontSize: theme('fontSize.2xl')},

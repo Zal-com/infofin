@@ -1,129 +1,399 @@
 @props(['project'])
-<div class="grid grid-cols-5 gap-4 mb-10" x-data="{ tab: 'description' }">
-    <x-filament::section class="col-span-4 row-span-2">
-            <x-filament::tabs>
-                <x-filament::tabs.item @click="tab = 'description'" :alpine-active="'tab === \'description\''">
-                    Description
-                </x-filament::tabs.item>
-                <x-filament::tabs.item @click="tab = 'dates'" :alpine-active="'tab === \'dates\''">
-                    Dates
-                </x-filament::tabs.item>
-                <x-filament::tabs.item @click="tab = 'infos'" :alpine-active="'tab === \'infos\''">
-                    Infos supplémentaires
-                </x-filament::tabs.item>
-                <x-filament::tabs.item @click="tab = 'documents'" :alpine-active="'tab === \'documents\''">
-                    Documents
-                </x-filament::tabs.item>
-            </x-filament::tabs>
-
+<div class="grid grid-cols-5 grid-rows-[repeat(2, min)] gap-4 mb-5" x-data="{
+    tab: 'description'
+}">
+    <x-filament::section class="col-span-4 row-span-1 h-full">
+        <x-filament::tabs>
+            <x-filament::tabs.item @click="tab = 'description'" :alpine-active="'tab === \'description\''">
+                Description
+            </x-filament::tabs.item>
+            <x-filament::tabs.item @click="tab = 'infos'" :alpine-active="'tab === \'infos\''">
+                Infos supplémentaires
+            </x-filament::tabs.item>
+            <x-filament::tabs.item @click="tab = 'documents'" :alpine-active="'tab === \'documents\''">
+                Documents
+            </x-filament::tabs.item>
+        </x-filament::tabs>
         <div x-show="tab === 'description'" class="m-4">
-            <h1>{{$project->title}}</h1>
-            <p>{{$project->organisation_id}}</p>
-            <x-filament::section.description class="my-3 text-justify">
-                {!! $project->long_description !!}
-            </x-filament::section.description>
-        </div>
-
-        <div x-show="tab === 'dates'" class="m-4">
-            <h2>Première deadline</h2>
-            <p>{{\Carbon\Carbon::make($project->deadline)->format('d/m/Y')}}</p>
-            <p>{{$project->proof}}</p>
-            <h2>Seconde deadline</h2>
-            <p>{{\Carbon\Carbon::make($project->deadline_2)->format('d/m/Y')}}</p>
-            <p>{{$project->proof_2}}</p>
-        </div>
-
-        <div x-show="tab === 'infos'" class="m-4">
-           <x-filament::section.heading>
-               Type de programme
-           </x-filament::section.heading>
-
-                @foreach($project->infoType as $info_type)
-                    <x-filament::section.description class="mb-4 text-justify">
-                        {{$info_type['title']}}
-                    </x-filament::section.description>
+            @if(empty($project->contact_ulb))
+                <x-filament::section class="bg-primary-100 mt-1 custom-section-wrapper mb-2"
+                                     style="background: #2A9D8F60">
+                    <div class="flex flex-row items-start text-xs gap-5">
+                        <div class="w-fit">
+                            <x-filament::icon icon="heroicon-o-information-circle" class="h-5"/>
+                        </div>
+                        <p>
+                            Cet appel ne nécessite pas de suivi particulier par le Département
+                            Recherche. Merci de suivre directement la procédure indiquée. Si toutefois vous souhaitez
+                            contacter
+                            le
+                            Département Recherche, écrivez à ulbkto@ulb.be (propriété intellectuelle) ou
+                            fonds.recherche@ulb.be
+                            (pour
+                            toute autre question).
+                        </p></div>
+                </x-filament::section>
+            @endif
+            <x-filament::section.description class="flex flex-wrap gap-1">
+                @foreach($project->expenses as $expense)
+                    <x-filament::badge>{{$expense->title ?? ''}}</x-filament::badge>
                 @endforeach
+                @foreach($project->activities as $activity)
+                    <x-filament::badge>{{$activity->title ?? ''}}</x-filament::badge>
+                @endforeach
+            </x-filament::section.description>
+            @if(!empty($project->origin_url))
+                <a href="{{ $project->origin_url }}" class="flex flex-row">
+                    <h1 class="font-bold text-4xl my-1">{{ $project->title ?? '' }}</h1>
+                    <x-filament::icon icon="heroicon-o-arrow-top-right-on-square" class="h-4 w-4"/>
+                </a>
+            @else
+                <h1 class="font-bold text-4xl my-1">{{ $project->title ?? '' }}</h1>
+            @endif
+            <div class="inline-flex justify-between gap-2 mt-0 w-full">
+                <div>
+                    <p class="text-md italic">{{$project->organisation->title ?? $project->Organisation}}</p>
+                </div>
+                <div class="inline-flex gap-2">
+                    @php
+                        $linkedDomains = $project->scientific_domains;
 
-            @if(!empty($project->financing))
-                <x-filament::section.heading>
+                        $domainsByCategory = \App\Models\ScientificDomain::all()->groupBy('category.name');
+                    @endphp
+
+                    @foreach($domainsByCategory as $categoryName => $domains)
+                        @php
+                            $linkedDomainsInCategory = $linkedDomains->whereIn('id', $domains->pluck('id'));
+                            $totalDomainsLinked = $linkedDomainsInCategory->count(); // Nombre de domaines liés dans la catégorie
+                        @endphp
+                        @if($totalDomainsLinked > 0)
+                            <div class="relative group" x-data="{ showTooltip: false }"
+                                 @mouseenter="showTooltip = true"
+                                 @mouseleave="showTooltip = false">
+                                @if($totalDomainsLinked === $domains->count())
+                                    <x-filament::badge color="success"
+                                                       class="w-fit">{{ $categoryName }}</x-filament::badge>
+                                @else
+                                    <x-filament::badge color="success" class="w-fit">{{ $categoryName }}
+                                        ({{ $totalDomainsLinked }})
+                                    </x-filament::badge>
+                                @endif
+
+                                @php
+                                    $selectedDomainsListHtml = '<ul>' . $linkedDomainsInCategory->map(fn($domain) => '<li>' . e($domain->name) . '</li>')->implode('') . '</ul>';
+                                @endphp
+                                <div x-show="showTooltip"
+                                     class="absolute left-0 bg-gray-800 text-white text-sm rounded-lg p-2 z-10 w-max mt-2 shadow-lg"
+                                     style="display: none;" x-cloak>
+                                    {!! $selectedDomainsListHtml !!}
+                                </div>
+                            </div>
+                        @endif
+                    @endforeach
+                </div>
+            </div>
+            <div class="markdown">
+                <x-filament::section.description class="my-3 text-justify">
+                    @php
+                        $long_description = $project->long_description ?? '';
+
+                        if (!empty($long_description)) {
+                            try {
+                                echo tiptap_converter()->asHTML($long_description);
+                            } catch (Exception $e) {
+                                echo nl2br(e($long_description));
+                            }
+                        } else {
+                            echo '<p>No description provided.</p>';
+                        }
+                    @endphp
+                </x-filament::section.description>
+            </div>
+        </div>
+        <div x-show="tab === 'infos'" class="m-4">
+            <div class="markdown mb-5">
+                <x-filament::section.heading class="text-2xl">
                     Financement
                 </x-filament::section.heading>
-                <x-filament::section.description class="mb-4 text-justify">
-                    {!! $project->financing !!}
+                <x-filament::section.description
+                    class="mb-1 text-sm text-gray-500 dark:text-gray-400 text-justify list-inside">
+                    <div class="text-sm text-gray-500 dark:text-gray-400 text-justify">
+                        @php
+                            $funding = $project->funding ?? '';
+
+                            if (!empty($funding)) {
+                                try {
+                                    echo tiptap_converter()->asHTML($funding);
+                                } catch (Exception $e) {
+                                    echo \Illuminate\Support\Str::of($funding)->markdown();
+                                }
+                            } else {
+                                echo '<p>Aucune information sur le financement n\'a été fourni.</p>';
+                            }
+                        @endphp
+                    </div>
                 </x-filament::section.description>
+            </div>
+            <hr>
+            <div class="markdown mt-5 mb-5">
+                <x-filament::section.heading class="text-2xl">
+                    Pour postuler
+                </x-filament::section.heading>
+                <x-filament::section.description
+                    class="mb-1 text-sm text-gray-500 dark:text-gray-400 text-justify list-inside">
+                    <div class="text-sm text-gray-500 dark:text-gray-400 text-justify">
+                        @php
+                            $apply_instructions = $project->apply_instructions ?? '';
 
+                            if (!empty($apply_instructions)) {
+                                try {
+                                    echo tiptap_converter()->asHTML($apply_instructions);
+                                } catch (Exception $e) {
+                                    echo \Illuminate\Support\Str::of($apply_instructions)->markdown();
+                                }
+                            } else {
+                                echo '<p>Les instructions pour postuler n\'ont pas encore été fournies.</p>';
+                            }
+                        @endphp
+                    </div>
+                </x-filament::section.description>
+            </div>
+            <hr>
+            <div class="markdown mt-5 mb-5">
+                <x-filament::section.heading class="text-2xl">
+                    Requis d'admission
+                </x-filament::section.heading>
+                <x-filament::section.description
+                    class="mb-1 text-sm text-gray-500 dark:text-gray-400 text-justify list-outside">
+                    <div class="text-sm text-gray-500 dark:text-gray-400 text-justify">
+                        @php
+                            $admission_requirements = $project->admission_requirements ?? '';
+
+                            if (!empty($admission_requirements)) {
+                                try {
+                                    echo tiptap_converter()->asHTML($admission_requirements);
+                                } catch (Exception $e) {
+                                    echo \Illuminate\Support\Str::of($admission_requirements)->markdown();
+                                }
+                            } else {
+                                echo '<p>Les critères d\'admission n\'ont pas encore été spécifiés.</p>';
+                            }
+                        @endphp
+                    </div>
+                </x-filament::section.description>
+            </div>
+            <hr>
+            <div class="markdown mt-5">
+                <x-filament::section.heading class="text-2xl">
+                    Zones géographiques
+                </x-filament::section.heading>
+                <x-filament::section.description
+                    class="mb-1 text-sm text-gray-500 dark:text-gray-400 text-justify list-inside">
+                    <div class="text-sm text-gray-500 dark:text-gray-400 text-justify">
+                        @php
+                            $geo_zones = [];
+
+                            if(!empty($project->continents)){
+                                foreach ($project->continents as $continent){
+                                $geo_zones[] = $continent->name;
+                                }
+                            }
+                                if(!empty($project->countries)){
+                                foreach ($project->countries as $country){
+                                $geo_zones[] = $country->name;
+                                }
+                                }
+                        @endphp
+
+                        <p>{{ empty($geo_zones) ? "Les zones géographiques n'ont pas encore été spécifiées." : implode(', ', $geo_zones) }}</p>
+
+                    </div>
+                </x-filament::section.description>
+            </div>
+        </div>
+        <div x-show="tab === 'documents'" class="m-4">
+            @if($project->documents && $project->documents->isNotEmpty())
+                <x-filament::section.heading class="text-2xl mb-4">
+                    Documents disponibles
+                </x-filament::section.heading>
+                <ul class="flex flex-col gap-3">
+                    @foreach($project->documents as $document)
+                        <x-filament::section class="w-1/2">
+                            <li>
+                                <div class="flex justify-between">
+                                    <div class="flex items-center">
+                                        <x-filament::icon icon="heroicon-o-document"
+                                                          class="h-[24px] w-[24px] mr-2"/>
+                                        <a href="{{ route('download', ['name'=> $document->filename ,'file' => $document->path]) }}"
+                                           class="text-blue-600 hover:underline">
+                                            {{ $document->filename }}
+                                        </a>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <a href="{{ route('download', ['name'=> $document->filename ,'file' => $document->path]) }}"
+                                           class="inline-block">
+                                            <x-filament::icon icon="heroicon-o-arrow-down-tray"
+                                                              class="min-h-[28px] min-w-[28px] text-gray-900 hover:text-gray-600"/>
+                                        </a>
+                                    </div>
+                                </div>
+                            </li>
+                        </x-filament::section>
+                    @endforeach
+                </ul>
+            @else
+                <x-filament-tables::empty-state icon="heroicon-o-archive-box-x-mark"
+                                                heading="Pas de documents disponibles">
+                </x-filament-tables::empty-state>
             @endif
-
-
-            <x-filament::section.heading>
-                Pour postuler
-            </x-filament::section.heading>
-            <x-filament::section.description class="mb-4 text-justify">
-                {!! $project->apply_instructions !!}
-            </x-filament::section.description>
         </div>
     </x-filament::section>
-    <div class="flex flex-col gap-4 sticky top-5">
-        @if(!empty(json_decode($project->contact_ulb, true)))
-    <x-filament::section class="col-span-1 row-span-1">
-        <x-filament::section.heading class="text-xl mb-4">
-            Contacts ULB
-        </x-filament::section.heading>
-        @foreach(json_decode($project->contact_ulb, true) as $contact_ulb)
-            <div class="mb-3 last-of-type:mb-0">
-                <x-filament::section.heading>{{$contact_ulb['name']}}</x-filament::section.heading>
-                @if($contact_ulb['phone'] != "")
-                    <div class="flex items-center">
-                        <x-filament::icon icon="heroicon-s-phone" class="h-5 w-5 mr-2"/>
-                        {{$contact_ulb['phone']}}
+    <div class="flex flex-col gap-4 row-span-2 sticky top-4 max-h-fit">
+        @if($project->hasUpcomingDeadline())
+            <x-zeus-accordion::accordion>
+                <x-zeus-accordion::accordion.item
+                    icon="heroicon-o-calendar-days"
+                    label="{!! $project->firstDeadline === 'Continu' ? 'Continu' : (explode('|', $project->firstDeadline)[1]!!} : {{explode('|',$project->firstDeadline)[0])}}">
+                    <div class="bg-white p-4">
+                        @foreach($project->allDeadlinesSorted as $sortedDeadline)
+                            @if(!$sortedDeadline['continuous'])
+                                <p @if(\Carbon\Carbon::make($sortedDeadline['date'])->format("d/m/Y") === explode('|',$project->firstDeadline)[0]) style="font-weight: bold" @endif>
+                                    {{$sortedDeadline['proof'] != '' ? $sortedDeadline['proof'] . ' :'  : ''}}
+                                    {{\Carbon\Carbon::make($sortedDeadline['date'])->format("d/m/Y")}}</p>
+                            @endif
+                        @endforeach
                     </div>
-                @endif
-                @if($contact_ulb['email'] != "")
-                    <div class="flex items-center">
-                        <x-filament::icon icon="heroicon-s-at-symbol" class="h-5 w-5 mr-2"/>
-                        {{$contact_ulb['email']}}
+                </x-zeus-accordion::accordion.item>
+            </x-zeus-accordion::accordion>
+        @else
+            <x-zeus-accordion::accordion>
+                <x-zeus-accordion::accordion.item
+                    icon="heroicon-o-calendar-days"
+                    label="Projet terminé"
+                >
+                    <div class="bg-white p-4">
+                        @foreach($project->allDeadlinesSorted as $sortedDeadline)
+                            <p>
+                                {{$sortedDeadline['proof']}}
+                                : {{\Carbon\Carbon::make($sortedDeadline['date'])->format("d/m/Y - H:i")}}</p>
+                        @endforeach
                     </div>
-                @endif
-                    @if($contact_ulb['address'] != "")
-                    <div class="flex items-center">
-                        <x-filament::icon icon="heroicon-s-envelope" class="h-5 w-5 mr-2"/>
-                        {{$contact_ulb['address']}}
-                    </div>
-                @endif
-            </div>
-        @endforeach
-    </x-filament::section>
+                </x-zeus-accordion::accordion.item>
+            </x-zeus-accordion::accordion>
         @endif
-        @if(!empty(json_decode($project->contact_ext, true)))
-    <x-filament::section class="col-span-1 row-span-1 sticky top-5">
-        <x-filament::section.heading class="text-xl mb-4">
-            Contacts externes
-        </x-filament::section.heading>
-        @foreach(json_decode($project->contact_ext, true) as $contact_ext)
-
-            <div class="mb-3 last-of-type:mb-0">
-                <x-filament::section.heading>{{$contact_ext['name']}}</x-filament::section.heading>
-                @if($contact_ext['phone'] != "")
-                    <div class="flex items-center">
-                        <x-filament::icon icon="heroicon-s-phone" class="h-5 w-5 mr-2"/>
-                        {{$contact_ext['phone']}}
+        @if(!empty($project->contact_ulb))
+            <x-filament::section class="col-span-1 row-span-1">
+                <x-filament::section.heading class="text-xl mb-4">
+                    Contacts ULB
+                </x-filament::section.heading>
+                @foreach($project->contact_ulb as $contact_ulb)
+                    <div class="mb-3 last-of-type:mb-0">
+                        <x-filament::section.heading>
+                            <p class="flex-1 flex-wrap overflow-ellipsis line-clamp-1">
+                                {{$contact_ulb['name']}}
+                            </p>
+                        </x-filament::section.heading>
+                        @if(!empty($contact_ulb['email']))
+                            <div class="flex flex-col sm:flex-row items-start gap-2">
+                                <div class="flex-shrink-0">
+                                    <x-filament::icon icon="heroicon-s-at-symbol" class="h-[24px] w-[24px]"/>
+                                </div>
+                                <div class="flex-grow min-w-0">
+                                    <a href="mailto:{{trim($contact_ulb['email'])}}?subject=Infofin - {{$project->title}}({{$project->id}})"
+                                       class="inline-block break-all hover:text-primary-500">
+                                        {{$contact_ulb['email']}}
+                                    </a>
+                                </div>
+                            </div>
+                        @endif
                     </div>
-                @endif
-                @if($contact_ext['email'] != "")
-                    <div class="flex items-center">
-                        <x-filament::icon icon="heroicon-s-at-symbol" class="h-5 w-5 mr-2"/>
-                        {{$contact_ext['email']}}
+                @endforeach
+            </x-filament::section>
+        @endif
+        @if(!empty($project->contact_ext))
+            <x-filament::section class="col-span-1 row-span-1">
+                <x-filament::section.heading class="text-xl mb-4">
+                    Contacts externes
+                </x-filament::section.heading>
+                @foreach($project->contact_ext as $contact_ext)
+                    <div class="mb-3 last-of-type:mb-0">
+                        <x-filament::section.heading>
+                            <p class="flex-1 flex-wrap overflow-ellipsis line-clamp-1">
+                                {{$contact_ext['name']}}
+                            </p>
+                        </x-filament::section.heading>
+                        @if($contact_ext['email'] != "")
+                            <div class="flex flex-col sm:flex-row items-start gap-2">
+                                <div class="flex-shrink-0">
+                                    <x-filament::icon icon="heroicon-s-at-symbol" class="h-[24px] w-[24px]"/>
+                                </div>
+                                <div class="flex-grow min-w-0">
+                                    <p class="flex-1 flex-wrap overflow-ellipsis line-clamp-1">
+                                        <a href="mailto:{{trim($contact_ext['email'])}}?subject=Infofin - {{$project->title}}({{$project->id}})"
+                                           class="inline-block break-all hover:text-primary-500">
+                                            {{$contact_ext['email']}}
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+                        @endif
                     </div>
-                @endif
-                @if($contact_ext['address'] != "")
-                    <div class="flex items-center">
-                        <x-filament::icon icon="heroicon-s-envelope" class="h-5 w-5 mr-2"/>
-                        {{$contact_ext['address']}}
+                @endforeach
+            </x-filament::section>
+        @endif
+        @if($project->info_sessions && $project->info_sessions->count() > 0)
+            <x-filament::section class="col-span-1 row-span-1">
+                <x-filament::section.heading>
+                    Prochaine séance d'information
+                </x-filament::section.heading>
+                <div class="mt-3">
+                    <p class="flex flex-row gap-2 items-center my-1">
+                        <x-filament::icon
+                            icon="heroicon-o-map-pin"
+                            class="max-h-6 max-w-6"/> {{$project->info_sessions[0]->sessionTypeString}}
+                    </p>
+                    <p class="flex flex-row gap-2 items-center my-1">
+                        <x-filament::icon
+                            icon="heroicon-o-calendar-days"
+                            class="max-h-6 max-w-6"/> {{\Carbon\Carbon::make($project->info_sessions[0]->session_datetime)->format('d/m/Y')}}
+                    </p>
+                    <p class="flex flex-row gap-2 items-center my-1">
+                        <x-filament::icon
+                            icon="heroicon-o-clock"
+                            class="max-h-6 max-w-6"/> {{\Carbon\Carbon::make($project->info_sessions[0]->session_datetime)->format('H:i')}}
+                    </p>
+                    <div class="flex justify-end">
+                        <x-filament::button color="secondary" tag="a"
+                                            href="{{route('info_session.show', $project->info_sessions[0]->id)}}"
+                                            icon="heroicon-o-arrow-right" iconPosition="after"
+                                            class="mt-2 justify-end">Plus d'infos
+                        </x-filament::button>
                     </div>
-                @endif
-            </div>
-        @endforeach
-    </x-filament::section>
-            @endif
+                </div>
+            </x-filament::section>
+        @endif
     </div>
+    <div class="col-span-4 row-start-2 last:max-h-fit">
+        <div class="flex flex-row justify-start divide-x">
+            <x-filament::section.description class="px-5">
+                Dernière modification le {{ \Carbon\Carbon::make($project->updated_at)->format('d/m/Y') }}
+                par {{ $project->poster->full_name() }}
+            </x-filament::section.description>
+            @auth
+                @hasrole('contributor|admin')
+                <x-filament::section.description class="px-5">
+                    Vues : {{ $project->visit_count }}
+                </x-filament::section.description>
+                @endrole
+            @endauth
+            @auth
+                @hasanyrole('contributor|admin')
+                <x-filament::section.description class="px-5">
+                    Vues depuis le mail : {{ $project->visit_count_email }}
+                </x-filament::section.description>
+                @endrole
+            @endauth
+        </div>
+    </div>
+
 </div>

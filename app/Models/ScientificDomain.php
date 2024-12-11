@@ -10,20 +10,25 @@ class ScientificDomain extends Model
 {
     protected $table = 'scientific_domains';
     public $timestamps = false;
-    protected $fillable = [ 'title', 'sci_dom_cat_id'];
+    protected $fillable = ['name', 'sci_dom_cat_id'];
 
-    public function category() : BelongsTo{
+    public function category(): BelongsTo
+    {
         return $this->belongsTo(ScientificDomainCategory::class, 'sci_dom_cat_id');
     }
 
-    public function users() : BelongsToMany
+    public function users(): BelongsToMany
     {
-        return $this->belongsToMany(Faculties::class, 'users_scientific_domains', 'scientific_domain_id', 'user_id');
+        return $this->belongsToMany(User::class, 'users_scientific_domains', 'scientific_domain_id', 'user_id');
     }
 
-    public function projects() : BelongsToMany
+    public function projects(): BelongsToMany
     {
         return $this->belongsToMany(Project::class, 'projects_scientific_domains', 'scientific_domain_id', 'project_id');
     }
 
+    public function info_sessions(): BelongsToMany
+    {
+        return $this->belongsToMany(InfoSession::class, 'info_sessions_scientific_domains', 'scientific_domain_id', 'info_session_id');
+    }
 }

@@ -1,0 +1,91 @@
+<?php
+
+namespace App\Providers\Filament;
+
+use Amendozaaguiar\FilamentRouteStatistics\FilamentRouteStatisticsPlugin;
+use App\Filament\Pages\Dashboard;
+use App\Filament\Pages\MailingPage;
+use App\Filament\Widgets\AdvancedProjectsChart;
+use App\Filament\Widgets\ProjectsChart;
+use App\Filament\Widgets\SubscribersOverview;
+use App\Filament\Widgets\TotalProjects;
+use App\Filament\Widgets\UserRegistration;
+use App\Filament\Widgets\UsersOverview;
+use App\Filament\Widgets\UsersThisMonthTrendWidget;
+use App\Http\Middleware\Admin;
+use BezhanSalleh\FilamentExceptions\FilamentExceptionsPlugin;
+use Croustibat\FilamentJobsMonitor\FilamentJobsMonitorPlugin;
+use Filament\Http\Middleware\DisableBladeIconComponents;
+use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Pages;
+use Filament\Panel;
+use Filament\PanelProvider;
+use Filament\Support\Colors\Color;
+use Filament\Widgets;
+use Hydrat\TableLayoutToggle\TableLayoutTogglePlugin;
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Illuminate\Cookie\Middleware\EncryptCookies;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Illuminate\Routing\Middleware\SubstituteBindings;
+use Illuminate\Session\Middleware\AuthenticateSession;
+use Illuminate\Session\Middleware\StartSession;
+use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Saade\FilamentFullCalendar\FilamentFullCalendarPlugin;
+use Saade\FilamentLaravelLog\FilamentLaravelLogPlugin;
+
+class AdminPanelProvider extends PanelProvider
+{
+    public function panel(Panel $panel): Panel
+    {
+        return $panel
+            ->viteTheme('resources/css/filament/admin/theme.css')
+            ->default()
+            ->homeUrl('/')
+            ->id('admin')
+            ->path('admin')
+            ->colors([
+                'primary' => Color::Amber,
+                'secondary' => Color::Green,
+                'danger' => Color::hex('#E32119'),
+            ])
+            ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
+            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
+            ->pages(pages: [
+                //Pages\Dashboard::class,
+                Dashboard::class,
+                MailingPage::class
+            ])
+            ->widgets([
+                TotalProjects::class,
+                UsersOverview::class,
+                SubscribersOverview::class,
+                AdvancedProjectsChart::class
+            ])
+            ->plugins([
+                    FilamentLaravelLogPlugin::make(),
+                    FilamentJobsMonitorPlugin::make(),
+                    FilamentExceptionsPlugin::make(),
+                    FilamentRouteStatisticsPlugin::make(),
+                    FilamentFullCalendarPlugin::make()
+                        ->plugins(['multiMonth']),
+                ]
+            )
+            ->resources([
+                config('filament-logger.activity_resource'),
+            ])
+            ->middleware([
+                EncryptCookies::class,
+                AddQueuedCookiesToResponse::class,
+                StartSession::class,
+                AuthenticateSession::class,
+                ShareErrorsFromSession::class,
+                VerifyCsrfToken::class,
+                SubstituteBindings::class,
+                DisableBladeIconComponents::class,
+                DispatchServingFilamentEvent::class,
+            ])
+            ->authMiddleware([
+                Admin::class,
+            ]);
+    }
+}

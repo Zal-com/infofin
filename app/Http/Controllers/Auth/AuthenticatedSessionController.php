@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use Subfission\Cas\Facades\Cas;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -16,6 +17,10 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(): View
     {
+        if (Auth::check()) {
+            redirect()->route('projects.index');
+        }
+        session(['url.intended' => url()->previous()]);
         return view('auth.login');
     }
 
@@ -28,7 +33,9 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('home', absolute: false));
+        $redirectUrl = session()->pull('url.intended', '/projects');
+
+        return redirect()->intended($redirectUrl);
     }
 
     /**
@@ -42,6 +49,15 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
+        if (Cas::isAuthenticated()) {
+            Cas::logout();
+        }
+
+        return redirect('/logout');
+    }
+
+    public function logoutPage(): RedirectResponse
+    {
         return redirect('/');
     }
 }

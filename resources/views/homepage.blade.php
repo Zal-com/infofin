@@ -26,7 +26,7 @@
             />
 
             <x-card :title="'Liste des projets'"
-                    :desc="'Retrouvez ici la liste des projets encodés dans la base de données'"
+                    :desc="'Retrouvez ici la liste des appels encodés dans la base de données'"
                     :button1="'Voir les projets'"
                     :url1="route('projects.index')"
 
