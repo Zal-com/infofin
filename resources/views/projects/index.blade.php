@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="w-100 flex justify-between">
-        <h2>Liste des projets</h2>
+        <h2 class="text-2xl font-semibold">Liste des projets</h2>
         @can('create project')
             <div x-data="{ open: false }" class="relative inline-block text-left">
                 <x-filament::button @click="open = !open" color="primary" icon="heroicon-s-plus">

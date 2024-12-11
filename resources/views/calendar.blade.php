@@ -2,7 +2,7 @@
 @section('content')
     <div class="container mx-auto mt-8">
         <div class="flex flex-row justify-between">
-            <h2 class="mb-4">Calendrier de projets</h2>
+            <h2 class="mb-4 text-2xl font-semibold">Calendrier de projets</h2>
             <div class="flex flex-row gap-2 items-center">
                 <div class="flex flex-row gap-2 items-center mr-4">
                     <div class="h-5 w-5 rounded-md bg-blue-500"></div>
