@@ -71,19 +71,13 @@
                             <li class="flex items-center gap-1">
                                 <x-filament::icon icon="heroicon-o-chevron-right"
                                                   style="height: 18px; width: 18px;"/>
-                                <a href="{{route('login.cas')}}"
-                                   class="hover:text-slate-300">Connexion CAS</a>
-                            </li>
-                            <li class="flex items-center gap-1">
-                                <x-filament::icon icon="heroicon-o-chevron-right"
-                                                  style="height: 18px; width: 18px;"/>
-                                <a href="{{route('register')}}"
+                                <a href="https://monulb.ulb.be/fr/web/monulb/sign-up/#/"
                                    class="hover:text-slate-300">Créer un compte</a>
                             </li>
                             <li class="flex items-center gap-1">
                                 <x-filament::icon icon="heroicon-o-chevron-right"
                                                   style="height: 18px; width: 18px;"/>
-                                <a href="{{route('login')}}"
+                                <a href="{{route('login.cas')}}"
                                    class="hover:text-slate-300">Se connecter</a>
                             </li>
                         </ul>
@@ -102,7 +96,7 @@
                             <li class="flex items-center gap-1">
                                 <x-filament::icon icon="heroicon-o-chevron-right"
                                                   style="height: 18px; width: 18px;"/>
-                                <form method="post" action="{{route('logout')}}">
+                                <form method="post" action="{{route('logout.cas')}}">
                                     @csrf
                                     <button class="hover:text-slate-300" type="submit">Se déconnecter</button>
                                 </form>
@@ -120,7 +114,7 @@
                         <li class="flex items-center gap-1">
                             <x-filament::icon icon="heroicon-o-envelope"
                                               style="height: 18px; width: 18px;"/>
-                            <a href="mailto:guillaume.stordeur@ulb.be" class="hover:text-slate-300">Webmaster</a>
+                            <a href="mailto:maxime.vanhoren@ulb.be" class="hover:text-slate-300">Webmaster</a>
                         </li>
                     </ul>
                 </div>
