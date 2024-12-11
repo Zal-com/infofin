@@ -33,7 +33,7 @@
             @guest
                 <x-filament::link tag="a" href="https://monulb.ulb.be/fr/web/monulb/sign-up/">S'enregistrer
                 </x-filament::link>
-                <x-filament::button tag="a" href="{{ route('login') }}">Se connecter</x-filament::button>
+                <x-filament::button tag="a" href="{{ route('login.cas') }}">Se connecter</x-filament::button>
             @endguest
 
             @auth
