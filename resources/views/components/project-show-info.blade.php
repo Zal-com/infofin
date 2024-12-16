@@ -35,12 +35,18 @@
                 </x-filament::section>
             @endif
             <x-filament::section.description class="flex flex-wrap gap-1">
-                @foreach($project->expenses as $expense)
-                    <x-filament::badge>{{$expense->title ?? ''}}</x-filament::badge>
-                @endforeach
-                @foreach($project->activities as $activity)
-                    <x-filament::badge>{{$activity->title ?? ''}}</x-filament::badge>
-                @endforeach
+                @if(!empty($project->info_types))
+                    @foreach($project->info_types as $type)
+                        <x-filament::badge>{{$type->title ?? ''}}</x-filament::badge>
+                    @endforeach
+                @else
+                    @foreach($project->expenses as $expense)
+                        <x-filament::badge>{{$expense->title ?? ''}}</x-filament::badge>
+                    @endforeach
+                    @foreach($project->activities as $activity)
+                        <x-filament::badge>{{$activity->title ?? ''}}</x-filament::badge>
+                    @endforeach
+                @endif
             </x-filament::section.description>
             @if(!empty($project->origin_url))
                 <a href="{{ $project->origin_url }}" class="flex flex-row">

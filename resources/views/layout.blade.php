@@ -7,8 +7,9 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <!-- Open Graph Meta Tags -->
     <meta property="og:title" content="@yield('og:title', 'Infofin')"/>
-    <meta property="og:description" content="@yield('og:description', 'Description Infofin')"/>
-    <meta property="og:image" content="@yield('og:image', asset('default-image.jpg'))"/>
+    <meta property="og:description"
+          content="@yield('og:description', "Découvrez une plateforme dédiée aux chercheurs, regroupant les derniers appels à financement, des séances d'information, et toutes les ressources essentielles pour vos projets de recherche. Accédez facilement à des informations claires et actualisées pour maximiser vos opportunités.")"/>
+    <meta property="og:image" content="@yield('og:image', asset('img/ulb_logo.png'))"/>
     <meta property="og:url" content="@yield('og:url', url()->current())"/>
     <meta property="og:type" content="@yield('og:type', 'website')"/>
 
