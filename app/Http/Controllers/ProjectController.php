@@ -23,7 +23,6 @@ class ProjectController extends Controller
     public function show(int $id, Request $request)
     {
         $project = Project::find($id);
-        $project->timestamps = false;
 
         $qs = $request->query('from_mail');
 
@@ -33,10 +32,14 @@ class ProjectController extends Controller
             $project->visit_count = $project->visit_count + 1;
         }
 
+        // Mettre à jour le modèle sans affecter updated_at
+        $project->updateQuietly([
+            'visit_count_email' => $project->visit_count_email,
+            'visit_count' => $project->visit_count
+        ]);
+
+        // Créer un enregistrement dans VisitsRate
         VisitsRate::create(["project_id" => $id]);
-
-
-        $project->save();
 
         return view('projects.show', [
             'project' => $project,
