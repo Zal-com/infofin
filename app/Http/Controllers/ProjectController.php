@@ -32,13 +32,11 @@ class ProjectController extends Controller
             $project->visit_count = $project->visit_count + 1;
         }
 
-        // Mettre à jour le modèle sans affecter updated_at
         $project->updateQuietly([
             'visit_count_email' => $project->visit_count_email,
             'visit_count' => $project->visit_count
         ]);
 
-        // Créer un enregistrement dans VisitsRate
         VisitsRate::create(["project_id" => $id]);
 
         return view('projects.show', [
