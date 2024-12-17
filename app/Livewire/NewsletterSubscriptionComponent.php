@@ -14,6 +14,7 @@ use Livewire\Component;
 
 class NewsletterSubscriptionComponent extends Component implements HasForms
 {
+    //tst
     use InteractsWithForms;
 
     public $data = [
