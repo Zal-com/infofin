@@ -60,7 +60,7 @@ class CASController extends Controller
             }
         }
 
-        return redirect()->route('login');
+        return redirect()->route('projects.index');
     }
 
 
@@ -79,7 +79,8 @@ class CASController extends Controller
         return redirect()->route('login');
     }
 
-    public function policy_create_user(){
+    public function policy_create_user()
+    {
         $userDetails = session("userDetails");
         if (!$userDetails) {
             return redirect()->route('login'); // redirect to login if no details found
