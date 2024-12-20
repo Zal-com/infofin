@@ -19,8 +19,10 @@ Route::middleware('guest')->group(function () {
 
     Route::post('register', [RegisteredUserController::class, 'store']);
 
+    /*
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
         ->name('login');
+    */
 
     //CAS routes
     Route::get('login/cas', [CASController::class, 'redirectToCas'])->name('login.cas');
