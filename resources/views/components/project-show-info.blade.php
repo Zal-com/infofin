@@ -383,7 +383,7 @@
         <div class="flex flex-row justify-start divide-x">
             <x-filament::section.description class="px-5">
                 Dernière modification le {{ \Carbon\Carbon::make($project->updated_at)->format('d/m/Y') }}
-                par {{ $project->poster->full_name() }}
+                par {{ $project->last_updated_user->full_name() }}
             </x-filament::section.description>
             @auth
                 @hasrole('contributor|admin')

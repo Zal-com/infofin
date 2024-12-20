@@ -54,6 +54,11 @@ class Project extends Model
         return $this->belongsTo(User::class, 'poster_id');
     }
 
+    public function last_updated_user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'last_update_user_id');
+    }
+
     public function continents(): BelongsToMany
     {
         return $this->belongsToMany(Continent::class, 'projects_continents', 'project_id', 'continent_code');
