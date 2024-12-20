@@ -1008,7 +1008,7 @@ class ProjectEditForm extends Component implements HasForms
                     }
                 }
 
-
+                $this->project->last_update_user_id = Auth::id();
                 $id = $this->project->id;
 
                 ProjectEditHistory::create([
