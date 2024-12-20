@@ -23,6 +23,7 @@ class ProjectController extends Controller
     public function show(int $id, Request $request)
     {
         $project = Project::find($id);
+        $project->timestamps = false;
 
         $qs = $request->query('from_mail');
 
@@ -32,10 +33,11 @@ class ProjectController extends Controller
             $project->visit_count = $project->visit_count + 1;
         }
 
-        $project->updateQuietly([
-            'visit_count_email' => $project->visit_count_email,
-            'visit_count' => $project->visit_count
-        ]);
+        VisitsRate::create(["project_id" => $id]);
+
+
+        $project->saveQuietly();
+
 
         VisitsRate::create(["project_id" => $id]);
 
