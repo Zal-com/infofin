@@ -91,6 +91,10 @@ Route::get('/faq', function () {
     return view('faq');
 })->name('faq');
 
+Route::fallback(function () {
+    redirect('/');
+});
+
 
 require __DIR__ . '/auth.php';
 require __DIR__ . '/api.php';
