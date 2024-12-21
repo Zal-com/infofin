@@ -10,6 +10,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 
+
+Route::fallback(function () {
+    redirect()->route('projects.index');
+});
+
 Route::get('/', function () {
     return redirect()->route('projects.index');
 })->name('home');
@@ -90,11 +95,6 @@ Route::get('/privacy-policy', function () {
 Route::get('/faq', function () {
     return view('faq');
 })->name('faq');
-
-Route::fallback(function () {
-    redirect('/');
-});
-
 
 require __DIR__ . '/auth.php';
 require __DIR__ . '/api.php';
