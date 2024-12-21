@@ -22,7 +22,7 @@ class ProjectController extends Controller
 
     public function show(int $id, Request $request)
     {
-        $project = Project::find($id);
+        $project = Project::find($id) ?? abort(404);
         $project->timestamps = false;
 
         $qs = $request->query('from_mail');
