@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Storage;
 
 
 Route::fallback(function () {
-    redirect()->route('projects.index');
+    return ÒÒredirect()->route('projects.index');
 });
 
 Route::get('/', function () {
