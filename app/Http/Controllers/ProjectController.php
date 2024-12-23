@@ -25,7 +25,7 @@ class ProjectController extends Controller
         $project = Project::find($id) ?? abort(404);
         $project->timestamps = false;
 
-        $qs = $request->query('from_mail');
+        $qs = $request->query('from_email');
 
         if ($qs == "true") {
             $project->visit_count_email = $project->visit_count_email + 1;
