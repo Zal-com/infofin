@@ -306,7 +306,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td style="overflow: auto; font-size: 12px; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 6rem; padding: 0 0 0 8px;">
-                                                            Commission de classement des crédits internationaux
+                                                            {{$card->organisation->title}}
                                                         </td>
                                                         <td style="padding-left: 4px; padding-right: 4px; background: rgba(39, 109, 32, 0.10); border-radius: 4px; justify-content: center; gap: 2px; display: inline-flex;">
                                                             <div

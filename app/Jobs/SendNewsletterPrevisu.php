@@ -34,7 +34,11 @@ class SendNewsletterPrevisu implements ShouldQueue
         $projects = Project::where('is_in_next_email', 1)
             ->get();
 
-        $adresses = ['daniele.carati@ulb.be', 'guillaume.stordeur@ulb.be', 'antoine.delers@ulb.be'];
+        $adresses = [
+            //'daniele.carati@ulb.be',
+            'guillaume.stordeur@ulb.be',
+            //'antoine.delers@ulb.be'
+        ];
 
         if (!$projects->isEmpty()) {
             $data['projects'] = $projects;
