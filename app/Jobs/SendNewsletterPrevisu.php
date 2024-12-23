@@ -34,7 +34,7 @@ class SendNewsletterPrevisu implements ShouldQueue
 
         if (!$projects->isEmpty()) {
             $data['projects'] = $projects;
-            Mail::to("maxime.vanhoren@ulb.be")->send(new WeeklyNewsletter($data));
+            Mail::to("guillaume.stordeur@ulb.be")->send(new WeeklyNewsletter($data));
         }
 
     }
