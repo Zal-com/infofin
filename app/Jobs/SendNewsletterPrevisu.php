@@ -10,6 +10,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class SendNewsletterPrevisu implements ShouldQueue
@@ -19,7 +20,8 @@ class SendNewsletterPrevisu implements ShouldQueue
     public function handle()
     {
 
-        $message = NewsletterSchedule::first()->get(['message']);
+        $message = NewsletterSchedule::first();
+
         $data = [
             'prenom' => "Admin",
             "message" => $message->message,
@@ -32,9 +34,13 @@ class SendNewsletterPrevisu implements ShouldQueue
         $projects = Project::where('is_in_next_email', 1)
             ->get();
 
+        $adresses = ['daniele.carati@ulb.be', 'guillaume.stordeur@ulb.be', 'antoine.delers@ulb.be'];
+
         if (!$projects->isEmpty()) {
             $data['projects'] = $projects;
-            Mail::to('guillaume.stordeur@ulb.be')->send(new WeeklyNewsletter($data));
+            foreach ($adresses as $adress) {
+                Mail::to($adress)->send(new WeeklyNewsletter($data));
+            }
         }
     }
 }
