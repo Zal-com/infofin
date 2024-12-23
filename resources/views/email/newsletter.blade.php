@@ -141,7 +141,7 @@
                                                     <tr>
                                                         <td style="width:250px;">
                                                             <img height="auto"
-                                                                 src="https://infofin-f-departementrecherche.apps.dev.okd.hpda.ulb.ac.be/img/ulb_logo.png"
+                                                                 src="https://infofin.ulb.be/img/ulb_logo.png"
                                                                  style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:13px;"
                                                                  width="250"/>
                                                         </td>
@@ -331,7 +331,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td style="text-align: right; padding: 8px;" colspan="2">
-                                                            <a href="{{url('/projects/' . $card->id . "?from_email=true")}}">
+                                                            <a href="{{'https://infofin.ulb.be/projects/' . $card->id . "?from_email=true")}}">
                                                                 <button
                                                                     style="color: white; font-size: 12px; font-weight: 400; line-height: 17px; word-wrap: break-word; padding: 6px 20px; background: #276D20; border: none; border-radius: 5px;">
                                                                     <span
