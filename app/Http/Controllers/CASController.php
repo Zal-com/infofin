@@ -83,7 +83,7 @@ class CASController extends Controller
     {
         $userDetails = session("userDetails");
         if (!$userDetails) {
-            return redirect()->route('login'); // redirect to login if no details found
+            return redirect()->route('projects.index'); // redirect to login if no details found
         }
         return view('auth.policy-create-user', ['userDetails' => $userDetails]);
     }
