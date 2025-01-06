@@ -14,14 +14,13 @@ class CASController extends Controller
     {
         if (Cas::isAuthenticated()) {
             $attributes = Cas::getAttributes();
-            dd($attributes);
             $uid = $attributes["uid"];
 
             $user = User::where("uid", $uid)->first();
 
             if (!$user) {
                 $userDetails = [
-                    "email" => $attributes["mail"],
+                    "email" => $attributes["mail"] ?? $attributes["ulbContactMail"],
                     "first_name" => $attributes["givenName"],
                     "last_name" => $attributes["sn"],
                     "uid" => $attributes["uid"],
@@ -41,14 +40,13 @@ class CASController extends Controller
     {
         if (Cas::isAuthenticated()) {
             $attributes = Cas::getAttributes();
-            dd($attributes);
             $uid = $attributes["uid"];
 
             $user = User::where("uid", $uid)->first();
 
             if (!$user) {
                 $userDetails = [
-                    "email" => $attributes["mail"],
+                    "email" => $attributes["mail"] ?? $attributes["ulbContactMail"],
                     "first_name" => $attributes["givenName"],
                     "last_name" => $attributes["sn"],
                     "uid" => $attributes["uid"],
