@@ -40,10 +40,6 @@ class CASController extends Controller
     {
         if (Cas::isAuthenticated()) {
             $attributes = Cas::getAttributes();
-            foreach ($attributes as $attribute => $value) {
-                dump($attribute);
-            }
-            die();
             $uid = $attributes["uid"];
 
             $user = User::where("uid", $uid)->first();
