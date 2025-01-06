@@ -41,6 +41,7 @@ class CASController extends Controller
     {
         if (Cas::isAuthenticated()) {
             $attributes = Cas::getAttributes();
+            dd($attributes);
             $uid = $attributes["uid"];
 
             $user = User::where("uid", $uid)->first();
