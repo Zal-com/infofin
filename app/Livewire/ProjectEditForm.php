@@ -175,8 +175,8 @@ class ProjectEditForm extends Component implements HasForms
         $changedKeys = [];
 
         foreach ($oldArray as $key => $oldValue) {
-            $oldValueNormalized = normalizeValue($oldValue);
-            $newValueNormalized = normalizeValue($newArray[$key] ?? null);
+            $oldValueNormalized = $this->normalizeValue($oldValue);
+            $newValueNormalized = $this->normalizeValue($newArray[$key] ?? null);
 
             if ($oldValueNormalized !== $newValueNormalized) {
                 $changedKeys[] = $key;
