@@ -927,14 +927,14 @@ class ProjectEditForm extends Component implements HasForms
         */
         if ($this->form->validate()) {
             $data = $this->data;
-            
+
             try {
                 $data['last_update_user_id'] = $userId;
                 /* REMOVED causait des problèmes d'interprétation de l'éditeur lors de la modification BLABLOU
                 $converter = new HtmlConverter();
                 $markdown = $converter->convert($this->data["short_description"]);
 
-                $data['short_description'] = $markdown;
+                $data['short_description'] = $markdown;.
                 */
 
                 if (isset($data['contact_ulb'])) {
