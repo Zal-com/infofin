@@ -161,31 +161,6 @@ class ProjectEditForm extends Component implements HasForms
         return $transformedContacts;
     }
 
-    function normalizeValue($value)
-    {
-        if (is_array($value)) {
-            ksort($value);
-            $value = json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-        }
-        return (string)$value;
-    }
-
-    function compareArrays($oldArray, $newArray)
-    {
-        $changedKeys = [];
-
-        foreach ($oldArray as $key => $oldValue) {
-            $oldValueNormalized = $this->normalizeValue($oldValue);
-            $newValueNormalized = $this->normalizeValue($newArray[$key] ?? null);
-
-            if ($oldValueNormalized !== $newValueNormalized) {
-                $changedKeys[] = $key;
-            }
-        }
-
-        return $changedKeys;
-    }
-
     public function form(Form $form): Form
     {
         return $form->schema([
@@ -952,26 +927,6 @@ class ProjectEditForm extends Component implements HasForms
         */
         if ($this->form->validate()) {
             $data = $this->data;
-            $needNextEmail = false;
-
-            $normalizedOld = array_map(function ($value) {
-                if (is_array($value)) {
-                    return json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-                }
-                return (string)$value;
-            }, $this->oldProject);
-
-            $normalizedNew = array_map(function ($value) {
-                if (is_array($value)) {
-                    return json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-                }
-                return (string)$value;
-            }, $data);
-
-            $diff = $this->compareArrays($normalizedOld, $normalizedNew);
-
-            dd($diff);
-            $changedDiff = ['contact_ulb', 'contact_ext', 'deadlines'];
 
             if (array_intersect($diff, $changedDiff)) {
                 dd($data);
@@ -1023,6 +978,8 @@ class ProjectEditForm extends Component implements HasForms
                 }
 
                 $data["status"] = 1;
+
+                $data["is_in_next_email"] = 1;
 
                 $this->project->update($data);
 
