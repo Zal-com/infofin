@@ -929,10 +929,23 @@ class ProjectEditForm extends Component implements HasForms
             $data = $this->data;
             $needNextEmail = false;
 
-            dump($data);
-            dump($this->oldProject);
+            $normalizedOld = array_map(function ($value) {
+                if (is_array($value)) {
+                    return json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                }
+                return (string)$value;
+            }, $this->oldProject);
 
-            $diff = array_keys(array_diff_assoc($this->oldProject, $data));
+            $normalizedNew = array_map(function ($value) {
+                if (is_array($value)) {
+                    return json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                }
+                return (string)$value;
+            }, $data);
+
+            $diff = array_keys(array_diff_assoc($normalizedOld, $normalizedNew));
+
+            dd($diff);
             $changedDiff = ['contact_ulb', 'contact_ext', 'deadlines'];
 
             if (array_intersect($diff, $changedDiff)) {
