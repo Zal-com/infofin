@@ -927,10 +927,7 @@ class ProjectEditForm extends Component implements HasForms
         */
         if ($this->form->validate()) {
             $data = $this->data;
-
-            if (array_intersect($diff, $changedDiff)) {
-                dd($data);
-            }
+            
             try {
                 $data['last_update_user_id'] = $userId;
                 /* REMOVED causait des problèmes d'interprétation de l'éditeur lors de la modification BLABLOU
