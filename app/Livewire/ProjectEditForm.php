@@ -929,6 +929,9 @@ class ProjectEditForm extends Component implements HasForms
             $data = $this->data;
             $needNextEmail = false;
 
+            dump($data);
+            dump($this->oldProject);
+
             $diff = array_keys(array_diff_assoc($this->oldProject, $data));
             $changedDiff = ['contact_ulb', 'contact_ext', 'deadlines'];
 
