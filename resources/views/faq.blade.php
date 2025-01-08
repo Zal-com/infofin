@@ -11,11 +11,10 @@
                 icon="heroicon-o-chevron-right"
             >
                 <div class="bg-white p-4">
-                    Rendez-vous sur cette <a href="{{ route('password.request') }}"
-                                             class="text-blue-600 hover:text-blue-900">page</a> et saisissez votre
-                    adresse
-                    email. Vous recevrez ensuite un email contenant les instructions pour réinitialiser votre mot de
-                    passe.
+                    Pas de panique ! Votre compte n'est pas perdu. Rendez-vous sur <a
+                        href="https://support.ulb.be/web/support/-/j-ai-oublie-mon-ulbid.-ou-puis-je-le-retrouver-"
+                        class="text-blue-600 hover:text-blue-900">cette page</a> et suivez les instructions pour
+                    récupérer ou réinitialiser votre mot de passe.
                 </div>
             </x-zeus-accordion::accordion.item>
 
@@ -27,9 +26,7 @@
                 <div class="bg-white p-4">
                     Pas d'inquiétude, vous pouvez toujours vous connecter en utilisant votre ancienne adresse interne
                     avec le
-                    mot de passe que vous avez enregistré dans votre profil. N'oubliez pas de mettre à jour votre
-                    adresse email
-                    une fois connecté.
+                    mot de passe que vous avez enregistré dans votre profil.
                 </div>
             </x-zeus-accordion::accordion.item>
 
@@ -43,8 +40,9 @@
                     deux solutions
                     s'offrent à vous : vous pouvez contacter <a href="mailto:guillaume.stordeur@ulb.be"
                                                                 class="text-blue-600 hover:text-blue-900">notre
-                        administrateur</a> ou bien créer un nouveau compte via cette <a href="{{ route('register') }}"
-                                                                                        class="text-blue-600 hover:text-blue-900">page
+                        administrateur</a> ou bien créer un nouveau compte via cette <a
+                        href="https://monulb.ulb.be/fr/web/monulb/sign-up/"
+                        class="text-blue-600 hover:text-blue-900">page
                         d'inscription.</a>
                 </div>
             </x-zeus-accordion::accordion.item>

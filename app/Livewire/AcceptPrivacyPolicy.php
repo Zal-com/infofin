@@ -49,7 +49,7 @@ class AcceptPrivacyPolicy extends Component implements HasForms
                                 'class' => 'overflow-y-auto h-64',
                             ]),
                     ]),
-                Step::make("Centres d'intérêts - Activités et Dépenses")
+                Step::make("Centres d'intérêt - Activités et Dépenses")
                     ->schema([
                         Section::make('Activités et Dépenses')
                             ->schema([
@@ -68,7 +68,7 @@ class AcceptPrivacyPolicy extends Component implements HasForms
                             ])
                             ->columns(2),
                     ]),
-                Step::make("Centres d'intérêts - Disciplines")
+                Step::make("Centres d'intérêt - Disciplines")
                     ->schema([
                         Section::make('Disciplines scientifiques')
                             ->schema($this->getFieldsetSchema())
