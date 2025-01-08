@@ -54,6 +54,8 @@ class ProjectEditForm extends Component implements HasForms
 
     public $id;
 
+    public $oldProject;
+
     protected FileService $fileService;
 
     public function render()
@@ -118,6 +120,7 @@ class ProjectEditForm extends Component implements HasForms
         );
 
         $this->id = $data["id"];
+        $this->oldProject = $data;
         $this->form->fill($data);
     }
 
@@ -924,13 +927,14 @@ class ProjectEditForm extends Component implements HasForms
         */
         if ($this->form->validate()) {
             $data = $this->data;
+
             try {
                 $data['last_update_user_id'] = $userId;
                 /* REMOVED causait des problèmes d'interprétation de l'éditeur lors de la modification BLABLOU
                 $converter = new HtmlConverter();
                 $markdown = $converter->convert($this->data["short_description"]);
 
-                $data['short_description'] = $markdown;
+                $data['short_description'] = $markdown;.
                 */
 
                 if (isset($data['contact_ulb'])) {
@@ -971,6 +975,8 @@ class ProjectEditForm extends Component implements HasForms
                 }
 
                 $data["status"] = 1;
+
+                $data["is_in_next_email"] = 1;
 
                 $this->project->update($data);
 
