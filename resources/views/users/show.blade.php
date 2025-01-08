@@ -37,14 +37,6 @@
             @livewire('newsletter-subscription-component')
         </div>
         <x-filament::section class="col-span-5 row-span-2">
-            <div x-show="tab === 'infos'" class="m-4">
-                <x-filament::section.heading>
-                    Infos personnelles
-                </x-filament::section.heading>
-                <div class="mt-4">
-                    @livewire('profile-form')
-                </div>
-            </div>
             @can('create collection')
                 <div x-show="tab === 'collections'" class="m-4">
                     <x-filament::section.heading class="mb-5 flex justify-between items-center">
