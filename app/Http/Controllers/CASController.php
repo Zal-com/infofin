@@ -76,7 +76,7 @@ class CASController extends Controller
             Cas::logout();
         }
 
-        return redirect()->route('login');
+        return redirect()->route('projects.index');
     }
 
     public function policy_create_user()

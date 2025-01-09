@@ -21,7 +21,7 @@ class AuthenticatedSessionController extends Controller
             redirect()->route('projects.index');
         }
         session(['url.intended' => url()->previous()]);
-        return view('auth.login');
+        return view('projects.index');
     }
 
     /**
