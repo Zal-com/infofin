@@ -51,7 +51,7 @@
                         @endif
                     </x-filament::section.description>
                     <h1 class="font-bold text-4xl my-1">{{$data['title'] ?? ''}}</h1>
-                    <div class="inline-flex justify-between gap-2 mt-3 w-full">
+                    <div class="inline-flex justify-between gap-2 mt-0 w-full">
                         <div>
                             <p class="text-md italic">{{ $organisation['title'] ?? 'Aucune organisation entrée' }}</p>
                         </div>
