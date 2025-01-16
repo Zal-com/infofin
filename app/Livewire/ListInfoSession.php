@@ -77,7 +77,7 @@ class ListInfoSession extends Component implements HasForms, HasTable
                 ->lineClamp(2)
                 ->sortable()
                 ->searchable()
-                ->formatStateUsing(function ($record) {n
+                ->formatStateUsing(function ($record) {
                     return new HtmlString($record['description']);
                 }),
             TextColumn::make('session_datetime')
