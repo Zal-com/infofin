@@ -162,24 +162,21 @@
                                                         <table width="100%" border="0" cellspacing="0" cellpadding="0">
                                                             <tr>
                                                                 <td align="right">
-                                                                    <a href="{{'https://infofin.ulb.be/projects/' . $card->id . "?from_email=true"}}"
-                                                                       style="text-decoration:none;">
-                                                                        <table border="0" cellspacing="0"
-                                                                               cellpadding="0">
-                                                                            <tr>
-                                                                                <td bgcolor="#276D20"
-                                                                                    style="padding:6px 20px; border-radius:5px;">
-                                                    <span
-                                                        style="color:white; font-family:Arial, sans-serif; font-size:12px; text-decoration:none;">
-                                                        En savoir plus
-                                                    </span>
-                                                                                </td>
-                                                                            </tr>
-                                                                        </table>
-                                                                    </a>
+                                                                    <table border="0" cellspacing="0" cellpadding="0">
+                                                                        <tr>
+                                                                            <td bgcolor="#276D20"
+                                                                                style="padding:6px 20px; border-radius:5px;">
+                                                                                <a href="{{'https://infofin.ulb.be/projects/' . $card->id . "?from_email=true"}}"
+                                                                                   style="color:white; font-family:Arial, sans-serif; font-size:12px; text-decoration:none; display:block;">
+                                                                                    En savoir plus
+                                                                                </a>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
                                                                 </td>
                                                             </tr>
                                                         </table>
+
                                                     </td>
                                                 </tr>
                                             </table>
