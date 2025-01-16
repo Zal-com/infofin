@@ -183,6 +183,9 @@ ul li p {
     z-index: 2; /* Assure que le contenu est au-dessus du pseudo-élément */
 }
 
+.markdown a {
+    color: #006fe6;
+}
 
 
 
