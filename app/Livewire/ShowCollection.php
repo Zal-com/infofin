@@ -98,6 +98,7 @@ class ShowCollection extends Component implements HasTable, HasForms
                     ->dateTime('d/m/Y')
                     ->sortable()
                     ->alignCenter()
-            ]);
+            ])
+            ->recordUrl(fn($record) => route('projects.show', $record->id));
     }
 }
