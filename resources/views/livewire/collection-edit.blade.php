@@ -6,7 +6,7 @@
     >
         Retour
     </x-filament::button>
-    <h2 class="my-4">Modifier la collection</h2>
+    <h2 class="my-4 text-2xl font-semibold">Modifier la collection</h2>
     <div class="flex flex-col gap-6">
         {{$this->form}}
         {{$this->table}}

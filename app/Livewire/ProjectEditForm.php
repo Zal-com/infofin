@@ -466,6 +466,7 @@ class ProjectEditForm extends Component implements HasForms
                                         ->label('Prénom')
                                         ->required()
                                         ->minLength(3)
+                                        ->regex('/^[a-zA-Z0-9]+$/')
                                         ->validationAttribute('Prénom')
                                         ->validationMessages([
                                             'required' => 'Le prénom d\'un contact interne est obligatoire.',
@@ -475,6 +476,7 @@ class ProjectEditForm extends Component implements HasForms
                                         ->label('Nom')
                                         ->required()
                                         ->minLength(3)
+                                        ->regex('/^[a-zA-Z0-9]+$/')
                                         ->validationAttribute('Nom')
                                         ->validationMessages([
                                             'required' => 'Le nom d\'un contact interne est obligatoire.',
@@ -509,6 +511,7 @@ class ProjectEditForm extends Component implements HasForms
                                         ->label('Prénom')
                                         ->required()
                                         ->minLength(3)
+                                        ->regex('/^[a-zA-Z0-9]+$/')
                                         ->validationAttribute('Prénom externe')
                                         ->validationMessages([
                                             'required' => 'Le prénom d\'un contact externe est obligatoire.',
@@ -518,6 +521,7 @@ class ProjectEditForm extends Component implements HasForms
                                         ->label('Nom')
                                         ->required()
                                         ->minLength(3)
+                                        ->regex('/^[a-zA-Z0-9]+$/')
                                         ->validationAttribute('Nom externe')
                                         ->validationMessages([
                                             'required' => 'Le nom d\'un contact externe est obligatoire.',
