@@ -127,7 +127,7 @@ class Project extends Model
             if ($firstFutureDeadline['continuous'] == 1) {
                 return 'Continu';
             } else {
-                return Carbon::parse($firstFutureDeadline['date'])->format('d/m/Y') . '|' . $firstFutureDeadline['proof'];
+                return Carbon::parse($firstFutureDeadline['date'])->format('d/m/Y') . '‎|‎ ' . $firstFutureDeadline['proof'];
             }
         } else {
             $lastDeadline = end($deadlines);
