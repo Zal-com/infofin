@@ -187,6 +187,16 @@ ul li p {
     color: #006fe6;
 }
 
+/*FIX TEMPORAIRE : Inline flex forcé dans la table des info sessions pose problème*/
+.info_session_description .inline-flex:first-of-type {
+    display: block !important;
+
+    & a {
+        font-size: 14px
+    }
+}
+
+
 
 
 
