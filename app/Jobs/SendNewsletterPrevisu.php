@@ -37,6 +37,8 @@ class SendNewsletterPrevisu implements ShouldQueue
         $adresses = [
             //'daniele.carati@ulb.be',
             'guillaume.stordeur@ulb.be',
+            'axel.hoffmann@ulb.be',
+            'maxime.vanhoren@ulb.be',
             //'antoine.delers@ulb.be'
         ];
 
