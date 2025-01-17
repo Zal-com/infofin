@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->string('title'); // Titre de la session
             $table->text('description'); // Description de la session
             $table->string('location')->nullable(); // Lieu, peut être nul
-            $table->string('url')->nullable(); // URL, peut être nul
+            $table->text('url')->nullable(); // URL, peut être nul
             $table->string('speaker')->nullable(); // Nom du speaker, peut être nul
             $table->boolean("status")->default(true)->comment("0 : inactive, 1 : active");
             $table->foreignId('organisation_id')->constrained('organisations')->onDelete('cascade'); // Clé étrangère vers organisations avec cascade

@@ -25,7 +25,7 @@ class CreateProjectsTable extends Migration
             $table->boolean('is_big')->default(false); // Indicateur pour grands projets
             $table->text('long_description'); // Description longue
             $table->string('short_description', 500); // Description courte
-            $table->string('origin_url')->nullable(); // URL d'origine
+            $table->text('origin_url')->nullable(); // URL d'origine
             $table->boolean('is_in_next_email')->default(true); // Inclusion dans le prochain email
             $table->foreignId('organisation_id')->nullable()->constrained()->onDelete('cascade'); // Clé étrangère vers organisations
             $table->string('Organisation', 255)->nullable(); // Organisation
