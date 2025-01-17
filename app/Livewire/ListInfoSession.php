@@ -3,8 +3,10 @@
 namespace App\Livewire;
 
 use App\Models\InfoSession;
+use Carbon\Carbon;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Support\Enums\FontWeight;
 use Illuminate\Mail\Markdown;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
@@ -68,25 +70,37 @@ class ListInfoSession extends Component implements HasForms, HasTable
         $columns = [
             TextColumn::make('title')
                 ->label('Titre')
+                ->weight(FontWeight::SemiBold)
+                ->width('20%')
                 ->wrap()
                 ->lineClamp(2)
                 ->sortable()
+                ->searchable(),
+            TextColumn::make('session_datetime')
+                ->label('Date')
+                ->lineClamp(2)
+                ->wrap()
+                ->sortable()
+                ->searchable()
+                ->description(fn($record) => Carbon::parse($record->session_datetime)->format('H:i'))
+                ->dateTime('d/m/Y'),
+            TextColumn::make('organisation.title')
+                ->label('Organisation')
+                ->wrap()
+                ->lineClamp(2)
+                ->sortable()
+                ->width('20%')
                 ->searchable(),
             TextColumn::make('description')
                 ->label('Description')
                 ->wrap()
                 ->lineClamp(2)
+                ->width('40%')
                 ->sortable()
                 ->searchable()
                 ->formatStateUsing(fn(string $state): HtmlString => new HtmlString(Markdown::parse($state)))
                 ->extraAttributes(['class' => 'info_session_description'])
-                ->limit(100),
-            TextColumn::make('session_datetime')
-                ->label('Date')
-                ->wrap()
-                ->sortable()
-                ->searchable()
-                ->dateTime('d/m/Y H:i'),
+                ->limit(200),
             TextColumn::make('session_type')
                 ->label('Type')
                 ->formatStateUsing(function ($record) {
@@ -103,12 +117,6 @@ class ListInfoSession extends Component implements HasForms, HasTable
                     }
                 })
                 ->wrap()
-                ->sortable()
-                ->searchable(),
-            TextColumn::make('organisation.title')
-                ->label('Organisation')
-                ->wrap()
-                ->lineClamp(2)
                 ->sortable()
                 ->searchable()
         ];
