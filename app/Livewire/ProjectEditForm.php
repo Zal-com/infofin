@@ -989,7 +989,10 @@ class ProjectEditForm extends Component implements HasForms
                 $data['is_in_next_email'] = $this->isInNextEmail ? 1 : 0;
 
                 $this->project->update($data);
-                $this->project->touch();
+                
+                if ($this->isInNextEmail) {
+                    $this->project->touch();
+                }
 
                 $this->project->expenses()->sync($data['expenses'] ?? []);
                 $this->project->activities()->sync($data['activities'] ?? []);
