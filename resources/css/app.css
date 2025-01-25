@@ -8,11 +8,13 @@
     font-family: 'Fira Sans', sans-serif;
 }
 
-.markdown li,
-.markdown ul,
-.markdown ol {
-    list-style: revert !important;
-    list-style-position: inside !important;
+.markdown {
+    line-height: 26px;
+
+    & ul, li, ol {
+        list-style: revert !important;
+        list-style-position: inside !important;
+    }
 }
 
 ul li p {
@@ -57,6 +59,8 @@ ul li p {
 }
 
 .tiptap-content {
+    
+
     p {
         font-size: 16px;
         color: #333;
