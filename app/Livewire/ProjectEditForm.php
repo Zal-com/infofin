@@ -58,9 +58,15 @@ class ProjectEditForm extends Component implements HasForms
 
     protected FileService $fileService;
 
+    public bool $showModal = false; // Contrôle l'affichage du modal
+    public bool $isInNextEmail = false; // Décision de l'utilisateur pour la newsletter
+
     public function render()
     {
-        return view('livewire.project-edit-form');
+        return view('livewire.project-edit-form', [
+            'showModal' => $this->showModal,
+            'isInNextEmail' => $this->isInNextEmail,
+        ]);
     }
 
     public function __construct()
@@ -762,7 +768,7 @@ class ProjectEditForm extends Component implements HasForms
                     ->label('Valider les modifications')
                     ->color('primary')
                     ->icon('heroicon-o-check')
-                    ->action('submit'),
+                    ->action('$set("showModal", true)'),
                 Action::make('saveAsDraft')
                     ->icon('heroicon-o-clipboard-document-list')
                     ->label('Garder en brouillon')
@@ -980,9 +986,13 @@ class ProjectEditForm extends Component implements HasForms
 
                 $data["status"] = 1;
 
-                $data["is_in_next_email"] = 1;
+                $data['is_in_next_email'] = $this->isInNextEmail ? 1 : 0;
 
                 $this->project->update($data);
+                
+                if ($this->isInNextEmail) {
+                    $this->project->touch();
+                }
 
                 $this->project->expenses()->sync($data['expenses'] ?? []);
                 $this->project->activities()->sync($data['activities'] ?? []);
