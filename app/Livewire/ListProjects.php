@@ -33,6 +33,7 @@ use Filament\Tables\Table;
 use Hydrat\TableLayoutToggle\Concerns\HasToggleableTable;
 use Illuminate\Mail\Markdown;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\HtmlString;
 use Illuminate\View\View;
 use Livewire\Attributes\On;
@@ -313,8 +314,17 @@ class ListProjects extends Component implements HasForms, HasTable
                             $project = $this->replicateModelWithRelations($record);
 
                             Notification::make()->title('Le projet a été copié avec succès.')->icon('heroicon-o-check-circle')->seconds(5)->color('success')->send();
-
-                            return redirect()->route('projects.show', $project->id);
+                            /***
+                             * 03/02/2025
+                             *
+                             * Redirection vers Edit de projet lors d'une duplication
+                             *
+                             * L'utilisateur n'a aucune obligation de modifier le projet pour qu'il soit enregistré, mais la redirection les forcera peut-être à remettre la fiche aux normes ?
+                             * Si aucune amélioration n'est constatée, trouver autre solution plus contraignante.
+                             *
+                             */
+                            Log::alert(" [{$project->id}] Projet dupliqué !");
+                            return redirect()->route('projects.edit', $project->id);
                         })
                 ])
                     ->tooltip("Plus d'actions")

@@ -35,6 +35,7 @@ use Filament\Notifications\Notification;
 use FilamentTiptapEditor\TiptapEditor;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\HtmlString;
 use Illuminate\Validation\ValidationException;
@@ -989,7 +990,7 @@ class ProjectEditForm extends Component implements HasForms
                 $data['is_in_next_email'] = $this->isInNextEmail ? 1 : 0;
 
                 $this->project->update($data);
-                
+
                 if ($this->isInNextEmail) {
                     $this->project->touch();
                 }
@@ -1053,7 +1054,17 @@ class ProjectEditForm extends Component implements HasForms
 
         Notification::make()->title('Le projet a été copié avec succès.')->icon('heroicon-o-check-circle')->seconds(5)->color('success')->send();
 
-        return redirect()->route('projects.show', $project->id);
+        /***
+         * 03/02/2025
+         *
+         * Redirection vers Edit de projet lors d'une duplication
+         *
+         * L'utilisateur n'a aucune obligation de modifier le projet pour qu'il soit enregistré, mais la redirection les forcera peut-être à remettre la fiche aux normes ?
+         * Si aucune amélioration n'est constatée, trouver autre solution plus contraignante.
+         *
+         */
+        Log::alert(" [{$project->id}] Projet dupliqué !");
+        return redirect()->route('projects.edit', $project->id);
     }
 
     public function saveAsDraft()
