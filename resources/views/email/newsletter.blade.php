@@ -129,7 +129,7 @@
                                                     <td style="border:2px solid #004C93; border-radius:5px; padding:8px;">
                                                         <!-- Titre du projet -->
                                                         <p style="color:#004C93; font-weight:700; font-family:Arial, sans-serif; font-size:14px; margin:0 0 8px 0;">
-                                                            {{ strip_tags($card->title)}}
+                                                            {{ strip_tags(htmlspecialchars_decode($card->title, ENT_HTML5))}}
                                                         </p>
 
                                                         <!-- Organisation et badge -->
@@ -137,7 +137,7 @@
                                                                style="margin-bottom:8px;">
                                                             <tr>
                                                                 <td style="font-family:Arial, sans-serif; font-size:12px; font-style:italic;">
-                                                                    {{strip_tags($card->organisation->title)}}
+                                                                    {{strip_tags(htmlspecialchars_decode($card->organisation->title, ENT_HTML5))}}
                                                                 </td>
                                                                 <td align="right">
                                     <span
@@ -155,7 +155,9 @@
 
                                                         <!-- Description -->
                                                         <p style="font-family:Arial, sans-serif; font-size:12px; line-height:16px; margin:0 0 12px 0;">
-                                                            {{ strip_tags(substr($card->short_description, 0, 200))}}...
+                                                            {{ strip_tags(htmlspecialchars_decode(mb_substr($card->short_description, 0, 200, 'UTF-8'), ENT_HTML5)) }}
+
+                                                            ...
                                                         </p>
 
                                                         <!-- Bouton -->

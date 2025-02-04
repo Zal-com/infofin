@@ -35,12 +35,9 @@ class SendNewsletterPrevisu implements ShouldQueue
             ->get();
 
         $adresses = [
-            //'daniele.carati@ulb.be',
             'guillaume.stordeur@ulb.be',
             'axel.hoffmann@ulb.be',
             'maxime.vanhoren@ulb.be',
-            'quentin.machiels@ulb.be'
-            //'antoine.delers@ulb.be'
         ];
 
         if (!$projects->isEmpty()) {
