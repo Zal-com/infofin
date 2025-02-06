@@ -122,7 +122,7 @@ class ListInfoSession extends Component implements HasForms, HasTable
         ];
 
         return $table
-            ->query(InfoSession::query()->where("status", "1"))
+            ->query(InfoSession::query()->where("session_datetime", ">", Carbon::now()))
             ->columns($columns)
             ->actions($actions)
             ->filters($filters)
