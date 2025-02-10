@@ -1110,9 +1110,12 @@ class ProjectEditForm extends Component implements HasForms
                 ->send()
                 ->seconds(5)
                 ->color('success');
-
+            
+            /*
             session()->flash('defaultTab', 'drafts');
             redirect()->route('profile.show');
+            */
+
         } else {
             // Gérer le cas où la sauvegarde du nouveau brouillon échoue
             Notification::make()
