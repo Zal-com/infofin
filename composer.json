@@ -24,7 +24,7 @@
         "flowframe/laravel-trend": "*",
         "hydrat/filament-table-layout-toggle": "^2.0",
         "lara-zeus/accordion": "^1.1",
-        "laravel/framework": "^11.0",
+        "laravel/framework": "^12.0",
         "laravel/tinker": "^2.9",
         "league/html-to-markdown": "^5.1",
         "livewire/livewire": "^3.5",
