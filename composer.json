@@ -28,6 +28,7 @@
         "laravel/tinker": "^2.9",
         "league/html-to-markdown": "^5.1",
         "livewire/livewire": "^3.5",
+        "openspout/openspout": "4.28",
         "saade/filament-fullcalendar": "^3.2",
         "saade/filament-laravel-log": "^3.2",
         "spatie/laravel-activitylog": "^4.8",
