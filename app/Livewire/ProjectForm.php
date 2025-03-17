@@ -491,7 +491,7 @@ final class ProjectForm extends Component implements HasForms
                                             ->label('Prénom')
                                             ->required()
                                             ->minLength(3)
-                                            ->regex("/^[a-zA-Z0-9]+(?:[-' ][a-zA-Z0-9]+)*$/")
+                                            ->regex("/^[a-zA-Z0-9]+(?:[-' ][a-zA-Z0-9]+)*$/") // Accepte les noms-composés et espaces
                                             ->validationAttribute('Prénom externe')
                                             ->validationMessages([
                                                 'required' => 'Le prénom d\'un contact externe est obligatoire.',
