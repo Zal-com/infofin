@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CollectionController;
 use App\Http\Controllers\DraftController;
+use App\Http\Controllers\ErrorPagesController;
 use App\Http\Controllers\InfoSessionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
@@ -10,10 +11,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 
-
-Route::fallback(function () {
-    return redirect()->route('projects.index');
-});
 
 Route::get('/', function () {
     return redirect()->route('projects.index');
