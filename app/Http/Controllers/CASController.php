@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Subfission\Cas\Facades\Cas;
@@ -30,6 +31,7 @@ class CASController extends Controller
                 return redirect()->route("login.first");
             } else {
                 Auth::login($user);
+                $user->updateQuietly(['last_login' => Carbon::now()]);
                 return redirect()->route('projects.index');
             }
         }
