@@ -93,5 +93,7 @@ Route::get('/faq', function () {
     return view('faq');
 })->name('faq');
 
+Route::get('/500', fn() => abort(500));
+
 require __DIR__ . '/auth.php';
 require __DIR__ . '/api.php';
