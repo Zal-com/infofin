@@ -1,5 +1,5 @@
 import './bootstrap';
-import sound from '../../storage/app/public/sounds/boing.mp3'
+import sound from '../sounds/boing.mp3'
 
 import.meta.glob([
     '../fonts/**',
