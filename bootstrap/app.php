@@ -27,6 +27,8 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withSchedule(function (Schedule $schedule) {
         $schedule->job(new DailyDeleteProject())->dailyAt('02:00');
         $schedule->job(new ArchiveProject())->weeklyOn(1, '03:00');
+        $schedule->job(new \App\Jobs\SendDeletionNotices())->dailyAt('12:00');
+        $schedule->job(new \App\Jobs\DeleteInactiveUsers())->dailyAt('00:00');
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->report(function (Throwable $e) {
