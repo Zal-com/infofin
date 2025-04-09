@@ -93,7 +93,7 @@ class ListInfoSession extends Component implements HasForms, HasTable
                                 ->send();
                         } else {
                             // Ajouter le projet à la collection s'il n'est pas déjà présent
-                            $record->info_sessions()->attach($data['collection']);
+                            $record->collections()->attach($data['collection']);
 
                             Notification::make()
                                 ->title("Séance ajoutée à la collection avec succès.")
@@ -210,7 +210,7 @@ class ListInfoSession extends Component implements HasForms, HasTable
                             // Attach each selected project to the collection
                             foreach ($records as $record) {
                                 // Vérifier si le projet est déjà dans la collection
-                                if (!$collection->info_sessions()->where('project_id', $record->id)->exists()) {
+                                if (!$collection->info_sessions()->where('info_session_id', $record->id)->exists()) {
                                     // Ajouter le projet uniquement s'il n'est pas déjà présent
                                     $collection->info_sessions()->attach($record->id);
                                 }
