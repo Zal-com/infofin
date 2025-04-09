@@ -15,8 +15,8 @@ class Collection extends Model
     // protected $table = 'collections';
 
     // Indique que la clé primaire est 'uid' de type string
-    protected $primaryKey = 'id';
-    public $incrementing = false; // Désactive l'auto-incrémentation
+    public $incrementing = false;
+    protected $primaryKey = 'id'; // Désactive l'auto-incrémentation
     protected $keyType = 'string'; // Spécifie que la clé primaire est de type string
 
     protected $fillable = ['id', 'name', 'description', 'user_id'];
@@ -27,5 +27,10 @@ class Collection extends Model
     public function projects(): BelongsToMany
     {
         return $this->belongsToMany(Project::class, 'projects_collections', 'collection_id', 'project_id');
+    }
+
+    public function info_sessions(): BelongsToMany
+    {
+        return $this->belongsToMany(InfoSession::class, 'info_sessions_collections', 'collection_id', 'info_session_id');
     }
 }
