@@ -10,7 +10,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('info_session_collections', function (Blueprint $table) {
+        Schema::create('info_sessions_collections', function (Blueprint $table) {
             // Utilisation de foreignId pour project_id
             $table->foreignId('info_session_id')->constrained('info_sessions')->onDelete('cascade');
 
