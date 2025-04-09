@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Collection;
+use App\Models\InfoSession;
 use App\Models\Project;
 use Awcodes\FilamentBadgeableColumn\Components\Badge;
 use Awcodes\FilamentBadgeableColumn\Components\BadgeableColumn;
@@ -14,11 +15,11 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Mail\Markdown;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\HtmlString;
 use Livewire\Component;
-use Illuminate\Database\Eloquent\Builder;
 
 class ShowCollection extends Component implements HasTable, HasForms
 {
@@ -29,7 +30,13 @@ class ShowCollection extends Component implements HasTable, HasForms
 
     public function render()
     {
-        return view('livewire.collection');
+        return view('livewire.collection', [
+            'projectsQuery' => Project::query()
+                ->whereHas('collections'),
+
+            'infoSessionsQuery' => InfoSession::query()
+                ->whereHas('collections'),
+        ]);
     }
 
     public function mount(Collection $collection)
