@@ -49,7 +49,7 @@ Pour installer et lancer l'application Infofin, suivez ces étapes :
 5. Générez le fichier `.env` à partir du fichier d'exemple :
 
    ```bash
-   cp .env.example .env
+   cp .env .env
    ```
 
 6. Générez la clé de l'application :

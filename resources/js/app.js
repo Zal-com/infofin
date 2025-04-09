@@ -1,4 +1,5 @@
 import './bootstrap';
+import sound from '../sounds/boing.mp3'
 
 import.meta.glob([
     '../fonts/**',
@@ -17,6 +18,18 @@ document.addEventListener('DOMContentLoaded', function () {
             editor.setSelectedRange([0, content.length]);
             editor.insertString(truncatedContent);
         }
+    });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const path = document.getElementById("easter");
+
+    const audio = new Audio(sound);
+
+    path.addEventListener("click", () => {
+        console.log(audio)
+        audio.currentTime = 0; // remet à zéro si déjà en cours
+        audio.play().catch(console.error);
     });
 });
 
