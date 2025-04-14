@@ -59,11 +59,13 @@
                     <div class="flex w-full justify-center">Se connecter avec l'ULBID</div>
                 </x-secondary-button>
             </a>
+            {{--
             <a href="{{ route('register') }}" class="ms-3 w-2/3">
                 <x-secondary-button class="flex w-full justify-center">
                     Créer un compte
                 </x-secondary-button>
             </a>
+            --}}
         </form>
 
 
