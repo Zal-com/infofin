@@ -57,7 +57,7 @@ class UserCollection extends Component implements HasTable, HasForms
     public function table(Table $table): Table
     {
         return $table
-            ->query(Collection::where('user_id', Auth::id()))
+            ->query(Collection::where('user_id', Auth::id())->withCount(['projects', 'info_sessions']))
             ->columns([
                 TextColumn::make('name')
                     ->label('Titre'),
@@ -66,7 +66,9 @@ class UserCollection extends Component implements HasTable, HasForms
                     ->label('Description')
                     ->wrap(),
                 TextColumn::make('projects_count')
-                    ->label('Nombre d\'appels')
+                    ->label('Nombre de projets'),
+                TextColumn::make('info_sessions_count')
+                ->label('Nombre de séances d\'info'),
             ])
             ->actions([
                 Action::make('copy_link')
