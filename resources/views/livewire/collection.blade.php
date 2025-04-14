@@ -1,3 +1,4 @@
 <div class="mt-4">
-    {{$this->table}}
+    @livewire('project-table', [$collection])
+    @livewire('info-session-table', [$collection])
 </div>

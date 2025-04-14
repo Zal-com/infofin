@@ -8,9 +8,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class InfoSession extends Model
 {
-    protected $fillable = ['session_datetime', 'location', 'url', 'speaker', 'title', 'organisation_id', 'description', 'session_type', 'status'];
-
     public $timestamps = true;
+    protected $fillable = ['session_datetime', 'location', 'url', 'speaker', 'title', 'organisation_id', 'description', 'session_type', 'status'];
 
     public function project(): BelongsToMany
     {
@@ -25,6 +24,11 @@ class InfoSession extends Model
     public function scientific_domains(): BelongsToMany
     {
         return $this->belongsToMany(ScientificDomain::class, 'info_sessions_scientific_domains', 'info_session_id', 'scientific_domain_id');
+    }
+
+    public function collections(): BelongsToMany
+    {
+        return $this->belongsToMany(Collection::class, 'info_sessions_collections', 'info_session_id', 'collection_id');
     }
 
     public function getSessionTypeStringAttribute(): string

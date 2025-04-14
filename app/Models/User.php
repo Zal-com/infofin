@@ -31,7 +31,8 @@ class User extends Authenticatable implements HasName
         'uid',
         'first_name',
         'last_name',
-        'is_email_subscriber'
+        'is_email_subscriber',
+        'last_login'
     ];
 
     /**
