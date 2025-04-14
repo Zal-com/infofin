@@ -14,7 +14,7 @@ trait HandlesPagination
     {
         $limit = $request->query('limit', 20);
         $offset = $request->query('offset', 0);
-        $sort = $request->query('sort', 'ASC');
+        $sort = $request->query('sort', 'DESC');
 
         $limit = is_numeric($limit) ? (int)$limit : 20;
         $offset = is_numeric($offset) ? (int)$offset : 0;
