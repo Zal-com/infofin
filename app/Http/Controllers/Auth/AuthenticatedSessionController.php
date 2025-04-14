@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Subfission\Cas\Facades\Cas;
@@ -15,13 +16,16 @@ class AuthenticatedSessionController extends Controller
     /**
      * Display the login view.
      */
-    public function create(): View
+    public function create(): View | RedirectResponse
     {
-        if (Auth::check()) {
-            redirect()->route('projects.index');
+        if(App::environment() === 'local') {
+            if (Auth::check()) {
+                redirect()->route('projects.index');
+            }
+            session(['url.intended' => url()->previous()]);
+            return view('auth.login');
         }
-        session(['url.intended' => url()->previous()]);
-        return view('auth.login');
+        else return redirect()->route('login.cas');
     }
 
     /**
