@@ -54,8 +54,9 @@ class InfoSessionTable extends Component implements HasTable, HasForms
                     ->sortable()
                     ->alignCenter(),
                 TextColumn::make('title')
-                ->label('Titre')
-                ->searchable(),
+                    ->label('Titre')
+                    ->wrap()
+                    ->searchable(),
                 TextColumn::make('session_datetime')
                     ->label('Date et heure'),
                 TextColumn::make('organisation.title')
