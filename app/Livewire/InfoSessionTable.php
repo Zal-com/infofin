@@ -28,13 +28,11 @@ class InfoSessionTable extends Component implements HasTable, HasForms
         return view('livewire.info-session-table');
     }
 
-    public function mount(Collection $collection)
-    {
+    public function mount(Collection $collection){
         $this->collection = $collection;
     }
 
-    public function table(Table $table)
-    {
+    public function table(Table $table){
 
         $info_sessions = InfoSession::query()->whereHas('collections', function (Builder $query) {
             $query->where('collections.id', $this->collection->id);
