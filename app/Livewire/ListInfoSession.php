@@ -132,6 +132,7 @@ class ListInfoSession extends Component implements HasForms, HasTable
             TextColumn::make('description')
                 ->label('Description')
                 ->wrap()
+                ->limit(275)
                 ->lineClamp(2)
                 ->sortable()
                 ->searchable()
