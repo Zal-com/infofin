@@ -19,6 +19,7 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\HtmlString;
 use Livewire\Component;
@@ -172,7 +173,7 @@ class ListInfoSession extends Component implements HasForms, HasTable
         ];
 
         return $table
-            ->query(InfoSession::query()->where("status", "1"))
+            ->query(InfoSession::query()->where("session_datetime", ">=", Carbon::now()))
             ->columns($columns)
             ->actions($actions)
             ->filters($filters)
