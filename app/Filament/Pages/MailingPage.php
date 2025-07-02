@@ -4,6 +4,7 @@ namespace App\Filament\Pages;
 
 use App\Models\NewsletterSchedule;
 use App\Models\Project;
+use Exception;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TimePicker;
@@ -52,7 +53,7 @@ class MailingPage extends Page
                             ->icon('heroicon-o-check-circle')
                             ->iconColor('success')
                             ->send();
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         Notification::make()
                             ->title('Impossible de rajouter les projets à la liste. Veuillez réessayer.')
                             ->color('danger')
@@ -92,7 +93,7 @@ class MailingPage extends Page
                             ->title('Planning mis à jour avec succès.')
                             ->color('success')
                             ->send();
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         Notification::make()
                             ->title('Impossible de mettre à jour le planning. Veuillez réessayer.')
                             ->color('danger')
@@ -117,6 +118,58 @@ class MailingPage extends Page
                             ->default($schedule?->day_of_week)
                             ->required(),
                         TimePicker::make('send_time')
+                            ->datalist(
+                                [
+                                    '00:00',
+                                    '00:30',
+                                    '01:00',
+                                    '01:30',
+                                    '02:00',
+                                    '02:30',
+                                    '03:00',
+                                    '03:30',
+                                    '04:00',
+                                    '04:30',
+                                    '05:00',
+                                    '05:30',
+                                    '06:00',
+                                    '06:30',
+                                    '07:00',
+                                    '07:30',
+                                    '08:00',
+                                    '08:30',
+                                    '09:00',
+                                    '09:30',
+                                    '10:00',
+                                    '10:30',
+                                    '11:00',
+                                    '11:30',
+                                    '12:00',
+                                    '12:30',
+                                    '13:00',
+                                    '13:30',
+                                    '14:00',
+                                    '14:30',
+                                    '15:00',
+                                    '15:30',
+                                    '16:00',
+                                    '16:30',
+                                    '17:00',
+                                    '17:30',
+                                    '18:00',
+                                    '18:30',
+                                    '19:00',
+                                    '19:30',
+                                    '20:00',
+                                    '20:30',
+                                    '21:00',
+                                    '21:30',
+                                    '22:00',
+                                    '22:30',
+                                    '23:00',
+                                    '23:30',
+                                ]
+                            )
                             ->seconds(false)
                             ->label('Heure d\'envoi')
                             ->default($schedule?->send_time)
@@ -138,7 +191,7 @@ class MailingPage extends Page
                             ->title('Newsletter envoyée avec succès.')
                             ->color('success')
                             ->send();
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         Notification::make()
                             ->title('Échec de l\'envoi de la newsletter. Veuillez réessayer.')
                             ->color('danger')
@@ -159,7 +212,7 @@ class MailingPage extends Page
                             ->title('Prévisualisation envoyée avec succès.')
                             ->color('success')
                             ->send();
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         Notification::make()
                             ->title('Échec de l\'envoi de la prévisualisation. Veuillez réessayer.')
                             ->color('danger')

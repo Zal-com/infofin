@@ -12,6 +12,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Env;
 use Illuminate\Support\Facades\Mail;
 
 class SendWeeklyNewsletter implements ShouldQueue
@@ -27,6 +28,11 @@ class SendWeeklyNewsletter implements ShouldQueue
 
     public function handle()
     {
+        if (Env::get('APP_ENV') !== 'production') {
+            Mail::fake();
+            Mail::to(['guillaume.stordeur@ulb.be', 'axel.hoffmann@ulb.be'])->send(new NewsletterTest);
+        }
+
         $subscribers = User::where('is_email_subscriber', 1)->get();
         $is_send = false;
 
