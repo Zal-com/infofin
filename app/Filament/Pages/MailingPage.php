@@ -7,7 +7,6 @@ use App\Models\Project;
 use Exception;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TimePicker;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Artisan;
@@ -117,9 +116,8 @@ class MailingPage extends Page
                             ])
                             ->default($schedule?->day_of_week)
                             ->required(),
-                        TimePicker::make('send_time')
-                            ->datalist(
-                                [
+                        Select::make('send_time')
+                            ->options([
                                     '00:00',
                                     '00:30',
                                     '01:00',
@@ -170,7 +168,6 @@ class MailingPage extends Page
                                     '23:30',
                                 ]
                             )
-                            ->seconds(false)
                             ->label('Heure d\'envoi')
                             ->default($schedule?->send_time)
                             ->required(),
