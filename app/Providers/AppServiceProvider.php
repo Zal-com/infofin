@@ -16,15 +16,6 @@ use Illuminate\Support\ServiceProvider;
 class AppServiceProvider extends ServiceProvider
 {
     /**
-     * Register any application services.
-     */
-
-    public function register(): void
-    {
-        //
-    }
-
-    /**
      * Bootstrap any application services.
      */
     public function boot(Schedule $schedule, Router $router): void
@@ -51,7 +42,7 @@ class AppServiceProvider extends ServiceProvider
         ]);
 
         //$schedule->command('newsletter:send')->weeklyOn(1, '15:23'); // 1 = Monday
-        $schedule->command('schedule:newsletter')->everyMinute();
+        $schedule->command('schedule:newsletter')->everyFifteenMinutes();
         Schema::defaultStringLength(191);
 
         Gate::before(function ($user, $ability) {
@@ -67,5 +58,14 @@ class AppServiceProvider extends ServiceProvider
         });
 
         $router->aliasMiddleware('enforce.limit', EnforceLimit::class);
+    }
+
+    /**
+     * Register any application services.
+     */
+
+    public function register(): void
+    {
+        //
     }
 }
