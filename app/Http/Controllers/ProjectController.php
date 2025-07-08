@@ -26,7 +26,7 @@ class ProjectController extends Controller
         $project = Project::find($id) ?? abort(404);
 
         if (((Auth::check() && !Auth::user()->hasRole(['admin', 'contributor'])) || Auth::guest()) && $project->status === -1) {
-            abort(404);
+            abort(403);
         }
         $project->timestamps = false;
 
