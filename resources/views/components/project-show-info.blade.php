@@ -99,7 +99,7 @@
                 </div>
             </div>
             <div class="markdown">
-                <x-filament::section.description class="my-3 text-justify">
+                <x-filament::section.description class="my-3 text-justify tiptap-content">
                     @php
                         $long_description = $project->long_description ?? '';
 
