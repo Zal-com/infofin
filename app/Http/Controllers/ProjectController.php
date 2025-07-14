@@ -6,6 +6,7 @@ use App\Models\Draft;
 use App\Models\Project;
 use App\Models\VisitsRate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class ProjectController extends Controller
@@ -23,6 +24,10 @@ class ProjectController extends Controller
     public function show(int $id, Request $request)
     {
         $project = Project::find($id) ?? abort(404);
+
+        if (((Auth::check() && !Auth::user()->hasRole(['admin', 'contributor'])) || Auth::guest()) && $project->status === -1) {
+            abort(403);
+        }
         $project->timestamps = false;
 
         $qs = $request->query('from_email');
@@ -59,7 +64,7 @@ class ProjectController extends Controller
             if ($draft === null) {
                 session()->flash('error-layout', "Vous n'êtes pas autorisé à effectuer cette action.");
                 return redirect()->route('profile.show');
-            };
+            }
             return view('projects.create', compact('draft'));
         }
         return view('projects.create');

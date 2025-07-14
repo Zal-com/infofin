@@ -98,7 +98,7 @@
                     @endforeach
                 </div>
             </div>
-            <div class="markdown">
+            <div class="markdown tiptap-content">
                 <x-filament::section.description class="my-3 text-justify">
                     @php
                         $long_description = $project->long_description ?? '';
