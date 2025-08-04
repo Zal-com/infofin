@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="description" content="Plateforme de l'Université libre de Bruxelles dédiée aux chercheurs, regroupant les derniers appels à financement, des séances d'information, et toutes les ressources essentielles pour vos projets de recherche. Accédez facilement à des informations claires et actualisées pour maximiser vos opportunités.">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
