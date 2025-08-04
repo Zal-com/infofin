@@ -2,7 +2,7 @@
     <nav class="flex flex-col md:flex-row justify-between items-center container m-auto">
         <!-- Section gauche -->
         <a href="{{ route('home') }}" class="flex flex-row gap-4 items-center">
-            <img src="{{ asset('img/ulb_logo.png') }}" class="h-14 border-r-2 pr-3 border-blue-900">
+            <img src="{{ asset('img/ulb_logo.png') }}" class="h-14 border-r-2 pr-3 border-blue-900" alt="Logo de l'Université Libre de Bruxelles">
             <h1 class="text-blue-900 text-3xl font-bold">Infofin</h1>
         </a>
 
