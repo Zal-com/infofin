@@ -1,5 +1,5 @@
 FROM registry.gitlab.ulb.be/openshift-resources/base-images/api-platform/composer-2:latest AS composer
-FROM php:8.4-fpm AS base
+FROM php:8.2-fpm AS base
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
