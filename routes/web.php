@@ -7,9 +7,13 @@ use App\Http\Controllers\InfoSessionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\UnsubscribeController;
+use App\Models\InfoSession;
+use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
+use Spatie\Sitemap\Sitemap;
+use Spatie\Sitemap\Tags\Url;
 
 
 Route::get('/', function () {
@@ -93,6 +97,24 @@ Route::get('/faq', function () {
     return view('faq');
 })->name('faq');
 
+
+Route::get('/sitemap', function() {
+    $sitemap = Sitemap::create()
+        ->add(Url::create('/projects'))
+        ->add(Url::create('/agenda'))
+        ->add(Url::create('/info_sessions'))
+        ->add(Url::create('/login/cas'))
+        ->add(Url::create('/faq'))
+        ->add(Url::create('/privacy-policy'));
+    Project::where('status', 1)->each(function (Project $project) use ($sitemap) {
+        $sitemap->add(Url::create("/projects/{$project->id}"));
+    });
+    \App\Models\InfoSession::where('status', 1)->each(function(InfoSession $session) use ($sitemap){
+        $sitemap->add(Url::create("/info_sessions/{$session->id}"));
+    });
+    return $sitemap;
+}
+);
 
 require __DIR__ . '/auth.php';
 require __DIR__ . '/api.php';
