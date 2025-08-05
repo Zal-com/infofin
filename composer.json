@@ -34,6 +34,7 @@
         "saade/filament-laravel-log": "^3.2",
         "spatie/laravel-activitylog": "^4.8",
         "spatie/laravel-permission": "^6.7",
+        "spatie/laravel-sitemap": "^7.3",
         "staudenmeir/belongs-to-through": "^2.5",
         "subfission/cas": "^5.0",
         "z3d0x/filament-logger": "^0.7.2"
