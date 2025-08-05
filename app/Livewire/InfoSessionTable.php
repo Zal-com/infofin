@@ -37,43 +37,44 @@ class InfoSessionTable extends Component implements HasTable, HasForms
         $info_sessions = InfoSession::query()->whereHas('collections', function (Builder $query) {
             $query->where('collections.id', $this->collection->id);
         })->get();
-            return $table
-                ->query(InfoSession::query()->whereHas('collections', function (Builder $query) {
-                    $query->where('collections.id', $this->collection->id);
-                }))
-                ->columns([
-                    IconColumn::make('status')
-                        ->label(false)
-                        ->boolean()
-                        ->trueIcon('heroicon-s-check-circle')
-                        ->trueColor('success')
-                        ->falseIcon('heroicon-s-x-circle')
-                        ->falseColor('danger')
-                        ->sortable()
-                        ->alignCenter(),
-                    TextColumn::make('title')
-                        ->label('Titre')
-                        ->wrap()
-                        ->searchable(),
-                    TextColumn::make('session_datetime')
-                        ->label('Date et heure'),
-                    TextColumn::make('organisation.title')
-                        ->label('Organisation')
-                        ->wrap()
-                        ->sortable()
-                        ->searchable(),
-                    TextColumn::make('description')
-                        ->label('Description')
-                        ->formatStateUsing(fn(string $state): HtmlString => new HtmlString(Markdown::parse($state)))
-                        ->wrap()
-                        ->lineClamp(2)
-                        ->limit(100),
-                    TextColumn::make('updated_at')
-                        ->label('Date de dernière modif.')
-                        ->dateTime('d/m/Y')
-                        ->sortable()
-                        ->alignCenter()
-                ])
-                ->recordUrl(fn($record) => route('info_session.show', $record->id));
+
+        if(sizeof($info_sessions) > 0){
+        return $table
+            ->query(InfoSession::query()->whereHas('collections', function (Builder $query) {
+                $query->where('collections.id', $this->collection->id);
+            }))
+            ->columns([
+                IconColumn::make('status')
+                    ->label(false)
+                    ->boolean()
+                    ->trueIcon('heroicon-s-check-circle')
+                    ->trueColor('success')
+                    ->falseIcon('heroicon-s-x-circle')
+                    ->falseColor('danger')
+                    ->sortable()
+                    ->alignCenter(),
+                TextColumn::make('title')
+                ->label('Titre')
+                ->searchable(),
+                TextColumn::make('session_datetime')
+                    ->label('Date et heure'),
+                TextColumn::make('organisation.title')
+                    ->label('Organisation')
+                    ->wrap()
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('description')
+                    ->label('Description')
+                    ->formatStateUsing(fn(string $state): HtmlString => new HtmlString(Markdown::parse($state)))
+                    ->wrap()
+                    ->lineClamp(2)
+                    ->limit(100),
+                TextColumn::make('updated_at')
+                    ->label('Date de dernière modif.')
+                    ->dateTime('d/m/Y')
+                    ->sortable()
+                    ->alignCenter()
+            ])
+            ->recordUrl(fn($record) => route('info_session.show', $record->id));
     }
 }
