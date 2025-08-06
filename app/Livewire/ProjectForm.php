@@ -76,12 +76,14 @@ final class ProjectForm extends Component implements HasForms
 
     public function refreshInfoSessionsOptions()
     {
-        $this->infoSessionsOptions = InfoSession::where('session_datetime', '>', now())
-            ->get()
-            ->mapWithKeys(function ($item) {
-                return [$item->id => $item->id . ' - ' . $item->title];
-            })
-            ->toArray();
+        $this->infoSessionsOptions = cache()->remember('info_sessions_future', 3600, function () {
+            return InfoSession::where('session_datetime', '>', now())
+                ->get()
+                ->mapWithKeys(function ($item) {
+                    return [$item->id => $item->id . ' - ' . $item->title];
+                })
+                ->toArray();
+        });
     }
 
     private function initializeProjectFromData(array $data)
@@ -164,7 +166,9 @@ final class ProjectForm extends Component implements HasForms
                             Fieldset::make('activities_fieldset')->schema([
                                 CheckboxList::make('activities')
                                     ->label(new HtmlString("<strong>Catégories d'activité</strong>"))
-                                    ->options(Activity::all()->sortBy('title')->pluck('title', 'id')->toArray())
+                                    ->options(fn() => cache()->remember('activities_form_list', 86400, function () {
+                                        return Activity::all()->sortBy('title')->pluck('title', 'id')->toArray();
+                                    }))
                                     ->required()
                                     ->bulkToggleable()
                                     ->minItems(1)
@@ -179,7 +183,9 @@ final class ProjectForm extends Component implements HasForms
                             Fieldset::make('expenses_fieldset')->schema([
                                 CheckboxList::make('expenses')
                                     ->label(new HtmlString("<strong>Catégories de dépenses éligibles</strong>"))
-                                    ->options(Expense::all()->sortBy('title')->pluck('title', 'id')->toArray())
+                                    ->options(fn() => cache()->remember('expenses_form_list', 86400, function () {
+                                        return Expense::all()->sortBy('title')->pluck('title', 'id')->toArray();
+                                    }))
                                     ->required()
                                     ->minItems(1)
                                     ->bulkToggleable()
@@ -206,30 +212,21 @@ final class ProjectForm extends Component implements HasForms
                                 ->multiple()
                                 ->nullable()
                                 ->maxItems(3)
-                                ->options(function () {
-                                    // Initialisation des options avec l'option "Monde entier"
-                                    $options = [
-                                        'Monde entier' => 'Monde entier',
-                                    ];
-
-                                    // Récupérer tous les continents en utilisant 'code' comme clé
+                                ->options(fn() => cache()->remember('geo_zones_list', 86400, function () {
+                                    $options = ['Monde entier' => 'Monde entier'];
                                     $continents = Continent::all()->pluck('name', 'code')->toArray();
-
-                                    // Récupérer tous les pays en utilisant 'id' comme clé
                                     $pays = Country::all()->pluck('name', 'id')->toArray();
-
-                                    // Ajouter les continents au tableau des options
+                                    
                                     foreach ($continents as $code => $name) {
                                         $options["continent_$code"] = $name;
                                     }
-
-                                    // Ajouter les pays au tableau des options
+                                    
                                     foreach ($pays as $id => $name) {
                                         $options["pays_$id"] = $name;
                                     }
-
+                                    
                                     return $options;
-                                })
+                                }))
                                 ->columnSpanFull(),
                             Actions::make([
                                 Action::make('nextTab')

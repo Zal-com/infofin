@@ -8,7 +8,10 @@
         @endcan
         @auth
             @php
-                $isFavorite = \Illuminate\Support\Facades\Auth::user()->favorites->contains($project->id);
+                // Optimisation : vérification directe avec requête unique
+                $isFavorite = \App\Models\UserFavorite::where('user_id', Auth::id())
+                    ->where('project_id', $project->id)
+                    ->exists();
                 $icon = $isFavorite ? 'heroicon-s-bookmark' : 'heroicon-o-bookmark';
                 $tooltip = $isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris';
                 $action = $isFavorite ? 'removeFromFavorites' : 'addToFavorites';

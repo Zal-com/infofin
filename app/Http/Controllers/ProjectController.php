@@ -23,7 +23,18 @@ class ProjectController extends Controller
 
     public function show(int $id, Request $request)
     {
-        $project = Project::find($id) ?? abort(404);
+        $project = Project::with([
+            'scientific_domains.category', 
+            'organisation',
+            'info_types', 
+            'expenses', 
+            'activities',
+            'continents',
+            'countries',
+            'documents',
+            'info_sessions',
+            'last_updated_user'
+        ])->find($id) ?? abort(404);
 
         if (((Auth::check() && !Auth::user()->hasRole(['admin', 'contributor'])) || Auth::guest()) && $project->status === -1) {
             abort(403);
@@ -38,12 +49,8 @@ class ProjectController extends Controller
             $project->visit_count = $project->visit_count + 1;
         }
 
-        VisitsRate::create(["project_id" => $id]);
-
-
         $project->saveQuietly();
         $project->timestamps = true;
-
 
         VisitsRate::create(["project_id" => $id]);
 

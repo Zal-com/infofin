@@ -30,7 +30,11 @@ class UserProjects extends Component implements HasTable, HasForms
 
     public function table(Table $table): Table
     {
-        return $table->query(Project::where('poster_id', Auth::id())->where('status', 1))->columns([
+        return $table->query(
+            Project::where('poster_id', Auth::id())
+                ->where('status', 1)
+                ->with(['organisation', 'scientific_domains', 'activities', 'expenses'])
+        )->columns([
             TextColumn::make('title')->label('Title')->limit(30)->lineClamp(2)->searchable()->sortable(),
             TextColumn::make('short_description')->label(__('Description courte'))->limit(50)->lineClamp(2)->searchable(),
             TextColumn::make('updated_at')->label(__('Date modif.'))->dateTime('d/m/Y H:i')->sortable(),
@@ -76,9 +80,9 @@ class UserProjects extends Component implements HasTable, HasForms
                     Filter::make('organisation')->label('Organisation')->form([
                         Select::make('organisation_id')
                             ->label('Organisation')
-                            ->options(function () {
+                            ->options(fn() => cache()->remember('organisations_user_filter', 86400, function () {
                                 return Organisation::query()->pluck('title', 'id')->toArray();
-                            })
+                            }))
                             ->searchable()
                     ])
                         ->query(function ($query, $data) {
@@ -86,7 +90,10 @@ class UserProjects extends Component implements HasTable, HasForms
                                 return $query->where('organisation_id', $organisationId);
                             });
                         })
-                        ->indicateUsing(fn($data) => isset($data['organisation_id']) ? 'Organisation : ' . Organisation::find($data['organisation_id'])->title : null),
+                        ->indicateUsing(fn($data) => isset($data['organisation_id']) ? 
+                            'Organisation : ' . cache()->remember("user_org_title_{$data['organisation_id']}", 86400, 
+                                fn() => Organisation::find($data['organisation_id'])?->title ?? 'N/A'
+                            ) : null),
                     Filter::make('scientific_domain')
                         ->label('Disciplines scientifiques')
                         ->form([
@@ -105,11 +112,12 @@ class UserProjects extends Component implements HasTable, HasForms
                             }
                         })
                         ->indicateUsing(function ($data) {
-                            // Indiquer le filtre uniquement si des disciplines sont sélectionnées
                             if (!empty($data['scientific_domains'])) {
-                                $selectedDomains = \App\Models\ScientificDomain::whereIn('id', $data['scientific_domains'])->pluck('name')->toArray();
-                                return
-                                    'Disciplines scientifiques : ' . implode(', ', $selectedDomains);
+                                $cacheKey = 'user_scientific_domains_' . implode('_', $data['scientific_domains']);
+                                $selectedDomains = cache()->remember($cacheKey, 86400, function () use ($data) {
+                                    return \App\Models\ScientificDomain::whereIn('id', $data['scientific_domains'])->pluck('name')->toArray();
+                                });
+                                return 'Disciplines scientifiques : ' . implode(', ', $selectedDomains);
                             }
                             return null;
                         }),
@@ -119,15 +127,15 @@ class UserProjects extends Component implements HasTable, HasForms
                             Select::make('activity_id')
                                 ->label('Activités')
                                 ->multiple()
-                                ->options(function () {
+                                ->options(fn() => cache()->remember('user_activities_filter', 86400, function () {
                                     return Activity::all()->pluck('title', 'id')->toArray();
-                                }),
+                                })),
                             Select::make('expense_id')
                                 ->label('Dépenses')
                                 ->multiple()
-                                ->options(function () {
+                                ->options(fn() => cache()->remember('user_expenses_filter', 86400, function () {
                                     return Expense::all()->pluck('title', 'id')->toArray();
-                                }),
+                                })),
                         ])
                         ->query(function ($query, $data) {
                             if (!empty($data['activity_id']) || !empty($data['expense_id'])) {
@@ -151,12 +159,18 @@ class UserProjects extends Component implements HasTable, HasForms
                             $indicators = [];
 
                             if (isset($data['activity_id']) && !empty($data['activity_id'])) {
-                                $activityNames = Activity::whereIn('id', $data['activity_id'])->pluck('title')->toArray();
+                                $cacheKey = 'user_activities_' . implode('_', $data['activity_id']);
+                                $activityNames = cache()->remember($cacheKey, 86400, function () use ($data) {
+                                    return Activity::whereIn('id', $data['activity_id'])->pluck('title')->toArray();
+                                });
                                 $indicators[] = 'Activités : ' . implode(', ', $activityNames);
                             }
 
                             if (isset($data['expense_id']) && !empty($data['expense_id'])) {
-                                $expenseNames = Expense::whereIn('id', $data['expense_id'])->pluck('title')->toArray();
+                                $cacheKey = 'user_expenses_' . implode('_', $data['expense_id']);
+                                $expenseNames = cache()->remember($cacheKey, 86400, function () use ($data) {
+                                    return Expense::whereIn('id', $data['expense_id'])->pluck('title')->toArray();
+                                });
                                 $indicators[] = 'Dépenses : ' . implode(', ', $expenseNames);
                             }
 

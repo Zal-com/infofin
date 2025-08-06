@@ -63,27 +63,24 @@
                 <div class="inline-flex gap-2">
                     @php
                         $linkedDomains = $project->scientific_domains;
-
-                        $domainsByCategory = \App\Models\ScientificDomain::all()->groupBy('category.name');
+                        // Utiliser les domaines déjà chargés et les grouper par catégorie
+                        $domainsByCategory = $linkedDomains->groupBy('category.name')->filter(fn($domains) => $domains->isNotEmpty());
                     @endphp
 
-                    @foreach($domainsByCategory as $categoryName => $domains)
+                    @foreach($domainsByCategory as $categoryName => $linkedDomainsInCategory)
                         @php
-                            $linkedDomainsInCategory = $linkedDomains->whereIn('id', $domains->pluck('id'));
-                            $totalDomainsLinked = $linkedDomainsInCategory->count(); // Nombre de domaines liés dans la catégorie
+                            $totalDomainsLinked = $linkedDomainsInCategory->count();
                         @endphp
                         @if($totalDomainsLinked > 0)
                             <div class="relative group" x-data="{ showTooltip: false }"
                                  @mouseenter="showTooltip = true"
                                  @mouseleave="showTooltip = false">
-                                @if($totalDomainsLinked === $domains->count())
-                                    <x-filament::badge color="success"
-                                                       class="w-fit">{{ $categoryName }}</x-filament::badge>
-                                @else
-                                    <x-filament::badge color="success" class="w-fit">{{ $categoryName }}
+                                <x-filament::badge color="success" class="w-fit">
+                                    {{ $categoryName }}
+                                    @if($totalDomainsLinked > 1)
                                         ({{ $totalDomainsLinked }})
-                                    </x-filament::badge>
-                                @endif
+                                    @endif
+                                </x-filament::badge>
 
                                 @php
                                     $selectedDomainsListHtml = '<ul>' . $linkedDomainsInCategory->map(fn($domain) => '<li>' . e($domain->name) . '</li>')->implode('') . '</ul>';

@@ -46,11 +46,19 @@ class CollectionResource extends Resource
                     ->multiple()
                     ->searchable()
                     ->relationship('projects', 'title')
-                    ->options(
-                        Project::all()
-                            ->mapWithKeys(function ($item) {
-                                return [$item->id => $item->id . ' - ' . $item->title];
-                            })),
+                    ->getSearchResultsUsing(fn (string $search): array => 
+                        Project::where('title', 'like', "%{$search}%")
+                            ->limit(50)
+                            ->get()
+                            ->mapWithKeys(fn ($item) => [$item->id => $item->id . ' - ' . $item->title])
+                            ->toArray()
+                    )
+                    ->getOptionLabelsUsing(fn (array $values): array => 
+                        Project::whereIn('id', $values)
+                            ->get()
+                            ->mapWithKeys(fn ($item) => [$item->id => $item->id . ' - ' . $item->title])
+                            ->toArray()
+                    ),
 
             ]);
     }

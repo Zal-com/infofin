@@ -12,6 +12,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Spatie\Permission\Models\Permission;
 
 class UserResource extends Resource
@@ -48,7 +49,9 @@ class UserResource extends Resource
                             ->label('Intitulé du rôle'),
                         Select::make('permissions')
                             ->multiple()
-                            ->options(Permission::all()->pluck('name', 'id'))
+                            ->options(fn() => cache()->remember('permissions_list', 86400, function () {
+                                return Permission::all()->pluck('name', 'id');
+                            }))
                     ]),
                 TextInput::make('uid')
                     ->label('UID')
@@ -57,6 +60,11 @@ class UserResource extends Resource
                 Checkbox::make('is_email_subscriber')
                     ->label('Abonnement à la newsletter'),
             ]);
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->with('roles');
     }
 
     public static function table(Table $table): Table

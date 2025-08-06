@@ -91,6 +91,11 @@ class InfoSessionResource extends Resource
             ]);
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->with('organisation');
+    }
+
     public static function table(Table $table): Table
     {
         return $table

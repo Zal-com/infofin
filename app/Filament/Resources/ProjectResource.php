@@ -105,7 +105,9 @@ class ProjectResource extends Resource
                 Forms\Components\Fieldset::make('scientific_domains')
                     ->label('Domaines scientifiques')
                     ->schema(function (): array {
-                        $categories = ScientificDomainCategory::with('domains')->get();
+                        $categories = cache()->remember('scientific_domain_categories', 86400, function () {
+                            return ScientificDomainCategory::with('domains')->get();
+                        });
                         $fieldsets = [];
 
                         foreach ($categories as $category) {
@@ -138,6 +140,11 @@ class ProjectResource extends Resource
                     }),
             ])
             ->columns(3);
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->with(['organisation', 'poster']);
     }
 
     public static function table(Table $table): Table

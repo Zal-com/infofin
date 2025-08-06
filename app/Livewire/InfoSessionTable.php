@@ -33,17 +33,14 @@ class InfoSessionTable extends Component implements HasTable, HasForms
     }
 
     public function table(Table $table){
-
-        $info_sessions = InfoSession::query()->whereHas('collections', function (Builder $query) {
-            $query->where('collections.id', $this->collection->id);
-        })->get();
-
-        if(sizeof($info_sessions) > 0){
-        return $table
-            ->query(InfoSession::query()->whereHas('collections', function (Builder $query) {
+        $query = InfoSession::query()
+            ->whereHas('collections', function (Builder $query) {
                 $query->where('collections.id', $this->collection->id);
-            }))
-            ->columns([
+            })
+            ->with('organisation'); // Eager loading pour éviter N+1
+
+        if($query->exists()){
+            return $table->query($query)->columns([
                 IconColumn::make('status')
                     ->label(false)
                     ->boolean()
@@ -76,5 +73,7 @@ class InfoSessionTable extends Component implements HasTable, HasForms
                     ->alignCenter()
             ])
             ->recordUrl(fn($record) => route('info_session.show', $record->id));
+        }
+        return null;
     }
 }
