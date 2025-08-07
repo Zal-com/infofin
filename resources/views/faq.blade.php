@@ -38,9 +38,9 @@
                 <div class="bg-white p-4">
                     Si vous n'avez plus accès à votre email et que vous ne vous souvenez plus de votre mot de passe,
                     deux solutions
-                    s'offrent à vous : vous pouvez contacter <a href="mailto:guillaume.stordeur@ulb.be"
-                                                                class="text-blue-600 hover:text-blue-900">notre
-                        administrateur</a> ou bien créer un nouveau compte via cette <a
+                    s'offrent à vous : vous pouvez contacter <a href="mailto:support@ulb.be"
+                                                                class="text-blue-600 hover:text-blue-900">le support
+                        ULB</a> ou bien créer un nouveau compte via cette <a
                         href="https://monulb.ulb.be/fr/web/monulb/sign-up/"
                         class="text-blue-600 hover:text-blue-900">page
                         d'inscription.</a>
