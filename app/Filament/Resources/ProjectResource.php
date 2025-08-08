@@ -144,7 +144,10 @@ class ProjectResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->with(['organisation', 'poster']);
+        return parent::getEloquentQuery()
+            ->select('projects.*', 'organisations.title as organisation_title', 'users.first_name as poster_first_name', 'users.last_name as poster_last_name')
+            ->leftJoin('organisations', 'projects.organisation_id', '=', 'organisations.id')
+            ->leftJoin('users', 'projects.poster_id', '=', 'users.id');
     }
 
     public static function table(Table $table): Table
@@ -170,8 +173,7 @@ class ProjectResource extends Resource
                     ->wrap()
                     ->lineClamp(2)
                     ->html(),
-                Tables\Columns\TextColumn::make('organisation.title')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('organisation_title')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

@@ -64,7 +64,13 @@ class UserResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->with('roles');
+        return parent::getEloquentQuery()
+            ->select('users.*', 'roles.name as role_name')
+            ->leftJoin('model_has_roles', function ($join) {
+                $join->on('users.id', '=', 'model_has_roles.model_id')
+                    ->where('model_has_roles.model_type', '=', User::class);
+            })
+            ->leftJoin('roles', 'model_has_roles.role_id', '=', 'roles.id');
     }
 
     public static function table(Table $table): Table
@@ -75,7 +81,7 @@ class UserResource extends Resource
                 TextColumn::make('email')->searchable(isIndividual: true, isGlobal: true),
                 TextColumn::make('first_name')->searchable(isIndividual: true, isGlobal: true),
                 TextColumn::make('last_name')->searchable(isIndividual: true, isGlobal: true),
-                TextColumn::make('role')->sortable(),
+                TextColumn::make('role_name')->sortable(),
             ])
             ->paginationPageOptions([5, 10, 25, 50, 100])
             ->filters([

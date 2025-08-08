@@ -204,13 +204,18 @@ class ListProjects extends Component implements HasForms, HasTable
         }
 
         return $table->query(
-            Project::where('status', '!=', 2)->where('status', '!=', -1)
+            Project::query()
+                ->select('projects.*', 'organisations.title as organisation_title')
+                ->leftJoin('organisations', 'projects.organisation_id', '=', 'organisations.id')
+                ->where('projects.status', '!=', 2)
+                ->where('projects.status', '!=', -1)
                 ->where(function ($query) {
-                    $query->where('updated_at', '>', now()->subYears(2))
-                        ->orWhereJsonContains('deadlines->date', function ($subQuery) {
+                    $query->where('projects.updated_at', '>', now()->subYears(2))
+                        ->orWhereJsonContains('projects.deadlines->date', function ($subQuery) {
                             $subQuery->where('date', '>', now());
                         });
-                }))
+                })
+        )
             ->columns(
                 $this->isMobileLayout()
                     ? $this->getGridTableColumns()
@@ -448,7 +453,7 @@ class ListProjects extends Component implements HasForms, HasTable
     </div>
 ");
                 }),
-            TextColumn::make('organisation.title')
+            TextColumn::make('organisation_title')
                 ->label('Organisation')
                 ->wrap()
                 ->sortable()
@@ -481,7 +486,7 @@ class ListProjects extends Component implements HasForms, HasTable
                         ->sortable()
                         ->searchable()
                         ->columnSpanFull(),
-                    TextColumn::make('organisation.title')
+                    TextColumn::make('organisation_title')
                         ->label('Organisation')
                         ->wrap()
                         ->extraAttributes(['class' => 'text-xs text-gray-500'])

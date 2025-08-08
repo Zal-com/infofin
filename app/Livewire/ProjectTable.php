@@ -39,9 +39,14 @@ class ProjectTable extends Component implements HasTable, HasForms
     public function table(Table $table) : Table | null{
 
         return $table
-            ->query(Project::query()->whereHas('collections', function (Builder $query) {
-                $query->where('collections.id', $this->collection->id);
-            }))
+            ->query(
+                Project::query()
+                    ->select('projects.*', 'organisations.title as organisation_title')
+                    ->leftJoin('organisations', 'projects.organisation_id', '=', 'organisations.id')
+                    ->whereHas('collections', function (Builder $query) {
+                        $query->where('collections.id', $this->collection->id);
+                    })
+            )
             ->columns([
                 IconColumn::make('status')
                     ->label(false)
@@ -81,7 +86,7 @@ class ProjectTable extends Component implements HasTable, HasForms
     </div>
 ");
                     }),
-                TextColumn::make('organisation.title')
+                TextColumn::make('organisation_title')
                     ->label('Organisation')
                     ->wrap()
                     ->sortable()

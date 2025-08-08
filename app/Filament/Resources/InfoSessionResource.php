@@ -93,7 +93,9 @@ class InfoSessionResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->with('organisation');
+        return parent::getEloquentQuery()
+            ->select('info_sessions.*', 'organisations.title as organisation_title')
+            ->leftJoin('organisations', 'info_sessions.organisation_id', '=', 'organisations.id');
     }
 
     public static function table(Table $table): Table
@@ -106,7 +108,7 @@ class InfoSessionResource extends Resource
                     ->lineClamp(2)
                     ->width(30)
                     ->searchable(isIndividual: true),
-                TextColumn::make('organisation.title')
+                TextColumn::make('organisation_title')
                     ->label('Organisation')
                     ->limit(30)
                     ->lineClamp(2)
