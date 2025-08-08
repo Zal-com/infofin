@@ -34,10 +34,11 @@ class InfoSessionTable extends Component implements HasTable, HasForms
 
     public function table(Table $table){
         $query = InfoSession::query()
+            ->select('info_sessions.*', 'organisations.title as organisation_title')
+            ->leftJoin('organisations', 'info_sessions.organisation_id', '=', 'organisations.id')
             ->whereHas('collections', function (Builder $query) {
                 $query->where('collections.id', $this->collection->id);
-            })
-            ->with('organisation'); // Eager loading pour éviter N+1
+            });
 
         if($query->exists()){
             return $table->query($query)->columns([
@@ -55,7 +56,7 @@ class InfoSessionTable extends Component implements HasTable, HasForms
                 ->searchable(),
                 TextColumn::make('session_datetime')
                     ->label('Date et heure'),
-                TextColumn::make('organisation.title')
+                TextColumn::make('organisation_title')
                     ->label('Organisation')
                     ->wrap()
                     ->sortable()

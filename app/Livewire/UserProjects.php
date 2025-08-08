@@ -31,9 +31,11 @@ class UserProjects extends Component implements HasTable, HasForms
     public function table(Table $table): Table
     {
         return $table->query(
-            Project::where('poster_id', Auth::id())
+            Project::query()
+                ->select('projects.*', 'organisations.title as organisation_title')
+                ->leftJoin('organisations', 'projects.organisation_id', '=', 'organisations.id')
+                ->where('poster_id', Auth::id())
                 ->where('status', 1)
-                ->with(['organisation', 'scientific_domains', 'activities', 'expenses'])
         )->columns([
             TextColumn::make('title')->label('Title')->limit(30)->lineClamp(2)->searchable()->sortable(),
             TextColumn::make('short_description')->label(__('Description courte'))->limit(50)->lineClamp(2)->searchable(),
