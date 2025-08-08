@@ -31,11 +31,21 @@ class UserFavorites extends Component implements HasTable, HasForms
     {
         return $table
             ->query(
-                UserFavorite::where('user_id', Auth::id())
-                    ->with(['project.organisation', 'user'])
+                UserFavorite::query()
+                    ->select(
+                        'users_favorite_projects.*',
+                        'projects.title as project_title',
+                        'projects.short_description as project_short_description',
+                        'projects.is_big as project_is_big',
+                        'organisations.title as organisation_title'
+                    )
+                    ->join('users', 'users_favorite_projects.user_id', '=', 'users.id')
+                    ->join('projects', 'users_favorite_projects.project_id', '=', 'projects.id')
+                    ->leftJoin('organisations', 'projects.organisation_id', '=', 'organisations.id')
+                    ->where('users_favorite_projects.user_id', Auth::id())
             )
             ->columns([
-                BadgeableColumn::make('project.title')
+                BadgeableColumn::make('project_title')
                     ->label('Programme')
                     ->wrap()
                     ->lineClamp(3)
@@ -45,7 +55,7 @@ class UserFavorites extends Component implements HasTable, HasForms
                     ->width(300)
                     ->suffixBadges(function (UserFavorite $record) {
                         $user = Auth::user();
-                        if (($user->hasRole('contributor') || $user->hasRole('admin')) && $record->project->is_big) {
+                        if (($user->hasRole('contributor') || $user->hasRole('admin')) && $record->project_is_big) {
                             return [
                                 Badge::make('is_big')
                                     ->label('Projet majeur')
@@ -54,7 +64,7 @@ class UserFavorites extends Component implements HasTable, HasForms
                         }
                         return [];
                     })->separator(false),
-                TextColumn::make('project.short_description')
+                TextColumn::make('project_short_description')
                     ->label('Description')
                     ->formatStateUsing(fn(string $state): HtmlString => new HtmlString($state))
                     ->wrap()
@@ -62,7 +72,7 @@ class UserFavorites extends Component implements HasTable, HasForms
                     ->limit(100)
                     ->width(300)
                     ->searchable(),
-                TextColumn::make('project.organisation.title')
+                TextColumn::make('organisation_title')
                     ->label('Organisation')
                     ->wrap()
                     ->width(200)
@@ -71,10 +81,10 @@ class UserFavorites extends Component implements HasTable, HasForms
             ])
             ->actions([
                 Action::make('remove')->button()->icon('heroicon-o-x-mark')->label('Enlever')->color('danger')
-                    ->action(fn($record) => Auth::user()->removeFromFavorites($record->project->id))
+                    ->action(fn($record) => Auth::user()->removeFromFavorites($record->project_id))
                     ->extraAttributes(['class' => 'btn btn-danger text-red-400'])
 
             ])
-            ->recordUrl(fn($record) => route('projects.show', $record->project->id));
+            ->recordUrl(fn($record) => route('projects.show', $record->project_id));
     }
 }
